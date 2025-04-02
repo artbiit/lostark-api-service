@@ -1,6 +1,6 @@
 const axios = require("axios");
 const logger = require("./logger");
-const settings = require("../API.json");
+const env = require("../libs/env");
 
 const methods = {
   post: "post",
@@ -13,7 +13,7 @@ Object.freeze(methods);
 const config = {
   headers: {
     Accept: "application/json",
-    Authorization: `Bearer ${settings.api_key}`,
+    Authorization: `Bearer ${env["api_key"]}`,
     "content-Type": "application/json",
   },
 };
@@ -23,7 +23,7 @@ async function request(api, body, method) {
   method = method || methods.get;
   try {
     job = await axios({
-      url: `${settings.base_url}${api}`,
+      url: `${env["base_url"]}${api}`,
       method: method,
       data: body,
       headers: config.headers,

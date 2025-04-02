@@ -5,15 +5,17 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: your-password
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: ${DB_SCHEMA}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "3300:3306"
+      - "3300:${DB_PORT}"
       - "33060:33060"
     volumes:
-      - db_data:/var/lib/mysql 
+      - db_data:/var/lib/mysql
+    networks:
+      - lrk-network
 
   app:
     build: .
@@ -29,6 +31,11 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_SCHEMA: ${DB_SCHEMA}
       PREFIX: ${PREFIX}
+    networks:
+      - lrk-network
 
 volumes:
   db_data:
+
+networks:
+  lrk-network:
