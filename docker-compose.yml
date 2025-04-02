@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: lostark
+      MYSQL_USER: lostark
+      MYSQL_PASSWORD: FhtmxmdkRm1!
+    ports:
+      - "3300:3306"
+      - "33060:33060"
+  # app:
+  #   restart: always
+  #   ports:
+  #     - "3000:3000"
+  #   build: .
+  #   depends_on:
+  #     - db

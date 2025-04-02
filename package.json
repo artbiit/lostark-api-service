@@ -1,0 +1,32 @@
+{
+  "name": "lostark-remote-kakao",
+  "version": "1.0.0",
+  "description": "로아 카톡봇용 원격 서버",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "dev": "nodemon --exec index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.positivenerd.duckdns.org/ljs/lostark-remote-kakao.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@remote-kakao/core": "2.0.0-alpha.3",
+    "axios": "^1.5.1",
+    "cheerio": "1.0.0-rc.12",
+    "dotenv": "^16.3.1",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
+    "mysql2": "^3.6.1",
+    "node-cron": "^3.0.2",
+    "winston": "^3.10.0",
+    "winston-daily-rotate-file": "^4.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

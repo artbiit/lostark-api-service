@@ -1,0 +1,229 @@
+CREATE TABLE IF NOT EXISTS `notice` ( -- 공지 Table
+	seq_no	INT NOT NULL AUTO_INCREMENT,
+    title TINYTEXT,
+    notice_date DATETIME,
+    link TEXT, -- URL은 65535 길이까지 생각해둬야 함
+    notice_type varchar(10),
+    PRIMARY KEY(seq_no)
+);
+
+CREATE TABLE IF NOT EXISTS `event` ( -- 이벤트 table
+	seq_no	INT NOT NULL AUTO_INCREMENT,
+    title TINYTEXT,
+    thumbnail_url TEXT,
+    link TEXT,
+    start_date DATETIME,
+    end_date DATETIME,
+    RewardDate DATETIME,
+    PRIMARY KEY(seq_no)
+);
+
+CREATE TABLE IF NOT EXISTS guild (
+    seq_no INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(30) NOT NULL,
+    PRIMARY KEY (seq_no),
+    UNIQUE (`name`)
+);
+
+CREATE TABLE IF NOT EXISTS `character` (
+    seq_no INT NOT NULL AUTO_INCREMENT, -- 캐릭터 고유 번호
+    `name` VARCHAR(30) NOT NULL, -- 캐릭터 이름
+    `class_name` VARCHAR(50) NOT NULL, -- 캐릭터 클래스 (직업)
+    title TINYTEXT, -- 칭호
+    expedition_level SMALLINT, -- 원정대 레벨
+    pvp_grade_name VARCHAR(20), -- PvP 등급
+    char_level SMALLINT NOT NULL, -- 전투 레벨
+    using_skill_point SMALLINT NOT NULL, -- 사용한 스킬 포인트
+    total_skill_point SMALLINT NOT NULL, -- 전체 스킬 포인트
+    item_avg_level VARCHAR(10) NOT NULL, -- 평균 장착 아이템 레벨
+    item_max_level VARCHAR(10) NOT NULL, -- 최대 장착 아이템 레벨
+    `server` VARCHAR(20) NOT NULL, -- 캐릭터 서버
+    guild_id INT, -- 길드 ID (길드 테이블 참조)
+    guild_grade VARCHAR(28), -- 길드 내 직급
+    town_name VARCHAR(50), -- 영지 이름
+    image_url TEXT, -- 캐릭터 이미지 URL
+    last_update DATETIME, -- 마지막 업데이트 시각
+
+    -- 아크 패시브 포인트 관련 컬럼 추가
+    ark_passive_evolution SMALLINT NOT NULL DEFAULT 0 COMMENT '진화 아크 패시브 포인트', -- 진화 포인트
+    ark_passive_realization SMALLINT NOT NULL DEFAULT 0 COMMENT '깨달음 아크 패시브 포인트', -- 깨달음 포인트
+    ark_passive_leap SMALLINT NOT NULL DEFAULT 0 COMMENT '도약 아크 패시브 포인트', -- 도약 포인트
+
+    realization_name VARCHAR(30), -- 깨달음 첫번째 노드 명칭
+    PRIMARY KEY (seq_no),
+    UNIQUE (`name`),
+    FOREIGN KEY (guild_id) REFERENCES guild (seq_no) ON DELETE SET NULL
+);
+
+
+
+CREATE TABLE IF NOT EXISTS `character_sibling` (
+	seq_no	INT NOT NULL AUTO_INCREMENT, -- 클러스터링 인덱스
+	server_name VARCHAR(26) NOT NULL, -- 서버
+    character_id INT NOT NULL, -- 캐릭 기본 정보
+    class_name VARCHAR(20) NOT NULL, -- 직업
+    group_id INT NOT NULL, -- 같은 계정 그룹
+    PRIMARY KEY(seq_no)
+);
+
+CREATE TABLE IF NOT EXISTS `sibling_group` ( -- 같은 계정 캐릭터 끼리 묶어 놓고 언제 업데이트했는지 확인하기 위함
+	group_id INT NOT NULL, -- character_sibling.group_id
+    last_update DATETIME NOT NULL, -- 마지막 업데이트 시점
+    PRIMARY KEY(group_id)
+);
+
+CREATE TABLE IF NOT EXISTS `stats` (
+    seq_no INT NOT NULL AUTO_INCREMENT, -- 스탯 고유 번호
+    character_id INT NOT NULL, -- 캐릭터 ID 참조
+    `type` VARCHAR(50) NOT NULL, -- 스탯 종류 (치명, 신속, 특화 등)
+    `value` BIGINT NOT NULL, -- 스탯 수치
+    PRIMARY KEY(seq_no) -- 기본 키
+);
+
+CREATE TABLE IF NOT EXISTS `tendencies`(
+seq_no	INT NOT NULL AUTO_INCREMENT, -- 클러스터링 인덱스
+character_id INT NOT NULL,
+`type` SET("UNKNOWN", "", "지성", "담력", "매력", "친절") NOT NULL,
+`value` SMALLINT NOT NULL,
+PRIMARY KEY(seq_no)
+);
+
+
+CREATE TABLE IF NOT EXISTS `equipment` (
+    seq_no INT NOT NULL AUTO_INCREMENT, -- 장비 고유 번호
+    character_id INT NOT NULL, -- 캐릭터 ID 참조
+    `name` VARCHAR(100) NOT NULL, -- 장비 이름
+    slot_type VARCHAR(50) NOT NULL, -- 장착 부위 (무기, 투구, 상의 등)
+    upgrade_level TINYINT NOT NULL, -- 재련 단계
+    evolution_level TINYINT NOT NULL, -- 진화 레벨
+    item_level SMALLINT NOT NULL, -- 아이템 레벨
+    quality TINYINT NOT NULL, -- 품질
+    item_grade VARCHAR(20) NOT NULL, -- 아이템 등급 (유물, 고대 등)
+    transcendence_level TINYINT NOT NULL, -- 초월 단계
+    transcendence_count TINYINT NOT NULL, -- 초월 횟수
+    elixir_0 INT NOT NULL, -- 첫 번째 엘릭서 효과
+    elixir_0_level TINYINT NOT NULL, -- 첫 번째 엘릭서 레벨
+    elixir_1 INT NOT NULL, -- 두 번째 엘릭서 효과
+    elixir_1_level TINYINT NOT NULL, -- 두 번째 엘릭서 레벨
+    advanced_reforge TINYINT NOT NULL, -- 상급 재련 수치
+    PRIMARY KEY(seq_no) -- 기본 키
+);
+
+CREATE TABLE IF NOT EXISTS `elixir`( -- 엘릭서 테이블
+seq_no INT NOT NULL AUTO_INCREMENT,
+name VARCHAR(50) NOT NULL, -- 엘릭서 명칭
+slot_type SET("UNKNOWN", "", "투구", "상의", "하의", "장갑", "어깨", "공용") NOT NULL,
+PRIMARY KEY(seq_no)
+);
+
+CREATE TABLE IF NOT EXISTS skill(
+	seq_no INT NOT NULL AUTO_INCREMENT,
+    character_id INT NOT NULL,
+    level TINYINT NOT NULL, -- 스킬 이름
+    rune_name VARCHAR(20), -- 착용 중인 룬 이름
+    rune_grade TINYINT NOT NULL, -- 룬 등급
+    PRIMARY KEY(seq_no)
+);
+
+CREATE TABLE IF NOT EXISTS tripod(
+		seq_no INT NOT NULL AUTO_INCREMENT, 
+        tier TINYINT NOT NULL, -- 트라이포드 티어
+        slot TINYINT NOT NULL, -- 트라이포드 슬롯
+        name VARCHAR(100) NOT NULL, -- 트라이포드 이름
+		PRIMARY KEY(seq_no)
+);
+
+CREATE TABLE IF NOT EXISTS selected_tripod(
+	seq_no INT NOT NULL AUTO_INCREMENT,
+	level TINYINT NOT NULL, -- 트라이포드 레벨
+    tripod_id INT NOT NULL, -- 트라이포드 아이디
+    skill_id INT NOT NULL, -- 스킬 아이디
+	PRIMARY KEY(seq_no)
+);
+
+
+CREATE TABLE IF NOT EXISTS `dailyRandomCard` ( -- 랜전카 명령어
+	seq_no INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100) NOT NULL, -- 카톡 닉네임
+    `index` TINYINT NOT NULL,
+    PRIMARY KEY(seq_no)
+);
+
+CREATE TABLE IF NOT EXISTS reforgeGame( -- 재련게임
+	seq_no INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100) NOT NULL, -- 카톡 닉네임
+    `level` TINYINT NOT NULL,
+    probability DOUBLE NOT NULL,
+    last_reforge DATETIME NOT NULL,
+    PRIMARY KEY(seq_no)
+);
+
+CREATE TABLE IF NOT EXISTS abilityStone( -- 어빌리티 스톤 테이블
+ seq_no INT NOT NULL AUTO_INCREMENT,
+ character_id INT NOT NULL,
+ activity_name VARCHAR(50) NOT NULL, -- 효과 이름
+ activity_value TINYINT NOT NULL, -- 효과 활성도
+ activity_type boolean NOT NULL, -- true - 감소, false - 증가
+  PRIMARY KEY(seq_no)
+);
+
+-- 각인 정보를 저장하는 테이블
+CREATE TABLE IF NOT EXISTS engraving (
+    seq_no INT NOT NULL AUTO_INCREMENT PRIMARY KEY, -- 클러스터 인덱스 유지
+    character_id INT NOT NULL,          -- 캐릭터 ID (외래 키)
+    name VARCHAR(50) NOT NULL,          -- 각인 이름
+    level TINYINT NOT NULL CHECK (level BETWEEN 0 AND 5), -- 각인 레벨 (0 ~ 5)
+    grade VARCHAR(10) NOT NULL,         -- 각인 등급 (예: 유물, 전설, 희귀 등)
+    UNIQUE(character_id, name),         -- 캐릭터별 중복 방지
+    FOREIGN KEY (character_id) REFERENCES `character`(seq_no) ON DELETE CASCADE
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS `collectibles` (
+    seq_no INT NOT NULL AUTO_INCREMENT, -- 수집품 고유 번호
+    character_id INT NOT NULL, -- 캐릭터 ID 참조
+    `type` VARCHAR(50) NOT NULL, -- 수집품 종류 (모코코 씨앗, 섬의 마음 등)
+    point SMALLINT NOT NULL, -- 수집된 개수
+    percent FLOAT NOT NULL, -- 전체 진행도 (백분율)
+    PRIMARY KEY(seq_no) -- 기본 키
+);
+
+CREATE TABLE IF NOT EXISTS Categories (
+    CategoryID INT AUTO_INCREMENT PRIMARY KEY,
+    CategoryName VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Contents (
+    ContentID INT AUTO_INCREMENT PRIMARY KEY,
+    CategoryID INT,
+    ContentsName VARCHAR(255) NOT NULL,
+    ContentsIcon VARCHAR(255),
+    MinItemLevel INT,
+    Location VARCHAR(255),
+    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
+);
+
+CREATE TABLE IF NOT EXISTS RewardItems (
+    RewardItemID INT AUTO_INCREMENT PRIMARY KEY,
+    ContentID INT,
+    Name VARCHAR(255) NOT NULL,
+    Icon VARCHAR(255),
+    Grade VARCHAR(255),
+    FOREIGN KEY (ContentID) REFERENCES Contents(ContentID)
+);
+
+CREATE TABLE IF NOT EXISTS ContentStartTimes (
+    StartTimeID INT AUTO_INCREMENT PRIMARY KEY,
+    ContentID INT,
+    StartTime DATETIME,
+    FOREIGN KEY (ContentID) REFERENCES Contents(ContentID)
+);
+
+CREATE TABLE IF NOT EXISTS RewardStartTimes (
+    RewardStartTimeID INT AUTO_INCREMENT PRIMARY KEY,
+    RewardItemID INT,
+    StartTime DATETIME,
+    FOREIGN KEY (RewardItemID) REFERENCES RewardItems(RewardItemID)
+);
