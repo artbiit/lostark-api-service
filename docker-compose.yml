@@ -5,17 +5,30 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: lostark
-      MYSQL_USER: lostark
-      MYSQL_PASSWORD: FhtmxmdkRm1!
+      MYSQL_ROOT_PASSWORD: your-password
+      MYSQL_DATABASE: ${DB_SCHEMA}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3300:3306"
       - "33060:33060"
-  # app:
-  #   restart: always
-  #   ports:
-  #     - "3000:3000"
-  #   build: .
-  #   depends_on:
-  #     - db
+    volumes:
+      - db_data:/var/lib/mysql 
+
+  app:
+    build: .
+    restart: always
+    ports:
+      - "3000:${PORT}"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_SCHEMA: ${DB_SCHEMA}
+      PREFIX: ${PREFIX}
+
+volumes:
+  db_data:
