@@ -16,6 +16,9 @@ function init() {
     "DB_PORT",
     "DB_SCHEMA",
     "DB_PASSWORD",
+    //API
+    "api_key",
+    "base_url",
   ];
   for (let key of keys) {
     env[key] = check(key);
