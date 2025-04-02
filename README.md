@@ -1,2 +1,3 @@
 # lostark-remote-kakao
-로스트아크 리모트 
+
+로아 카톡봇용 원격 서버
