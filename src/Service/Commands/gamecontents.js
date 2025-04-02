@@ -178,17 +178,17 @@ async function checkDataExistence() {
 
   return result === 0;
 }
-async function test() {
-  global.mysql = await require("../../Mysql/MysqlService").create();
-  await cUtils.deleteOldContents();
-  const api_result = await api.gamecontents(api.gamecontents_types.calendar);
-  if (api_result.status == 200) {
-    await cUtils.upsertProcyon(api_result.data);
-  }
-  let result = await procyon();
-  console.log(result);
-}
-test();
+// async function test() {
+//   global.mysql = await require("../../Mysql/MysqlService").create();
+//   await cUtils.deleteOldContents();
+//   const api_result = await api.gamecontents(api.gamecontents_types.calendar);
+//   if (api_result.status == 200) {
+//     await cUtils.upsertProcyon(api_result.data);
+//   }
+//   let result = await procyon();
+//   console.log(result);
+// }
+// test();
 
 module.exports = {
   procyon,
