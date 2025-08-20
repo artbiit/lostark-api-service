@@ -1,64 +1,119 @@
+# ============================
+# .cursorrules — LostArk Remote Kakao
+# ============================
+
 # === 팀/도구 공통 규칙 ===
-- 긴 구현이나 예제 코드는 "사용자가 요청할 때만" 제공한다.
-- 설명, 구조, 전략 위주로 답한다.
-- 대화 맥락은 간결하게 유지하여 과도한 컨텍스트 사용을 피한다.
-- 불필요한 사족, 중복 설명 금지.
+- 긴 구현/예제 코드는 "사용자가 요청할 때만" 제공한다.
+- 설명·구조·전략 위주로 답한다. 맥락은 간결하게 유지한다.
+- 범법적 행위, 악용 목적, 규제 위반 가능성이 있는 작업은 전면 금지한다.
+- 항상 시니어 개발자처럼 신중하게 설계·설명·코드 작성한다.
+- 코드 생성 후 최소 두 번은 스스로 검토(Self-review)한 뒤 최종본을 제시한다.
 
 # === 프로젝트 기술 스택 / 범위 ===
 - Node.js 최신 LTS (예: 22)
-- TypeScript (strict 모드)
+- TypeScript (strict 모드, 표준 명명규칙 준수)
 - Yarn Workspaces (모노레포)
 - Fastify (HTTP/REST)
-- UDP (dgram, JSON 메시지)
-- 아키텍처 3 계층:
-  1) Fetch & Normalize: Lost Ark API 호출/정규화/캐싱
-  2) REST API: 캐시 데이터 제공, 필요 시 Fetch 호출
-  3) UDP Gateway: 기존 메시지 규격 유지, 초저지연 전송
+- UDP (dgram, JSON 메시지 · MTU 이내 단일 datagram 원칙)
+- 3 계층:
+  1) Fetch & Normalize (Lost Ark API → 정규화·캐싱)
+  2) REST API (정규화 데이터 제공, 필요 시 Fetch 호출)
+  3) UDP Gateway (기존 메시지 규격 유지, 초저지연 전송)
 - shared 패키지: DTO, Config, 유틸, 로깅 공통화
 
 # === 코드 스타일/규칙 ===
-- TypeScript `strict: true`, `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`
-- ESM(`"type": "module"`)
-- 경로 별칭 `@/*`
-- ESLint: import 순서, unused-imports, jsonc 포함
-- Prettier 단일 포맷터
-- 함수/클래스/모듈은 SRP(단일 책임 원칙) 유지
-- async/await 우선, 콜백 최소화
-- Promise는 항상 에러 처리(await + try/catch or .catch)
-- DTO/타입: Public(버전 명시) vs Domain(내부용) 분리
+- TS 컴파일러 옵션: strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes
+- 모듈 시스템: ESM ("type": "module"), 경로 별칭: @/*
+- ESLint(+import 정렬, unused-imports, jsonc) + Prettier 단일 포맷터
+- 이름 규칙: PascalCase(타입/클래스) · camelCase(변수/함수) · UPPER_SNAKE_CASE(상수)
+- SRP(단일 책임) 준수, async/await 우선, 모든 Promise 에러 처리
+- 파일 상단 주석에 변경 메타 기입:
+  - `@cursor-change: <ISO-date>, <semver>, <1~2줄 요약>`
+  - (변경 이력 요약을 간단히 유지하되 의미는 분명히)
+- 생성 코드에는 적절한 주석 포함(왜/무엇/경계조건)
 
 # === 데이터/캐시 원칙 ===
-- 외부 API 응답(대형 JSON) → 정규화 후 캐시
+- 외부 API 대형 JSON → 정규화 후 캐싱
 - 캐시 계층: In-memory(짧은 TTL) → Redis(중간 TTL) → (선택) 영속 DB
-- 캐시 키: char:<name>:v<schemaVersion>
-- 메타데이터(updatedAt, version) 유지
-- stale-while-revalidate 허용
-- 강제 리프레시: 쿼리파라미터/헤더
+- 캐시 키: `char:<name>:v<schemaVersion>`, 메타: updatedAt, version
+- stale-while-revalidate 허용, 강제 리프레시(쿼리/헤더) 제공
+- Lost Ark armories 상세: 직업 각인이 **두 가지**임을 고려(스키마/요약 생성 로직 반영)
 
 # === 동시성/안정성 ===
-- Fetch: 싱글플라이트, 서킷브레이커, 지수백오프
+- Fetch: 싱글플라이트, 서킷브레이커, 지수백오프 재시도
 - REST: bounded concurrency, 응답 캐시 헤더(ETag/Cache-Control)
-- UDP: lock-free 큐, 워커풀, 과부하 시 드롭
-- UDP 메시지는 MTU 이내, JSON 최소화
-- 장애 시 graceful degrade (캐시 fallback)
+- UDP: 최소 처리 → lock-free 큐 → 워커풀, 과부하 시 드롭
+- 장애 시 graceful degrade(캐시 fallback), 외부 API 장애 동안 캐시 서빙
+
+# === DB/스키마/마이그레이션 ===
+- DB 스키마는 코드와 분리된 파일로 정의/관리, 마이그레이션 up/down 쌍 유지
+- 파괴적 변경 금지: Deprecation → 백필 → 교체 → 삭제의 4단계
+- 변경/인덱스 전략 메모 남기기(간단 메모 OK)
+
+# === 외부 API/오픈소스 규칙 ===
+- Lost Ark 공식 API 사용 시 참조 버전/문서를 README와 관련 코드 주석에 명시
+  - 예: `@lostark-api: v2025-08-01`
+- 외부 OSS 사용 시 README의 "About/License"에 출처·라이선스·버전·링크 명시
+- 새 의존성 도입은 기본 금지(표준/기존 유틸 대안 검토 후 3줄 요약 근거 기록)
 
 # === 코드 생성 지침 (Cursor/AI용) ===
-- 파일 생성 시: TypeScript + ESM
-- 테스트: 최소 1개 (health check 또는 핵심 경로)
-- 로깅: pino (구조화, JSON), requestId 포함
-- 환경 변수: .env(.example 제공), 비밀값 하드코딩 금지
-- 샘플 라우트/코드: "사용자가 요청할 때만" 생성
-- 대화 중 예시 필요 시 → 스켈레톤/짧은 블록으로 제시
-- boilerplate, 장황한 코드, 불필요한 Mock 데이터 생성 금지
+- 생성 파일: TypeScript + ESM, 테스트 최소 1개(health or 핵심 경로)
+- 로깅: pino(구조화 JSON), requestId 포함, 민감정보 로그 금지
+- 환경변수: .env(.example 제공), 비밀값 하드코딩 금지
+- 샘플 라우트/구현: "사용자가 요청할 때만" 생성
+- 과도한 boilerplate/Mock 데이터 생성 금지
 
-# === 산출물/컨텍스트 관리 ===
-- 설정/스켈레톤은 짧은 코드 블록 선호
-- 대형 JSON, 로그, 스냅샷 → cache/** 저장 (컨텍스트 제외)
+# === 산출물/문서 관리 ===
+- README.md: 프로젝트 설명, 셋업, 실행, 주요 환경변수, 엔드포인트 포함
+- 의미 있는 변경이 있으면 README를 **같은 변경 단위로 동기화**한다
+- 대형 JSON/로그/스냅샷은 cache/** 저장(컨텍스트 제외)
 - node_modules, dist, coverage, cache/** 는 컨텍스트에서 제외
-- 커서 AI는 긴 파일 전문을 불러오지 말고 필요한 부분만 참조
 
 # === 문서/계약 ===
-- Public DTO: 반드시 버전 명시 (예: v1)
-- Domain DTO: 내부 전용, 외부 노출 금지
+- Public DTO는 버전 명시(예: v1), Domain DTO는 내부 전용
 - 변경 시 호환성 주석 필수
-- API/UDP 프로토콜은 계약(스키마/필드 정의) 문서화
+- REST/UDP/DTO 계약은 문서화하고, 공개 스키마는 버전 디렉터리에 배치
+  - `/packages/shared-types/v1/...`
+
+# === 컨텍스트/편집 프로토콜 ===
+- [컨텍스트 최소화] 필요한 범위만 열람, dist/node_modules/cache/** 금지
+- [변경 요약] 편집 전 아래 3개 섹션을 작성:
+  - `Change Summary:`(1~3줄), `Touched Files:`, `Risk:`(낮음/중간/높음)
+- [스코프 고정] 한 번의 제안/커밋에는 한 가지 목적만(리팩토링과 기능 추가 분리)
+- [호환성 게이트] 공개 계약 변경은 기본 금지. 필요 시 "Breaking Change Proposal"로 사전 제안(동기/대안/마이그레이션/리스크)
+
+# === AI 셀프 리뷰 체크리스트 ===
+- 타입 안정(암시적 any 금지), 느슨한 타입 회피
+- 비동기 안전(await 순서/누락·미처리 .catch 방지)
+- 경계 검증(zod/typebox 등 스키마 검증)
+- 오류 전파(에러코드: BAD_INPUT/NOT_FOUND/RATE_LIMITED/UPSTREAM_UNAVAILABLE/INTERNAL)
+- 로깅 품질(레벨·requestId·민감정보 배제)
+- 성능(N+1·중복호출 제거, 병렬화 가능 지점 Promise.all)
+- 캐시(TTL/강제리프레시/히트·미스 경로 점검)
+- 시간/로캘(UTC 저장, 표시만 로캘), 타임존 의존 로직 금지
+- i18n(한글 응답 문자열은 리소스/상수로 분리)
+
+# === 계약/테스트 안전망 ===
+- 공개 DTO/REST/UDP 스키마 스냅샷 테스트 유지
+- UDP: 샘플 페이로드 인코딩/디코딩·에코·최대 길이(한글 포함) 테스트
+- 회귀 방지: 버그 수정 시 동일 입력 재현 테스트 1개 반드시 추가
+
+# === 퍼포먼스/레이트리밋/회복성 ===
+- 목표 예산 주석: REST p95 ≤ 50ms, UDP p95 ≤ 10ms(캐시 히트 기준) 등
+- 레이트리밋: 클라이언트(REST)와 내부(Fetch) 분리 구성, X-RateLimit-* 일관 관리
+- 외부 장애 시 폴백/서킷 동작을 문서화(상태/에러 메시지)
+
+# === 릴리스/버전 전략 ===
+- semver: 내부 변경=patch, 계약 추가=minor, 계약 변경=major
+- CHANGELOG.md: Added/Changed/Fixed/Deprecated/Removed/Security 형식
+- Lost Ark API 버전 표기를 변경 시에도 동기화
+
+# === 모노레포 매너 ===
+- shared-* 변경은 영향 범위를 요약, 순환 의존 금지
+- TS Project References 그래프 유지(깨질 경우 변화 요약 첨부)
+
+# === 프롬프트/요청 처리 규칙(커서 전용) ===
+- 사용자가 “예제/구현”을 명시 요청한 경우에만 코드 생성
+- 스캐폴딩은 20~60줄 내로, 필요한 파일만 생성
+- 한 응답에서 편집/생성 파일은 최대 3개. 많으면 배치로 분할
+- 파괴적 변경/의존성 추가/계약 변경 전에는 반드시 승인 질문을 선행
