@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+      "target": "ES2022",
+      "module": "ESNext",
+      "moduleResolution": "Bundler",
+      "strict": true,
+      "noUncheckedIndexedAccess": true,
+      "exactOptionalPropertyTypes": true,
+      "useUnknownInCatchVariables": true,
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "lib": ["ES2022"],
+      "allowJs": false,
+      "declaration": true,
+      "composite": true,
+      "baseUrl": ".",
+      "paths": {
+        "@shared/*": ["packages/shared/src/*"]
+      }
+    },
+    "exclude": ["node_modules", "dist", "coverage", "logs", "cache"]
+  }
+  

@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "EditorConfig.EditorConfig",
+      "christian-kohler.path-intellisense",
+      "mikestead.dotenv",
+      "redhat.vscode-yaml",
+      "ms-azuretools.vscode-docker",
+      "eamodio.gitlens",
+      "ZixuanChen.vitest-explorer"
+    ]
+  }
+  

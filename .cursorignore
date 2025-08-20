@@ -1,0 +1,49 @@
+# 빌드/의존
+node_modules/
+**/node_modules/
+dist/
+build/
+.cache/
+.tmp/
+
+# VCS/도구
+.git/
+.gitignore
+.husky/
+coverage/
+.vscode/
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/patches
+
+# 실행/캐시/로그
+cache/**
+logs/**
+**/*.log
+**/*.pid
+**/*.seed
+**/*.sqlite*
+**/*.tgz
+**/*.zip
+
+# 대용량 JSON/스냅샷
+**/*.jsonl
+**/*-snapshot.json
+**/*-raw.json
+**/*-large.json
+**/*-dump.json
+
+# 환경/비밀 (예시는 허용)
+.env
+.env.*
+!.env.example
+
+# 컨테이너/이미지
+Dockerfile*
+docker-compose*.yml
+**/.dockerignore
+
+# OS/에디터
+.DS_Store
+Thumbs.db
