@@ -1,45 +1,35 @@
 {
   "name": "lostark-remote-kakao",
   "version": "1.0.0",
-  "description": "로아 카톡봇용 원격 서버",
+  "description": "Lost Ark Remote Kakao - 3-tier architecture for Lost Ark API integration",
   "type": "module",
-  "main": "dist/index.js",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "test": "test",
-    "build": "tsc -p tsconfig.json",
-    "clean": "rimraf dist",
-    "start": "node dist/index.js",
-    "dev": "nodemon --watch src --ext ts,js --exec ts-node src/index.ts",
-    "prepare": "husky install",
-    "typecheck": "tsc -p tsconfig.json --noEmit --pretty",
-    "lint": "eslint . --ext .ts,.mts,.cts,.js,.cjs,.mjs,.json,.yaml,.yml",
-    "lint:fix": "eslint . --ext .ts,.mts,.cts,.js,.cjs,.mjs,.json,.yaml,.yml --fix",
+    "build": "yarn workspaces run build",
+    "clean": "yarn workspaces run clean",
+    "dev": "yarn workspaces run dev",
+    "start": "yarn workspace @lostark/fetch start",
+    "typecheck": "yarn workspaces run typecheck",
+    "lint": "yarn workspaces run lint",
+    "lint:fix": "yarn workspaces run lint:fix",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "check": "yarn typecheck && yarn lint && yarn format"
+    "check": "yarn typecheck && yarn lint && yarn format",
+    "test": "yarn workspaces run test"
   },
-  "repository": { "type": "git", "url": "https://git.positivenerd.duckdns.org/ljs/lostark-remote-kakao.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://git.positivenerd.duckdns.org/ljs/lostark-remote-kakao.git"
+  },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@remote-kakao/core": "2.0.0-alpha.3",
-    "axios": "^1.5.1",
-    "cheerio": "1.0.0-rc.12",
-    "dotenv": "^16.3.1",
-    "moment": "^2.30.1",
-    "moment-timezone": "^0.5.45",
-    "mysql2": "^3.6.1",
-    "node-cron": "^3.0.2",
-    "winston": "^3.10.0",
-    "winston-daily-rotate-file": "^4.7.1",
-    "zod": "^4.0.17"
-  },
   "devDependencies": {
     "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.40.0",
-    "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -48,10 +38,8 @@
     "husky": "^9.1.7",
     "jsonc-eslint-parser": "^2.4.0",
     "lint-staged": "^16.1.5",
-    "nodemon": "^3.0.1",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "yaml-eslint-parser": "^1.3.0"
   },
@@ -59,5 +47,7 @@
     "*.{ts,tsx,js,mjs,cjs}": ["eslint --fix", "prettier --write"],
     "*.{json,yml,yaml,md}": ["prettier --write"]
   },
-  "engines": { "node": ">=22.0.0" }
+  "engines": {
+    "node": ">=22.0.0"
+  }
 }
