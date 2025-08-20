@@ -1,0 +1,64 @@
+# === 팀/도구 공통 규칙 ===
+- 긴 구현이나 예제 코드는 "사용자가 요청할 때만" 제공한다.
+- 설명, 구조, 전략 위주로 답한다.
+- 대화 맥락은 간결하게 유지하여 과도한 컨텍스트 사용을 피한다.
+- 불필요한 사족, 중복 설명 금지.
+
+# === 프로젝트 기술 스택 / 범위 ===
+- Node.js 최신 LTS (예: 22)
+- TypeScript (strict 모드)
+- Yarn Workspaces (모노레포)
+- Fastify (HTTP/REST)
+- UDP (dgram, JSON 메시지)
+- 아키텍처 3 계층:
+  1) Fetch & Normalize: Lost Ark API 호출/정규화/캐싱
+  2) REST API: 캐시 데이터 제공, 필요 시 Fetch 호출
+  3) UDP Gateway: 기존 메시지 규격 유지, 초저지연 전송
+- shared 패키지: DTO, Config, 유틸, 로깅 공통화
+
+# === 코드 스타일/규칙 ===
+- TypeScript `strict: true`, `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`
+- ESM(`"type": "module"`)
+- 경로 별칭 `@/*`
+- ESLint: import 순서, unused-imports, jsonc 포함
+- Prettier 단일 포맷터
+- 함수/클래스/모듈은 SRP(단일 책임 원칙) 유지
+- async/await 우선, 콜백 최소화
+- Promise는 항상 에러 처리(await + try/catch or .catch)
+- DTO/타입: Public(버전 명시) vs Domain(내부용) 분리
+
+# === 데이터/캐시 원칙 ===
+- 외부 API 응답(대형 JSON) → 정규화 후 캐시
+- 캐시 계층: In-memory(짧은 TTL) → Redis(중간 TTL) → (선택) 영속 DB
+- 캐시 키: char:<name>:v<schemaVersion>
+- 메타데이터(updatedAt, version) 유지
+- stale-while-revalidate 허용
+- 강제 리프레시: 쿼리파라미터/헤더
+
+# === 동시성/안정성 ===
+- Fetch: 싱글플라이트, 서킷브레이커, 지수백오프
+- REST: bounded concurrency, 응답 캐시 헤더(ETag/Cache-Control)
+- UDP: lock-free 큐, 워커풀, 과부하 시 드롭
+- UDP 메시지는 MTU 이내, JSON 최소화
+- 장애 시 graceful degrade (캐시 fallback)
+
+# === 코드 생성 지침 (Cursor/AI용) ===
+- 파일 생성 시: TypeScript + ESM
+- 테스트: 최소 1개 (health check 또는 핵심 경로)
+- 로깅: pino (구조화, JSON), requestId 포함
+- 환경 변수: .env(.example 제공), 비밀값 하드코딩 금지
+- 샘플 라우트/코드: "사용자가 요청할 때만" 생성
+- 대화 중 예시 필요 시 → 스켈레톤/짧은 블록으로 제시
+- boilerplate, 장황한 코드, 불필요한 Mock 데이터 생성 금지
+
+# === 산출물/컨텍스트 관리 ===
+- 설정/스켈레톤은 짧은 코드 블록 선호
+- 대형 JSON, 로그, 스냅샷 → cache/** 저장 (컨텍스트 제외)
+- node_modules, dist, coverage, cache/** 는 컨텍스트에서 제외
+- 커서 AI는 긴 파일 전문을 불러오지 말고 필요한 부분만 참조
+
+# === 문서/계약 ===
+- Public DTO: 반드시 버전 명시 (예: v1)
+- Domain DTO: 내부 전용, 외부 노출 금지
+- 변경 시 호환성 주석 필수
+- API/UDP 프로토콜은 계약(스키마/필드 정의) 문서화
