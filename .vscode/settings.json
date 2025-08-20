@@ -1,0 +1,13 @@
+{
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "files.eol": "\n",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "eslint.validate": ["typescript", "javascript", "json", "jsonc", "yaml"],
+    "prettier.requireConfig": true,
+    "eslint.format.enable": true,
+    "typescript.tsdk": "node_modules/typescript/lib"
+}
