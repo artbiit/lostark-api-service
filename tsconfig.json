@@ -1,19 +1,29 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",               // ★ Node ESM 출력
-    "moduleResolution": "Bundler",     // ★ Node ESM 해석 규칙
-    "rootDir": "src",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "rootDir": ".",
     "outDir": "dist",
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
     "useUnknownInCatchVariables": true,
-    "resolveJsonModule": true,          // TS에서 JSON import 허용
-    "verbatimModuleSyntax": true,       // import/export 구문 보존(불필요한 변환 방지)
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "esModuleInterop": true             // CJS 호환성 완화(필요 시 default import)
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["packages/shared/src/*"],
+      "@shared-types/*": ["packages/shared-types/src/*"],
+      "@fetch/*": ["packages/fetch/src/*"],
+      "@api/*": ["packages/api/src/*"],
+      "@udp/*": ["packages/udp/src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["packages/**/src/**/*"],
+  "exclude": ["node_modules", "dist", "coverage", "logs", "cache", "**/node_modules"]
 }

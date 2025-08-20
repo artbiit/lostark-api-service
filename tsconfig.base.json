@@ -1,22 +1,26 @@
 {
-    "compilerOptions": {
-      "target": "ES2022",
-      "module": "ESNext",
-      "moduleResolution": "Bundler",
-      "strict": true,
-      "noUncheckedIndexedAccess": true,
-      "exactOptionalPropertyTypes": true,
-      "useUnknownInCatchVariables": true,
-      "resolveJsonModule": true,
-      "skipLibCheck": true,
-      "lib": ["ES2022"],
-      "allowJs": false,
-      "declaration": true,
-      "composite": true,
-      "baseUrl": ".",
-      "paths": {
-        "@shared/*": ["packages/shared/src/*"]
-      }
-    },
-    "exclude": ["node_modules", "dist", "coverage", "logs", "cache"]
-  }
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "useUnknownInCatchVariables": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "lib": ["ES2022"],
+    "allowJs": false,
+    "declaration": true,
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["packages/shared/src/*"],
+      "@shared-types/*": ["packages/shared-types/src/*"],
+      "@fetch/*": ["packages/fetch/src/*"],
+      "@api/*": ["packages/api/src/*"],
+      "@udp/*": ["packages/udp/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "coverage", "logs", "cache", "**/node_modules"]
+}
