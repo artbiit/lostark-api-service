@@ -18,6 +18,8 @@
 - **조사 날짜**: 2025-01-15
 - **문서**: [V9.0.0/README.md](./V9.0.0/README.md)
 - **API 엔드포인트**: [V9.0.0/api-endpoints.md](./V9.0.0/api-endpoints.md)
+- **세팅 데이터 지침**:
+  [V9.0.0/build-data-guidelines.md](./V9.0.0/build-data-guidelines.md)
 - **샘플 데이터**: [V9.0.0/sample-data/](./V9.0.0/sample-data/)
 - **타입 정의**:
   [packages/shared/src/types/V9/](../../packages/shared/src/types/V9/)
