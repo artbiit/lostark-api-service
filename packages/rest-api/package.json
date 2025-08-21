@@ -13,8 +13,8 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
-    "@lostark/shared": "workspace:*",
     "@lostark/fetch": "workspace:*",
+    "@lostark/shared": "workspace:*",
     "fastify": "^4.0.0"
   },
   "devDependencies": {

@@ -13,8 +13,8 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
-    "@lostark/shared": "workspace:*",
-    "@lostark/fetch": "workspace:*"
+    "@lostark/fetch": "workspace:*",
+    "@lostark/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.0.0"
