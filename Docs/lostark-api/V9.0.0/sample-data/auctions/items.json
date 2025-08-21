@@ -1,0 +1,307 @@
+{
+  "PageNo": 1,
+  "PageSize": 10,
+  "TotalCount": 14,
+  "Items": [
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 270000,
+        "BuyPrice": 270000,
+        "BidPrice": 0,
+        "EndDate": "2025-08-24T11:32:20.243",
+        "BidCount": 0,
+        "BidStartPrice": 270000,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "원샷원킬",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "데빌헌터",
+          "IsValuePercentage": true
+        }
+      ]
+    },
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 279000,
+        "BuyPrice": 279000,
+        "BidPrice": 0,
+        "EndDate": "2025-08-22T09:43:08.573",
+        "BidCount": 0,
+        "BidStartPrice": 279000,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "필법 : 흩뿌리기",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "도화가",
+          "IsValuePercentage": true
+        }
+      ]
+    },
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 279000,
+        "BuyPrice": 279000,
+        "BidPrice": 0,
+        "EndDate": "2025-08-22T09:43:16.39",
+        "BidCount": 0,
+        "BidStartPrice": 279000,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "묵법 : 범가르기",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "도화가",
+          "IsValuePercentage": true
+        }
+      ]
+    },
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 279000,
+        "BuyPrice": 279000,
+        "BidPrice": 0,
+        "EndDate": "2025-08-22T09:43:24.4",
+        "BidCount": 0,
+        "BidStartPrice": 279000,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "묵법 : 해우물",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "도화가",
+          "IsValuePercentage": true
+        }
+      ]
+    },
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 279000,
+        "BuyPrice": 279000,
+        "BidPrice": 0,
+        "EndDate": "2025-08-24T11:38:48.033",
+        "BidCount": 0,
+        "BidStartPrice": 279000,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "진리의 륜",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "발키리",
+          "IsValuePercentage": true
+        }
+      ]
+    },
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 279999,
+        "BuyPrice": 279999,
+        "BidPrice": 0,
+        "EndDate": "2025-08-22T04:27:53.173",
+        "BidCount": 0,
+        "BidStartPrice": 279999,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "오의 : 창룡패황권",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "배틀마스터",
+          "IsValuePercentage": true
+        }
+      ]
+    },
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 280000,
+        "BuyPrice": 280000,
+        "BidPrice": 0,
+        "EndDate": "2025-08-22T01:21:23.3",
+        "BidCount": 0,
+        "BidStartPrice": 280000,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "바람송곳",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "기상술사",
+          "IsValuePercentage": true
+        }
+      ]
+    },
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 280000,
+        "BuyPrice": 280000,
+        "BidPrice": 0,
+        "EndDate": "2025-08-23T19:45:51.167",
+        "BidCount": 0,
+        "BidStartPrice": 280000,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "레이네의 가호",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "서머너",
+          "IsValuePercentage": true
+        }
+      ]
+    },
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 285000,
+        "BuyPrice": 285000,
+        "BidPrice": 0,
+        "EndDate": "2025-08-22T00:38:49.937",
+        "BidCount": 0,
+        "BidStartPrice": 285000,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "싹쓸바람",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "기상술사",
+          "IsValuePercentage": true
+        }
+      ]
+    },
+    {
+      "Name": "10레벨 홍염의 보석",
+      "Grade": "유물",
+      "Tier": 3,
+      "Level": 0,
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_9_65.png",
+      "GradeQuality": null,
+      "AuctionInfo": {
+        "StartPrice": 289000,
+        "BuyPrice": 289000,
+        "BidPrice": 0,
+        "EndDate": "2025-08-22T00:43:48.037",
+        "BidCount": 0,
+        "BidStartPrice": 289000,
+        "IsCompetitive": false,
+        "TradeAllowCount": 0,
+        "UpgradeLevel": null
+      },
+      "Options": [
+        {
+          "Type": "GEM_SKILL_COOLDOWN_REDUCTION",
+          "OptionName": "스피릿 캐치",
+          "OptionNameTripod": "",
+          "Value": 20,
+          "IsPenalty": false,
+          "ClassName": "리퍼",
+          "IsValuePercentage": true
+        }
+      ]
+    }
+  ]
+}
