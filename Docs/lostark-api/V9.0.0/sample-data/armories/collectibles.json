@@ -1,0 +1,2177 @@
+[
+  {
+    "Type": "모코코 씨앗",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_mococo_5.png",
+    "Point": 1462,
+    "MaxPoint": 1474,
+    "CollectiblePoints": [
+      {
+        "PointName": "아르테미스",
+        "Point": 51,
+        "MaxPoint": 51
+      },
+      {
+        "PointName": "유디아",
+        "Point": 37,
+        "MaxPoint": 37
+      },
+      {
+        "PointName": "루테란 서부",
+        "Point": 71,
+        "MaxPoint": 71
+      },
+      {
+        "PointName": "루테란 동부",
+        "Point": 127,
+        "MaxPoint": 127
+      },
+      {
+        "PointName": "애니츠",
+        "Point": 72,
+        "MaxPoint": 72
+      },
+      {
+        "PointName": "아르데타인",
+        "Point": 87,
+        "MaxPoint": 87
+      },
+      {
+        "PointName": "베른 북부",
+        "Point": 83,
+        "MaxPoint": 83
+      },
+      {
+        "PointName": "슈샤이어",
+        "Point": 57,
+        "MaxPoint": 57
+      },
+      {
+        "PointName": "로헨델",
+        "Point": 70,
+        "MaxPoint": 70
+      },
+      {
+        "PointName": "욘",
+        "Point": 70,
+        "MaxPoint": 70
+      },
+      {
+        "PointName": "페이튼",
+        "Point": 70,
+        "MaxPoint": 70
+      },
+      {
+        "PointName": "파푸니카",
+        "Point": 70,
+        "MaxPoint": 70
+      },
+      {
+        "PointName": "베른 남부",
+        "Point": 25,
+        "MaxPoint": 25
+      },
+      {
+        "PointName": "로웬",
+        "Point": 25,
+        "MaxPoint": 25
+      },
+      {
+        "PointName": "엘가시아",
+        "Point": 33,
+        "MaxPoint": 33
+      },
+      {
+        "PointName": "플레체",
+        "Point": 26,
+        "MaxPoint": 26
+      },
+      {
+        "PointName": "볼다이크",
+        "Point": 35,
+        "MaxPoint": 35
+      },
+      {
+        "PointName": "쿠르잔 남부",
+        "Point": 27,
+        "MaxPoint": 27
+      },
+      {
+        "PointName": "쿠르잔 북부",
+        "Point": 25,
+        "MaxPoint": 25
+      },
+      {
+        "PointName": "림레이크 남섬",
+        "Point": 24,
+        "MaxPoint": 36
+      },
+      {
+        "PointName": "대항해",
+        "Point": 377,
+        "MaxPoint": 377
+      }
+    ]
+  },
+  {
+    "Type": "섬의 마음",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_island_5.png",
+    "Point": 103,
+    "MaxPoint": 104,
+    "CollectiblePoints": [
+      {
+        "PointName": "고블린 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "거대버섯 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "토토실버 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "토토피아 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "환각의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "잠자는 노래의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "별빛 등대 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세월의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "볼라르 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "두키 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "갈망의 섬의 마음",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "비밀기지 X-301 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "알트아이젠 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "칼트헤르츠 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "안개의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "얼음 미로의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "얼음과 불의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "비키니 아일랜드 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "그림자의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "포르투나 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "에버그레이스의 둥지 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "스피다 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "회상의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "포르페 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "페이토 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "잊혀진 자들의 도시 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "검은이빨 주둔지 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "휴양지 그라비스 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "외로운 섬 오페르 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "해바라기 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "자유의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "카마인의 주둔지 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "죽음의 협곡 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "작은 행운의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "왜곡된 차원의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "에라스모의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "포모나 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "도망자들의 마을 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "메데이아 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "리베하임 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "우거진 갈대의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "메투스 제도 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "해적마을 아틀라스 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "지혜의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "신월의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "고요의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "하얀파도 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "무법자의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "격류의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "나루니 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "노토스 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "몬테 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "판다 푸푸 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "몽환의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "하모니 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "꿈꾸는 갈매기 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "부서진 빙하의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "블루홀 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "거북 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "희망의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "로팡 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "고립된 영원의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "히프노스의 눈 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "지고의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "그릇된 욕망의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르비스 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "에스텔라 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "슬라임 아일랜드 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "알라케르 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기회의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "태초의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "황금물결 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "고요한 안식의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "클럽 아비뉴 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "수라도 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기약의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "황혼의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "아르곤 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "환영 나비 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "푸른 바람의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "무릉도원 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "아트로포스 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "발푸르기스 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "미지의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "그림자달 시장 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "페르마타 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "지스브로이 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "두키 주식회사 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "속삭이는 작은 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "비탄의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "환죽도 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "쿵덕쿵 아일랜드 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이스테르 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "스노우팡 아일랜드 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모코모코 야시장 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "꿈꾸는 추억의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "잔혹한 장난감 성 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모코콩 아일랜드 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "라일라이 아일랜드 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "프레테리아 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "노틸러스의 흔적 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "인디고 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "버즐링 아일랜드 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "우르누잔의 섬의 마음",
+        "Point": 1,
+        "MaxPoint": 1
+      }
+    ]
+  },
+  {
+    "Type": "위대한 미술품",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_greatpictures_5.png",
+    "Point": 60,
+    "MaxPoint": 60,
+    "CollectiblePoints": [
+      {
+        "PointName": "위대한 미술품 #1",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #2",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #3",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #4",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #5",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #6",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #7",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #8",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #9",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #10",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #11",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #12",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #13",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #14",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #15",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #16",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #17",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #18",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #19",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #20",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #21",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #22",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #23",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #24",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #25",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #26",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #27",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #28",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #29",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #30",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #31",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #32",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #33",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #34",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #35",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #36",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #37",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #38",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #39",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #40",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #41",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #42",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #43",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #44",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #45",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #46",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #47",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #48",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #49",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #50",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #51",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #52",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #53",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #54",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #55",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #56",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #57",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #58",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #59",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "위대한 미술품 #60",
+        "Point": 1,
+        "MaxPoint": 1
+      }
+    ]
+  },
+  {
+    "Type": "거인의 심장",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_gianthearts_5.png",
+    "Point": 15,
+    "MaxPoint": 15,
+    "CollectiblePoints": [
+      {
+        "PointName": "첫 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "두 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "네 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "다섯 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "여섯 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "일곱 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "여덟 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "아홉 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "열 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "열한 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "열두 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "열세 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "열네 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "열다섯 번째 거인의 심장",
+        "Point": 1,
+        "MaxPoint": 1
+      }
+    ]
+  },
+  {
+    "Type": "이그네아의 징표",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_adventure_medal_leaf_5.png",
+    "Point": 20,
+    "MaxPoint": 20,
+    "CollectiblePoints": [
+      {
+        "PointName": "이그네아의 징표 : 아르테미스",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 유디아",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 루테란 서부",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 루테란 동부",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 토토이크",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 애니츠",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 아르데타인",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 베른 북부",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 슈샤이어",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 로헨델",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 욘",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 페이튼",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 파푸니카",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 베른 남부",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 로웬",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 엘가시아",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 볼다이크",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 쿠르잔 남부",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 쿠르잔 북부",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "이그네아의 징표 : 림레이크 남섬",
+        "Point": 1,
+        "MaxPoint": 1
+      }
+    ]
+  },
+  {
+    "Type": "항해 모험물",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_voyage_adventure_leaf_5.png",
+    "Point": 45,
+    "MaxPoint": 49,
+    "CollectiblePoints": [
+      {
+        "PointName": "모험물 : 모코코 버섯",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 라마",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 붉은바다거북",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 스타더스트",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 바다꽃",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 스타후르츠",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 용과",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 맨드릴",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 유령 도마뱀",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 오색앵무새",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 바람의 석판",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 반달 가면",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 고대 지팡이",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 고대 금화",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 잊혀진 호수",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 크레바스",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 불타는 얼음",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 고인돌",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 마법진",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 난파선 잔해",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 참돌고래",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 극지 맘모스",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 붉은낙타",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 유니콘",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 유령 가오리",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 세이렌",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 달의 탑",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 신의 창",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 기에나 석상",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 오로라",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 소용돌이",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 침묵하는 섬",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 토토이끼 배",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 북해의 눈",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 남해의 눈",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 죽은자의 눈",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 의문의 상자",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 해적의 의족",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 해적의 깃발",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 헤스티아호",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 환영 나비",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 대왕 조개",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 천 덮인 선수상",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 여인의 얼음 조각상",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 눈썰매",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 잃어버린 상선",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 심해 암석",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 부서진 거대사슬",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "모험물 : 가디언의 상흔",
+        "Point": 1,
+        "MaxPoint": 1
+      }
+    ]
+  },
+  {
+    "Type": "세계수의 잎",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_worldtree_leaf_5.png",
+    "Point": 107,
+    "MaxPoint": 118,
+    "CollectiblePoints": [
+      {
+        "PointName": "세계수의 잎 #1",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #2",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #3",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #4",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #5",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #6",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #7",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #8",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #9",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #10",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #11",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #12",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #13",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #14",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #15",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #16",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #17",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #18",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #19",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #20",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #21",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #22",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #23",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #24",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #25",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #26",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #27",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #28",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #29",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #30",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #31",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #32",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #33",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #34",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #35",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #36",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #37",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #38",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #39",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #40",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #41",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #42",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #43",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #44",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #45",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #46",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #47",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #48",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #49",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #50",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #51",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #52",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #53",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #54",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #55",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #56",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #57",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #58",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #59",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #60",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #61",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #62",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #63",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #64",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #65",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #66",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #67",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #68",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #69",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #70",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #71",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #72",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #73",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #74",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #75",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #76",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #77",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #78",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #79",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #80",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #81",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #82",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #83",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #84",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #85",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #86",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #87",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #88",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #89",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #90",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #91",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #92",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #93",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #94",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #95",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #96",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #97",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #98",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #99",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #100",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #101",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #102",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #103",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #104",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #105",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #106",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #107",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #108",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #109",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #110",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #111",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #112",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #113",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #114",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #115",
+        "Point": 0,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #116",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #117",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "세계수의 잎 #118",
+        "Point": 1,
+        "MaxPoint": 1
+      }
+    ]
+  },
+  {
+    "Type": "오르페우스의 별",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_orpeus_star_2.png",
+    "Point": 10,
+    "MaxPoint": 10,
+    "CollectiblePoints": [
+      {
+        "PointName": "오르페우스의 별 #1",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르페우스의 별 #2",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르페우스의 별 #3",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르페우스의 별 #4",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르페우스의 별 #5",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르페우스의 별 #6",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르페우스의 별 #7",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르페우스의 별 #8",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르페우스의 별 #9",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "오르페우스의 별 #10",
+        "Point": 1,
+        "MaxPoint": 1
+      }
+    ]
+  },
+  {
+    "Type": "기억의 오르골",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_orgel_6.png",
+    "Point": 20,
+    "MaxPoint": 20,
+    "CollectiblePoints": [
+      {
+        "PointName": "기억의 구슬 #1",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #2",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #3",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #4",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #5",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #6",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #7",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #8",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #9",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #10",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #11",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #12",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #13",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #14",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #15",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #16",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #17",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #18",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #19",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "기억의 구슬 #20",
+        "Point": 1,
+        "MaxPoint": 1
+      }
+    ]
+  },
+  {
+    "Type": "크림스네일의 해도",
+    "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/cumulativepoint/cumulativepoint_crimsnail_2.png",
+    "Point": 2,
+    "MaxPoint": 2,
+    "CollectiblePoints": [
+      {
+        "PointName": "첫 번째 크림스네일의 해도",
+        "Point": 1,
+        "MaxPoint": 1
+      },
+      {
+        "PointName": "두 번째 크림스네일의 해도",
+        "Point": 1,
+        "MaxPoint": 1
+      }
+    ]
+  }
+]

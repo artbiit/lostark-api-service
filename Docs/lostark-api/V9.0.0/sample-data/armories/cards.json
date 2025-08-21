@@ -1,0 +1,101 @@
+{
+  "Cards": [
+    {
+      "Slot": 0,
+      "Name": "에버그레이스",
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_03_4.png",
+      "AwakeCount": 5,
+      "AwakeTotal": 5,
+      "Grade": "전설",
+      "Tooltip": "{\r\n  \"Element_000\": {\r\n    \"type\": \"NameTagBox\",\r\n    \"value\": \"<FONT COLOR='#F99200'>에버그레이스</FONT>\"\r\n  },\r\n  \"Element_001\": {\r\n    \"type\": \"Card\",\r\n    \"value\": {\r\n      \"awakeCount\": 5,\r\n      \"awakeTotal\": 5,\r\n      \"cardStack\": \"\",\r\n      \"iconData\": {\r\n        \"iconPath\": \"https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_03_4.png\"\r\n      },\r\n      \"isBookMark\": false,\r\n      \"notRegistered\": false,\r\n      \"tierGrade\": 5\r\n    }\r\n  },\r\n  \"Element_002\": {\r\n    \"type\": \"MultiTextBox\",\r\n    \"value\": \"|\"\r\n  },\r\n  \"Element_003\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<FONT COLOR='#E2C87A'><FONT SIZE='12'>최초의 가디언이자 빛의 가디언을 이끄는 수장. 루페온의 질서와 이그하람의 혼돈이 결합하여 탄생하였다.</FONT></FONT>\"\r\n  },\r\n  \"Element_004\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<Font color='#5FD3F1'>[물물교환] 엘가시아 - 떠돌이 상인</font><BR><Font color='#5FD3F1'>[어비스 던전] 카양겔</font><BR><Font color='#5FD3F1'>[카제로스 레이드] 서막 : 붉어진 백야의 나선 - 하드</font><BR><Font color='#5FD3F1'>그 외에 획득처가 더 존재합니다.</FONT>\"\r\n  }\r\n}"
+    },
+    {
+      "Slot": 1,
+      "Name": "가디언 루",
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_02_2.png",
+      "AwakeCount": 5,
+      "AwakeTotal": 5,
+      "Grade": "전설",
+      "Tooltip": "{\r\n  \"Element_000\": {\r\n    \"type\": \"NameTagBox\",\r\n    \"value\": \"<FONT COLOR='#F99200'>가디언 루</FONT>\"\r\n  },\r\n  \"Element_001\": {\r\n    \"type\": \"Card\",\r\n    \"value\": {\r\n      \"awakeCount\": 5,\r\n      \"awakeTotal\": 5,\r\n      \"cardStack\": \"\",\r\n      \"iconData\": {\r\n        \"iconPath\": \"https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_02_2.png\"\r\n      },\r\n      \"isBookMark\": false,\r\n      \"notRegistered\": false,\r\n      \"tierGrade\": 5\r\n    }\r\n  },\r\n  \"Element_002\": {\r\n    \"type\": \"MultiTextBox\",\r\n    \"value\": \"|\"\r\n  },\r\n  \"Element_003\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<FONT COLOR='#E2C87A'><FONT SIZE='12'>빛에도 어둠에도 속하지 않은 중립 가디언. 선지자의 눈으로 아크라시아를 지켜보고 있다.</FONT></FONT>\"\r\n  },\r\n  \"Element_004\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<Font color='#5FD3F1'>[수집품] 위대한 미술품</font><BR><Font color='#5FD3F1'>[물물교환] 애니츠 - 떠돌이 상인</font><BR>\"\r\n  }\r\n}"
+    },
+    {
+      "Slot": 2,
+      "Name": "니나브",
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_02_6.png",
+      "AwakeCount": 5,
+      "AwakeTotal": 5,
+      "Grade": "전설",
+      "Tooltip": "{\r\n  \"Element_000\": {\r\n    \"type\": \"NameTagBox\",\r\n    \"value\": \"<FONT COLOR='#F99200'>니나브</FONT>\"\r\n  },\r\n  \"Element_001\": {\r\n    \"type\": \"Card\",\r\n    \"value\": {\r\n      \"awakeCount\": 5,\r\n      \"awakeTotal\": 5,\r\n      \"cardStack\": \"\",\r\n      \"iconData\": {\r\n        \"iconPath\": \"https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_02_6.png\"\r\n      },\r\n      \"isBookMark\": false,\r\n      \"notRegistered\": false,\r\n      \"tierGrade\": 5\r\n    }\r\n  },\r\n  \"Element_002\": {\r\n    \"type\": \"MultiTextBox\",\r\n    \"value\": \"|\"\r\n  },\r\n  \"Element_003\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<FONT COLOR='#E2C87A'><FONT SIZE='12'>에스더의 일원인 라제니스. 만물과 소통할 수 있는 능력을 지니고 있다.</FONT></FONT>\"\r\n  },\r\n  \"Element_004\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<Font color='#5FD3F1'>[호감도] 속삭이는 작은 섬 - 니나브</font><BR><Font color='#5FD3F1'>[어비스 던전] 카양겔</font><BR><Font color='#5FD3F1'>[어비스 던전] 혼돈의 상아탑</font><BR><Font color='#5FD3F1'>그 외에 획득처가 더 존재합니다.</FONT>\"\r\n  }\r\n}"
+    },
+    {
+      "Slot": 3,
+      "Name": "심연의 방랑자",
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_05_2.png",
+      "AwakeCount": 5,
+      "AwakeTotal": 5,
+      "Grade": "전설",
+      "Tooltip": "{\r\n  \"Element_000\": {\r\n    \"type\": \"NameTagBox\",\r\n    \"value\": \"<FONT COLOR='#F99200'>심연의 방랑자</FONT>\"\r\n  },\r\n  \"Element_001\": {\r\n    \"type\": \"Card\",\r\n    \"value\": {\r\n      \"awakeCount\": 5,\r\n      \"awakeTotal\": 5,\r\n      \"cardStack\": \"\",\r\n      \"iconData\": {\r\n        \"iconPath\": \"https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_05_2.png\"\r\n      },\r\n      \"isBookMark\": false,\r\n      \"notRegistered\": false,\r\n      \"tierGrade\": 5\r\n    }\r\n  },\r\n  \"Element_002\": {\r\n    \"type\": \"MultiTextBox\",\r\n    \"value\": \"|\"\r\n  },\r\n  \"Element_003\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<FONT COLOR='#E2C87A'><FONT SIZE='12'>심연을 떠돌고 있는 방랑자. 언젠가 심연으로 찾아올 누군가를 기다리고 있다.</FONT></FONT>\"\r\n  },\r\n  \"Element_004\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<Font color='#5FD3F1'>[카제로스 레이드] 서막 : 붉어진 백야의 나선 - 하드</font><BR><Font color='#5FD3F1'>[에픽 레이드] 폭풍의 지휘관, 베히모스</font><BR><Font color='#5FD3F1'>[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적</font><BR><Font color='#5FD3F1'>그 외에 획득처가 더 존재합니다.</FONT>\"\r\n  }\r\n}"
+    },
+    {
+      "Slot": 4,
+      "Name": "각성한 진저웨일",
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_05_5.png",
+      "AwakeCount": 5,
+      "AwakeTotal": 5,
+      "Grade": "전설",
+      "Tooltip": "{\r\n  \"Element_000\": {\r\n    \"type\": \"NameTagBox\",\r\n    \"value\": \"<FONT COLOR='#F99200'>각성한 진저웨일</FONT>\"\r\n  },\r\n  \"Element_001\": {\r\n    \"type\": \"Card\",\r\n    \"value\": {\r\n      \"awakeCount\": 5,\r\n      \"awakeTotal\": 5,\r\n      \"cardStack\": \"\",\r\n      \"iconData\": {\r\n        \"iconPath\": \"https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_05_5.png\"\r\n      },\r\n      \"isBookMark\": false,\r\n      \"notRegistered\": false,\r\n      \"tierGrade\": 5\r\n    }\r\n  },\r\n  \"Element_002\": {\r\n    \"type\": \"MultiTextBox\",\r\n    \"value\": \"|\"\r\n  },\r\n  \"Element_003\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<FONT COLOR='#E2C87A'><FONT SIZE='12'>마침내 환영술을 완성한 진저웨일. 무수히 많은 분신을 자유롭게 만들 수 있게 되었다.</FONT></FONT>\"\r\n  },\r\n  \"Element_004\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<Font color='#5FD3F1'>[카제로스 레이드] 서막 : 붉어진 백야의 나선 - 하드</font><BR><Font color='#5FD3F1'>[에픽 레이드] 폭풍의 지휘관, 베히모스</font><BR><Font color='#5FD3F1'>[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적</font><BR><Font color='#5FD3F1'>그 외에 획득처가 더 존재합니다.</FONT>\"\r\n  }\r\n}"
+    },
+    {
+      "Slot": 5,
+      "Name": "유적을 찾은 카단",
+      "Icon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_06_1.png",
+      "AwakeCount": 5,
+      "AwakeTotal": 5,
+      "Grade": "전설",
+      "Tooltip": "{\r\n  \"Element_000\": {\r\n    \"type\": \"NameTagBox\",\r\n    \"value\": \"<FONT COLOR='#F99200'>유적을 찾은 카단</FONT>\"\r\n  },\r\n  \"Element_001\": {\r\n    \"type\": \"Card\",\r\n    \"value\": {\r\n      \"awakeCount\": 5,\r\n      \"awakeTotal\": 5,\r\n      \"cardStack\": \"\",\r\n      \"iconData\": {\r\n        \"iconPath\": \"https://cdn-lostark.game.onstove.com/efui_iconatlas/card_legend/card_legend_06_1.png\"\r\n      },\r\n      \"isBookMark\": false,\r\n      \"notRegistered\": false,\r\n      \"tierGrade\": 5\r\n    }\r\n  },\r\n  \"Element_002\": {\r\n    \"type\": \"MultiTextBox\",\r\n    \"value\": \"|\"\r\n  },\r\n  \"Element_003\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<FONT COLOR='#E2C87A'><FONT SIZE='12'>쿠르잔을 찾아온 카단. 오랫동안 찾아 헤매이던 할의 유적을 발견했다. </FONT></FONT>\"\r\n  },\r\n  \"Element_004\": {\r\n    \"type\": \"SingleTextBox\",\r\n    \"value\": \"<Font color='#5FD3F1'>[카제로스 레이드] 서막 : 붉어진 백야의 나선 - 하드</font><BR><Font color='#5FD3F1'>[에픽 레이드] 폭풍의 지휘관, 베히모스</font><BR><Font color='#5FD3F1'>[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적</font><BR><Font color='#5FD3F1'>그 외에 획득처가 더 존재합니다.</FONT>\"\r\n  }\r\n}"
+    }
+  ],
+  "Effects": [
+    {
+      "Index": 0,
+      "CardSlots": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "Items": [
+        {
+          "Name": "굳센 대지의 숨결 2세트",
+          "Description": "뇌속성 피해 감소 +10.00%"
+        },
+        {
+          "Name": "굳센 대지의 숨결 4세트",
+          "Description": "뇌속성 피해 감소 +10.00%"
+        },
+        {
+          "Name": "굳센 대지의 숨결 6세트",
+          "Description": "뇌속성 피해 감소 +10.00%"
+        },
+        {
+          "Name": "굳센 대지의 숨결 6세트 (12각성합계)",
+          "Description": "공격 속성을 토속성으로 변환"
+        },
+        {
+          "Name": "굳센 대지의 숨결 6세트 (18각성합계)",
+          "Description": "토속성 피해 +7.00%"
+        },
+        {
+          "Name": "굳센 대지의 숨결 6세트 (24각성합계)",
+          "Description": "토속성 피해 +4.00%"
+        },
+        {
+          "Name": "굳센 대지의 숨결 6세트 (30각성합계)",
+          "Description": "토속성 피해 +4.00%"
+        }
+      ]
+    }
+  ]
+}

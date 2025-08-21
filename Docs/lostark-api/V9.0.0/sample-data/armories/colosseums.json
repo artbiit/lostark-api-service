@@ -1,0 +1,100 @@
+{
+  "Rank": 31734,
+  "PreRank": 31723,
+  "Exp": 300,
+  "Colosseums": [
+    {
+      "SeasonName": "프리 시즌",
+      "Competitive": null,
+      "TeamDeathmatch": null,
+      "TeamElimination": null,
+      "CoOpBattle": null,
+      "OneDeathmatch": null,
+      "OneDeathmatchRank": null
+    },
+    {
+      "SeasonName": "시즌 1",
+      "Competitive": null,
+      "TeamDeathmatch": null,
+      "TeamElimination": null,
+      "CoOpBattle": null,
+      "OneDeathmatch": null,
+      "OneDeathmatchRank": null
+    },
+    {
+      "SeasonName": "시즌 2",
+      "Competitive": null,
+      "TeamDeathmatch": null,
+      "TeamElimination": null,
+      "CoOpBattle": null,
+      "OneDeathmatch": null,
+      "OneDeathmatchRank": null
+    },
+    {
+      "SeasonName": "시즌 3",
+      "Competitive": null,
+      "TeamDeathmatch": null,
+      "TeamElimination": null,
+      "CoOpBattle": null,
+      "OneDeathmatch": null,
+      "OneDeathmatchRank": null
+    },
+    {
+      "SeasonName": "시즌 4",
+      "Competitive": null,
+      "TeamDeathmatch": null,
+      "TeamElimination": null,
+      "CoOpBattle": null,
+      "OneDeathmatch": null,
+      "OneDeathmatchRank": null
+    },
+    {
+      "SeasonName": "시즌 5",
+      "Competitive": {
+        "Rank": 19395,
+        "RankName": "브론즈",
+        "RankIcon": "https://cdn-lostark.game.onstove.com/efui_iconatlas/pvp/pvp_1.png",
+        "RankLastMmr": 992,
+        "PlayCount": 0,
+        "VictoryCount": 0,
+        "LoseCount": 0,
+        "TieCount": 0,
+        "KillCount": 0,
+        "AceCount": 0,
+        "DeathCount": 0
+      },
+      "TeamDeathmatch": null,
+      "TeamElimination": null,
+      "CoOpBattle": null,
+      "OneDeathmatch": null,
+      "OneDeathmatchRank": null
+    },
+    {
+      "SeasonName": "시즌 6",
+      "Competitive": null,
+      "TeamDeathmatch": null,
+      "TeamElimination": null,
+      "CoOpBattle": null,
+      "OneDeathmatch": null,
+      "OneDeathmatchRank": null
+    },
+    {
+      "SeasonName": "시즌 7",
+      "Competitive": null,
+      "TeamDeathmatch": null,
+      "TeamElimination": null,
+      "CoOpBattle": null,
+      "OneDeathmatch": null,
+      "OneDeathmatchRank": null
+    },
+    {
+      "SeasonName": "시즌 8",
+      "Competitive": null,
+      "TeamDeathmatch": null,
+      "TeamElimination": null,
+      "CoOpBattle": null,
+      "OneDeathmatch": null,
+      "OneDeathmatchRank": null
+    }
+  ]
+}
