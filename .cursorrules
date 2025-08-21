@@ -69,17 +69,20 @@
 # === 문서/Docs 규칙 ===
 - 프로젝트 설명/셋업은 루트 README.md, 그 외 문서는 Docs/ 하위에 배치
 - Docs/ 구조: 카테고리별 디렉토리 구성, Index.md에 색인 유지
-- 목차·색인에 존재하지 않는 문서 기재 금지
+- 실존 파일만 문서화: 존재하지 않는 파일/디렉토리 문서 기재 절대 금지
 - 문서 변경 시 Index.md도 같은 단위로 갱신
+- 파일 구조 문서화 시 실제 파일 시스템과 정확히 일치해야 함
 
 # === 테스트/Test 규칙 ===
-- 테스트 디렉토리: tests/ (카테고리별 분할)
-- 테스트 구조: tests/{카테고리}/{모듈}.test.ts
-- 카테고리: api/, fetch/, udp-gateway/, shared/, integration/
-- API 테스트: tests/api/lostark-api/V{버전}/, tests/api/rest-api/v{버전}/
-- 테스트 파일 명명: {모듈명}.test.ts
-- Mock 데이터: tests/fixtures/ 디렉토리 활용
-- 실제 API 응답: cache/api-test-results/ 활용
+- 테스트 디렉토리: tests/ (카테고리별 분할) - 모든 테스트 코드는 반드시 tests/ 하위에 작성
+- 테스트 구조: tests/{카테고리}/{모듈}.test.mjs 또는 .test.ts
+- 실존 카테고리만 문서화: api/lostark-api/V9.0.0/, shared/ (가상 디렉토리 문서화 금지)
+- API 테스트: tests/api/lostark-api/V{버전}/ 구조 준수
+- 테스트 파일 명명: {모듈명}.test.mjs (ESM) 또는 {모듈명}.test.ts
+- 실제 API 기반 테스트: 가상 데이터 금지, 실제 API 호출 결과만 사용
+- 스트리머 캐릭터 활용: '테스트용캐릭터' 대신 실제 스트리머 목록 캐릭터 사용
+- API 응답 저장: cache/api-test-results/ 활용
+- siblings API 구조: { "캐릭터명": [siblings_array] } 객체 형태 준수
 
 # === 산출물/문서 관리 ===
 - README.md: 프로젝트 설명, 셋업, 실행, 주요 env, 엔드포인트 포함
