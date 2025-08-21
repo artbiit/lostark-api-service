@@ -1,13 +1,12 @@
-# Lost Ark API Service
-
-> **⚠️ 주의**: 이 프로젝트는 새로운 TypeScript + ESM 기반 3-Tier 아키텍처로 마이그레이션 중입니다.
-> 기존 CommonJS 코드는 `legacy/` 디렉토리에서 확인할 수 있습니다.
+# Lost Ark API Service - 3-Tier Architecture
 
 ## 📋 개요
 
 Lost Ark API Service는 3계층 아키텍처를 기반으로 한 TypeScript + ESM 모노레포 구조입니다.
 
-### 3-Tier Architecture
+## 🏗️ 아키텍처 개요
+
+### 3-Tier 구조
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -21,7 +20,7 @@ Lost Ark API Service는 3계층 아키텍처를 기반으로 한 TypeScript + ES
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## 🏗️ 프로젝트 구조
+## 📁 디렉토리 구조
 
 ```
 lostark-remote-kakao/
@@ -74,49 +73,99 @@ lostark-remote-kakao/
 └── tools/                         # 개발 도구
 ```
 
-## 🚀 빠른 시작
-
-### 1. 환경 설정
-
-```bash
-# 의존성 설치
-yarn install
-
-# 개발 모드 시작
-yarn dev
-
-# 타입 체크
-yarn typecheck
-
-# 린트
-yarn lint
-```
-
-### 2. 개발 순서
-
-1. **Shared 패키지** (기반)
-   - 타입 시스템 구축 (V9.0.0부터 시작)
-   - 공통 모듈 (설정, 로깅, 유틸리티, DB)
-
-2. **Fetch Layer** (1계층)
-   - Lost Ark API 클라이언트
-   - 데이터 정규화
-   - 캐시 시스템
-   - 스케줄러
-
-3. **REST API** (2계층)
-   - Fastify 서버
-   - 라우트 및 미들웨어
-
-4. **UDP Gateway** (3계층)
-   - UDP 서버
-   - 메시지 처리 및 워커 풀
-
-## 🔧 타입 시스템
+## 🔧 타입 시스템 설계
 
 ### 버전별 타입 관리
 
 현재 최신 버전인 Lost Ark API V9.0.0부터 시작하여 타입 안전성과 변경 추적을 확보합니다.
+
+#### 타입 구조 예시
+
+```typescript
+// packages/shared/src/types/V9/armories.ts
+/**
+ * @lostark-api: V9.0.0
+ * @reference: https://developer-lostark.game.onstove.com/changelog
+ * 
+ * V9.0.0 Changes:
+ * - GET /armories/characters/{characterName}/profiles : Added 'HonorPoint' data
+ * - GET /armories/characters/{characterName}/arkgrid : New endpoint
+ */
+export interface CharacterProfileV9 extends BaseCharacterProfile {
+  __version: 'V9.0.0';
+  HonorPoint: number;        // V9에서 추가
+  CombatPower: number;       // V8에서 추가
+  Decorations: Decoration[]; // V8에서 추가
+}
+
+// packages/shared/src/types/latest/armories.ts
+// → V9/armories.ts의 별칭
+export * from '../V9/armories';
+```
+
+#### 안전한 필드 접근
+
+```typescript
+// packages/shared/src/types/utils.ts
+export class SafeFieldAccess {
+  static getHonorPoint(profile: CharacterProfileV9): number {
+    return profile.HonorPoint; // V9에서만 사용 가능
+  }
+
+  static getCombatPower(profile: CharacterProfileV9): number {
+    return profile.CombatPower; // V8, V9에서 사용 가능
+  }
+}
+```
+
+#### 마이그레이션 헬퍼 (향후 확장용)
+
+```typescript
+// packages/shared/src/types/migration.ts
+export class ProfileMigrator {
+  // 현재는 V9가 최신이므로 단순 변환
+  static normalizeProfile(data: any): CharacterProfileV9 {
+    return {
+      ...data,
+      __version: 'V9.0.0',
+      HonorPoint: data.HonorPoint || 0,
+      CombatPower: data.CombatPower || 0,
+      Decorations: data.Decorations || []
+    };
+  }
+
+  // 향후 V10 출시 시 마이그레이션 로직 추가
+  static migrateToV10(profile: CharacterProfileV9): CharacterProfileV10 {
+    // V10 마이그레이션 로직
+  }
+}
+```
+
+## 🚀 개발 워크플로우
+
+### 1. 현재 최신 버전 (V9.0.0) 구현
+
+```bash
+# V9.0.0 타입 정의부터 시작
+# packages/shared/src/types/V9/ 디렉토리에 모든 API 타입 정의
+```
+
+### 2. 향후 새 API 버전 출시 시
+
+```bash
+# 1. 새 버전 디렉토리 생성
+mkdir packages/shared/src/types/V10
+
+# 2. 기존 타입 복사 후 수정
+cp -r packages/shared/src/types/V9/* packages/shared/src/types/V10/
+
+# 3. latest 별칭 업데이트
+# packages/shared/src/types/latest/index.ts → V10/index.ts
+
+# 4. 마이그레이션 헬퍼 추가
+```
+
+### 3. 타입 사용
 
 ```typescript
 // 최신 버전 사용 (권장)
@@ -154,17 +203,6 @@ const normalizedProfile = ProfileMigrator.normalizeProfile(rawData);
 - **Rate Limiting**: REST와 Fetch 분리 관리
 - **Error Handling**: 명확한 에러 코드와 메시지
 
-## 📚 문서
-
-- [**Architecture Guide**](./Docs/architecture.md) - 전체 아키텍처 설계
-- [**Development Guide**](./Docs/development-guide.md) - 개발 가이드
-- [**Legacy Code**](./legacy/) - 기존 CommonJS 코드
-
-## 🔗 관련 링크
-
-- [Lost Ark API Documentation](https://developer-lostark.game.onstove.com/)
-- [Lost Ark API Changelog](https://developer-lostark.game.onstove.com/changelog)
-
 ## 📝 TODO
 
 - [ ] V9.0.0 타입 정의 (현재 최신 버전)
@@ -177,7 +215,3 @@ const normalizedProfile = ProfileMigrator.normalizeProfile(rawData);
 - [ ] 캐시 시스템 구현
 - [ ] 테스트 코드 작성
 - [ ] 문서화 완료
-
----
-
-*마지막 업데이트: 2025-01-15*

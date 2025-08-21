@@ -1,0 +1,22 @@
+{
+  "name": "@lostark/udp-gateway",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "main": "./src/server.ts",
+  "types": "./src/server.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@lostark/shared": "workspace:*",
+    "@lostark/fetch": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "@lostark/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts",
+    "./types/latest": "./src/types/latest/index.ts",
+    "./types/V9": "./src/types/V9/index.ts",
+    "./types/V8": "./src/types/V8/index.ts",
+    "./types/V7": "./src/types/V7/index.ts",
+    "./types/domain": "./src/types/domain/index.ts",
+    "./config": "./src/config/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./db": "./src/db/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "pino": "^8.0.0",
+    "zod": "^3.0.0",
+    "mysql2": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0"
+  }
+}
