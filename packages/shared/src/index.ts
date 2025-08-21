@@ -7,8 +7,8 @@
 // 설정 관련
 export * from './config/index.js';
 
-// 타입 관련 (향후 추가)
-// export * from './types/index.js';
+// 타입 관련
+export * from './types/latest/index.js';
 
 // 유틸리티 관련 (향후 추가)
 // export * from './utils/index.js';
