@@ -80,18 +80,21 @@ async function testTypes() {
     // 캐릭터 형제 정보 데이터 테스트
     const siblingsData = JSON.parse(
       await readFile(
-        join(projectRoot, 'cache/api-test-results/캐릭터_형제_정보__테스트용_.json'),
+        join(projectRoot, 'cache/api-test-results/캐릭터_형제_정보__실제_API_테스트.json'),
         'utf8',
       ),
     );
 
     console.log('\n✅ 캐릭터 형제 정보 데이터 구조 확인:');
-    console.log(`  - 데이터 타입: ${Array.isArray(siblingsData) ? 'Array' : typeof siblingsData}`);
-    console.log(`  - 항목 수: ${Array.isArray(siblingsData) ? siblingsData.length : 'N/A'}`);
+    console.log(`  - 데이터 타입: ${typeof siblingsData}`);
+    console.log(`  - 스트리머 수: ${Object.keys(siblingsData).length}`);
 
-    if (Array.isArray(siblingsData) && siblingsData.length > 0) {
-      const firstSibling = siblingsData[0];
-      console.log(`  - 첫 번째 항목 필드: ${Object.keys(firstSibling).join(', ')}`);
+    if (typeof siblingsData === 'object' && Object.keys(siblingsData).length > 0) {
+      const firstStreamer = Object.keys(siblingsData)[0];
+      const firstSiblings = siblingsData[firstStreamer];
+      console.log(`  - 첫 번째 스트리머: ${firstStreamer}`);
+      console.log(`  - 캐릭터 수: ${firstSiblings.length}`);
+      console.log(`  - 첫 번째 캐릭터 필드: ${Object.keys(firstSiblings[0]).join(', ')}`);
     }
 
     // 경매장 검색 결과 데이터 테스트

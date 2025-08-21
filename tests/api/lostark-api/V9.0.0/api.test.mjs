@@ -118,35 +118,35 @@ const apiTests = [
 
   // CHARACTERS API
   {
-    name: '캐릭터 형제 정보 (테스트용)',
-    endpoint: '/characters/테스트캐릭터/siblings',
+    name: '캐릭터 형제 정보 (스트리머)',
+    endpoint: '/characters/이다/siblings',
     method: 'GET',
   },
 
   // ARMORIES API (가장 중요한 API들)
   {
     name: '캐릭터 요약 정보',
-    endpoint: '/armories/characters/테스트캐릭터',
+    endpoint: '/armories/characters/이다',
     method: 'GET',
   },
   {
     name: '캐릭터 기본 능력치',
-    endpoint: '/armories/characters/테스트캐릭터/profiles',
+    endpoint: '/armories/characters/이다/profiles',
     method: 'GET',
   },
   {
     name: '캐릭터 장비 정보',
-    endpoint: '/armories/characters/테스트캐릭터/equipment',
+    endpoint: '/armories/characters/이다/equipment',
     method: 'GET',
   },
   {
     name: '캐릭터 각인 정보',
-    endpoint: '/armories/characters/테스트캐릭터/engravings',
+    endpoint: '/armories/characters/이다/engravings',
     method: 'GET',
   },
   {
     name: '캐릭터 보석 정보',
-    endpoint: '/armories/characters/테스트캐릭터/gems',
+    endpoint: '/armories/characters/이다/gems',
     method: 'GET',
   },
 
