@@ -137,6 +137,26 @@ export interface ApiError {
 
 ## 🧪 테스트 전략
 
+### 테스트 코드 작성 규칙
+
+**📁 테스트 파일 위치**:
+
+- 모든 테스트 코드는 `tests/` 디렉토리에 작성
+- 카테고리별 분류: `tests/api/`, `tests/shared/` 등
+- 파일명: `{모듈명}.test.mjs` 또는 `{모듈명}.test.ts`
+
+**🎯 테스트 데이터 원칙**:
+
+- 실제 API 호출 결과를 기반으로 테스트 데이터 구성
+- 가상 데이터 사용 금지, 실제 응답 구조 활용
+- 스트리머 캐릭터 사용: 테스트용 가상 캐릭터 대신 실제 스트리머 목록 활용
+
+**📊 API 테스트 데이터 구조**:
+
+- siblings API: `{ "캐릭터명": [siblings_array] }` 형태
+- 각 스트리머별 실제 계정 캐릭터 목록 포함
+- 결과 저장: `cache/api-test-results/` 디렉토리
+
 ### 1. 단위 테스트
 
 ```typescript
@@ -144,7 +164,7 @@ export interface ApiError {
 describe('ProfileMigrator', () => {
   test('should normalize raw data to V9 profile', () => {
     const rawData = {
-      CharacterName: '테스트캐릭터',
+      CharacterName: '이다', // 실제 스트리머 캐릭터 사용
       HonorPoint: 100,
     };
 
@@ -155,14 +175,38 @@ describe('ProfileMigrator', () => {
 });
 ```
 
-### 2. 통합 테스트
+### 2. 실제 API 테스트
+
+```javascript
+// tests/api/lostark-api/V9.0.0/siblings.test.mjs
+const STREAMER_CHARACTERS = [
+  '이다',
+  '쫀지',
+  '노돌리',
+  '박서림',
+  '로마러',
+  '성대',
+  '짱여니',
+  '선짱',
+  '도읍지',
+  '게임하는인기',
+];
+
+// 실제 API 호출하여 스트리머별 siblings 데이터 수집
+for (const characterName of STREAMER_CHARACTERS) {
+  const siblings = await getCharacterSiblings(characterName, API_KEY);
+  results[characterName] = siblings;
+}
+```
+
+### 3. 통합 테스트
 
 ```typescript
 // packages/fetch/src/__tests__/clients.test.ts
 describe('ArmoryClient', () => {
   test('should fetch character profile', async () => {
     const client = new ArmoryClient();
-    const profile = await client.getCharacterProfile('캐릭터명');
+    const profile = await client.getCharacterProfile('이다'); // 스트리머 캐릭터
 
     expect(profile).toBeDefined();
     expect(profile.__version).toBe('V9.0.0');
