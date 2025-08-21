@@ -14,6 +14,8 @@
   API 버전별 문서
 - [**API Endpoints (V9.0.0)**](./lostark-api/V9.0.0/api-endpoints.md) - V9.0.0
   API 엔드포인트 목록
+- [**Build Data Guidelines (V9.0.0)**](./lostark-api/V9.0.0/build-data-guidelines.md) -
+  세팅 데이터 수집/저장 지침
 
 ### 📊 연구 & 데이터
 
@@ -24,7 +26,7 @@
 - [**Privacy Notice**](./streamer-research/privacy-notice.md) - 캐릭터 정보 활용
   공시
 
-### 📖 기존 문서
+### 📖 클라이언트
 
 - [**Client Sample**](./client/client-sample.md) - 클라이언트 사용 예제
 - [**Client.js**](./client/client.js) - 클라이언트 구현 예제
@@ -50,9 +52,10 @@
 개발 환경 설정과 작업 순서는 [Development Guide](./development-guide.md)를
 참조하세요.
 
-### 3. 레거시 코드 참조
+### 3. API 문서 확인
 
-기존 CommonJS 코드는 `legacy/` 디렉토리에서 확인할 수 있습니다.
+Lost Ark API 버전별 문서는
+[Lost Ark API Documentation](./lostark-api/README.md)에서 확인하세요.
 
 ## 📋 주요 변경사항
 
