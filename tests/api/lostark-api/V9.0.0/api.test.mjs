@@ -2,7 +2,7 @@
 
 /**
  * @cursor-change: 2025-01-15, 1.0.0, API 테스트 스크립트 생성
- * @cursor-change: 2025-01-15, 1.1.0, API 카테고리별 분리 및 선택적 테스트 기능 추가
+도가 * @cursor-change: 2025-01-15, 1.1.0, API 카테고리별 분리 및 선택적 테스트 기능 추가
  *
  * 로스트아크 공식 API를 호출하여 실제 데이터 구조를 확인
  * - 각 API별 응답 데이터 구조 파악
@@ -191,29 +191,8 @@ const API_CATEGORIES = {
     description: '게임 콘텐츠 정보',
     apis: [
       {
-        name: '도비스 던전 목록',
-        endpoint: '/gamecontents/challenge-abyss-dungeons',
-        method: 'GET',
-      },
-      {
-        name: '도가토 목록',
-        endpoint: '/gamecontents/challenge-guardian-raids',
-        method: 'GET',
-      },
-      {
         name: '주간 콘텐츠 달력',
         endpoint: '/gamecontents/calendar',
-        method: 'GET',
-      },
-    ],
-  },
-  guilds: {
-    name: 'GUILDS API',
-    description: '길드 정보',
-    apis: [
-      {
-        name: '길드 순위',
-        endpoint: '/guilds/rankings?serverName=루페온',
         method: 'GET',
       },
     ],

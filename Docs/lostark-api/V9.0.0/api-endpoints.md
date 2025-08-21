@@ -205,26 +205,14 @@ POST /markets/items
 
 ### 게임 콘텐츠 정보
 
-#### 1. 도비스 던전 목록
-```
-GET /gamecontents/challenge-abyss-dungeons
-```
-
-**응답**: 이번 주 도비스 던전 목록
-
-#### 2. 도가토 목록
-```
-GET /gamecontents/challenge-guardian-raids
-```
-
-**응답**: 이번 주 도가토 목록
-
-#### 3. 주간 콘텐츠 달력
+#### 1. 주간 콘텐츠 달력
 ```
 GET /gamecontents/calendar
 ```
 
 **응답**: 이번 주 콘텐츠 달력 (프로키온의 나침반 등)
+
+> **⚠️ 주의**: 도비스 던전과 도가토 API는 더 이상 사용되지 않습니다.
 
 ---
 
@@ -232,7 +220,9 @@ GET /gamecontents/calendar
 
 ### 길드 정보
 
-#### 1. 길드 순위
+> **⚠️ 주의**: 길드 API는 더 이상 사용되지 않습니다.
+
+#### 1. 길드 순위 (사용 불가)
 ```
 GET /guilds/rankings
 ```
@@ -241,6 +231,8 @@ GET /guilds/rankings
 - `serverName`: 서버명 (예: "루페온", "실리안", "아만" 등)
 
 **응답**: 해당 서버의 길드 순위
+
+> **상태**: 302 리다이렉트로 `/notfound`로 이동하여 사용 불가
 
 ---
 
@@ -300,7 +292,7 @@ Authorization: bearer {JWT_TOKEN}
 6. **MARKETS** - 시장 정보
 
 ### Phase 3: 확장 API
-7. **GUILDS** - 길드 정보
+7. **GUILDS** - 길드 정보 (사용 불가)
 
 ---
 
