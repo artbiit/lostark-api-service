@@ -27,6 +27,10 @@ sample-data/
 ├── auctions/                    # 경매장
 │   ├── options.json             # 경매장 검색 옵션 (147.69KB)
 │   └── items.json               # 경매장 아이템 검색 (5.51KB)
+├── markets/                     # 시장 정보
+│   ├── options.json             # 시장 검색 옵션 (2.48KB)
+│   ├── items-by-id.json         # 아이템 ID로 시장 정보 조회 (3.01KB)
+│   └── items.json               # 시장 아이템 검색 (0.05KB)
 └── gamecontents/                # 게임 콘텐츠
     └── calendar.json            # 주간 콘텐츠 달력 (419.75KB)
 ```
@@ -50,15 +54,18 @@ sample-data/
 | ARMORIES     | collectibles.json  | 28.12KB  | 캐릭터 수집품 정보           |
 | AUCTIONS     | options.json       | 147.69KB | 경매장 검색 옵션             |
 | AUCTIONS     | items.json         | 5.51KB   | 경매장 아이템 검색           |
+| MARKETS      | options.json       | 2.48KB   | 시장 검색 옵션               |
+| MARKETS      | items-by-id.json   | 3.01KB   | 아이템 ID로 시장 정보 조회   |
+| MARKETS      | items.json         | 0.05KB   | 시장 아이템 검색             |
 | GAMECONTENTS | calendar.json      | 419.75KB | 주간 콘텐츠 달력             |
 
 ## 🔍 데이터 수집 정보
 
 - **수집 날짜**: 2025-01-15
 - **API 버전**: V9.0.0
-- **총 API 호출**: 16개
-- **총 데이터 크기**: 1397.95KB
-- **평균 응답 크기**: 87.37KB
+- **총 API 호출**: 19개
+- **총 데이터 크기**: 1403.49KB
+- **평균 응답 크기**: 73.87KB
 
 ## 📝 참고사항
 
@@ -66,5 +73,6 @@ sample-data/
 - 캐릭터 관련 API는 스트리머 대표 캐릭터로 siblings API를 호출하여 실제 계정
   정보를 수집했습니다
 - ARMORIES API는 모두 '이다' 캐릭터로 테스트했습니다
+- MARKETS API는 '10레벨 홍염' 아이템(ID: 66110223)으로 테스트했습니다
 - 데이터 크기는 UTF-8 인코딩 기준입니다
 - Rate Limit 정보도 함께 수집되었습니다
