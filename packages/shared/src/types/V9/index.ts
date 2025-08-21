@@ -10,10 +10,10 @@
 export * from './base.js';
 
 // === API별 타입 ===
-export * from './news.js';
-export * from './characters.js';
 export * from './auctions.js';
+export * from './characters.js';
 export * from './gamecontents.js';
+export * from './news.js';
 
 // === 버전 정보 ===
 export const API_VERSION = 'V9.0.0' as const;

@@ -126,7 +126,14 @@ lostark-remote-kakao/
 
 ## 📝 개발 가이드
 
-자세한 개발 가이드는 [Docs/development-guide.md](Docs/development-guide.md)를 참조하세요.
+자세한 개발 가이드는 [Docs/development-guide.md](Docs/development-guide.md)를
+참조하세요.
+
+## 📊 About
+
+이 프로젝트는 Lost Ark API 연구 목적으로 일부 스트리머의 공개 캐릭터 정보를
+활용합니다. 자세한 내용은 [Docs/streamer-research/](Docs/streamer-research/)를
+참조하세요.
 
 ## 📄 라이선스
 

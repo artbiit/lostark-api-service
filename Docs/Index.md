@@ -15,6 +15,15 @@
 - [**API Endpoints (V9.0.0)**](./lostark-api/V9.0.0/api-endpoints.md) - V9.0.0
   API 엔드포인트 목록
 
+### 📊 연구 & 데이터
+
+- [**Streamer Research**](./streamer-research/README.md) - 스트리머 연구
+  프로젝트 및 개인정보 활용
+- [**Streamer List**](./streamer-research/streamer-list.md) - API 테스트용
+  스트리머 목록
+- [**Privacy Notice**](./streamer-research/privacy-notice.md) - 캐릭터 정보 활용
+  공시
+
 ### 📖 기존 문서
 
 - [**Client Sample**](./client/client-sample.md) - 클라이언트 사용 예제
