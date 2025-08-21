@@ -1,72 +1,2290 @@
-[
-  {
-    "ServerName": "아만",
-    "CharacterName": "테스트캐릭터",
-    "CharacterLevel": 1,
-    "CharacterClassName": "무도가(여)",
-    "ItemAvgLevel": "0.00"
-  },
-  {
-    "ServerName": "카제로스",
-    "CharacterName": "삐유양",
-    "CharacterLevel": 1,
-    "CharacterClassName": "전사(남)",
-    "ItemAvgLevel": "0.00"
-  },
-  {
-    "ServerName": "카제로스",
-    "CharacterName": "백한면",
-    "CharacterLevel": 10,
-    "CharacterClassName": "배틀마스터",
-    "ItemAvgLevel": "50.00"
-  },
-  {
-    "ServerName": "실리안",
-    "CharacterName": "앙뚜루뚜루뚜",
-    "CharacterLevel": 50,
-    "CharacterClassName": "건슬링어",
-    "ItemAvgLevel": "1,460.00"
-  },
-  {
-    "ServerName": "실리안",
-    "CharacterName": "앙금이는못말려",
-    "CharacterLevel": 55,
-    "CharacterClassName": "도화가",
-    "ItemAvgLevel": "1,445.00"
-  },
-  {
-    "ServerName": "실리안",
-    "CharacterName": "앙뚜는못말려",
-    "CharacterLevel": 54,
-    "CharacterClassName": "소서리스",
-    "ItemAvgLevel": "1,445.00"
-  },
-  {
-    "ServerName": "실리안",
-    "CharacterName": "워로드고수인사람",
-    "CharacterLevel": 56,
-    "CharacterClassName": "워로드",
-    "ItemAvgLevel": "1,445.00"
-  },
-  {
-    "ServerName": "실리안",
-    "CharacterName": "띠유응",
-    "CharacterLevel": 54,
-    "CharacterClassName": "블레이드",
-    "ItemAvgLevel": "1,445.00"
-  },
-  {
-    "ServerName": "실리안",
-    "CharacterName": "삐유응",
-    "CharacterLevel": 60,
-    "CharacterClassName": "바드",
-    "ItemAvgLevel": "1,560.00"
-  },
-  {
-    "ServerName": "실리안",
-    "CharacterName": "수염맨인호",
-    "CharacterLevel": 55,
-    "CharacterClassName": "데모닉",
-    "ItemAvgLevel": "1,445.00"
-  }
-]
+{
+  "이다": [
+    {
+      "ServerName": "루페온",
+      "CharacterName": "곡키리아저씨",
+      "CharacterLevel": 70,
+      "CharacterClassName": "발키리",
+      "ItemAvgLevel": "1,715.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "곡츄핑",
+      "CharacterLevel": 70,
+      "CharacterClassName": "환수사",
+      "ItemAvgLevel": "1,736.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "이다",
+      "CharacterLevel": 70,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,760.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "치명",
+      "CharacterLevel": 70,
+      "CharacterClassName": "소울이터",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "곡성군귀농의칼날",
+      "CharacterLevel": 70,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,734.17"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "6개월만산다",
+      "CharacterLevel": 59,
+      "CharacterClassName": "블래스터",
+      "ItemAvgLevel": "1,340.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "곡성군농약폭격기",
+      "CharacterLevel": 69,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "1,585.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "노원구황조롱이",
+      "CharacterLevel": 70,
+      "CharacterClassName": "호크아이",
+      "ItemAvgLevel": "1,603.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "곡성군기상캐스터",
+      "CharacterLevel": 70,
+      "CharacterClassName": "기상술사",
+      "ItemAvgLevel": "1,730.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "노원구낮이밤져",
+      "CharacterLevel": 59,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "이다의거친붓놀림",
+      "CharacterLevel": 60,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "1,515.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "노원구무장공비",
+      "CharacterLevel": 70,
+      "CharacterClassName": "데빌헌터",
+      "ItemAvgLevel": "1,640.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "홍승억",
+      "CharacterLevel": 70,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,640.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "노원구썬더스톰",
+      "CharacterLevel": 66,
+      "CharacterClassName": "소서리스",
+      "ItemAvgLevel": "1,601.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "이다의쓰레빠",
+      "CharacterLevel": 60,
+      "CharacterClassName": "인파이터",
+      "ItemAvgLevel": "1,516.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "이다의빚",
+      "CharacterLevel": 60,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,526.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "이다룡",
+      "CharacterLevel": 70,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "1,744.17"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "이다탕",
+      "CharacterLevel": 70,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "1,640.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "저받",
+      "CharacterLevel": 60,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,520.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "이다의아픈손가락",
+      "CharacterLevel": 70,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,640.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "홍판자",
+      "CharacterLevel": 70,
+      "CharacterClassName": "홀리나이트",
+      "ItemAvgLevel": "1,691.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "곡성군지옥참마도",
+      "CharacterLevel": 69,
+      "CharacterClassName": "블레이드",
+      "ItemAvgLevel": "1,588.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "노원구예림이",
+      "CharacterLevel": 65,
+      "CharacterClassName": "아르카나",
+      "ItemAvgLevel": "1,590.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "이다의거친숨소리",
+      "CharacterLevel": 70,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,727.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "왕속도",
+      "CharacterLevel": 59,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "노원구내연남",
+      "CharacterLevel": 70,
+      "CharacterClassName": "배틀마스터",
+      "ItemAvgLevel": "1,640.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "금승언",
+      "CharacterLevel": 70,
+      "CharacterClassName": "인파이터",
+      "ItemAvgLevel": "1,680.17"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "곡츄빵야",
+      "CharacterLevel": 70,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "1,704.17"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "곡츄방아",
+      "CharacterLevel": 70,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "1,722.50"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "곡츄가루",
+      "CharacterLevel": 70,
+      "CharacterClassName": "블레이드",
+      "ItemAvgLevel": "1,721.67"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "가장의길",
+      "CharacterLevel": 70,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,602.50"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "그놈으서머너",
+      "CharacterLevel": 70,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "1,588.33"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "홍승윅",
+      "CharacterLevel": 70,
+      "CharacterClassName": "데빌헌터",
+      "ItemAvgLevel": "1,738.33"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "러블리너스곡성지부장",
+      "CharacterLevel": 70,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,640.83"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "니나브일격창술",
+      "CharacterLevel": 70,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,600.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "시간손해",
+      "CharacterLevel": 63,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,640.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "곡츄띠",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "기억상실",
+      "CharacterLevel": 69,
+      "CharacterClassName": "버서커",
+      "ItemAvgLevel": "1,606.67"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "보석감가",
+      "CharacterLevel": 70,
+      "CharacterClassName": "아르카나",
+      "ItemAvgLevel": "1,755.00"
+    }
+  ],
+  "쫀지": [
+    {
+      "ServerName": "아만",
+      "CharacterName": "전설압타뽑으러왔슴",
+      "CharacterLevel": 10,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀다르크",
+      "CharacterLevel": 70,
+      "CharacterClassName": "발키리",
+      "ItemAvgLevel": "1,700.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀나발키리",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(여)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "JJONJI",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "노키즈쫀",
+      "CharacterLevel": 70,
+      "CharacterClassName": "환수사",
+      "ItemAvgLevel": "1,720.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "양파장군",
+      "CharacterLevel": 69,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "1,664.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀잉",
+      "CharacterLevel": 1,
+      "CharacterClassName": "마법사",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀두광",
+      "CharacterLevel": 70,
+      "CharacterClassName": "데빌헌터",
+      "ItemAvgLevel": "288.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "무쫀도사",
+      "CharacterLevel": 70,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,705.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "나는아가쫀지",
+      "CharacterLevel": 54,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "목이긴쫀지",
+      "CharacterLevel": 58,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "드웨인쫀슨",
+      "CharacterLevel": 64,
+      "CharacterClassName": "인파이터",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀모닝",
+      "CharacterLevel": 55,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,490.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀식",
+      "CharacterLevel": 69,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,600.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "착해진쫀지",
+      "CharacterLevel": 70,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,760.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀슼",
+      "CharacterLevel": 70,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "1,701.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "비비탄쫀",
+      "CharacterLevel": 70,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "1,730.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀빈후드",
+      "CharacterLevel": 70,
+      "CharacterClassName": "호크아이",
+      "ItemAvgLevel": "1,726.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀지퍼",
+      "CharacterLevel": 70,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,730.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쫀지",
+      "CharacterLevel": 70,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "1,760.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "이캐릭내꺼아님",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "이캐릭내꼬아님",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "닉네임한번여쭤보러왔습니",
+      "CharacterLevel": 10,
+      "CharacterClassName": "버서커",
+      "ItemAvgLevel": "50.00"
+    }
+  ],
+  "노돌리": [
+    {
+      "ServerName": "아만",
+      "CharacterName": "탈킹",
+      "CharacterLevel": 50,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "258.33"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "타코야퀸",
+      "CharacterLevel": 50,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "802.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "모발기",
+      "CharacterLevel": 70,
+      "CharacterClassName": "발키리",
+      "ItemAvgLevel": "1,668.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "아빠가대퍼리",
+      "CharacterLevel": 70,
+      "CharacterClassName": "환수사",
+      "ItemAvgLevel": "1,680.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "마치된것같아크리링",
+      "CharacterLevel": 59,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,595.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "물티슈악귀",
+      "CharacterLevel": 59,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "낫띵모근",
+      "CharacterLevel": 60,
+      "CharacterClassName": "소울이터",
+      "ItemAvgLevel": "1,510.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "남편이대머리",
+      "CharacterLevel": 70,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "탈모너",
+      "CharacterLevel": 60,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "1,600.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "탈모주의보",
+      "CharacterLevel": 60,
+      "CharacterClassName": "기상술사",
+      "ItemAvgLevel": "1,543.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "아빠가대머리",
+      "CharacterLevel": 70,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "1,663.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "한국쓰님",
+      "CharacterLevel": 60,
+      "CharacterClassName": "워로드",
+      "ItemAvgLevel": "1,525.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "모공법사",
+      "CharacterLevel": 60,
+      "CharacterClassName": "소서리스",
+      "ItemAvgLevel": "1,480.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "원펀맨",
+      "CharacterLevel": 60,
+      "CharacterClassName": "인파이터",
+      "ItemAvgLevel": "1,520.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "금강모공",
+      "CharacterLevel": 60,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,430.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "모근컷",
+      "CharacterLevel": 10,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "61.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "리얼돌리",
+      "CharacterLevel": 60,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "1,490.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "김현윤",
+      "CharacterLevel": 70,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "1,700.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "리선돌",
+      "CharacterLevel": 70,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "진짜노돌리",
+      "CharacterLevel": 59,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,250.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "없친",
+      "CharacterLevel": 70,
+      "CharacterClassName": "블레이드",
+      "ItemAvgLevel": "1,643.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "대머리",
+      "CharacterLevel": 70,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,690.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "노돌리",
+      "CharacterLevel": 70,
+      "CharacterClassName": "배틀마스터",
+      "ItemAvgLevel": "1,760.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "니나브서버를위한아이디",
+      "CharacterLevel": 1,
+      "CharacterClassName": "마법사",
+      "ItemAvgLevel": "0.00"
+    }
+  ],
+  "박서림": [
+    {
+      "ServerName": "루페온",
+      "CharacterName": "승어니형",
+      "CharacterLevel": 10,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "컷신녹화용임",
+      "CharacterLevel": 10,
+      "CharacterClassName": "홀리나이트",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "서림서림",
+      "CharacterLevel": 10,
+      "CharacterClassName": "홀리나이트",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "서림이",
+      "CharacterLevel": 10,
+      "CharacterClassName": "마법사",
+      "ItemAvgLevel": "23.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "박서림투",
+      "CharacterLevel": 50,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "1,415.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "서림띠띠",
+      "CharacterLevel": 70,
+      "CharacterClassName": "발키리",
+      "ItemAvgLevel": "1,660.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "워소림",
+      "CharacterLevel": 70,
+      "CharacterClassName": "워로드",
+      "ItemAvgLevel": "1,710.83"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "러블리너스금천지부장",
+      "CharacterLevel": 62,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "상복브레이커",
+      "CharacterLevel": 60,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,597.50"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "란제리터",
+      "CharacterLevel": 60,
+      "CharacterClassName": "소울이터",
+      "ItemAvgLevel": "1,490.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "누진세의서입보이",
+      "CharacterLevel": 59,
+      "CharacterClassName": "호크아이",
+      "ItemAvgLevel": "1,041.67"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "여서림",
+      "CharacterLevel": 60,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,555.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "우박서림",
+      "CharacterLevel": 60,
+      "CharacterClassName": "기상술사",
+      "ItemAvgLevel": "1,477.50"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "조상님이름에먹칠",
+      "CharacterLevel": 58,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "1,250.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "소서림스",
+      "CharacterLevel": 60,
+      "CharacterClassName": "소서리스",
+      "ItemAvgLevel": "1,485.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "옹박서림",
+      "CharacterLevel": 60,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "1,500.83"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "가터벨트짱짱",
+      "CharacterLevel": 59,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "1,342.50"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "화력서림",
+      "CharacterLevel": 58,
+      "CharacterClassName": "블래스터",
+      "ItemAvgLevel": "1,362.50"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "궁댕이짱짱",
+      "CharacterLevel": 50,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "서림망치",
+      "CharacterLevel": 70,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "1,660.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "뚤딸성기삽니다",
+      "CharacterLevel": 70,
+      "CharacterClassName": "홀리나이트",
+      "ItemAvgLevel": "1,664.33"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "워서림",
+      "CharacterLevel": 70,
+      "CharacterClassName": "워로드",
+      "ItemAvgLevel": "1,755.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "변탈서림",
+      "CharacterLevel": 70,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,641.67"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "창서림",
+      "CharacterLevel": 50,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "박서림",
+      "CharacterLevel": 70,
+      "CharacterClassName": "버서커",
+      "ItemAvgLevel": "1,715.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "스토리학회",
+      "CharacterLevel": 50,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "983.33"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "뉴비보면뽀뽀백번",
+      "CharacterLevel": 1,
+      "CharacterClassName": "헌터(남)",
+      "ItemAvgLevel": "3.33"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "박서림찡",
+      "CharacterLevel": 10,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "컷신녹화용",
+      "CharacterLevel": 10,
+      "CharacterClassName": "버서커",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "컷신촬영",
+      "CharacterLevel": 10,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "트리시온컷신촬영",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "아브렐슈드",
+      "CharacterName": "서림팍",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    }
+  ],
+  "로마러": [
+    {
+      "ServerName": "아만",
+      "CharacterName": "여비임당",
+      "CharacterLevel": 50,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "635.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "113키리",
+      "CharacterLevel": 70,
+      "CharacterClassName": "발키리",
+      "ItemAvgLevel": "1,681.67"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "쌈라만쌍",
+      "CharacterLevel": 50,
+      "CharacterClassName": "배틀마스터",
+      "ItemAvgLevel": "260.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "쌈라만상",
+      "CharacterLevel": 50,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "500.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "쿠마러",
+      "CharacterLevel": 70,
+      "CharacterClassName": "환수사",
+      "ItemAvgLevel": "1,681.67"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "조0I냥",
+      "CharacterLevel": 70,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "1,640.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "마러",
+      "CharacterLevel": 70,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,755.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "스익까뭇다영차진행시켜",
+      "CharacterLevel": 55,
+      "CharacterClassName": "호크아이",
+      "ItemAvgLevel": "1,340.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "한번안아보자영차",
+      "CharacterLevel": 70,
+      "CharacterClassName": "소울이터",
+      "ItemAvgLevel": "1,643.33"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "마러님8초뒤3버블되나요",
+      "CharacterLevel": 52,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "1,100.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "이준엽",
+      "CharacterLevel": 70,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "한방보쌈제육로마러",
+      "CharacterLevel": 60,
+      "CharacterClassName": "인파이터",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "기상하이스파이시치킨콤보",
+      "CharacterLevel": 69,
+      "CharacterClassName": "기상술사",
+      "ItemAvgLevel": "1,601.67"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "대가리발탄이핥았냐",
+      "CharacterLevel": 60,
+      "CharacterClassName": "블래스터",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "경산서당먹물도둑로마러",
+      "CharacterLevel": 60,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "로누마탄",
+      "CharacterLevel": 60,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,477.50"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "로둥어",
+      "CharacterLevel": 60,
+      "CharacterClassName": "소서리스",
+      "ItemAvgLevel": "1,586.67"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "내고점죠니나브",
+      "CharacterLevel": 70,
+      "CharacterClassName": "블레이드",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "군밤가이",
+      "CharacterLevel": 70,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "1,720.83"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "뚤딸고라니전용치적셔틀",
+      "CharacterLevel": 63,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "1,610.83"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "애기준엽",
+      "CharacterLevel": 60,
+      "CharacterClassName": "아르카나",
+      "ItemAvgLevel": "1,500.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "리퍼가져와",
+      "CharacterLevel": 60,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "248.33"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "스카우터혼내준다",
+      "CharacterLevel": 59,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "데빌헌터혼내준다",
+      "CharacterLevel": 69,
+      "CharacterClassName": "데빌헌터",
+      "ItemAvgLevel": "1,585.83"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "덜신선한망치",
+      "CharacterLevel": 60,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "1,541.67"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "로마러4",
+      "CharacterLevel": 59,
+      "CharacterClassName": "홀리나이트",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "러블리너스경산지부장",
+      "CharacterLevel": 60,
+      "CharacterClassName": "워로드",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "로마러3",
+      "CharacterLevel": 59,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "로마러2",
+      "CharacterLevel": 59,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "로마러",
+      "CharacterLevel": 70,
+      "CharacterClassName": "버서커",
+      "ItemAvgLevel": "1,721.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "디트로마러",
+      "CharacterLevel": 51,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "1,100.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "로마러9999",
+      "CharacterLevel": 10,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "20.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "로마러999",
+      "CharacterLevel": 10,
+      "CharacterClassName": "워로드",
+      "ItemAvgLevel": "8.33"
+    },
+    {
+      "ServerName": "아브렐슈드",
+      "CharacterName": "도랐다톰크루즈다",
+      "CharacterLevel": 1,
+      "CharacterClassName": "헌터(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "아브렐슈드",
+      "CharacterName": "너무이쁘다아이유",
+      "CharacterLevel": 1,
+      "CharacterClassName": "마법사",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "아브렐슈드",
+      "CharacterName": "로마러99",
+      "CharacterLevel": 10,
+      "CharacterClassName": "아르카나",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "로마러9",
+      "CharacterLevel": 10,
+      "CharacterClassName": "호크아이",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "123123457475",
+      "CharacterLevel": 10,
+      "CharacterClassName": "홀리나이트",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "123541535625",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "스카우터호온내준다",
+      "CharacterLevel": 50,
+      "CharacterClassName": "블래스터",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "박완규의록리나잇",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "버써어어어커",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    }
+  ],
+  "성대": [
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대쿤",
+      "CharacterLevel": 54,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,482.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대슬레",
+      "CharacterLevel": 60,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,561.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대주의보",
+      "CharacterLevel": 60,
+      "CharacterClassName": "기상술사",
+      "ItemAvgLevel": "1,593.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대아가",
+      "CharacterLevel": 60,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "1,460.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대블레",
+      "CharacterLevel": 50,
+      "CharacterClassName": "블레이드",
+      "ItemAvgLevel": "260.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대서머너",
+      "CharacterLevel": 50,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "302.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대알카",
+      "CharacterLevel": 57,
+      "CharacterClassName": "아르카나",
+      "ItemAvgLevel": "1,531.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대데헌",
+      "CharacterLevel": 50,
+      "CharacterClassName": "데빌헌터",
+      "ItemAvgLevel": "302.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대배마",
+      "CharacterLevel": 50,
+      "CharacterClassName": "배틀마스터",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대버섯커",
+      "CharacterLevel": 50,
+      "CharacterClassName": "버서커",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대술사",
+      "CharacterLevel": 60,
+      "CharacterClassName": "소서리스",
+      "ItemAvgLevel": "1,475.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대네돈까스",
+      "CharacterLevel": 58,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "1,430.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "점마딜안하나",
+      "CharacterLevel": 51,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대",
+      "CharacterLevel": 63,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "1,653.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대링어",
+      "CharacterLevel": 60,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "블래성대",
+      "CharacterLevel": 56,
+      "CharacterClassName": "블래스터",
+      "ItemAvgLevel": "1,377.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "기공성대",
+      "CharacterLevel": 59,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,445.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "리퍼성대",
+      "CharacterLevel": 60,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,432.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "성대링",
+      "CharacterLevel": 60,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쵸뿌뿡",
+      "CharacterLevel": 50,
+      "CharacterClassName": "홀리나이트",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쵸객",
+      "CharacterLevel": 60,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,553.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쵸쨩이",
+      "CharacterLevel": 50,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,300.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쵸쨩",
+      "CharacterLevel": 58,
+      "CharacterClassName": "호크아이",
+      "ItemAvgLevel": "1,500.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "쵸쨔아앙",
+      "CharacterLevel": 10,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "61.67"
+    },
+    {
+      "ServerName": "아브렐슈드",
+      "CharacterName": "성대인파",
+      "CharacterLevel": 50,
+      "CharacterClassName": "인파이터",
+      "ItemAvgLevel": "302.00"
+    },
+    {
+      "ServerName": "아브렐슈드",
+      "CharacterName": "성대로드",
+      "CharacterLevel": 50,
+      "CharacterClassName": "워로드",
+      "ItemAvgLevel": "802.00"
+    },
+    {
+      "ServerName": "아브렐슈드",
+      "CharacterName": "쵸쨩3",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "성머링",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(여)",
+      "ItemAvgLevel": "4.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "성대의게임방송1",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "니나호크",
+      "CharacterLevel": 50,
+      "CharacterClassName": "호크아이",
+      "ItemAvgLevel": "1,302.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "성대아만서버",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "성대카제로스",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    }
+  ],
+  "짱여니": [
+    {
+      "ServerName": "실리안",
+      "CharacterName": "조때로여니",
+      "CharacterLevel": 70,
+      "CharacterClassName": "발키리",
+      "ItemAvgLevel": "1,680.83"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "짜웅여니",
+      "CharacterLevel": 70,
+      "CharacterClassName": "환수사",
+      "ItemAvgLevel": "1,700.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "여니부레",
+      "CharacterLevel": 50,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,460.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "여니무새",
+      "CharacterLevel": 50,
+      "CharacterClassName": "호크아이",
+      "ItemAvgLevel": "50.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "좋낫쎈여니",
+      "CharacterLevel": 70,
+      "CharacterClassName": "소울이터",
+      "ItemAvgLevel": "1,683.33"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "좋대쓰여니",
+      "CharacterLevel": 60,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,503.33"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "7살여니의바람개비",
+      "CharacterLevel": 70,
+      "CharacterClassName": "기상술사",
+      "ItemAvgLevel": "1,706.67"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "여니임당",
+      "CharacterLevel": 70,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "1,700.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "불얼여니",
+      "CharacterLevel": 62,
+      "CharacterClassName": "소서리스",
+      "ItemAvgLevel": "1,550.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "바늘여니",
+      "CharacterLevel": 60,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,415.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "쌰발여니",
+      "CharacterLevel": 60,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "1,370.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "미스모구로여니",
+      "CharacterLevel": 60,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "913.33"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "민초여니",
+      "CharacterLevel": 60,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "1,370.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "왕방울여니",
+      "CharacterLevel": 50,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "적자여니",
+      "CharacterLevel": 67,
+      "CharacterClassName": "인파이터",
+      "ItemAvgLevel": "1,600.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "빵칼여니",
+      "CharacterLevel": 70,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,682.50"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "미친여니",
+      "CharacterLevel": 60,
+      "CharacterClassName": "버서커",
+      "ItemAvgLevel": "1,387.50"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "퀸여니",
+      "CharacterLevel": 61,
+      "CharacterClassName": "아르카나",
+      "ItemAvgLevel": "1,525.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "갓뎀여니",
+      "CharacterLevel": 70,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,640.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "짱여니",
+      "CharacterLevel": 70,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "1,755.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "쌍여니",
+      "CharacterLevel": 60,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "1,370.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "콕여니",
+      "CharacterLevel": 50,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "396.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "촌여니",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(여)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "쐉여니",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(여)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "오빠정말변했어",
+      "CharacterLevel": 50,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "582.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "꽝여니",
+      "CharacterLevel": 12,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "39.27"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "여니겅듀",
+      "CharacterLevel": 1,
+      "CharacterClassName": "마법사",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "남자친구후보",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "덕여니",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "망여니",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "여니의신나는플필교실",
+      "CharacterLevel": 50,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "802.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "미니스톱우산도둑",
+      "CharacterLevel": 1,
+      "CharacterClassName": "스페셜리스트",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "우산분실물센터",
+      "CharacterLevel": 1,
+      "CharacterClassName": "스페셜리스트",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "카단여니",
+      "CharacterLevel": 13,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "75.00"
+    }
+  ],
+  "선짱": [
+    {
+      "ServerName": "카마인",
+      "CharacterName": "선하니",
+      "CharacterLevel": 1,
+      "CharacterClassName": "암살자",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "선샤이어",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "선브렐라",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "선카소",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "썬하르트",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "선짱티비",
+      "CharacterLevel": 50,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "1,250.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선우리엘",
+      "CharacterLevel": 70,
+      "CharacterClassName": "발키리",
+      "ItemAvgLevel": "1,703.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "잼선짱",
+      "CharacterLevel": 70,
+      "CharacterClassName": "환수사",
+      "ItemAvgLevel": "1,682.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "초선짱",
+      "CharacterLevel": 70,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,646.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선킥",
+      "CharacterLevel": 70,
+      "CharacterClassName": "배틀마스터",
+      "ItemAvgLevel": "1,580.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선각",
+      "CharacterLevel": 70,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,702.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "나선짱",
+      "CharacterLevel": 70,
+      "CharacterClassName": "소울이터",
+      "ItemAvgLevel": "1,660.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "걍선짱",
+      "CharacterLevel": 70,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,701.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선다라박",
+      "CharacterLevel": 70,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,643.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선난나",
+      "CharacterLevel": 69,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "1,566.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "언젠간하겠지서머너",
+      "CharacterLevel": 70,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "1,610.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "우주소스타선짱",
+      "CharacterLevel": 70,
+      "CharacterClassName": "블래스터",
+      "ItemAvgLevel": "1,580.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "오늘날씨는선선",
+      "CharacterLevel": 70,
+      "CharacterClassName": "기상술사",
+      "ItemAvgLevel": "1,605.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "우뚝선가드",
+      "CharacterLevel": 66,
+      "CharacterClassName": "워로드",
+      "ItemAvgLevel": "1,506.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "강선짱",
+      "CharacterLevel": 70,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,755.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선카타",
+      "CharacterLevel": 70,
+      "CharacterClassName": "데빌헌터",
+      "ItemAvgLevel": "1,580.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "스카스카으짜스카",
+      "CharacterLevel": 62,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "1,435.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선짱아",
+      "CharacterLevel": 68,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "1,525.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선고쿠",
+      "CharacterLevel": 70,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "1,580.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선짱",
+      "CharacterLevel": 70,
+      "CharacterClassName": "소서리스",
+      "ItemAvgLevel": "1,671.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선블비",
+      "CharacterLevel": 70,
+      "CharacterClassName": "블레이드",
+      "ItemAvgLevel": "1,702.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선오천",
+      "CharacterLevel": 70,
+      "CharacterClassName": "인파이터",
+      "ItemAvgLevel": "1,600.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선크리",
+      "CharacterLevel": 70,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "1,690.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "선선한망치",
+      "CharacterLevel": 70,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "1,600.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "진짜매드닉",
+      "CharacterLevel": 62,
+      "CharacterClassName": "버서커",
+      "ItemAvgLevel": "1,467.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "최고다선짱",
+      "CharacterLevel": 70,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,585.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "대세는선짱",
+      "CharacterLevel": 62,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,427.50"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "선도류",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "선왕태세",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "나는선짱",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "선쯔앙",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "뷁끼",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "선열란아",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(여)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "선코니",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "선까치",
+      "CharacterLevel": 1,
+      "CharacterClassName": "스페셜리스트",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "코코선",
+      "CharacterLevel": 1,
+      "CharacterClassName": "스페셜리스트",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "깡선짱",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "선맨",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "선공답보",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(여)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "견쟈단",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(남)",
+      "ItemAvgLevel": "0.00"
+    }
+  ],
+  "도읍지": [
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "딸기오이지",
+      "CharacterLevel": 1,
+      "CharacterClassName": "무도가(여)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "HHHSSSWWW",
+      "CharacterLevel": 37,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "189.17"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "입옆에밥풀",
+      "CharacterLevel": 50,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,460.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "마켈란젤로도화가",
+      "CharacterLevel": 50,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "1,310.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "도읍지",
+      "CharacterLevel": 51,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,327.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "길냥이먼지",
+      "CharacterLevel": 56,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "1,445.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "한국산포로리",
+      "CharacterLevel": 51,
+      "CharacterClassName": "홀리나이트",
+      "ItemAvgLevel": "1,445.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "IKAMUKI",
+      "CharacterLevel": 60,
+      "CharacterClassName": "블레이드",
+      "ItemAvgLevel": "1,540.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "밥풀따기",
+      "CharacterLevel": 60,
+      "CharacterClassName": "아르카나",
+      "ItemAvgLevel": "1,525.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "HLIYLHILI",
+      "CharacterLevel": 1,
+      "CharacterClassName": "마법사",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "홍시나라까먹는소리",
+      "CharacterLevel": 50,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "1,302.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "748559",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    }
+  ],
+  "게임하는인기": [
+    {
+      "ServerName": "루페온",
+      "CharacterName": "빛의끼사",
+      "CharacterLevel": 70,
+      "CharacterClassName": "발키리",
+      "ItemAvgLevel": "1,720.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "광적인",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "인기요미",
+      "CharacterLevel": 70,
+      "CharacterClassName": "환수사",
+      "ItemAvgLevel": "1,720.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "낫뚜루휘뚜루마뚜루",
+      "CharacterLevel": 50,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,520.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "캐많똥",
+      "CharacterLevel": 70,
+      "CharacterClassName": "브레이커",
+      "ItemAvgLevel": "1,700.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "인끼",
+      "CharacterLevel": 70,
+      "CharacterClassName": "소울이터",
+      "ItemAvgLevel": "1,760.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "신림동도림천중국틱톡커",
+      "CharacterLevel": 70,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "진저웨일썸녀",
+      "CharacterLevel": 70,
+      "CharacterClassName": "기상술사",
+      "ItemAvgLevel": "1,734.17"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "화가하는",
+      "CharacterLevel": 70,
+      "CharacterClassName": "도화가",
+      "ItemAvgLevel": "1,660.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "인누야샤",
+      "CharacterLevel": 70,
+      "CharacterClassName": "블레이드",
+      "ItemAvgLevel": "1,732.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "폐차",
+      "CharacterLevel": 70,
+      "CharacterClassName": "블래스터",
+      "ItemAvgLevel": "1,682.50"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "끼레이브즈",
+      "CharacterLevel": 70,
+      "CharacterClassName": "데빌헌터",
+      "ItemAvgLevel": "1,721.67"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "도발하는",
+      "CharacterLevel": 70,
+      "CharacterClassName": "워로드",
+      "ItemAvgLevel": "1,640.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "리퍼하는",
+      "CharacterLevel": 70,
+      "CharacterClassName": "리퍼",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "서머너하는",
+      "CharacterLevel": 70,
+      "CharacterClassName": "서머너",
+      "ItemAvgLevel": "1,660.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "인파하는",
+      "CharacterLevel": 70,
+      "CharacterClassName": "인파이터",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "인기버섯커",
+      "CharacterLevel": 70,
+      "CharacterClassName": "버서커",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "부평테마의거리평화비둘기",
+      "CharacterLevel": 70,
+      "CharacterClassName": "호크아이",
+      "ItemAvgLevel": "1,642.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "스토리익스프레스가이드",
+      "CharacterLevel": 70,
+      "CharacterClassName": "배틀마스터",
+      "ItemAvgLevel": "1,660.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "전직업유저가유기한서포터",
+      "CharacterLevel": 70,
+      "CharacterClassName": "바드",
+      "ItemAvgLevel": "1,690.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "소뚜루휘뚜루마뚜루",
+      "CharacterLevel": 70,
+      "CharacterClassName": "소서리스",
+      "ItemAvgLevel": "1,690.17"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "게임하는인기",
+      "CharacterLevel": 70,
+      "CharacterClassName": "스트라이커",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "광원",
+      "CharacterLevel": 70,
+      "CharacterClassName": "홀리나이트",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "SALE",
+      "CharacterLevel": 70,
+      "CharacterClassName": "기공사",
+      "ItemAvgLevel": "1,690.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "Panty",
+      "CharacterLevel": 70,
+      "CharacterClassName": "건슬링어",
+      "ItemAvgLevel": "1,683.33"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "홍철",
+      "CharacterLevel": 70,
+      "CharacterClassName": "스카우터",
+      "ItemAvgLevel": "1,680.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "재련",
+      "CharacterLevel": 70,
+      "CharacterClassName": "디스트로이어",
+      "ItemAvgLevel": "1,715.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "인기생충",
+      "CharacterLevel": 70,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,730.83"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "인끼창",
+      "CharacterLevel": 70,
+      "CharacterClassName": "창술사",
+      "ItemAvgLevel": "1,735.00"
+    },
+    {
+      "ServerName": "루페온",
+      "CharacterName": "MINT",
+      "CharacterLevel": 70,
+      "CharacterClassName": "아르카나",
+      "ItemAvgLevel": "1,720.00"
+    },
+    {
+      "ServerName": "아만",
+      "CharacterName": "인기아만",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "아브렐슈드",
+      "CharacterName": "인기아브렐슈드",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "인기버섯컷",
+      "CharacterLevel": 50,
+      "CharacterClassName": "슬레이어",
+      "ItemAvgLevel": "1,340.00"
+    },
+    {
+      "ServerName": "실리안",
+      "CharacterName": "인기실리안",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "다시태어났더니니나브였던",
+      "CharacterLevel": 50,
+      "CharacterClassName": "데모닉",
+      "ItemAvgLevel": "1,415.00"
+    },
+    {
+      "ServerName": "니나브",
+      "CharacterName": "인기니나브",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카제로스",
+      "CharacterName": "인기카제로스",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카단",
+      "CharacterName": "인기카단",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "소울낫고외양고친다",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "낫뚜르휘뚜루마뚜루",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    },
+    {
+      "ServerName": "카마인",
+      "CharacterName": "인기카마인",
+      "CharacterLevel": 1,
+      "CharacterClassName": "전사(남)",
+      "ItemAvgLevel": "0.00"
+    }
+  ]
+}
