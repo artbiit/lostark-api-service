@@ -42,7 +42,37 @@ Authorization: bearer {JWT_TOKEN}
 - `500`: 서버 오류
 - `503`: 점검 중
 
-## 📊 데이터 크기 분석
+## 📊 테스트 데이터 구조 및 크기 분석
+
+### API 테스트 데이터 구조 규칙
+
+**🔑 Key-Value 구조**:
+
+- **siblings API**: `{ "캐릭터명": [siblings_array] }` 객체 형태
+- **각 스트리머별 실제 계정 캐릭터 목록 포함**
+- **예시**:
+  ```json
+  {
+    "이다": [
+      {
+        "ServerName": "루페온",
+        "CharacterName": "이다",
+        "CharacterLevel": 70,
+        "CharacterClassName": "브레이커",
+        "ItemAvgLevel": "1,760.00"
+      }
+      // ... 해당 계정의 다른 캐릭터들
+    ],
+    "쫀지": [
+      // 쫀지 계정의 캐릭터들
+    ]
+  }
+  ```
+
+**📁 저장 위치**:
+
+- 실제 API 응답: `cache/api-test-results/`
+- 샘플 데이터: `Docs/lostark-api/V9.0.0/sample-data/`
 
 실제 API 호출 결과를 바탕으로 한 데이터 크기 분석:
 
