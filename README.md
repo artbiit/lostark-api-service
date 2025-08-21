@@ -1,13 +1,8 @@
 # Lost Ark API Service
 
-> **⚠️ 주의**: 이 프로젝트는 새로운 TypeScript + ESM 기반 3-Tier 아키텍처로 마이그레이션 중입니다.
-> 기존 CommonJS 코드는 `legacy/` 디렉토리에서 확인할 수 있습니다.
+3계층 아키텍처 기반의 Lost Ark API 통합 서비스
 
-## 📋 개요
-
-Lost Ark API Service는 3계층 아키텍처를 기반으로 한 TypeScript + ESM 모노레포 구조입니다.
-
-### 3-Tier Architecture
+## 🏗️ 아키텍처
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -21,131 +16,106 @@ Lost Ark API Service는 3계층 아키텍처를 기반으로 한 TypeScript + ES
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## 🏗️ 프로젝트 구조
+## 🚀 시작하기
+
+### 1. 환경 설정
+
+```bash
+# 환경변수 파일 복사
+cp .env.example .env
+
+# .env 파일을 편집하여 실제 값으로 수정
+# 특히 LOSTARK_API_KEY는 필수입니다
+```
+
+#### 필수 환경변수
+
+- `LOSTARK_API_KEY`: Lost Ark Developer Portal에서 발급받은 API 키
+  - https://developer-lostark.game.onstove.com/ 에서 발급
+
+#### 주요 설정
+
+- **Fetch Layer**: API 호출 제한, 재시도, 서킷브레이커
+- **REST API**: 포트, CORS, 레이트리밋
+- **UDP Gateway**: 포트, 메시지 크기, 워커 풀
+- **캐시**: Redis 연결, TTL 설정
+- **로깅**: 로그 레벨, 포맷
+
+### 2. 의존성 설치
+
+```bash
+yarn install
+```
+
+### 3. 개발 서버 실행
+
+```bash
+# 모든 패키지 빌드
+yarn build
+
+# 개발 모드 (watch)
+yarn dev
+
+# Fetch Layer 시작
+yarn start
+```
+
+## 📁 프로젝트 구조
 
 ```
 lostark-remote-kakao/
 ├── packages/
-│   ├── shared/                    # 공통 모듈 통합 패키지
+│   ├── shared/                    # 공통 모듈
 │   │   ├── src/
+│   │   │   ├── config/           # 환경설정, 로깅
 │   │   │   ├── types/            # 타입 정의 (버전별)
-│   │   │   │   ├── V9/           # Lost Ark API V9.0.0 (현재 최신)
-│   │   │   │   ├── latest/       # 최신 버전 별칭 (→ V9)
-│   │   │   │   └── domain/       # 내부 도메인 타입
-│   │   │   ├── config/           # 설정 & 로깅
 │   │   │   ├── utils/            # 유틸리티
-│   │   │   ├── db/               # 데이터베이스
-│   │   │   └── index.ts          # 통합 진입점
-│   │   ├── package.json
-│   │   └── tsconfig.json
+│   │   │   └── db/               # 데이터베이스
+│   │   └── package.json
 │   │
 │   ├── fetch/                     # 1계층: Fetch & Normalize
 │   │   ├── src/
 │   │   │   ├── clients/           # Lost Ark API 클라이언트
 │   │   │   ├── normalizers/       # 데이터 정규화
 │   │   │   ├── cache/             # 캐시 관리
-│   │   │   ├── scheduler.ts       # 스케줄러
-│   │   │   └── index.ts
-│   │   ├── package.json
-│   │   └── tsconfig.json
+│   │   │   └── scheduler.ts       # 스케줄러
+│   │   └── package.json
 │   │
 │   ├── rest-api/                  # 2계층: REST API
 │   │   ├── src/
 │   │   │   ├── routes/            # Fastify 라우트
-│   │   │   │   └── v1/            # API 버전별
 │   │   │   ├── middleware/        # 미들웨어
-│   │   │   ├── plugins/           # Fastify 플러그인
-│   │   │   └── server.ts
-│   │   ├── package.json
-│   │   └── tsconfig.json
+│   │   │   └── plugins/           # Fastify 플러그인
+│   │   └── package.json
 │   │
 │   └── udp-gateway/               # 3계층: UDP Gateway
 │       ├── src/
 │       │   ├── handlers/          # 메시지 핸들러
 │       │   ├── queue/             # lock-free 큐
-│       │   ├── workers/           # 워커 풀
-│       │   └── server.ts
-│       ├── package.json
-│       └── tsconfig.json
+│       │   └── workers/           # 워커 풀
+│       └── package.json
 │
-├── cache/                         # 캐시 데이터 (gitignore)
+├── cache/                         # 캐시 데이터
 ├── Docs/                          # 문서
-├── legacy/                        # 레거시 코드
 └── tools/                         # 개발 도구
 ```
 
-## 🚀 빠른 시작
+## 🔧 기술 스택
 
-### 1. 환경 설정
-
-```bash
-# 의존성 설치
-yarn install
-
-# 개발 모드 시작
-yarn dev
-
-# 타입 체크
-yarn typecheck
-
-# 린트
-yarn lint
-```
-
-### 2. 개발 순서
-
-1. **Shared 패키지** (기반)
-   - 타입 시스템 구축 (V9.0.0부터 시작)
-   - 공통 모듈 (설정, 로깅, 유틸리티, DB)
-
-2. **Fetch Layer** (1계층)
-   - Lost Ark API 클라이언트
-   - 데이터 정규화
-   - 캐시 시스템
-   - 스케줄러
-
-3. **REST API** (2계층)
-   - Fastify 서버
-   - 라우트 및 미들웨어
-
-4. **UDP Gateway** (3계층)
-   - UDP 서버
-   - 메시지 처리 및 워커 풀
-
-## 🔧 타입 시스템
-
-### 버전별 타입 관리
-
-현재 최신 버전인 Lost Ark API V9.0.0부터 시작하여 타입 안전성과 변경 추적을 확보합니다.
-
-```typescript
-// 최신 버전 사용 (권장)
-import { CharacterProfileV9 } from '@lostark/shared/types/latest/armories';
-
-// 특정 버전 사용
-import { CharacterProfileV9 } from '@lostark/shared/types/V9/armories';
-
-// 안전한 필드 접근
-import { SafeFieldAccess } from '@lostark/shared/types/utils';
-const honorPoint = SafeFieldAccess.getHonorPoint(profile);
-
-// 마이그레이션
-import { ProfileMigrator } from '@lostark/shared/types/migration';
-const normalizedProfile = ProfileMigrator.normalizeProfile(rawData);
-```
+- **Runtime**: Node.js 22+ (ESM)
+- **Language**: TypeScript (strict mode)
+- **Package Manager**: Yarn Workspaces
+- **HTTP Server**: Fastify
+- **Logging**: Pino
+- **Validation**: Zod
+- **Database**: MySQL2
+- **Cache**: Redis (선택사항)
 
 ## 📊 성능 목표
 
 - **REST API**: p95 ≤ 50ms (캐시 히트 기준)
 - **UDP Gateway**: p95 ≤ 10ms (캐시 히트 기준)
 - **Fetch Layer**: 싱글플라이트, 서킷브레이커, 지수백오프 재시도
-
-## 🔄 캐시 전략
-
-- **In-memory**: 짧은 TTL (1-5분)
-- **Redis**: 중간 TTL (10-30분)
-- **Stale-while-revalidate**: 허용
-- **강제 리프레시**: 쿼리 파라미터 또는 헤더로 제공
 
 ## 🛡️ 안정성
 
@@ -154,30 +124,10 @@ const normalizedProfile = ProfileMigrator.normalizeProfile(rawData);
 - **Rate Limiting**: REST와 Fetch 분리 관리
 - **Error Handling**: 명확한 에러 코드와 메시지
 
-## 📚 문서
+## 📝 개발 가이드
 
-- [**Architecture Guide**](./Docs/architecture.md) - 전체 아키텍처 설계
-- [**Development Guide**](./Docs/development-guide.md) - 개발 가이드
-- [**Legacy Code**](./legacy/) - 기존 CommonJS 코드
+자세한 개발 가이드는 [Docs/development-guide.md](Docs/development-guide.md)를 참조하세요.
 
-## 🔗 관련 링크
+## 📄 라이선스
 
-- [Lost Ark API Documentation](https://developer-lostark.game.onstove.com/)
-- [Lost Ark API Changelog](https://developer-lostark.game.onstove.com/changelog)
-
-## 📝 TODO
-
-- [ ] V9.0.0 타입 정의 (현재 최신 버전)
-- [ ] 공통 베이스 타입 생성
-- [ ] 안전한 필드 접근 유틸리티
-- [ ] 마이그레이션 헬퍼 (향후 확장용)
-- [ ] Fetch Layer 구현
-- [ ] REST API 구현
-- [ ] UDP Gateway 구현
-- [ ] 캐시 시스템 구현
-- [ ] 테스트 코드 작성
-- [ ] 문서화 완료
-
----
-
-*마지막 업데이트: 2025-01-15*
+ISC License
