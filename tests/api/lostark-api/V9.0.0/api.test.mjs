@@ -194,6 +194,28 @@ const apiTests = [
     },
   },
 
+  // MARKETS API
+  {
+    name: '시장 검색 옵션',
+    endpoint: '/markets/options',
+    method: 'GET',
+  },
+  {
+    name: '아이템 ID로 시장 정보 조회',
+    endpoint: '/markets/items/66110223', // 10레벨 홍염 아이템 ID
+    method: 'GET',
+  },
+  {
+    name: '시장 아이템 검색',
+    endpoint: '/markets/items',
+    method: 'POST',
+    body: {
+      CategoryCode: 210000,
+      ItemName: '10레벨 홍염',
+      PageNo: 0,
+    },
+  },
+
   // GAMECONTENTS API
   {
     name: '주간 콘텐츠 달력',
