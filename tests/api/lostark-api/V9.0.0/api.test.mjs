@@ -149,6 +149,31 @@ const apiTests = [
     endpoint: '/armories/characters/이다/gems',
     method: 'GET',
   },
+  {
+    name: '캐릭터 아바타 정보',
+    endpoint: '/armories/characters/이다/avatars',
+    method: 'GET',
+  },
+  {
+    name: '캐릭터 전투 스킬',
+    endpoint: '/armories/characters/이다/combat-skills',
+    method: 'GET',
+  },
+  {
+    name: '캐릭터 카드 정보',
+    endpoint: '/armories/characters/이다/cards',
+    method: 'GET',
+  },
+  {
+    name: '캐릭터 증명의 전장 정보',
+    endpoint: '/armories/characters/이다/colosseums',
+    method: 'GET',
+  },
+  {
+    name: '캐릭터 수집품 정보',
+    endpoint: '/armories/characters/이다/collectibles',
+    method: 'GET',
+  },
 
   // AUCTIONS API
   {
