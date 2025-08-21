@@ -135,6 +135,23 @@ lostark-remote-kakao/
 활용합니다. 자세한 내용은 [Docs/streamer-research/](Docs/streamer-research/)를
 참조하세요.
 
+## 🔧 개발 규칙
+
+### 테스트 코드 작성
+
+- 모든 테스트 코드는 `tests/` 디렉토리에 작성
+- 실제 API 호출 결과 기반 테스트 데이터 사용
+- 스트리머 캐릭터 활용 (가상 캐릭터 사용 금지)
+
+### 문서 작성
+
+- 실존하는 파일/디렉토리만 문서화
+- API 테스트 데이터는 key-value 구조 준수
+- 변경사항 발생 시 관련 문서 동시 업데이트
+
+자세한 규칙은 [.cursorrules](.cursorrules) 및
+[개발 가이드](Docs/development-guide.md)를 참조하세요.
+
 ## 📄 라이선스
 
 ISC License

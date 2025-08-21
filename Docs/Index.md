@@ -20,7 +20,7 @@
 - [**Streamer Research**](./streamer-research/README.md) - 스트리머 연구
   프로젝트 및 개인정보 활용
 - [**Streamer List**](./streamer-research/streamer-list.md) - API 테스트용
-  스트리머 목록
+  스트리머 캐릭터 목록
 - [**Privacy Notice**](./streamer-research/privacy-notice.md) - 캐릭터 정보 활용
   공시
 
