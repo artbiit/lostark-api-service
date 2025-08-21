@@ -1,14 +1,12 @@
 {
-    "recommendations": [
-      "dbaeumer.vscode-eslint",
-      "esbenp.prettier-vscode",
-      "EditorConfig.EditorConfig",
-      "christian-kohler.path-intellisense",
-      "mikestead.dotenv",
-      "redhat.vscode-yaml",
-      "ms-azuretools.vscode-docker",
-      "eamodio.gitlens",
-      "ZixuanChen.vitest-explorer"
-    ]
-  }
-  
+  "recommendations": [
+    "ms-vscode.vscode-typescript-next",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "yzhang.markdown-all-in-one",
+    "redhat.vscode-yaml",
+    "eamodio.gitlens",
+    "humao.rest-client",
+    "rangav.vscode-thunder-client"
+  ]
+}
