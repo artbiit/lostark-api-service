@@ -1,24 +1,66 @@
-# Lost Ark API Service - 3-Tier Architecture
+# Lost Ark API Service - 3-Service Architecture
 
 ## 📋 개요
 
-Lost Ark API Service는 3계층 아키텍처를 기반으로 한 TypeScript + ESM 모노레포 구조입니다.
+Lost Ark API Service는 3서비스 아키텍처를 기반으로 한 TypeScript + ESM 모노레포
+구조입니다.
 
 ## 🏗️ 아키텍처 개요
 
-### 3-Tier 구조
+### 3-Service 구조
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   UDP Gateway   │    │   REST API      │    │   Fetch Layer   │
-│   (3계층)        │    │   (2계층)        │    │   (1계층)        │
+│   UDP Service   │    │   REST Service  │    │   Data Service  │
 │                 │    │                 │    │                 │
-│ • 초저지연 전송   │    │ • 정규화된 데이터 │    │ • 외부 API 호출  │
-│ • 기존 메시지     │    │ • 필요시 Fetch   │    │ • 데이터 정규화  │
-│   규격 유지      │    │   호출          │    │ • 캐싱          │
-│ • Lock-free 큐   │    │ • Fastify 기반  │    │ • 스케줄러      │
+│ • UDP 메시지     │    │ • REST API      │    │ • 외부 API 호출  │
+│   변환/전송      │    │   제공          │    │ • 데이터 정규화  │
+│ • 기존 규격      │    │ • Fastify 기반  │    │ • 캐싱          │
+│   유지          │    │ • 정규화 데이터  │    │ • 스케줄러      │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
+
+### 아키텍처 설계 원칙
+
+**서비스 (Services)**
+
+- **독립성**: 각 서비스는 독립적으로 실행 가능
+- **단일 책임**: 각 서비스는 명확한 하나의 역할만 담당
+- **병렬 구조**: REST Service와 UDP Service는 Data Service에 병렬로 의존
+- **프로토콜 분리**: 각 서비스는 고유한 통신 프로토콜 사용
+
+**모듈 (Modules)**
+
+- **재사용성**: 여러 서비스에서 공통으로 사용
+- **관심사 분리**: 타입, 설정, 유틸리티 등 기능별 분리
+- **중앙 관리**: `shared` 패키지로 통합 관리
+- **버전 관리**: API 버전별 타입 정의 체계화
+
+### 서비스별 상세 역할
+
+**Data Service**
+
+- **외부 API 통신**: Lost Ark Developer API 호출
+- **데이터 정규화**: 외부 API 응답을 내부 표준 형식으로 변환
+- **캐시 관리**: Redis/In-memory 캐시를 통한 성능 최적화
+- **스케줄링**: 주기적 데이터 수집 및 업데이트
+- **장애 처리**: 서킷브레이커, 재시도 로직
+
+**REST Service**
+
+- **HTTP API 제공**: 표준 REST API 엔드포인트
+- **Fastify 기반**: 고성능 Node.js 웹 프레임워크 활용
+- **미들웨어 체인**: 인증, 로깅, CORS, 레이트리밋
+- **버전 관리**: API 버전별 라우트 분리
+- **응답 캐싱**: ETag, Cache-Control 헤더 관리
+
+**UDP Service**
+
+- **초저지연 전송**: UDP 프로토콜을 통한 실시간 데이터 전송
+- **메시지 변환**: 정규화된 데이터를 UDP 메시지 형식으로 변환
+- **Lock-free 큐**: 고성능 메시지 처리
+- **워커 풀**: 병렬 메시지 처리
+- **기존 호환성**: 레거시 시스템과의 메시지 규격 유지
 
 ## 📁 디렉토리 구조
 
@@ -38,7 +80,7 @@ lostark-remote-kakao/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── fetch/                     # 1계층: Fetch & Normalize
+│   ├── data-service/              # Data Service
 │   │   ├── src/
 │   │   │   ├── clients/           # Lost Ark API 클라이언트
 │   │   │   ├── normalizers/       # 데이터 정규화
@@ -48,7 +90,7 @@ lostark-remote-kakao/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── rest-api/                  # 2계층: REST API
+│   ├── rest-service/              # REST Service
 │   │   ├── src/
 │   │   │   ├── routes/            # Fastify 라우트
 │   │   │   │   └── v1/            # API 버전별
@@ -58,7 +100,7 @@ lostark-remote-kakao/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   └── udp-gateway/               # 3계층: UDP Gateway
+│   └── udp-service/               # UDP Service
 │       ├── src/
 │       │   ├── handlers/          # 메시지 핸들러
 │       │   ├── queue/             # lock-free 큐
@@ -77,7 +119,8 @@ lostark-remote-kakao/
 
 ### 버전별 타입 관리
 
-현재 최신 버전인 Lost Ark API V9.0.0부터 시작하여 타입 안전성과 변경 추적을 확보합니다.
+현재 최신 버전인 Lost Ark API V9.0.0부터 시작하여 타입 안전성과 변경 추적을
+확보합니다.
 
 #### 타입 구조 예시
 
@@ -86,15 +129,15 @@ lostark-remote-kakao/
 /**
  * @lostark-api: V9.0.0
  * @reference: https://developer-lostark.game.onstove.com/changelog
- * 
+ *
  * V9.0.0 Changes:
  * - GET /armories/characters/{characterName}/profiles : Added 'HonorPoint' data
  * - GET /armories/characters/{characterName}/arkgrid : New endpoint
  */
 export interface CharacterProfileV9 extends BaseCharacterProfile {
   __version: 'V9.0.0';
-  HonorPoint: number;        // V9에서 추가
-  CombatPower: number;       // V8에서 추가
+  HonorPoint: number; // V9에서 추가
+  CombatPower: number; // V8에서 추가
   Decorations: Decoration[]; // V8에서 추가
 }
 
@@ -130,7 +173,7 @@ export class ProfileMigrator {
       __version: 'V9.0.0',
       HonorPoint: data.HonorPoint || 0,
       CombatPower: data.CombatPower || 0,
-      Decorations: data.Decorations || []
+      Decorations: data.Decorations || [],
     };
   }
 
@@ -185,9 +228,9 @@ const normalizedProfile = ProfileMigrator.normalizeProfile(rawData);
 
 ## 📊 성능 목표
 
-- **REST API**: p95 ≤ 50ms (캐시 히트 기준)
-- **UDP Gateway**: p95 ≤ 10ms (캐시 히트 기준)
-- **Fetch Layer**: 싱글플라이트, 서킷브레이커, 지수백오프 재시도
+- **REST Service**: p95 ≤ 50ms (캐시 히트 기준)
+- **UDP Service**: p95 ≤ 10ms (캐시 히트 기준)
+- **Data Service**: 싱글플라이트, 서킷브레이커, 지수백오프 재시도
 
 ## 🔄 캐시 전략
 
@@ -200,7 +243,7 @@ const normalizedProfile = ProfileMigrator.normalizeProfile(rawData);
 
 - **Graceful Degrade**: 외부 API 장애 시 캐시 서빙
 - **Circuit Breaker**: 외부 API 호출 실패 시 자동 차단
-- **Rate Limiting**: REST와 Fetch 분리 관리
+- **Rate Limiting**: REST와 Data Service 분리 관리
 - **Error Handling**: 명확한 에러 코드와 메시지
 
 ## 📝 TODO
@@ -209,9 +252,9 @@ const normalizedProfile = ProfileMigrator.normalizeProfile(rawData);
 - [ ] 공통 베이스 타입 생성
 - [ ] 안전한 필드 접근 유틸리티
 - [ ] 마이그레이션 헬퍼 (향후 확장용)
-- [ ] Fetch Layer 구현
-- [ ] REST API 구현
-- [ ] UDP Gateway 구현
+- [ ] Data Service 구현
+- [ ] REST Service 구현
+- [ ] UDP Service 구현
 - [ ] 캐시 시스템 구현
 - [ ] 테스트 코드 작성
 - [ ] 문서화 완료

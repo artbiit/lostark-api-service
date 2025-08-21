@@ -4,7 +4,7 @@
 
 ### 🏗️ 아키텍처 & 설계
 
-- [**3-Tier Architecture**](./architecture.md) - 전체 아키텍처 설계 및 타입
+- [**3-Service Architecture**](./architecture.md) - 전체 아키텍처 설계 및 타입
   시스템
 - [**Development Guide**](./development-guide.md) - 개발 가이드 및 워크플로우
 
@@ -44,7 +44,7 @@
 
 ### 1. 아키텍처 이해
 
-새로운 3-Tier 아키텍처와 타입 시스템을 이해하려면
+새로운 3-Service 아키텍처와 타입 시스템을 이해하려면
 [Architecture Guide](./architecture.md)를 먼저 읽어보세요.
 
 ### 2. 개발 시작
@@ -62,7 +62,7 @@ Lost Ark API 버전별 문서는
 ### 새로운 구조
 
 - **TypeScript + ESM**: 최신 모듈 시스템 적용
-- **3-Tier Architecture**: Fetch → REST API → UDP Gateway
+- **3-Service Architecture**: Data Service → REST Service → UDP Service
 - **버전별 타입 시스템**: Lost Ark API 버전과 1:1 매핑
 - **모노레포**: Yarn Workspaces 기반 패키지 관리
 

@@ -254,7 +254,7 @@ packages/shared/src/types/
 ### **ETL 모듈**
 
 ```
-packages/fetch/src/etl/
+packages/data-service/src/etl/
 ├── base/
 │   ├── etl-module.ts        # 기본 ETL 모듈 인터페이스
 │   ├── change-detector.ts   # 변경 감지 로직
