@@ -34,44 +34,44 @@ yarn lint
    - [ ] `packages/shared/src/utils/` - 유틸리티
    - [ ] `packages/shared/src/db/` - 데이터베이스
 
-#### Phase 2: Fetch Layer (1계층)
+#### Phase 2: Data Service
 
 1. **API 클라이언트**
-   - [ ] `packages/fetch/src/clients/armories.ts`
-   - [ ] `packages/fetch/src/clients/auctions.ts`
-   - [ ] `packages/fetch/src/clients/characters.ts`
+   - [ ] `packages/data-service/src/clients/armories.ts`
+   - [ ] `packages/data-service/src/clients/auctions.ts`
+   - [ ] `packages/data-service/src/clients/characters.ts`
 
 2. **데이터 정규화**
-   - [ ] `packages/fetch/src/normalizers/` - API 응답 정규화
+   - [ ] `packages/data-service/src/normalizers/` - API 응답 정규화
 
 3. **캐시 시스템**
-   - [ ] `packages/fetch/src/cache/` - 캐시 관리
+   - [ ] `packages/data-service/src/cache/` - 캐시 관리
 
 4. **스케줄러**
-   - [ ] `packages/fetch/src/scheduler.ts` - 주기적 데이터 갱신
+   - [ ] `packages/data-service/src/scheduler.ts` - 주기적 데이터 갱신
 
-#### Phase 3: REST API (2계층)
+#### Phase 3: REST Service
 
 1. **서버 설정**
-   - [ ] `packages/rest-api/src/server.ts` - Fastify 서버
+   - [ ] `packages/rest-service/src/server.ts` - Fastify 서버
 
 2. **라우트**
-   - [ ] `packages/rest-api/src/routes/v1/armories.ts`
-   - [ ] `packages/rest-api/src/routes/v1/auctions.ts`
-   - [ ] `packages/rest-api/src/routes/health.ts`
+   - [ ] `packages/rest-service/src/routes/v1/armories.ts`
+   - [ ] `packages/rest-service/src/routes/v1/auctions.ts`
+   - [ ] `packages/rest-service/src/routes/health.ts`
 
 3. **미들웨어**
-   - [ ] `packages/rest-api/src/middleware/` - 인증, 로깅 등
+   - [ ] `packages/rest-service/src/middleware/` - 인증, 로깅 등
 
-#### Phase 4: UDP Gateway (3계층)
+#### Phase 4: UDP Service
 
 1. **서버**
-   - [ ] `packages/udp-gateway/src/server.ts` - UDP 서버
+   - [ ] `packages/udp-service/src/server.ts` - UDP 서버
 
 2. **메시지 처리**
-   - [ ] `packages/udp-gateway/src/handlers/` - 메시지 핸들러
-   - [ ] `packages/udp-gateway/src/queue/` - lock-free 큐
-   - [ ] `packages/udp-gateway/src/workers/` - 워커 풀
+   - [ ] `packages/udp-service/src/handlers/` - 메시지 핸들러
+   - [ ] `packages/udp-service/src/queue/` - lock-free 큐
+   - [ ] `packages/udp-service/src/workers/` - 워커 풀
 
 ## 📝 코딩 컨벤션
 
@@ -202,7 +202,7 @@ for (const characterName of STREAMER_CHARACTERS) {
 ### 3. 통합 테스트
 
 ```typescript
-// packages/fetch/src/__tests__/clients.test.ts
+// packages/data-service/src/__tests__/clients.test.ts
 describe('ArmoryClient', () => {
   test('should fetch character profile', async () => {
     const client = new ArmoryClient();
