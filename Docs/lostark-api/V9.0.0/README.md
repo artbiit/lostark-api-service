@@ -98,9 +98,11 @@ Authorization: bearer {JWT_TOKEN}
 V9.0.0/
 ├── README.md                    # 이 파일
 ├── api-endpoints.md             # 전체 API 엔드포인트 목록
+├── build-data-guidelines.md     # 세팅 데이터 수집/저장 지침
 └── sample-data/                 # 실제 API 응답 샘플
     ├── news/                    # 공지사항, 이벤트
     ├── characters/              # 캐릭터 정보
+    ├── armories/                # 캐릭터 상세 정보
     ├── auctions/                # 경매장
     └── gamecontents/            # 게임 콘텐츠
 ```
