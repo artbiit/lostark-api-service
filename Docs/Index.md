@@ -8,10 +8,21 @@
   시스템
 - [**Development Guide**](./development-guide.md) - 개발 가이드 및 워크플로우
 
+### 🔌 API & 인터페이스
+
+- [**Lost Ark API Documentation**](./lostark-api/README.md) - 로스트아크 공식
+  API 버전별 문서
+- [**API Endpoints (V9.0.0)**](./lostark-api/V9.0.0/api-endpoints.md) - V9.0.0
+  API 엔드포인트 목록
+
 ### 📖 기존 문서
 
 - [**Client Sample**](./client/client-sample.md) - 클라이언트 사용 예제
 - [**Client.js**](./client/client.js) - 클라이언트 구현 예제
+
+### 🧪 테스트
+
+- [**Test Structure**](./tests/README.md) - 테스트 디렉토리 구조 및 가이드
 
 ### 🔧 트러블슈팅
 
