@@ -1,0 +1,72 @@
+[
+  {
+    "ServerName": "아만",
+    "CharacterName": "테스트캐릭터",
+    "CharacterLevel": 1,
+    "CharacterClassName": "무도가(여)",
+    "ItemAvgLevel": "0.00"
+  },
+  {
+    "ServerName": "카제로스",
+    "CharacterName": "삐유양",
+    "CharacterLevel": 1,
+    "CharacterClassName": "전사(남)",
+    "ItemAvgLevel": "0.00"
+  },
+  {
+    "ServerName": "카제로스",
+    "CharacterName": "백한면",
+    "CharacterLevel": 10,
+    "CharacterClassName": "배틀마스터",
+    "ItemAvgLevel": "50.00"
+  },
+  {
+    "ServerName": "실리안",
+    "CharacterName": "앙뚜루뚜루뚜",
+    "CharacterLevel": 50,
+    "CharacterClassName": "건슬링어",
+    "ItemAvgLevel": "1,460.00"
+  },
+  {
+    "ServerName": "실리안",
+    "CharacterName": "앙금이는못말려",
+    "CharacterLevel": 55,
+    "CharacterClassName": "도화가",
+    "ItemAvgLevel": "1,445.00"
+  },
+  {
+    "ServerName": "실리안",
+    "CharacterName": "앙뚜는못말려",
+    "CharacterLevel": 54,
+    "CharacterClassName": "소서리스",
+    "ItemAvgLevel": "1,445.00"
+  },
+  {
+    "ServerName": "실리안",
+    "CharacterName": "워로드고수인사람",
+    "CharacterLevel": 56,
+    "CharacterClassName": "워로드",
+    "ItemAvgLevel": "1,445.00"
+  },
+  {
+    "ServerName": "실리안",
+    "CharacterName": "띠유응",
+    "CharacterLevel": 54,
+    "CharacterClassName": "블레이드",
+    "ItemAvgLevel": "1,445.00"
+  },
+  {
+    "ServerName": "실리안",
+    "CharacterName": "삐유응",
+    "CharacterLevel": 60,
+    "CharacterClassName": "바드",
+    "ItemAvgLevel": "1,560.00"
+  },
+  {
+    "ServerName": "실리안",
+    "CharacterName": "수염맨인호",
+    "CharacterLevel": 55,
+    "CharacterClassName": "데모닉",
+    "ItemAvgLevel": "1,445.00"
+  }
+]
