@@ -134,3 +134,12 @@ dist
 # Cache directory
 cache/
 
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Cache
+cache/
+.cache/
