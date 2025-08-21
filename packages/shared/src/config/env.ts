@@ -17,11 +17,10 @@ export const envSchema = z.object({
 
   // === Lost Ark API 설정 ===
   LOSTARK_API_KEY: z.string().min(1, 'Lost Ark API 키는 필수입니다'),
-  LOSTARK_API_BASE_URL: z.string().url().default('https://developer-lostark.game.onstove.com'),
   LOSTARK_API_VERSION: z.string().default('V9.0.0'),
 
   // === Fetch Layer 설정 ===
-  FETCH_RATE_LIMIT_PER_MINUTE: z.coerce.number().min(1).default(30),
+  FETCH_RATE_LIMIT_PER_MINUTE: z.coerce.number().min(1).default(100),
   FETCH_RETRY_ATTEMPTS: z.coerce.number().min(0).max(5).default(3),
   FETCH_RETRY_DELAY_MS: z.coerce.number().min(100).default(1000),
   FETCH_CIRCUIT_BREAKER_THRESHOLD: z.coerce.number().min(1).default(5),
@@ -83,9 +82,8 @@ export function parseEnv(): EnvConfig {
 export const defaultConfig: EnvConfig = {
   NODE_ENV: 'development',
   LOSTARK_API_KEY: '',
-  LOSTARK_API_BASE_URL: 'https://developer-lostark.game.onstove.com',
   LOSTARK_API_VERSION: 'V9.0.0',
-  FETCH_RATE_LIMIT_PER_MINUTE: 30,
+  FETCH_RATE_LIMIT_PER_MINUTE: 100,
   FETCH_RETRY_ATTEMPTS: 3,
   FETCH_RETRY_DELAY_MS: 1000,
   FETCH_CIRCUIT_BREAKER_THRESHOLD: 5,
