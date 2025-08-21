@@ -7,14 +7,16 @@
  * - 재시도 설정
  */
 
-import { parseEnv, EnvConfig } from '@lostark/shared/config';
+import { parseEnv } from '@lostark/shared/config';
+
+// === Lost Ark API 상수 ===
+export const LOSTARK_API_BASE_URL = 'https://developer-lostark.game.onstove.com';
 
 // === Fetch Layer 설정 타입 ===
 
 export interface FetchConfig {
   // Lost Ark API 설정
   apiKey: string;
-  baseUrl: string;
   version: string;
 
   // 레이트리밋 설정
@@ -45,7 +47,6 @@ export function createFetchConfig(): FetchConfig {
   return {
     // Lost Ark API 설정
     apiKey: env.LOSTARK_API_KEY,
-    baseUrl: env.LOSTARK_API_BASE_URL,
     version: env.LOSTARK_API_VERSION,
 
     // 레이트리밋 설정
@@ -76,8 +77,11 @@ export function validateFetchConfig(config: FetchConfig): void {
     throw new Error('Lost Ark API 키가 설정되지 않았습니다');
   }
 
-  if (config.rateLimitPerMinute > 30) {
-    console.warn('⚠️  Lost Ark API는 분당 30회로 제한됩니다. 현재 설정:', config.rateLimitPerMinute);
+  if (config.rateLimitPerMinute > 100) {
+    console.warn(
+      '⚠️  Lost Ark API는 분당 100회로 제한됩니다. 현재 설정:',
+      config.rateLimitPerMinute,
+    );
   }
 
   if (config.retryAttempts > 5) {
@@ -89,9 +93,8 @@ export function validateFetchConfig(config: FetchConfig): void {
 
 export const defaultFetchConfig: FetchConfig = {
   apiKey: '',
-  baseUrl: 'https://developer-lostark.game.onstove.com',
   version: 'V9.0.0',
-  rateLimitPerMinute: 30,
+  rateLimitPerMinute: 100,
   retryAttempts: 3,
   retryDelayMs: 1000,
   circuitBreakerThreshold: 5,
