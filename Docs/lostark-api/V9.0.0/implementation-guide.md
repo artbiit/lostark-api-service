@@ -1,50 +1,69 @@
-# Lost Ark KR 세팅 데이터 수집/저장 지침
+# Lost Ark API Implementation Guide
 
 > **참조**:
 > [Lost Ark API Documentation](https://developer-lostark.game.onstove.com/getting-started)
 >
 > **버전**: V9.0.0
 >
-> **작성일**: 2025-01-15
->
-> **목적**: 캐릭터 단위 조회 + 계정(서버-로스터) 공유 스펙을 구분하여 저장
+> **@cursor-change**: 2025-01-27, v1.0.0, 구현 가이드 문서 생성
 
 ## 📋 개요
 
-이 문서는 Lost Ark KR의 캐릭터 빌드 데이터를 체계적으로 수집하고 저장하기 위한
-상세한 지침입니다. ARMORIES API를 기반으로 하여 캐릭터의 모든 세팅 정보를
-효율적으로 관리하는 방법을 정의합니다.
+이 문서는 Lost Ark API V9.0.0의 구현 전략, 아키텍처 설계, 작업 현황을 통합하여
+제공합니다.
 
-## 🎯 핵심 원칙
+## 📊 전체 작업 현황 요약
 
-### 1. **스코프 기반 데이터 분리**
+### 🎯 **작업 완성도**
+
+- **문서화**: 6/6 API (100% 완료)
+- **캐싱 전략**: 2/6 API (33% 완료)
+- **구현**: 0/6 API (0% 완료)
+- **테스트**: 0/6 API (0% 완료)
+
+### 🚀 **구현 우선순위**
+
+1. **ARMORIES API** (Phase 1) - 캐릭터 상세 정보
+2. **CHARACTERS API** (Phase 1) - 캐릭터 기본 정보
+3. **AUCTIONS API** (Phase 1) - 경매장 검색
+4. **NEWS API** (Phase 2) - 공지사항, 이벤트
+5. **GAMECONTENTS API** (Phase 2) - 게임 콘텐츠
+6. **MARKETS API** (Phase 2) - 시장 정보
+
+---
+
+## 🏗️ 아키텍처 설계
+
+### **핵심 원칙**
+
+#### 1. **스코프 기반 데이터 분리**
 
 - **ROSTER**: 계정 내 서버별 공유 자산 (카드, 각인 지식, 스킬 룬 등)
 - **CHARACTER**: 캐릭터 개별 자산 (장비, 보석, 아바타 등)
 - **PRESET**: 진화 노드 선택 기반 빌드 구성 (스킬 트리, 각인 선택 등)
 - **SNAPSHOT**: 시점 고정 기록 (전투력, 지표 등)
 
-### 2. **참조 우선 설계**
+#### 2. **참조 우선 설계**
 
 - 프리셋은 실제 값을 저장하지 않고 참조로 구성
 - 필요 시에만 스냅샷으로 고정
 - 중복 데이터 최소화
 
-### 3. **변경 감지 기반 저장**
+#### 3. **변경 감지 기반 저장**
 
 - 정규화 후 해시 비교로 불필요한 저장 방지
 - 변경된 부분만 선택적 갱신
 
-### 4. **내부 UID 체계**
+#### 4. **내부 UID 체계**
 
 - 이름/서버 변경에 견고한 식별자 사용
 - `hash(server, class, name, firstSeen)` 형태
 
-## 🏗️ 데이터 모델
+### **데이터 모델**
 
-### **스코프별 자산 분류**
+#### **스코프별 자산 분류**
 
-#### **로스터 공유 자산** (ROSTER 스코프)
+##### **로스터 공유 자산** (ROSTER 스코프)
 
 - **카드 보유/각성**: 계정 내 모든 캐릭터가 공유
 - **카드 덱 템플릿**: 계정별 카드 구성 패턴
@@ -53,7 +72,7 @@
 - **수집형 성장**: 스킬 포인트 총량, 성향 등
 - **코어·젬 인벤토리**: 보유한 코어/젬 목록
 
-#### **캐릭터 개별 자산** (CHARACTER 스코프)
+##### **캐릭터 개별 자산** (CHARACTER 스코프)
 
 - **착용 장비/장신구**: 현재 착용 중인 장비
 - **장비 품질/재련/연마**: 장비의 세부 상태
@@ -61,7 +80,7 @@
 - **착용 보석**: 현재 착용 중인 보석과 스킬 매핑
 - **아바타**: 착용 중인 아바타 정보
 
-#### **프리셋 구성 요소** (PRESET 스코프)
+##### **프리셋 구성 요소** (PRESET 스코프)
 
 - **진화 노드 선택**: 메인 전투 스타일 결정 (가장 핵심)
 - **스킬 트리**: 진화 노드에 따른 스킬 구성 + 트라이포드 선택
@@ -70,11 +89,13 @@
 - **보석 배치**: 착용 보석과 스킬 매핑
 - **장비 세트**: 착용 장비 구성
 
-#### **스냅샷 데이터** (SNAPSHOT 스코프)
+##### **스냅샷 데이터** (SNAPSHOT 스코프)
 
 - **증명의 전장 기록**: 시점별 전투력 기록
 - **전투력/지표**: 특정 시점의 성능 지표
 - **성장 이력**: 레벨업, 장비 강화 등
+
+---
 
 ## 🔄 ETL 파이프라인 설계
 
@@ -142,35 +163,175 @@ export const etlModules = {
 - 파트별 개별 캐시 관리
 - 파트별 다른 TTL 적용 가능
 
-## 📊 API 엔드포인트 활용
+---
 
-### **메인 엔드포인트**
+## 📋 API별 상세 작업 현황
 
-```
-GET /armories/characters/{characterName}
-```
+### 1. 📰 NEWS API
 
-- **용도**: 전체 데이터 수집 (411.40KB)
-- **포함 데이터**: ArmoryProfile, ArmoryEquipment, Engravings, Cards, Gems,
-  CombatSkills 등
-- **장점**: Rate Limit 효율적 사용, 데이터 일관성 보장
+**상태**: 🟡 문서화 완료, 캐싱 전략 대기
 
-### **개별 엔드포인트** (선택적 사용)
+#### 엔드포인트
 
-```
-GET /armories/characters/{characterName}/profiles      # 7.43KB
-GET /armories/characters/{characterName}/equipment     # 76.63KB
-GET /armories/characters/{characterName}/avatars       # 35.06KB
-GET /armories/characters/{characterName}/combat-skills # 150.22KB
-GET /armories/characters/{characterName}/engravings    # 1.56KB
-GET /armories/characters/{characterName}/cards         # 9.47KB
-GET /armories/characters/{characterName}/gems          # 81.18KB
-GET /armories/characters/{characterName}/colosseums    # 1.64KB
-GET /armories/characters/{characterName}/collectibles  # 28.12KB
-```
+- `GET /news/notices` - 공지사항 목록
+- `GET /news/events` - 이벤트 목록
 
-- **용도**: 부분 갱신 시 선택적 사용
-- **장점**: 네트워크 효율성, 빠른 응답
+#### 작업 현황
+
+- [x] **문서화**: API 엔드포인트 문서화 완료
+- [ ] **캐싱 전략**: 작성 대기
+- [ ] **구현**: Phase 2 예정
+- [ ] **테스트**: 구현 후 진행
+
+#### 특이사항
+
+- **데이터 크기**: 작음 (1-10KB)
+- **변화 빈도**: 낮음 (공지사항은 자주 변경되지 않음)
+- **캐싱 전략**: 단순한 TTL 기반 캐싱 예상
+
+---
+
+### 2. 👤 CHARACTERS API
+
+**상태**: 🟢 캐싱 전략 완료, 구현 대기
+
+#### 엔드포인트
+
+- `GET /characters/{characterName}/siblings` - 캐릭터 형제 정보
+
+#### 작업 현황
+
+- [x] **문서화**: API 엔드포인트 문서화 완료
+- [x] **캐싱 전략**: 완성
+- [ ] **구현**: Phase 1 예정
+- [ ] **테스트**: 구현 후 진행
+
+#### 핵심 전략
+
+- **계정 기반 캐릭터 추적**: 동일 계정의 모든 서버 캐릭터 추적
+- **ARMORIES 큐 연동**: 변화 감지 시 자동 ARMORIES 호출 큐 추가
+- **변화 감지**: 아이템 레벨 변화, 캐릭터 생성/삭제 감지
+- **단순한 캐싱**: 5-10KB 데이터에 적합한 단일 계층 구조
+
+#### 성능 요구사항
+
+- Siblings 조회 p95 ≤ 30ms (캐시 히트 기준)
+- 변화 감지 정확도 ≥ 95%
+- 계정 정보 캐시 히트율 ≥ 90%
+
+---
+
+### 3. ⚔️ ARMORIES API
+
+**상태**: 🟢 캐싱 전략 완료, 구현 대기
+
+#### 엔드포인트
+
+- `GET /armories/characters/{characterName}` - 캐릭터 전체 정보
+- `GET /armories/characters/{characterName}/profiles` - 기본 능력치
+- `GET /armories/characters/{characterName}/equipment` - 장비 정보
+- `GET /armories/characters/{characterName}/avatars` - 아바타 정보
+- `GET /armories/characters/{characterName}/combat-skills` - 전투 스킬
+- `GET /armories/characters/{characterName}/engravings` - 각인 정보
+- `GET /armories/characters/{characterName}/cards` - 카드 정보
+- `GET /armories/characters/{characterName}/gems` - 보석 정보
+- `GET /armories/characters/{characterName}/colosseums` - 증명의 전장
+- `GET /armories/characters/{characterName}/collectibles` - 수집품 정보
+
+#### 작업 현황
+
+- [x] **문서화**: API 엔드포인트 문서화 완료
+- [x] **캐싱 전략**: 완성
+- [ ] **구현**: Phase 1 예정 (최우선)
+- [ ] **테스트**: 구현 후 진행
+
+#### 핵심 전략
+
+- **캐릭터 단위 조회 빈도 기반 TTL**: 자주/중간/드물게 조회되는 캐릭터별 동적
+  TTL
+- **단순한 전체 호출 전략**: 캐시 만료 시 전체 API 호출
+- **3계층 캐시**: Memory Cache → Redis Cache → Database
+- **분리된 관심사**: TTL 전략과 데이터 처리 전략 분리
+
+#### 성능 요구사항
+
+- 캐릭터 조회 p95 ≤ 50ms (캐시 히트 기준)
+- 캐시 히트율 ≥ 85%
+- 메모리 사용량 ≤ 1GB (기본 설정 기준)
+
+---
+
+### 4. 🏪 AUCTIONS API
+
+**상태**: 🟡 문서화 완료, 캐싱 전략 대기
+
+#### 엔드포인트
+
+- `GET /auctions/options` - 검색 옵션
+- `POST /auctions/items` - 아이템 검색
+
+#### 작업 현황
+
+- [x] **문서화**: API 엔드포인트 문서화 완료
+- [ ] **캐싱 전략**: 작성 대기 (다음 우선순위)
+- [ ] **구현**: Phase 1 예정
+- [ ] **테스트**: 구현 후 진행
+
+#### 특이사항
+
+- **데이터 크기**: 중간-큼 (검색 결과에 따라 10KB-1MB+)
+- **변화 빈도**: 높음 (경매장 가격 실시간 변동)
+- **캐싱 전략**: 검색 결과 캐싱 + 가격 변화 감지 필요
+
+---
+
+### 5. 🛒 MARKETS API
+
+**상태**: 🟡 문서화 완료, 캐싱 전략 대기
+
+#### 엔드포인트
+
+- `GET /markets/options` - 검색 옵션
+- `GET /markets/items/{itemId}` - 아이템 ID로 조회
+- `POST /markets/items` - 아이템 검색
+
+#### 작업 현황
+
+- [x] **문서화**: API 엔드포인트 문서화 완료
+- [ ] **캐싱 전략**: 작성 대기
+- [ ] **구현**: Phase 2 예정
+- [ ] **테스트**: 구현 후 진행
+
+#### 특이사항
+
+- **데이터 크기**: 중간-큼 (검색 결과에 따라 10KB-1MB+)
+- **변화 빈도**: 높음 (시장 가격 실시간 변동)
+- **캐싱 전략**: 아이템별 가격 캐싱 + 변화 감지 필요
+
+---
+
+### 6. 🎮 GAMECONTENTS API
+
+**상태**: 🟡 문서화 완료, 캐싱 전략 대기
+
+#### 엔드포인트
+
+- `GET /gamecontents/calendar` - 주간 콘텐츠 달력
+
+#### 작업 현황
+
+- [x] **문서화**: API 엔드포인트 문서화 완료
+- [ ] **캐싱 전략**: 작성 대기
+- [ ] **구현**: Phase 2 예정
+- [ ] **테스트**: 구현 후 진행
+
+#### 특이사항
+
+- **데이터 크기**: 큼 (100KB-1MB+)
+- **변화 빈도**: 낮음 (주간 단위 업데이트)
+- **캐싱 전략**: 주간 단위 캐싱 + 업데이트 감지
+
+---
 
 ## 🏷️ 식별자 체계
 
@@ -197,6 +358,8 @@ function generateRosterUID(accountHint: string, server: string): string {
 - `nameHistory` 배열로 이름 변경 이력 추적
 - UID는 변경되지 않음
 - 병합 정책: 동일 계정/서버 병합 도구로 관리
+
+---
 
 ## 🔍 변경 감지 및 저장
 
@@ -229,6 +392,8 @@ interface StorageMetadata {
   effectiveAt: string;
 }
 ```
+
+---
 
 ## 📁 파일 구조
 
@@ -268,6 +433,8 @@ packages/data-service/src/etl/
 │   └── combat-skills.ts
 └── orchestrator.ts          # ETL 오케스트레이터
 ```
+
+---
 
 ## 🔄 파이프라인 단계
 
@@ -320,26 +487,7 @@ packages/data-service/src/etl/
 - **출력**: query index
 - **처리**: 검색 최적화 인덱스 생성
 
-## 🔍 쿼리 계약
-
-### **기본 쿼리**
-
-```typescript
-// 로스터 공유 자산 조회
-getRosterShared(rosterUid: string): Promise<RosterSharedAssets>
-
-// 캐릭터 상태 조회
-getCharacterState(characterUid: string): Promise<CharacterState>
-
-// 프리셋 목록 조회
-getPresetList(characterUid: string): Promise<Preset[]>
-
-// 유효 빌드 조회
-getEffectiveBuild(characterUid: string, presetId: string): Promise<EffectiveBuild>
-
-// 스냅샷 조회
-getSnapshots(characterUid: string, presetId: string, range: DateRange): Promise<Snapshot[]>
-```
+---
 
 ## 🚀 구현 우선순위
 
@@ -367,6 +515,8 @@ getSnapshots(characterUid: string, presetId: string, range: DateRange): Promise<
 2. 캐시 계층 구현
 3. 모니터링 및 로깅 추가
 
+---
+
 ## 📋 수용 기준
 
 ### **기능적 요구사항**
@@ -391,6 +541,8 @@ getSnapshots(characterUid: string, presetId: string, range: DateRange): Promise<
 - [ ] 로깅 품질 (레벨·requestId·민감정보 배제)
 - [ ] 테스트 커버리지 80% 이상
 
+---
+
 ## 📝 참고사항
 
 ### **API 제한**
@@ -414,6 +566,5 @@ getSnapshots(characterUid: string, presetId: string, range: DateRange): Promise<
 ---
 
 **문서 버전**: 1.0.0  
-**최종 업데이트**: 2025-01-15  
-**담당자**: 개발팀  
-**검토자**: 아키텍처팀
+**최종 업데이트**: 2025-01-27  
+**@cursor-change**: 2025-01-27, v1.0.0, 구현 가이드 문서 생성
