@@ -10,6 +10,7 @@
 export * from './base.js';
 
 // === API별 타입 ===
+export * from './armories.js';
 export * from './auctions.js';
 export * from './characters.js';
 export * from './gamecontents.js';

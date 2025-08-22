@@ -13,6 +13,7 @@
     "./types/V8": "./src/types/V8/index.ts",
     "./types/V7": "./src/types/V7/index.ts",
     "./types/domain": "./src/types/domain/index.ts",
+    "./types/domain/account": "./src/types/domain/account.ts",
     "./config": "./src/config/index.ts",
     "./utils": "./src/utils/index.ts",
     "./db": "./src/db/index.ts"

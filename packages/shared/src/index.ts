@@ -7,6 +7,9 @@
 // 설정 관련
 export * from './config/index.js';
 
+// 로거 관련
+export * from './config/logger.js';
+
 // 타입 관련
 export * from './types/latest/index.js';
 
