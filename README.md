@@ -98,6 +98,36 @@ yarn typecheck
 yarn lint
 ```
 
+### 4. Docker를 통한 실행 (권장)
+
+Docker Compose를 사용하여 선택적으로 서비스를 실행할 수 있습니다.
+
+#### 빠른 시작
+
+```bash
+# 실행 스크립트 사용 (권장)
+./scripts/docker-run.sh rest redis mysql
+
+# 또는 직접 docker-compose 사용
+docker-compose --profile rest --profile redis --profile mysql up -d
+```
+
+#### 서비스 선택
+
+- **REST API만**: `./scripts/docker-run.sh rest redis mysql`
+- **UDP Gateway만**: `./scripts/docker-run.sh udp redis mysql`
+- **데이터 서비스만**: `./scripts/docker-run.sh data redis mysql`
+- **모든 서비스**: `./scripts/docker-run.sh all`
+
+#### 개발 모드
+
+```bash
+# 핫 리로드로 개발
+./scripts/docker-run.sh rest redis mysql
+```
+
+자세한 내용은 [Docker Setup Guide](Docs/docker-setup.md)를 참조하세요.
+
 ## 📁 프로젝트 구조
 
 ```
@@ -140,6 +170,8 @@ lostark-remote-kakao/
 ├── cache/                         # 캐시 데이터
 │   └── api-test-results/          # API 테스트 결과
 ├── Docs/                          # 문서
+├── scripts/                       # 실행 스크립트
+│   └── docker-run.sh              # Docker 실행 스크립트
 └── tools/                         # 개발 도구
 ```
 
@@ -153,6 +185,7 @@ lostark-remote-kakao/
 - **Validation**: Zod
 - **Database**: MySQL2
 - **Cache**: Redis (선택사항)
+- **Containerization**: Docker & Docker Compose
 
 ## 📊 성능 목표
 
