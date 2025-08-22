@@ -1,5 +1,7 @@
 # Lost Ark API Service - 3-Service Architecture
 
+<!-- @cursor-change: 2025-01-27, v1.0.1, 문서 최신화 규칙 적용 -->
+
 ## 📋 개요
 
 Lost Ark API Service는 3서비스 아키텍처를 기반으로 한 TypeScript + ESM 모노레포

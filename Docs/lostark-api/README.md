@@ -1,5 +1,7 @@
 # Lost Ark API Documentation
 
+<!-- @cursor-change: 2025-01-27, v1.0.1, 문서 최신화 규칙 적용 -->
+
 > **참조**:
 > [Lost Ark API Documentation](https://developer-lostark.game.onstove.com/getting-started)
 >
