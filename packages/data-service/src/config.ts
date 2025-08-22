@@ -16,8 +16,12 @@ export const LOSTARK_API_BASE_URL = 'https://developer-lostark.game.onstove.com'
 
 export interface FetchConfig {
   // Lost Ark API 설정
-  apiKey: string;
-  version: string;
+  lostark: {
+    api: {
+      baseUrl: string;
+      key: string;
+    };
+  };
 
   // 레이트리밋 설정
   rateLimitPerMinute: number;
@@ -46,8 +50,12 @@ export function createFetchConfig(): FetchConfig {
 
   return {
     // Lost Ark API 설정
-    apiKey: env.LOSTARK_API_KEY,
-    version: env.LOSTARK_API_VERSION,
+    lostark: {
+      api: {
+        baseUrl: LOSTARK_API_BASE_URL,
+        key: env.LOSTARK_API_KEY,
+      },
+    },
 
     // 레이트리밋 설정
     rateLimitPerMinute: env.FETCH_RATE_LIMIT_PER_MINUTE,
@@ -73,7 +81,7 @@ export function createFetchConfig(): FetchConfig {
 // === 설정 검증 ===
 
 export function validateFetchConfig(config: FetchConfig): void {
-  if (!config.apiKey) {
+  if (!config.lostark.api.key) {
     throw new Error('Lost Ark API 키가 설정되지 않았습니다');
   }
 
@@ -92,8 +100,12 @@ export function validateFetchConfig(config: FetchConfig): void {
 // === 기본 설정값 ===
 
 export const defaultFetchConfig: FetchConfig = {
-  apiKey: '',
-  version: 'V9.0.0',
+  lostark: {
+    api: {
+      baseUrl: LOSTARK_API_BASE_URL,
+      key: '',
+    },
+  },
   rateLimitPerMinute: 100,
   retryAttempts: 3,
   retryDelayMs: 1000,
@@ -104,3 +116,7 @@ export const defaultFetchConfig: FetchConfig = {
   logLevel: 'info',
   prettyPrint: false,
 };
+
+// === 설정 인스턴스 ===
+
+export const config = createFetchConfig();

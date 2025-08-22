@@ -1,6 +1,6 @@
 # Lost Ark API Service Documentation
 
-<!-- @cursor-change: 2025-01-27, v1.0.1, 문서 최신화 규칙 적용 및 링크 정정 -->
+<!-- @cursor-change: 2025-01-27, v1.0.2, CHARACTERS API와 ARMORIES API 구현 완료 상태 반영 -->
 
 ## 📚 문서 목록
 
@@ -12,12 +12,18 @@
 
 ### 🔌 API & 인터페이스
 
+- [**Implementation Guide (V9.0.0)**](./lostark-api/V9.0.0/implementation-guide.md) -
+  API 구현 가이드 및 작업 현황 (✅ CHARACTERS, ARMORIES API 완료)
 - [**Lost Ark API Documentation**](./lostark-api/README.md) - 로스트아크 공식
   API 버전별 문서
 - [**API Endpoints (V9.0.0)**](./lostark-api/V9.0.0/api-endpoints.md) - V9.0.0
   API 엔드포인트 목록
 - [**Build Data Guidelines (V9.0.0)**](./lostark-api/V9.0.0/build-data-guidelines.md) -
   세팅 데이터 수집/저장 지침
+- [**Caching Strategy (V9.0.0)**](./lostark-api/V9.0.0/caching-strategy.md) -
+  ARMORIES API 캐싱 전략
+- [**Characters Caching Strategy (V9.0.0)**](./lostark-api/V9.0.0/caching-strategy-characters.md) -
+  CHARACTERS API 캐싱 전략
 
 ### 📊 연구 & 데이터
 
@@ -59,10 +65,9 @@
 개발 환경 설정과 작업 순서는 [Development Guide](./development-guide.md)를
 참조하세요.
 
-### 3. API 문서 확인
+### 3. API 구현 현황 확인
 
-Lost Ark API 버전별 문서는
-[Lost Ark API Documentation](./lostark-api/README.md)에서 확인하세요.
+현재 구현된 API와 작업 현황은 [Implementation Guide](./lostark-api/V9.0.0/implementation-guide.md)에서 확인하세요.
 
 ### 4. Docker 환경 실행
 
@@ -70,6 +75,11 @@ Docker를 통한 선택적 서비스 실행은 [Docker Setup Guide](./docker-set
 참조하세요.
 
 ## 📋 주요 변경사항
+
+### ✅ 구현 완료된 API
+
+- **CHARACTERS API**: 계정 기반 캐릭터 추적 및 변화 감지 ✅ 완료
+- **ARMORIES API**: 캐릭터 상세 정보 처리 및 큐 기반 처리 ✅ 완료
 
 ### 새로운 구조
 
@@ -84,6 +94,25 @@ Docker를 통한 선택적 서비스 실행은 [Docker Setup Guide](./docker-set
 - **버전 추적**: API 변경사항 명확한 추적
 - **마이그레이션**: 안전한 버전 간 데이터 변환
 - **IDE 지원**: 자동완성 및 리팩토링 지원
+
+### 구현된 서비스 구조
+
+```
+packages/data-service/src/
+├── services/
+│   ├── characters-service.ts     # CHARACTERS API 서비스 ✅ 완료
+│   └── armories-service.ts       # ARMORIES API 서비스 ✅ 완료
+├── clients/
+│   ├── characters-client.ts      # CHARACTERS API 클라이언트 ✅ 완료
+│   └── armories-client.ts        # ARMORIES API 클라이언트 ✅ 완료
+├── normalizers/
+│   ├── characters-normalizer.ts  # CHARACTERS 정규화 ✅ 완료
+│   └── armories-normalizer.ts    # ARMORIES 정규화 ✅ 완료
+├── cache/
+│   ├── characters-cache.ts       # CHARACTERS 캐시 ✅ 완료
+│   └── armories-cache.ts         # ARMORIES 캐시 ✅ 완료
+└── index.ts                      # 메인 엔트리 포인트 ✅ 완료
+```
 
 ## 🔗 관련 링크
 

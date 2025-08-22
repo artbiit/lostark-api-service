@@ -21,9 +21,10 @@
     "paths": {
       "@lostark/shared": ["packages/shared/src/index.ts"],
       "@lostark/shared/*": ["packages/shared/src/*"],
-      "@lostark/fetch/*": ["packages/fetch/src/*"],
-      "@lostark/rest-api/*": ["packages/rest-api/src/*"],
-      "@lostark/udp-gateway/*": ["packages/udp-gateway/src/*"]
+      "@shared/*": ["packages/shared/src/*"],
+      "@lostark/fetch/*": ["packages/data-service/src/*"],
+      "@lostark/rest-api/*": ["packages/rest-service/src/*"],
+      "@lostark/udp-gateway/*": ["packages/udp-service/src/*"]
     }
   },
   "exclude": ["node_modules", "dist", "coverage", "logs", "cache", "**/node_modules"]

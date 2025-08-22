@@ -1,6 +1,6 @@
 # Lost Ark API Documentation
 
-<!-- @cursor-change: 2025-01-27, v1.0.1, 문서 최신화 규칙 적용 -->
+<!-- @cursor-change: 2025-01-27, v1.0.2, CHARACTERS API와 ARMORIES API 구현 완료 상태 반영 -->
 
 > **참조**:
 > [Lost Ark API Documentation](https://developer-lostark.game.onstove.com/getting-started)
@@ -19,9 +19,11 @@
 - **상태**: 최신 버전
 - **조사 날짜**: 2025-01-15
 - **문서**: [V9.0.0/README.md](./V9.0.0/README.md)
+- **구현 가이드**: [V9.0.0/implementation-guide.md](./V9.0.0/implementation-guide.md) ✅ **CHARACTERS, ARMORIES API 완료**
 - **API 엔드포인트**: [V9.0.0/api-endpoints.md](./V9.0.0/api-endpoints.md)
 - **세팅 데이터 지침**:
   [V9.0.0/build-data-guidelines.md](./V9.0.0/build-data-guidelines.md)
+- **캐싱 전략**: [V9.0.0/caching-strategy.md](./V9.0.0/caching-strategy.md)
 - **샘플 데이터**: [V9.0.0/sample-data/](./V9.0.0/sample-data/)
 - **타입 정의**:
   [packages/shared/src/types/V9/](../../packages/shared/src/types/V9/)
@@ -58,8 +60,8 @@ cp -r V9.0.0 V10.0.0
 로스트아크 API는 다음과 같은 카테고리로 구성됩니다:
 
 - **NEWS**: 공지사항, 이벤트 정보
-- **CHARACTERS**: 캐릭터 기본 정보
-- **ARMORIES**: 캐릭터 상세 정보 (장비, 각인, 보석 등)
+- **CHARACTERS**: 캐릭터 기본 정보 ✅ **구현 완료**
+- **ARMORIES**: 캐릭터 상세 정보 (장비, 각인, 보석 등) ✅ **구현 완료**
 - **AUCTIONS**: 경매장 검색
 - **MARKETS**: 시장 정보
 - **GAMECONTENTS**: 게임 콘텐츠 정보
@@ -90,10 +92,10 @@ Authorization: bearer {JWT_TOKEN}
 
 ## 🚀 구현 우선순위
 
-### Phase 1: 핵심 API
+### ✅ Phase 1: 핵심 API (완료)
 
-1. **ARMORIES** - 캐릭터 상세 정보 (가장 많이 사용)
-2. **CHARACTERS** - 캐릭터 기본 정보
+1. **✅ ARMORIES** - 캐릭터 상세 정보 (가장 많이 사용) **완료**
+2. **✅ CHARACTERS** - 캐릭터 기본 정보 **완료**
 3. **AUCTIONS** - 경매장 검색
 
 ### Phase 2: 보조 API
@@ -113,3 +115,25 @@ Authorization: bearer {JWT_TOKEN}
 - 응답 데이터는 JSON 형식입니다
 - 일부 API는 null 값을 반환할 수 있습니다
 - API 버전 변경 시 하위 호환성을 고려해야 합니다
+
+## 🎯 구현 현황
+
+### ✅ 완료된 API
+
+- **CHARACTERS API**: 계정 기반 캐릭터 추적 및 변화 감지
+  - 서비스: `CharactersService`
+  - 클라이언트: `charactersClient`
+  - 정규화: `charactersNormalizer`
+  - 캐시: `charactersCache`
+
+- **ARMORIES API**: 캐릭터 상세 정보 처리 및 큐 기반 처리
+  - 서비스: `ArmoriesService`
+  - 클라이언트: `armoriesClient`
+  - 정규화: `armoriesNormalizer`
+  - 캐시: `armoriesCache`
+
+### 🔄 다음 우선순위
+
+- **AUCTIONS API**: 경매장 검색 기능
+- **NEWS API**: 공지사항 및 이벤트 정보
+- **GAMECONTENTS API**: 게임 콘텐츠 정보

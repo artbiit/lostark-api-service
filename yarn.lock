@@ -357,18 +357,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lostark/fetch@workspace:*, @lostark/fetch@workspace:packages/fetch":
+"@lostark/fetch@workspace:*, @lostark/fetch@workspace:packages/data-service":
   version: 0.0.0-use.local
-  resolution: "@lostark/fetch@workspace:packages/fetch"
+  resolution: "@lostark/fetch@workspace:packages/data-service"
   dependencies:
     "@lostark/shared": "workspace:*"
     "@types/node": "npm:^24.0.0"
   languageName: unknown
   linkType: soft
 
-"@lostark/rest-api@workspace:packages/rest-api":
+"@lostark/rest-api@workspace:packages/rest-service":
   version: 0.0.0-use.local
-  resolution: "@lostark/rest-api@workspace:packages/rest-api"
+  resolution: "@lostark/rest-api@workspace:packages/rest-service"
   dependencies:
     "@lostark/fetch": "workspace:*"
     "@lostark/shared": "workspace:*"
@@ -389,9 +389,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lostark/udp-gateway@workspace:packages/udp-gateway":
+"@lostark/udp-gateway@workspace:packages/udp-service":
   version: 0.0.0-use.local
-  resolution: "@lostark/udp-gateway@workspace:packages/udp-gateway"
+  resolution: "@lostark/udp-gateway@workspace:packages/udp-service"
   dependencies:
     "@lostark/fetch": "workspace:*"
     "@lostark/shared": "workspace:*"
