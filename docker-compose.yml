@@ -1,41 +1,166 @@
-version: "3"
-
 services:
-  db:
-    image: mysql:latest
-    restart: always
+  # === 데이터 서비스 (Fetch & Normalize) ===
+  data-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: data-service
+    container_name: lostark-data-service
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: ${DB_SCHEMA}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "3300:3306"
-      - "33060:33060"
+      - NODE_ENV=${NODE_ENV:-development}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - LOSTARK_API_VERSION=${LOSTARK_API_VERSION:-V9.0.0}
+      - FETCH_RATE_LIMIT_PER_MINUTE=${FETCH_RATE_LIMIT_PER_MINUTE:-100}
+      - FETCH_RETRY_ATTEMPTS=${FETCH_RETRY_ATTEMPTS:-3}
+      - FETCH_RETRY_DELAY_MS=${FETCH_RETRY_DELAY_MS:-1000}
+      - FETCH_CIRCUIT_BREAKER_THRESHOLD=${FETCH_CIRCUIT_BREAKER_THRESHOLD:-5}
+      - FETCH_CIRCUIT_BREAKER_TIMEOUT_MS=${FETCH_CIRCUIT_BREAKER_TIMEOUT_MS:-30000}
+      - CACHE_REDIS_URL=${CACHE_REDIS_URL:-redis://redis:6379}
+      - CACHE_REDIS_PASSWORD=${CACHE_REDIS_PASSWORD}
+      - CACHE_REDIS_DB=${CACHE_REDIS_DB:-0}
+      - CACHE_MEMORY_TTL_SECONDS=${CACHE_MEMORY_TTL_SECONDS:-300}
+      - CACHE_REDIS_TTL_SECONDS=${CACHE_REDIS_TTL_SECONDS:-1800}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_USER_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_CONNECTION_LIMIT=${DB_CONNECTION_LIMIT}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_PRETTY_PRINT=${LOG_PRETTY_PRINT:-true}
     volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - lrk-network
-
-  app:
-    build: .
-    restart: always
-    ports:
-      - "3000:${PORT}/udp"
+      - ./packages/data-service:/app/packages/data-service
+      - ./packages/shared:/app/packages/shared
+    working_dir: /app/packages/data-service
+    command: yarn dev
     depends_on:
-      - db
+      - redis
+      - mysql
+    profiles:
+      - data
+      - all
+
+  # === REST API 서비스 ===
+  rest-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: rest-service
+    container_name: lostark-rest-service
+    ports:
+      - '${REST_API_PORT:-3000}:3000'
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_SCHEMA: ${DB_SCHEMA}
-      PREFIX: ${PREFIX}
-    networks:
-      - lrk-network
+      - NODE_ENV=${NODE_ENV:-development}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - LOSTARK_API_VERSION=${LOSTARK_API_VERSION:-V9.0.0}
+      - REST_API_PORT=3000
+      - REST_API_HOST=0.0.0.0
+      - REST_API_CORS_ORIGIN=${REST_API_CORS_ORIGIN:-*}
+      - REST_API_RATE_LIMIT_PER_MINUTE=${REST_API_RATE_LIMIT_PER_MINUTE:-100}
+      - CACHE_REDIS_URL=${CACHE_REDIS_URL:-redis://redis:6379}
+      - CACHE_REDIS_PASSWORD=${CACHE_REDIS_PASSWORD}
+      - CACHE_REDIS_DB=${CACHE_REDIS_DB:-0}
+      - CACHE_MEMORY_TTL_SECONDS=${CACHE_MEMORY_TTL_SECONDS:-300}
+      - CACHE_REDIS_TTL_SECONDS=${CACHE_REDIS_TTL_SECONDS:-1800}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_USER_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_CONNECTION_LIMIT=${DB_CONNECTION_LIMIT}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_PRETTY_PRINT=${LOG_PRETTY_PRINT:-true}
+    volumes:
+      - ./packages/rest-service:/app/packages/rest-service
+      - ./packages/shared:/app/packages/shared
+    working_dir: /app/packages/rest-service
+    command: yarn dev
+    depends_on:
+      - redis
+      - mysql
+    profiles:
+      - rest
+      - all
+
+  # === UDP Gateway 서비스 ===
+  udp-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: udp-service
+    container_name: lostark-udp-service
+    ports:
+      - '${UDP_GATEWAY_PORT:-3001}:3001/udp'
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - LOSTARK_API_VERSION=${LOSTARK_API_VERSION:-V9.0.0}
+      - UDP_GATEWAY_PORT=3001
+      - UDP_GATEWAY_HOST=0.0.0.0
+      - UDP_GATEWAY_MAX_MESSAGE_SIZE=${UDP_GATEWAY_MAX_MESSAGE_SIZE:-8192}
+      - UDP_GATEWAY_WORKER_POOL_SIZE=${UDP_GATEWAY_WORKER_POOL_SIZE:-4}
+      - CACHE_REDIS_URL=${CACHE_REDIS_URL:-redis://redis:6379}
+      - CACHE_REDIS_URL=${CACHE_REDIS_URL:-redis://redis:6379}
+      - CACHE_REDIS_PASSWORD=${CACHE_REDIS_PASSWORD}
+      - CACHE_REDIS_DB=${CACHE_REDIS_DB:-0}
+      - CACHE_MEMORY_TTL_SECONDS=${CACHE_MEMORY_TTL_SECONDS:-300}
+      - CACHE_REDIS_TTL_SECONDS=${CACHE_REDIS_TTL_SECONDS:-1800}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_USER_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_CONNECTION_LIMIT=${DB_CONNECTION_LIMIT}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_PRETTY_PRINT=${LOG_PRETTY_PRINT:-true}
+    volumes:
+      - ./packages/udp-service:/app/packages/udp-service
+      - ./packages/data-service:/app/packages/data-service
+      - ./packages/shared:/app/packages/shared
+    working_dir: /app/packages/udp-service
+    command: yarn dev
+    depends_on:
+      - redis
+      - mysql
+    profiles:
+      - udp
+      - all
+
+  # === Redis 캐시 ===
+  redis:
+    image: redis:7-alpine
+    container_name: lostark-redis
+    ports:
+      - '6379:6379'
+    command: >
+      redis-server
+      --appendonly yes
+      ${CACHE_REDIS_PASSWORD:+--requirepass $CACHE_REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    profiles:
+      - redis
+      - all
+
+  # === MySQL 데이터베이스 ===
+  mysql:
+    image: mysql:8.0
+    container_name: lostark-mysql
+    ports:
+      - '${DB_PORT}:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_USER_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./legacy/loa.sql:/docker-entrypoint-initdb.d/loa.sql:ro
+    command: --default-authentication-plugin=mysql_native_password
+    profiles:
+      - mysql
+      - all
 
 volumes:
-  db_data:
-
-networks:
-  lrk-network:
+  redis_data:
+  mysql_data:
