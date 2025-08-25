@@ -2,6 +2,183 @@
 
 <!-- @cursor-change: 2025-01-27, v1.0.1, 문서 최신화 규칙 적용 -->
 
+## 📋 현재 작업 상태
+
+### ✅ **완료된 작업**
+
+- [x] **Data Service**: CHARACTERS API와 ARMORIES API 통합 구현 완료
+- [x] **In-memory 캐시**: ARMORIES 캐시 모듈 구현 완료
+- [x] **타입 시스템**: V9.0.0 타입 정의 및 정규화 완료
+- [x] **환경 설정**: Redis, MySQL 환경변수 설정 완료
+- [x] **Docker 설정**: Redis, MySQL 컨테이너 구성 완료
+
+### 🔄 **진행 중인 작업**
+
+- [ ] **Phase 1: Redis 캐시 구현** (현재 단계)
+
+### 📋 **대기 중인 작업**
+
+- [ ] **Phase 2: MySQL 데이터베이스 캐시 구현**
+- [ ] **Phase 3: 3계층 캐시 통합**
+- [ ] **REST Service 구현**
+- [ ] **UDP Service 구현**
+
+---
+
+## 🚀 Phase 1: Redis 캐시 구현
+
+### **작업 개요**
+
+현재 In-memory 캐시만 구현된 상태에서 Redis 캐시(L2 계층)를 추가하여 3계층 캐싱
+구조를 완성합니다.
+
+### **구현 목표**
+
+- Redis 캐시 클라이언트 및 모듈 구현
+- 기존 In-memory 캐시와 연동
+- 캐시 키 설계 및 TTL 관리
+- 에러 처리 및 폴백 메커니즘
+
+### **구현 파일 구조**
+
+```
+packages/shared/src/db/
+└── redis.ts                    # Redis 클라이언트 설정
+
+packages/data-service/src/cache/
+├── redis-cache.ts              # Redis 캐시 모듈
+└── cache-manager.ts            # 캐시 계층 관리자 (기존 파일 수정)
+```
+
+### **핵심 요구사항**
+
+#### **1. Redis 클라이언트 (`packages/shared/src/db/redis.ts`)**
+
+```typescript
+export class RedisClient {
+  private client: Redis;
+
+  // 연결 관리
+  async connect(): Promise<void>;
+  async disconnect(): Promise<void>;
+
+  // 기본 캐시 작업
+  async get(key: string): Promise<string | null>;
+  async set(key: string, value: string, ttl?: number): Promise<void>;
+  async del(key: string): Promise<void>;
+
+  // 캐시 통계
+  async getStats(): Promise<RedisStats>;
+}
+```
+
+#### **2. Redis 캐시 모듈 (`packages/data-service/src/cache/redis-cache.ts`)**
+
+```typescript
+export class RedisCache {
+  // 캐릭터 데이터 관리
+  async setCharacterDetail(
+    characterName: string,
+    data: NormalizedCharacterDetail,
+    ttl?: number,
+  ): Promise<void>;
+  async getCharacterDetail(
+    characterName: string,
+  ): Promise<NormalizedCharacterDetail | null>;
+  async deleteCharacterDetail(characterName: string): Promise<void>;
+
+  // 캐시 통계
+  async getCacheStats(): Promise<CacheStats>;
+
+  // 캐시 정리
+  async cleanup(): Promise<void>;
+}
+```
+
+#### **3. 캐시 키 설계**
+
+```typescript
+const cacheKeys = {
+  // 캐릭터 전체 데이터
+  character: (name: string) => `char:${name}:v1`,
+
+  // 캐릭터 메타데이터
+  characterMeta: (name: string) => `char:${name}:meta`,
+
+  // 캐시 통계
+  stats: () => `cache:stats:armories`,
+};
+```
+
+#### **4. TTL 관리**
+
+- **기본 TTL**: 30분 (1800초)
+- **동적 TTL**: 캐릭터 레벨에 따른 조정
+  - 1600+ 레벨: 15분
+  - 1580+ 레벨: 20분
+  - 1540+ 레벨: 25분
+  - 기타: 30분
+
+### **구현 순서**
+
+#### **Step 1: Redis 클라이언트 구현**
+
+1. `packages/shared/src/db/redis.ts` 생성
+2. Redis 연결 및 기본 작업 메서드 구현
+3. 에러 처리 및 재연결 로직 추가
+4. 타입 안전성 보장
+
+#### **Step 2: Redis 캐시 모듈 구현**
+
+1. `packages/data-service/src/cache/redis-cache.ts` 생성
+2. 캐릭터 데이터 저장/조회 메서드 구현
+3. 캐시 키 생성 및 TTL 관리 로직 추가
+4. 캐시 통계 및 정리 기능 구현
+
+#### **Step 3: 기존 캐시와 통합**
+
+1. `packages/data-service/src/cache/cache-manager.ts` 수정
+2. In-memory → Redis → Database 순서로 조회
+3. Redis 실패 시 In-memory로 폴백
+4. 캐시 계층 간 데이터 동기화
+
+#### **Step 4: 테스트 및 검증**
+
+1. Redis 연결 테스트
+2. 캐시 저장/조회 테스트
+3. TTL 만료 테스트
+4. 에러 처리 및 폴백 테스트
+
+### **성능 요구사항**
+
+- Redis 조회 응답 시간 ≤ 10ms
+- Redis 저장 응답 시간 ≤ 50ms
+- 캐시 히트율 ≥ 80%
+- 메모리 사용량 ≤ 512MB (Redis)
+
+### **에러 처리 전략**
+
+- Redis 연결 실패 시 In-memory 캐시로 폴백
+- Redis 작업 실패 시 로깅 및 재시도
+- 네트워크 타임아웃 설정 (5초)
+- 연결 풀 관리 (최대 10개 연결)
+
+### **테스트 시나리오**
+
+1. **정상 동작**: Redis 연결 → 데이터 저장 → 조회 성공
+2. **Redis 장애**: Redis 연결 실패 → In-memory 캐시로 폴백
+3. **TTL 만료**: 캐시 만료 → 자동 삭제 확인
+4. **대용량 데이터**: 411KB 캐릭터 데이터 처리 성능
+
+---
+
+## 🎯 다음 단계
+
+Phase 1 완료 후:
+
+- **Phase 2**: MySQL 데이터베이스 캐시 구현
+- **Phase 3**: 3계층 캐시 통합 및 최적화
+
 ## 개요
 
 ### 1. 환경 설정

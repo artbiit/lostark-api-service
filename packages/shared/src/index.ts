@@ -16,5 +16,5 @@ export * from './types/latest/index.js';
 // 유틸리티 관련 (향후 추가)
 // export * from './utils/index.js';
 
-// 데이터베이스 관련 (향후 추가)
-// export * from './db/index.js';
+// 데이터베이스 관련
+export * from './db/redis.js';
