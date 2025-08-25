@@ -8,6 +8,7 @@
  */
 
 import { logger } from '@lostark/shared';
+import { mysqlClient } from '@lostark/shared/db/mysql.js';
 import { redisClient } from '@lostark/shared/db/redis.js';
 
 // === CHARACTERS API ===
@@ -24,6 +25,7 @@ export { ArmoriesService } from './services/armories-service.js';
 
 // === 캐시 시스템 ===
 export { cacheManager } from './cache/cache-manager.js';
+export { databaseCache } from './cache/database-cache.js';
 export { redisCache } from './cache/redis-cache.js';
 
 // === 공통 모듈 ===
@@ -59,6 +61,37 @@ export async function disconnectRedis(): Promise<void> {
     logger.info('Redis connection disconnected successfully');
   } catch (error) {
     logger.error('Failed to disconnect Redis connection', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+// === MySQL 연결 초기화 ===
+
+/**
+ * MySQL 연결 초기화
+ */
+export async function initializeMySQL(): Promise<void> {
+  try {
+    await mysqlClient.connect();
+    logger.info('MySQL connection initialized successfully');
+  } catch (error) {
+    logger.error('Failed to initialize MySQL connection', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    // MySQL 연결 실패 시에도 서비스는 계속 동작 (Memory/Redis Cache만 사용)
+  }
+}
+
+/**
+ * MySQL 연결 해제
+ */
+export async function disconnectMySQL(): Promise<void> {
+  try {
+    await mysqlClient.disconnect();
+    logger.info('MySQL connection disconnected successfully');
+  } catch (error) {
+    logger.error('Failed to disconnect MySQL connection', {
       error: error instanceof Error ? error.message : String(error),
     });
   }
