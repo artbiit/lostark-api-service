@@ -166,7 +166,72 @@
 - TS Project References 그래프 유지, 깨질 시 변화 요약 첨부
 
 # === 프롬프트/요청 처리 규칙 (Cursor) ===
-- 사용자가 “예제/구현” 요청한 경우에만 코드 생성
+- 사용자가 "예제/구현" 요청한 경우에만 코드 생성
 - 스캐폴딩은 20~60줄 내, 필요한 파일만 생성
 - 1회 응답에서 파일 최대 3개, 많으면 배치 분할
 - 파괴적 변경·의존성 추가·계약 변경 전 승인 질문 선행
+
+# === 도구 사용 규칙 (Cursor/AI) ===
+- 파일시스템 확인 시 run_terminal_cmd() 우선 사용 (정확성 보장)
+- list_dir() 결과는 run_terminal_cmd()로 교차 검증 필수
+- cache 디렉토리 구조는 실제 파일시스템 기준으로 확인
+- 도구별 접근 방식 차이로 인한 결과 불일치 가능성 인지
+- 파일시스템 상태 확인 시 ls, find, wc 등 shell 명령어 활용
+
+# === 문서 편집 규칙 (Cursor/AI) ===
+- 불필요한 줄 바꿈으로 인한 diff 생성 금지
+- 문서 편집 시 기존 줄 바꿈 패턴 유지
+- 단순 포맷팅 변경은 별도 커밋으로 분리
+- 실제 내용 변경이 없는 경우 편집 금지
+- 문서 가독성 개선은 명확한 근거와 함께 제안
+
+# ============================
+# .cursorrules — Model Routing
+# ============================
+
+# === 모델 기본값 ===
+# - 전체 기본값은 GPT-5 (안정성 + 코드 품질)
+default_model: gpt-5
+
+# === 태스크별 모델 우선순위 ===
+# - 각 주석/태그 기반으로 Cursor가 자동 전환
+
+model_routing:
+  - match: "@task:discussion"
+    prefer: claude-4-sonnet
+    fallback: gpt-5
+    note: >
+      스키마 설계, 데이터 처리 방식, 아키텍처 논의 등
+      추론 중심 작업은 Claude를 우선.
+
+  - match: "@task:docs"
+    prefer: gpt-5
+    fallback: claude-4-sonnet
+    note: >
+      문서화/요약/정형화 작업은 GPT-5를 기본으로,
+      설명 가다듬기나 구조화 필요 시 Claude 활용.
+
+  - match: "@task:docs-refactor"
+    prefer: claude-4-sonnet
+    fallback: gpt-5
+    note: >
+      책임 단위별 문서 묶기, Index.md 업데이트 등은 Claude 우선,
+      최종 포맷팅은 GPT-5가 마무리.
+
+  - match: "@task:implementation"
+    prefer: gpt-5
+    fallback: claude-4-sonnet
+    note: >
+      실제 코드 구현/버그 수정은 GPT-5가 안정적.
+      버그 원인 추론은 Claude로 교차 점검.
+
+  - match: "@task:deep"
+    prefer: gemini-2.5-pro
+    fallback: claude-4-sonnet
+    note: >
+      대형 JSON 정규화, 멀티모달 입력 분석 등 특수 심층 태스크는 Gemini-Pro.
+
+# === 사용 규칙 ===
+# - 작업 시작 시 @task 태그를 달아 컨텍스트 명확히 할 것
+#   예: @task:discussion, @task:docs, @task:implementation
+# - 태그 누락 시 default_model(gpt-5) 사용
