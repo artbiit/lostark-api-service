@@ -25,9 +25,9 @@ export { ArmoriesService } from './services/armories-service.js';
 
 // === 캐시 시스템 ===
 export { cacheManager } from './cache/cache-manager.js';
+export { cacheOptimizer } from './cache/cache-optimizer.js';
 export { databaseCache } from './cache/database-cache.js';
 export { redisCache } from './cache/redis-cache.js';
-export { cacheOptimizer } from './cache/cache-optimizer.js';
 
 // === 공통 모듈 ===
 export * from './config.js';

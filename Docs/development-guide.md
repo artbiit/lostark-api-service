@@ -36,7 +36,9 @@
 
 ### **작업 개요**
 
-Memory Cache, Redis Cache, Database Cache가 모두 구현된 상태에서 3계층 캐싱 시스템을 통합하고 최적화하여 REST Service와 UDP Service 구현을 위한 완전한 데이터 서비스 기반을 구축했습니다.
+Memory Cache, Redis Cache, Database Cache가 모두 구현된 상태에서 3계층 캐싱
+시스템을 통합하고 최적화하여 REST Service와 UDP Service 구현을 위한 완전한
+데이터 서비스 기반을 구축했습니다.
 
 ### **구현 목표**
 
@@ -104,6 +106,7 @@ export class UdpServer {
 ### **구현된 API 엔드포인트**
 
 #### **REST API**
+
 - `GET /health` - 헬스 체크
 - `GET /cache/status` - 캐시 상태
 - `POST /cache/optimize` - 캐시 최적화
@@ -114,6 +117,7 @@ export class UdpServer {
 - `GET /api/v1/cache/stats` - 캐시 통계
 
 #### **UDP Gateway**
+
 - `character_detail` - 캐릭터 상세 정보
 - `character_refresh` - 캐릭터 새로고침
 - `cache_status` - 캐시 상태
