@@ -304,6 +304,62 @@ yarn test
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Fastify Documentation](https://www.fastify.io/docs/)
 
+## 🔧 도구 사용 가이드
+
+### 파일시스템 확인 시 주의사항
+
+프로젝트에서 파일시스템 상태를 확인할 때는 다음 규칙을 준수하세요:
+
+#### 1. 도구별 접근 방식 차이
+
+- **`run_terminal_cmd()`**: 실제 shell 명령어 실행 → 정확한 파일시스템 상태 반영
+- **`list_dir()`**: 추상화된 파일시스템 API → 캐시나 제한사항으로 인한 부정확성
+  가능
+
+#### 2. 권장 사용법
+
+```bash
+# ✅ 권장: 정확한 파일시스템 상태 확인
+run_terminal_cmd("ls -la cache/")
+run_terminal_cmd("find cache -type f | wc -l")
+
+# ⚠️ 주의: 교차 검증 필요
+list_dir("cache")  # 결과가 부정확할 수 있음
+```
+
+#### 3. 캐시 디렉토리 구조 확인
+
+```bash
+# cache 디렉토리 구조 확인
+run_terminal_cmd("tree cache/")
+run_terminal_cmd("du -sh cache/*")
+
+# 특정 파일 타입 확인
+run_terminal_cmd("find cache -name '*.json' | head -10")
+```
+
+#### 4. 교차 검증 방법
+
+```bash
+# list_dir() 결과와 run_terminal_cmd() 결과 비교
+list_dir("cache")  # 추상화된 결과
+run_terminal_cmd("ls cache/")  # 실제 결과
+```
+
+### 도구 사용 경험
+
+- **발견사항**: `list_dir()` 도구가 cache 디렉토리를 빈 디렉토리로 인식하는 경우
+  발생
+- **해결책**: `run_terminal_cmd()` 우선 사용으로 정확성 보장
+- **문서화**: 도구별 특성과 제한사항을 프로젝트 문서에 반영
+
+### 문서 편집 가이드
+
+- **불필요한 diff 방지**: 단순 줄 바꿈이나 포맷팅 변경은 별도 커밋으로 분리
+- **기존 패턴 유지**: 문서 편집 시 기존 줄 바꿈 패턴을 그대로 유지
+- **명확한 근거**: 문서 가독성 개선은 반드시 명확한 근거와 함께 제안
+- **실제 변경 확인**: 내용 변경이 없는 경우 편집을 금지하여 불필요한 diff 방지
+
 ## 트러블슈팅
 
 개발 중 발생하는 문제들과 해결 방법은

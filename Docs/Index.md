@@ -42,6 +42,7 @@
 ### 🧪 테스트
 
 - [**Test Structure**](../tests/README.md) - 테스트 디렉토리 구조 및 가이드
+- [**Cache Directory**](../cache/README.md) - 캐시된 데이터 구조 및 관리
 
 ### 🔧 트러블슈팅
 
@@ -67,7 +68,9 @@
 
 ### 3. API 구현 현황 확인
 
-현재 구현된 API와 작업 현황은 [Implementation Guide](./lostark-api/V9.0.0/implementation-guide.md)에서 확인하세요.
+현재 구현된 API와 작업 현황은
+[Implementation Guide](./lostark-api/V9.0.0/implementation-guide.md)에서
+확인하세요.
 
 ### 4. Docker 환경 실행
 
