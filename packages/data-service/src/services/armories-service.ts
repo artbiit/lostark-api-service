@@ -1,15 +1,14 @@
 /**
- * @cursor-change: 2025-01-27, v1.0.0, ARMORIES API 메인 서비스 생성
+ * @cursor-change: 2025-01-27, v1.0.0, ARMORIES 서비스 생성
  *
- * ARMORIES API 메인 서비스
- * - CHARACTERS API 큐 항목 처리
- * - 캐릭터 상세 정보 수집 및 정규화
- * - 캐시 관리 및 변화 감지
+ * ARMORIES API 서비스
+ * - 캐릭터 상세 정보 조회 및 캐싱
+ * - 데이터 정규화 및 검증
  * - 에러 처리 및 로깅
  */
 
 import { logger } from '@lostark/shared';
-import { ArmoryCharacterV9 } from '@lostark/shared/types/V9';
+import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories.js';
 
 import { armoriesCache, startCacheCleanupScheduler } from '../cache/armories-cache.js';
 import { armoriesClient } from '../clients/armories-client.js';
