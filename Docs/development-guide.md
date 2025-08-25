@@ -36,21 +36,43 @@ yarn lint
    - [ ] `packages/shared/src/utils/` - 유틸리티
    - [ ] `packages/shared/src/db/` - 데이터베이스
 
-#### Phase 2: Data Service
+#### Phase 2: Data Service ✅ **완료**
 
-1. **API 클라이언트**
-   - [ ] `packages/data-service/src/clients/armories.ts`
-   - [ ] `packages/data-service/src/clients/auctions.ts`
-   - [ ] `packages/data-service/src/clients/characters.ts`
+1. **API 클라이언트** ✅ **완료**
+   - [x] `packages/data-service/src/clients/armories.ts` - ARMORIES API
+         클라이언트
+   - [x] `packages/data-service/src/clients/characters.ts` - CHARACTERS API
+         클라이언트
+   - [ ] `packages/data-service/src/clients/auctions.ts` - AUCTIONS API
+         클라이언트 (다음 단계)
 
-2. **데이터 정규화**
-   - [ ] `packages/data-service/src/normalizers/` - API 응답 정규화
+2. **데이터 정규화** ✅ **완료**
+   - [x] `packages/data-service/src/normalizers/armories-normalizer.ts` -
+         ARMORIES 정규화
+   - [x] `packages/data-service/src/normalizers/characters-normalizer.ts` -
+         CHARACTERS 정규화
+   - [ ] `packages/data-service/src/normalizers/auctions-normalizer.ts` -
+         AUCTIONS 정규화 (다음 단계)
 
-3. **캐시 시스템**
-   - [ ] `packages/data-service/src/cache/` - 캐시 관리
+3. **캐시 시스템** ✅ **완료**
+   - [x] `packages/data-service/src/cache/armories-cache.ts` - ARMORIES 캐시
+   - [x] `packages/data-service/src/cache/characters-cache.ts` - CHARACTERS 캐시
+   - [ ] `packages/data-service/src/cache/auctions-cache.ts` - AUCTIONS 캐시
+         (다음 단계)
 
-4. **스케줄러**
-   - [ ] `packages/data-service/src/scheduler.ts` - 주기적 데이터 갱신
+4. **서비스 통합** ✅ **완료**
+   - [x] `packages/data-service/src/services/armories-service.ts` - ARMORIES
+         서비스
+   - [x] `packages/data-service/src/services/characters-service.ts` - CHARACTERS
+         서비스
+   - [x] `packages/data-service/src/index.ts` - 메인 엔트리 포인트
+   - [x] `packages/data-service/test-data-service.mjs` - 통합 테스트 스크립트
+
+5. **타입 시스템** ✅ **완료**
+   - [x] TypeScript strict 모드 적용
+   - [x] ESM 모듈 시스템 적용
+   - [x] 타입 체크 및 빌드 성공
+   - [x] 중복 export 문제 해결
 
 #### Phase 3: REST Service
 
