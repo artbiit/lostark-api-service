@@ -20,7 +20,7 @@ import {
   ArmoryEquipmentV9,
   ArmoryGemsV9,
   ArmoryProfileV9,
-} from '@lostark/shared/types/V9';
+} from '@lostark/shared/types/V9/armories.js';
 
 import { createApiClient } from './api-client.js';
 

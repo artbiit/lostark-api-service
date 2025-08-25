@@ -1,14 +1,13 @@
 /**
- * @cursor-change: 2025-01-27, v1.0.0, ARMORIES 정규화 모듈 생성
+ * @cursor-change: 2025-01-27, v1.0.0, ARMORIES 데이터 정규화기 생성
  *
- * ARMORIES API 정규화 모듈
- * - API 응답을 도메인 모델로 변환
- * - 데이터 검증 및 계산
- * - 정규화된 캐릭터 상세 정보 생성
+ * ARMORIES API 응답 데이터 정규화
+ * - API 응답을 내부 도메인 모델로 변환
+ * - 데이터 검증 및 정제
  */
 
 import { logger } from '@lostark/shared';
-import { ArmoryCharacterV9 } from '@lostark/shared/types/V9';
+import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories.js';
 
 // === 도메인 모델 ===
 
@@ -213,8 +212,8 @@ export class ArmoriesNormalizer {
         className,
         itemLevel,
         expeditionLevel: profile.ExpeditionLevel,
-        guildName: profile.GuildName || undefined,
-        title: profile.Title || undefined,
+        ...(profile.GuildName && { guildName: profile.GuildName }),
+        ...(profile.Title && { title: profile.Title }),
         profile: {
           characterImage: profile.CharacterImage,
           pvpGrade: profile.PvpGradeName,
@@ -237,7 +236,7 @@ export class ArmoriesNormalizer {
         collectibles: this.normalizeCollectibles(armoryData.Collectibles),
         metadata: {
           normalizedAt: new Date(),
-          apiVersion: armoryData.ApiVersion || 'V9.0.0',
+          apiVersion: 'V9.0.0',
           dataHash: this.calculateDataHash(armoryData),
         },
       };
@@ -326,9 +325,7 @@ export class ArmoriesNormalizer {
   /**
    * 카드 정보 정규화
    */
-  private normalizeCards(
-    cardData: any,
-  ): Array<{
+  private normalizeCards(cardData: any): Array<{
     slot: number;
     name: string;
     icon: string;
@@ -351,9 +348,7 @@ export class ArmoriesNormalizer {
   /**
    * 보석 정보 정규화
    */
-  private normalizeGems(
-    gemData: any,
-  ): Array<{
+  private normalizeGems(gemData: any): Array<{
     slot: number;
     name: string;
     icon: string;
@@ -419,9 +414,7 @@ export class ArmoriesNormalizer {
   /**
    * 아바타 정보 정규화
    */
-  private normalizeAvatars(
-    avatarData: any,
-  ): Array<{
+  private normalizeAvatars(avatarData: any): Array<{
     type: string;
     name: string;
     icon: string;

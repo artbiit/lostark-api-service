@@ -6,17 +6,50 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./types": "./src/types/index.ts",
-    "./types/latest": "./src/types/latest/index.ts",
-    "./types/V9": "./src/types/V9/index.ts",
-    "./types/V8": "./src/types/V8/index.ts",
-    "./types/V7": "./src/types/V7/index.ts",
-    "./types/domain": "./src/types/domain/index.ts",
-    "./types/domain/account": "./src/types/domain/account.ts",
-    "./config": "./src/config/index.ts",
-    "./utils": "./src/utils/index.ts",
-    "./db": "./src/db/index.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./types": {
+      "types": "./src/types/latest/index.ts",
+      "import": "./src/types/latest/index.ts"
+    },
+    "./types/latest": {
+      "types": "./src/types/latest/index.ts",
+      "import": "./src/types/latest/index.ts"
+    },
+    "./types/V9": {
+      "types": "./src/types/V9/index.ts",
+      "import": "./src/types/V9/index.ts"
+    },
+    "./types/V8": {
+      "types": "./src/types/V8/index.ts",
+      "import": "./src/types/V8/index.ts"
+    },
+    "./types/V7": {
+      "types": "./src/types/V7/index.ts",
+      "import": "./src/types/V7/index.ts"
+    },
+    "./types/domain": {
+      "types": "./src/types/domain/index.ts",
+      "import": "./src/types/domain/index.ts"
+    },
+    "./types/domain/account": {
+      "types": "./src/types/domain/account.ts",
+      "import": "./src/types/domain/account.ts"
+    },
+    "./config": {
+      "types": "./src/config/index.ts",
+      "import": "./src/config/index.ts"
+    },
+    "./utils": {
+      "types": "./src/utils/index.ts",
+      "import": "./src/utils/index.ts"
+    },
+    "./db": {
+      "types": "./src/db/index.ts",
+      "import": "./src/db/index.ts"
+    }
   },
   "scripts": {
     "build": "tsc",
@@ -31,6 +64,7 @@
     "zod": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0"
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.2"
   }
 }
