@@ -383,9 +383,11 @@ __metadata:
   resolution: "@lostark/shared@workspace:packages/shared"
   dependencies:
     "@types/node": "npm:^24.0.0"
+    "@types/redis": "npm:^4.0.11"
     mysql2: "npm:^3.0.0"
     pino: "npm:^8.0.0"
     pino-pretty: "npm:^10.0.0"
+    redis: "npm:^5.8.2"
     typescript: "npm:^5.9.2"
     zod: "npm:^3.0.0"
   languageName: unknown
@@ -475,6 +477,51 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redis/bloom@npm:5.8.2":
+  version: 5.8.2
+  resolution: "@redis/bloom@npm:5.8.2"
+  peerDependencies:
+    "@redis/client": ^5.8.2
+  checksum: 10c0/12757ef13059e1c844432ef30f02c675b35b62b3894b57514264ce097db03867c216e4d37e8812fcf8039692211207242b753bf0187a8068b8d91a90560eb8cd
+  languageName: node
+  linkType: hard
+
+"@redis/client@npm:5.8.2":
+  version: 5.8.2
+  resolution: "@redis/client@npm:5.8.2"
+  dependencies:
+    cluster-key-slot: "npm:1.1.2"
+  checksum: 10c0/f3dfd9ba87988458aca3e7d1a7c29a39ac59042c80ec8246fa9e9449028e448dc7bb81313d8ca919a0a6dbd4b0fd7fae3785d209add33df832994fb6c6bf50be
+  languageName: node
+  linkType: hard
+
+"@redis/json@npm:5.8.2":
+  version: 5.8.2
+  resolution: "@redis/json@npm:5.8.2"
+  peerDependencies:
+    "@redis/client": ^5.8.2
+  checksum: 10c0/0baefd5a45ea72e1069566c1c374397284ac65f0786b9c632344b276b9cd9b36d45cabcc748db98db3e2bcfa8dd693c7f6080fbe2d5d264d5faa1863e89c0a77
+  languageName: node
+  linkType: hard
+
+"@redis/search@npm:5.8.2":
+  version: 5.8.2
+  resolution: "@redis/search@npm:5.8.2"
+  peerDependencies:
+    "@redis/client": ^5.8.2
+  checksum: 10c0/d558d9d78905543cc7121a3da388e3e1e43afd66a67843fbc3fdfbad1354fc180651eec251dd03399785de19af23cb64cfa799a428f1c4201053598098d51c12
+  languageName: node
+  linkType: hard
+
+"@redis/time-series@npm:5.8.2":
+  version: 5.8.2
+  resolution: "@redis/time-series@npm:5.8.2"
+  peerDependencies:
+    "@redis/client": ^5.8.2
+  checksum: 10c0/f606913c7f14f6b36a06ce78c91b65c3833e4b9893b912e9af5023217b490e478c4c674b6736d2c5306d7849cfdd6ce0876b1fffc1c65ee020feaba8a90aa208
+  languageName: node
+  linkType: hard
+
 "@rtsao/scc@npm:^1.1.0":
   version: 1.1.0
   resolution: "@rtsao/scc@npm:1.1.0"
@@ -504,6 +551,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~7.10.0"
   checksum: 10c0/96bdeca01f690338957c2dcc92cb9f76c262c10398f8d91860865464412b0f9d309c24d9b03d0bdd26dd47fa7ee3f8227893d5c89bc2009d919a525a22512030
+  languageName: node
+  linkType: hard
+
+"@types/redis@npm:^4.0.11":
+  version: 4.0.11
+  resolution: "@types/redis@npm:4.0.11"
+  dependencies:
+    redis: "npm:*"
+  checksum: 10c0/a543607ce2fdb8bf0352bbe5f38ae0b48a48737c497e77d9a28240c8d440c1646b191d4e09f9eb2f93753f2a2b66bb8e7009e7ececc1a29e97bbc88beea542f4
   languageName: node
   linkType: hard
 
@@ -1203,6 +1259,13 @@ __metadata:
     slice-ansi: "npm:^5.0.0"
     string-width: "npm:^7.0.0"
   checksum: 10c0/d7f0b73e3d9b88cb496e6c086df7410b541b56a43d18ade6a573c9c18bd001b1c3fba1ad578f741a4218fdc794d042385f8ac02c25e1c295a2d8b9f3cb86eb4c
+  languageName: node
+  linkType: hard
+
+"cluster-key-slot@npm:1.1.2":
+  version: 1.1.2
+  resolution: "cluster-key-slot@npm:1.1.2"
+  checksum: 10c0/d7d39ca28a8786e9e801eeb8c770e3c3236a566625d7299a47bb71113fb2298ce1039596acb82590e598c52dbc9b1f088c8f587803e697cb58e1867a95ff94d3
   languageName: node
   linkType: hard
 
@@ -3907,6 +3970,19 @@ __metadata:
   version: 0.2.0
   resolution: "real-require@npm:0.2.0"
   checksum: 10c0/23eea5623642f0477412ef8b91acd3969015a1501ed34992ada0e3af521d3c865bb2fe4cdbfec5fe4b505f6d1ef6a03e5c3652520837a8c3b53decff7e74b6a0
+  languageName: node
+  linkType: hard
+
+"redis@npm:*, redis@npm:^5.8.2":
+  version: 5.8.2
+  resolution: "redis@npm:5.8.2"
+  dependencies:
+    "@redis/bloom": "npm:5.8.2"
+    "@redis/client": "npm:5.8.2"
+    "@redis/json": "npm:5.8.2"
+    "@redis/search": "npm:5.8.2"
+    "@redis/time-series": "npm:5.8.2"
+  checksum: 10c0/95fe63a50cc5a9fb8d01bb91b8d02cc0f19aa9199204dd50c1f68af88ad44da4c65a67391aa6410880a25dc279b1821ecc6c81e2e1cb240ac16817094b5a293f
   languageName: node
   linkType: hard
 

@@ -58,9 +58,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@types/redis": "^4.0.11",
     "mysql2": "^3.0.0",
     "pino": "^8.0.0",
     "pino-pretty": "^10.0.0",
+    "redis": "^5.8.2",
     "zod": "^3.0.0"
   },
   "devDependencies": {

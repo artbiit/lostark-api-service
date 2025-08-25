@@ -10,7 +10,8 @@
 import { logger } from '@lostark/shared';
 import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories.js';
 
-import { armoriesCache, startCacheCleanupScheduler } from '../cache/armories-cache.js';
+import { armoriesCache } from '../cache/armories-cache.js';
+import { cacheManager, startCacheManagerCleanupScheduler } from '../cache/cache-manager.js';
 import { armoriesClient } from '../clients/armories-client.js';
 import {
   armoriesNormalizer,
@@ -59,7 +60,7 @@ export class ArmoriesService {
 
   constructor() {
     // 캐시 정리 스케줄러 시작
-    this.cleanupScheduler = startCacheCleanupScheduler();
+    this.cleanupScheduler = startCacheManagerCleanupScheduler();
   }
 
   /**
@@ -197,7 +198,7 @@ export class ArmoriesService {
 
     try {
       // 1. 캐시에서 기존 정보 확인
-      const existingDetail = await armoriesCache.getCharacterDetail(characterName);
+      const existingDetail = await cacheManager.getCharacterDetail(characterName);
       let cacheHit = false;
 
       if (existingDetail) {
@@ -225,7 +226,7 @@ export class ArmoriesService {
       );
 
       // 4. 캐시에 저장
-      await armoriesCache.setCharacterDetail(characterName, normalizationResult.characterDetail);
+      await cacheManager.setCharacterDetail(characterName, normalizationResult.characterDetail);
 
       const processingTime = Date.now() - startTime;
 
@@ -263,7 +264,7 @@ export class ArmoriesService {
    * 캐릭터 상세 정보 조회
    */
   async getCharacterDetail(characterName: string): Promise<NormalizedCharacterDetail | null> {
-    return await armoriesCache.getCharacterDetail(characterName);
+    return await cacheManager.getCharacterDetail(characterName);
   }
 
   /**
@@ -276,7 +277,7 @@ export class ArmoriesService {
     });
 
     // 캐시에서 기존 정보 삭제
-    await armoriesCache.deleteCharacterDetail(characterName);
+    await cacheManager.deleteCharacterDetail(characterName);
 
     // 새로 처리
     const result = await this.processCharacterDetail(characterName);
@@ -301,7 +302,7 @@ export class ArmoriesService {
     >,
   ): Promise<Partial<NormalizedCharacterDetail> | null> {
     // 먼저 캐시에서 확인
-    const cachedDetail = await armoriesCache.getCharacterDetail(characterName);
+    const cachedDetail = await cacheManager.getCharacterDetail(characterName);
 
     if (cachedDetail) {
       // 캐시된 데이터에서 요청된 섹션만 반환
@@ -353,7 +354,7 @@ export class ArmoriesService {
       );
 
       // 캐시에 저장
-      await armoriesCache.setCharacterDetail(characterName, normalizedDetail.characterDetail);
+      await cacheManager.setCharacterDetail(characterName, normalizedDetail.characterDetail);
 
       // 요청된 섹션만 반환
       const result: Partial<NormalizedCharacterDetail> = {};
@@ -399,8 +400,8 @@ export class ArmoriesService {
   /**
    * 캐시 통계 조회
    */
-  getCacheStats(): ReturnType<typeof armoriesCache.getCacheStats> {
-    return armoriesCache.getCacheStats();
+  async getCacheStats(): Promise<ReturnType<typeof cacheManager.getCacheStats>> {
+    return await cacheManager.getCacheStats();
   }
 
   /**
