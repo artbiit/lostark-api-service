@@ -38,10 +38,13 @@ yarn build
 #### 자주 발생하는 타입 에러와 해결법
 
 ##### **A. 타입 Export 문제**
+
 ```
 Module '"@lostark/shared/types/V9"' has no exported member 'ARMORIES_ENDPOINTS'.
 ```
+
 **해결**: Import 경로를 직접 파일 경로로 변경
+
 ```typescript
 // ❌ 잘못된 방법
 import { ARMORIES_ENDPOINTS } from '@lostark/shared/types/V9';
@@ -51,19 +54,25 @@ import { ARMORIES_ENDPOINTS } from '@lostark/shared/types/V9/armories.js';
 ```
 
 ##### **B. 빌드 의존성 문제**
+
 ```
 Output file '/.../armories.d.ts' has not been built from source file
 ```
+
 **해결**: Shared 패키지 빌드 실행
+
 ```bash
 yarn workspace @lostark/shared build
 ```
 
 ##### **C. Optional 타입 호환성 문제**
+
 ```
 Type 'string | undefined' is not assignable to type 'string'.
 ```
+
 **해결**: 조건부 할당 사용
+
 ```typescript
 // ❌ 잘못된 방법
 guildName: profile.GuildName || undefined,
@@ -73,10 +82,13 @@ guildName: profile.GuildName || undefined,
 ```
 
 ##### **D. Export 충돌 문제**
+
 ```
 Module has already exported a member named 'ArmoriesQueueItem'.
 ```
+
 **해결**: 명시적 export 사용
+
 ```typescript
 // ❌ export * 사용 (충돌 위험)
 export * from './services/characters-service.js';
