@@ -1,0 +1,118 @@
+/**
+ * @cursor-change: 2025-01-27, v1.0.0, UDP Service 메인 진입점
+ *
+ * UDP Service 메인 모듈
+ * - 서버 초기화 및 시작
+ * - 프로세스 종료 처리
+ * - 에러 핸들링
+ */
+
+import { logger } from '@lostark/shared';
+import { udpServer } from './server.js';
+
+// === 프로세스 종료 처리 ===
+
+/**
+ * 정상 종료 처리
+ */
+async function gracefulShutdown(signal: string): Promise<void> {
+  logger.info(`Received ${signal}, starting graceful shutdown`);
+  
+  try {
+    await udpServer.stop();
+    logger.info('UDP service stopped successfully');
+    process.exit(0);
+  } catch (error) {
+    logger.error('Failed to stop UDP service gracefully', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    process.exit(1);
+  }
+}
+
+/**
+ * 비정상 종료 처리
+ */
+function handleUncaughtError(error: Error): void {
+  logger.error('Uncaught error', {
+    error: error.message,
+    stack: error.stack,
+  });
+  
+  // 서버 중지 시도
+  udpServer.stop().catch((stopError) => {
+    logger.error('Failed to stop server during error handling', {
+      error: stopError instanceof Error ? stopError.message : String(stopError),
+    });
+  });
+  
+  process.exit(1);
+}
+
+/**
+ * 처리되지 않은 Promise 거부 처리
+ */
+function handleUnhandledRejection(reason: unknown, promise: Promise<unknown>): void {
+  logger.error('Unhandled promise rejection', {
+    reason: reason instanceof Error ? reason.message : String(reason),
+    promise: promise.toString(),
+  });
+  
+  // 서버 중지 시도
+  udpServer.stop().catch((stopError) => {
+    logger.error('Failed to stop server during unhandled rejection', {
+      error: stopError instanceof Error ? stopError.message : String(stopError),
+    });
+  });
+  
+  process.exit(1);
+}
+
+// === 메인 함수 ===
+
+/**
+ * UDP Service 시작
+ */
+async function startUdpService(): Promise<void> {
+  try {
+    logger.info('Starting UDP service');
+    
+    // 서버 초기화
+    await udpServer.initialize();
+    
+    // 서버 시작
+    await udpServer.start();
+    
+    logger.info('UDP service started successfully');
+  } catch (error) {
+    logger.error('Failed to start UDP service', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    process.exit(1);
+  }
+}
+
+// === 프로세스 이벤트 리스너 등록 ===
+
+// 정상 종료 시그널
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// 비정상 종료 처리
+process.on('uncaughtException', handleUncaughtError);
+process.on('unhandledRejection', handleUnhandledRejection);
+
+// === 서비스 시작 ===
+
+// 메인 함수 실행
+startUdpService().catch((error) => {
+  logger.error('Failed to start UDP service', {
+    error: error instanceof Error ? error.message : String(error),
+  });
+  process.exit(1);
+});
+
+// === 모듈 export ===
+
+export { udpServer };
+export * from './server.js';

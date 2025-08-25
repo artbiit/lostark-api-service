@@ -13,7 +13,7 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
-    "@lostark/fetch": "workspace:*",
+    "@lostark/data-service": "workspace:*",
     "@lostark/shared": "workspace:*"
   },
   "devDependencies": {
