@@ -20,7 +20,77 @@ yarn typecheck
 yarn lint
 ```
 
-### 2. 개발 순서
+### 2. 🚨 **타입 에러 방지 체크리스트** (매번 확인 필수)
+
+새 작업 시작 전 반드시 다음 순서로 체크하세요:
+
+```bash
+# 1. 타입 체크
+yarn typecheck
+
+# 2. Shared 패키지 빌드 확인
+yarn workspace @lostark/shared build
+
+# 3. 전체 빌드
+yarn build
+```
+
+#### 자주 발생하는 타입 에러와 해결법
+
+##### **A. 타입 Export 문제**
+```
+Module '"@lostark/shared/types/V9"' has no exported member 'ARMORIES_ENDPOINTS'.
+```
+**해결**: Import 경로를 직접 파일 경로로 변경
+```typescript
+// ❌ 잘못된 방법
+import { ARMORIES_ENDPOINTS } from '@lostark/shared/types/V9';
+
+// ✅ 올바른 방법
+import { ARMORIES_ENDPOINTS } from '@lostark/shared/types/V9/armories.js';
+```
+
+##### **B. 빌드 의존성 문제**
+```
+Output file '/.../armories.d.ts' has not been built from source file
+```
+**해결**: Shared 패키지 빌드 실행
+```bash
+yarn workspace @lostark/shared build
+```
+
+##### **C. Optional 타입 호환성 문제**
+```
+Type 'string | undefined' is not assignable to type 'string'.
+```
+**해결**: 조건부 할당 사용
+```typescript
+// ❌ 잘못된 방법
+guildName: profile.GuildName || undefined,
+
+// ✅ 올바른 방법
+...(profile.GuildName && { guildName: profile.GuildName }),
+```
+
+##### **D. Export 충돌 문제**
+```
+Module has already exported a member named 'ArmoriesQueueItem'.
+```
+**해결**: 명시적 export 사용
+```typescript
+// ❌ export * 사용 (충돌 위험)
+export * from './services/characters-service.js';
+
+// ✅ 명시적 export 사용
+export { CharactersService } from './services/characters-service.js';
+```
+
+#### Import 경로 규칙
+
+- **권장**: `@lostark/shared/types/V9/armories.js` (직접 파일 경로)
+- **피해야 할**: `@lostark/shared/types/V9` (index.ts 경유)
+
+### 3. 개발 순서
 
 #### Phase 1: Shared 패키지 (기반)
 
