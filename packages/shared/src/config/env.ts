@@ -32,6 +32,13 @@ export const envSchema = z.object({
   REST_API_CORS_ORIGIN: z.string().default('*'),
   REST_API_RATE_LIMIT_PER_MINUTE: z.coerce.number().min(1).default(100),
 
+  // === REST Server ===
+  REST_SERVER_PORT: z.coerce.number().min(1).max(65535).default(3000),
+  REST_SERVER_HOST: z.string().default('0.0.0.0'),
+  CORS_ORIGIN: z.string().default('*'),
+  RATE_LIMIT_MAX: z.coerce.number().min(1).default(100),
+  RATE_LIMIT_WINDOW: z.coerce.number().min(1000).default(60000),
+
   // === UDP Gateway 설정 ===
   UDP_GATEWAY_PORT: z.coerce.number().min(1).max(65535).default(3001),
   UDP_GATEWAY_HOST: z.string().default('0.0.0.0'),
@@ -92,6 +99,11 @@ export const defaultConfig: EnvConfig = {
   REST_API_HOST: '0.0.0.0',
   REST_API_CORS_ORIGIN: '*',
   REST_API_RATE_LIMIT_PER_MINUTE: 100,
+  REST_SERVER_PORT: 3000,
+  REST_SERVER_HOST: '0.0.0.0',
+  CORS_ORIGIN: '*',
+  RATE_LIMIT_MAX: 100,
+  RATE_LIMIT_WINDOW: 60000,
   UDP_GATEWAY_PORT: 3001,
   UDP_GATEWAY_HOST: '0.0.0.0',
   UDP_GATEWAY_MAX_MESSAGE_SIZE: 8192,
