@@ -363,6 +363,7 @@ __metadata:
   dependencies:
     "@lostark/shared": "workspace:*"
     "@types/node": "npm:^24.0.0"
+    mysql2: "npm:^3.14.3"
     typescript: "npm:^5.9.2"
   languageName: unknown
   linkType: soft
@@ -384,7 +385,7 @@ __metadata:
   dependencies:
     "@types/node": "npm:^24.0.0"
     "@types/redis": "npm:^4.0.11"
-    mysql2: "npm:^3.0.0"
+    mysql2: "npm:^3.14.3"
     pino: "npm:^8.0.0"
     pino-pretty: "npm:^10.0.0"
     redis: "npm:^5.8.2"
@@ -3440,7 +3441,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mysql2@npm:^3.0.0":
+"mysql2@npm:^3.14.3":
   version: 3.14.3
   resolution: "mysql2@npm:3.14.3"
   dependencies:

@@ -13,7 +13,8 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@lostark/shared": "workspace:*"
+    "@lostark/shared": "workspace:*",
+    "mysql2": "^3.14.3"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
