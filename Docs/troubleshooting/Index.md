@@ -22,6 +22,7 @@ yarn build
 ### **자주 발생하는 타입 에러**
 
 #### **1. 타입 Export 문제**
+
 ```
 Module '"@lostark/shared/types/V9"' has no exported member 'ARMORIES_ENDPOINTS'.
 ```
@@ -29,16 +30,19 @@ Module '"@lostark/shared/types/V9"' has no exported member 'ARMORIES_ENDPOINTS'.
 **원인**: ESM 모듈 시스템에서 TypeScript가 export를 제대로 인식하지 못함
 
 **해결 방법**:
+
 1. Shared 패키지에 TypeScript 의존성 추가:
+
    ```bash
    yarn workspace @lostark/shared add -D typescript
    ```
 
 2. Import 경로를 직접 파일 경로로 변경:
+
    ```typescript
    // ❌ 잘못된 방법
    import { ARMORIES_ENDPOINTS } from '@lostark/shared/types/V9';
-   
+
    // ✅ 올바른 방법
    import { ARMORIES_ENDPOINTS } from '@lostark/shared/types/V9/armories.js';
    ```
@@ -49,6 +53,7 @@ Module '"@lostark/shared/types/V9"' has no exported member 'ARMORIES_ENDPOINTS'.
    ```
 
 #### **2. 빌드 의존성 문제**
+
 ```
 Output file '/.../armories.d.ts' has not been built from source file
 ```
@@ -56,11 +61,13 @@ Output file '/.../armories.d.ts' has not been built from source file
 **원인**: Shared 패키지가 빌드되지 않아서 타입 정의 파일이 없음
 
 **해결 방법**:
+
 ```bash
 yarn workspace @lostark/shared build
 ```
 
 #### **3. Optional 타입 호환성 문제**
+
 ```
 Type 'string | undefined' is not assignable to type 'string'.
 Type '{ ... }' is not assignable to type 'NormalizedCharacterDetail' with 'exactOptionalPropertyTypes: true'.
@@ -69,6 +76,7 @@ Type '{ ... }' is not assignable to type 'NormalizedCharacterDetail' with 'exact
 **원인**: TypeScript strict 모드에서 optional 속성 처리 문제
 
 **해결 방법**: 조건부 할당 사용
+
 ```typescript
 // ❌ 잘못된 방법
 guildName: profile.GuildName || undefined,
@@ -78,6 +86,7 @@ guildName: profile.GuildName || undefined,
 ```
 
 #### **4. Export 충돌 문제**
+
 ```
 Module has already exported a member named 'ArmoriesQueueItem'.
 Module has already exported a member named 'startCacheCleanupScheduler'.
@@ -86,6 +95,7 @@ Module has already exported a member named 'startCacheCleanupScheduler'.
 **원인**: 여러 모듈에서 동일한 이름의 export 충돌
 
 **해결 방법**: 명시적 export 사용
+
 ```typescript
 // ❌ export * 사용 (충돌 위험)
 export * from './services/characters-service.js';
