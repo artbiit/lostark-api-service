@@ -172,7 +172,7 @@ export const SERVERS = {
   ninav: '니나브',
 } as const;
 
-export type ServerName = typeof SERVERS[keyof typeof SERVERS];
+export type ServerName = (typeof SERVERS)[keyof typeof SERVERS];
 
 /**
  * 직업 목록 (일부)
@@ -183,13 +183,13 @@ export const CLASSES = {
   버서커: '버서커',
   디스트로이어: '디스트로이어',
   건랜서: '건랜서',
-  
+
   // 무도가
   인파이터: '인파이터',
   배틀마스터: '배틀마스터',
   포격사: '포격사',
   스트라이커: '스트라이커',
-  
+
   // 건너
   데빌헌터: '데빌헌터',
   블래스터: '블래스터',
@@ -197,7 +197,7 @@ export const CLASSES = {
   스카우터: '스카우터',
   건슬링어: '건슬링어',
   아르티스트: '아르티스트',
-  
+
   // 마법사
   바드: '바드',
   소서리스: '소서리스',
@@ -205,14 +205,35 @@ export const CLASSES = {
   블레이드: '블레이드',
   데모닉: '데모닉',
   리퍼: '리퍼',
-  
+
   // 스페셜리스트
   도화가: '도화가',
   기상술사: '기상술사',
-  
+
   // 기타
   발키리: '발키리',
   서머너: '서머너',
 } as const;
 
-export type ClassName = typeof CLASSES[keyof typeof CLASSES];
+export type ClassName = (typeof CLASSES)[keyof typeof CLASSES];
+
+// === 시장 관련 타입 ===
+
+/**
+ * 시장 정보
+ */
+export interface MarketInfo {
+  StartPrice: number;
+  BuyPrice: number;
+  BidPrice: number;
+  EndDate: string;
+  BidCount: number;
+  BidStartPrice: number;
+  IsCompetitive: boolean;
+  TradeAllowCount: number;
+}
+
+/**
+ * 시장 정렬 옵션
+ */
+export type MarketSort = 'BUY_PRICE' | 'BID_PRICE' | 'END_DATE' | 'ITEM_LEVEL' | 'ITEM_GRADE';
