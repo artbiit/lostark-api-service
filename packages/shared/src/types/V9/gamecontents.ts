@@ -85,12 +85,22 @@ export type GameContentsCalendarResponseV9 = GameContentV9[];
  * GAMECONTENTS API 엔드포인트
  */
 export const GAMECONTENTS_ENDPOINTS = {
+  /**
+   * @deprecated 도비스 던전 API는 더 이상 사용되지 않습니다
+   */
   CHALLENGE_ABYSS_DUNGEONS: '/gamecontents/challenge-abyss-dungeons',
+  /**
+   * @deprecated 도가토 API는 더 이상 사용되지 않습니다
+   */
   CHALLENGE_GUARDIAN_RAIDS: '/gamecontents/challenge-guardian-raids',
+  /**
+   * 주간 콘텐츠 달력 (프로키온의 나침반, 로웬, 필드보스 등)
+   */
   CALENDAR: '/gamecontents/calendar',
 } as const;
 
-export type GameContentsEndpoint = typeof GAMECONTENTS_ENDPOINTS[keyof typeof GAMECONTENTS_ENDPOINTS];
+export type GameContentsEndpoint =
+  (typeof GAMECONTENTS_ENDPOINTS)[keyof typeof GAMECONTENTS_ENDPOINTS];
 
 // === 콘텐츠 카테고리 상수 ===
 
@@ -108,7 +118,7 @@ export const CONTENT_CATEGORIES = {
   도가토: '도가토',
 } as const;
 
-export type ContentCategory = typeof CONTENT_CATEGORIES[keyof typeof CONTENT_CATEGORIES];
+export type ContentCategory = (typeof CONTENT_CATEGORIES)[keyof typeof CONTENT_CATEGORIES];
 
 // === 현재 버전 별칭 ===
 
