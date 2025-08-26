@@ -76,8 +76,13 @@ export async function getCharacterSiblings(characterName) {
  * 경매장 아이템 검색
  */
 export async function searchAuctionItems(params = {}) {
-  const searchParams = new URLSearchParams(params);
-  return makeApiRequest(`/auctions/items?${searchParams.toString()}`);
+  return makeApiRequest('/auctions/items', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params),
+  });
 }
 
 /**
@@ -89,10 +94,10 @@ export async function searchMarketItems(params = {}) {
 }
 
 /**
- * 게임 콘텐츠 조회
+ * 게임 콘텐츠 조회 (주간 콘텐츠 달력)
  */
 export async function getGameContents() {
-  return makeApiRequest('/gamecontents/challenge-abyss-dungeons');
+  return makeApiRequest('/gamecontents/calendar');
 }
 
 /**

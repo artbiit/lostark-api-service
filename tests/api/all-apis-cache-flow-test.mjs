@@ -108,51 +108,6 @@ async function checkCacheStatus(service, key) {
 // === API별 테스트 함수 ===
 
 /**
- * CHARACTERS API 테스트
- */
-async function testCharactersAPI() {
-  log('=== CHARACTERS API 테스트 시작 ===');
-
-  const apiClient = createCacheFlowClient();
-
-  for (const characterName of TEST_CHARACTERS) {
-    log(`\n--- ${characterName} 캐릭터 테스트 ---`);
-
-    // 1. 초기 상태 확인
-    log('1. 초기 캐시 상태 확인');
-    await checkCacheStatus(apiClient.characters, characterName);
-
-    // 2. API 호출 (Memory Cache에 저장)
-    log('2. API 호출 및 Memory Cache 저장');
-    const startTime = Date.now();
-    const result = await apiClient.characters.getCharacter(characterName);
-    const apiTime = Date.now() - startTime;
-
-    log('API 호출 결과:', {
-      success: !!result,
-      responseTime: `${apiTime}ms`,
-      dataSize: result ? JSON.stringify(result).length : 0,
-    });
-
-    // 3. Memory Cache 확인
-    log('3. Memory Cache 상태 확인');
-    await checkCacheStatus(apiClient.characters, characterName);
-
-    // 4. Redis로 이동 확인 (TTL 만료 후)
-    log('4. Redis 이동 확인 (5초 대기)');
-    await delay(5000);
-    await checkCacheStatus(apiClient.characters, characterName);
-
-    // 5. MySQL 저장 확인
-    log('5. MySQL 저장 확인');
-    await apiClient.characters.saveToDatabase(characterName);
-    await checkCacheStatus(apiClient.characters, characterName);
-
-    await delay(2000); // 다음 캐릭터 전 대기
-  }
-}
-
-/**
  * ARMORIES API 테스트 (가장 큰 단위)
  */
 async function testArmoriesAPI() {
@@ -207,31 +162,21 @@ async function testAuctionsAPI() {
   log('=== AUCTIONS API 테스트 시작 ===');
 
   const apiClient = createCacheFlowClient();
-
-  // 경매장 검색 테스트
-  const searchParams = {
-    CategoryCode: 200000, // 무기
-    ItemTier: 3,
-    ItemGrade: '고급',
-    PageNo: 1,
-    Sort: 'BUY_PRICE',
-  };
-
-  const key = JSON.stringify(searchParams);
+  const key = 'options';
 
   log('1. 초기 캐시 상태 확인');
   await checkCacheStatus(apiClient.auctions, key);
 
   log('2. API 호출 및 Memory Cache 저장');
   const startTime = Date.now();
-  const result = await apiClient.auctions.searchItems(searchParams);
+  const result = await apiClient.auctions.getOptions();
   const apiTime = Date.now() - startTime;
 
   log('API 호출 결과:', {
     success: !!result,
     responseTime: `${apiTime}ms`,
     dataSize: result ? JSON.stringify(result).length : 0,
-    itemCount: result?.Items?.length || 0,
+    categoryCount: result?.Categories?.length || 0,
   });
 
   log('3. Memory Cache 상태 확인');
@@ -325,21 +270,21 @@ async function testMarketsAPI() {
   log('=== MARKETS API 테스트 시작 ===');
 
   const apiClient = createCacheFlowClient();
-  const key = 'items';
+  const key = 'options';
 
   log('1. 초기 캐시 상태 확인');
   await checkCacheStatus(apiClient.markets, key);
 
   log('2. API 호출 및 Memory Cache 저장');
   const startTime = Date.now();
-  const result = await apiClient.markets.getItems();
+  const result = await apiClient.markets.getOptions();
   const apiTime = Date.now() - startTime;
 
   log('API 호출 결과:', {
     success: !!result,
     responseTime: `${apiTime}ms`,
     dataSize: result ? JSON.stringify(result).length : 0,
-    itemCount: result?.length || 0,
+    categoryCount: result?.Categories?.length || 0,
   });
 
   log('3. Memory Cache 상태 확인');
@@ -361,10 +306,7 @@ async function runAllTests() {
   log(`테스트 캐릭터: ${TEST_CHARACTERS.join(', ')}`);
 
   try {
-    // API별 테스트 실행
-    await testCharactersAPI();
-    await delay(2000);
-
+    // API별 테스트 실행 (CHARACTERS API 제거)
     await testArmoriesAPI(); // 가장 큰 단위
     await delay(2000);
 

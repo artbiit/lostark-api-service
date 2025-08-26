@@ -330,6 +330,53 @@ class AuctionsService {
     this.database = new DatabaseCache();
   }
 
+  async getOptions() {
+    const key = 'options';
+
+    // 1. Memory Cache 확인
+    let result = this.memoryCache.get(key);
+    if (result) {
+      return result;
+    }
+
+    // 2. Redis Cache 확인
+    result = await this.redisCache.get(key);
+    if (result) {
+      this.memoryCache.set(key, result, 300000); // 5분
+      return result;
+    }
+
+    // 3. Database 확인
+    result = await this.database.load(key);
+    if (result) {
+      await this.redisCache.set(key, result, 1800); // 30분
+      this.memoryCache.set(key, result, 300000); // 5분
+      return result;
+    }
+
+    // 4. API 호출 (GET 요청)
+    const apiResult = await makeApiRequest('/auctions/options');
+
+    // 디버깅을 위한 오류 정보 출력
+    if (apiResult.status !== 200) {
+      console.log('AUCTIONS OPTIONS API 오류:', {
+        status: apiResult.status,
+        statusText: apiResult.statusText,
+        error: apiResult.error,
+        url: apiResult.url,
+      });
+    }
+
+    if (apiResult.status === 200 && apiResult.data) {
+      this.memoryCache.set(key, apiResult.data, 300000); // 5분
+      await this.redisCache.set(key, apiResult.data, 1800); // 30분
+      await this.database.save(key, apiResult.data);
+      return apiResult.data;
+    }
+
+    return null;
+  }
+
   async searchItems(params) {
     const key = JSON.stringify(params);
 
@@ -354,9 +401,26 @@ class AuctionsService {
       return result;
     }
 
-    // 4. API 호출
-    const searchParams = new URLSearchParams(params);
-    const apiResult = await makeApiRequest(`/auctions/items?${searchParams.toString()}`);
+    // 4. API 호출 (POST 요청)
+    const apiResult = await makeApiRequest('/auctions/items', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+    });
+
+    // 디버깅을 위한 오류 정보 출력
+    if (apiResult.status !== 200) {
+      console.log('AUCTIONS API 오류:', {
+        status: apiResult.status,
+        statusText: apiResult.statusText,
+        error: apiResult.error,
+        url: apiResult.url,
+        params: params,
+      });
+    }
+
     if (apiResult.status === 200 && apiResult.data) {
       this.memoryCache.set(key, apiResult.data, 300000); // 5분
       await this.redisCache.set(key, apiResult.data, 1800); // 30분
@@ -492,7 +556,7 @@ class GameContentsService {
     }
 
     // 4. API 호출
-    const apiResult = await makeApiRequest('/gamecontents/challenge-abyss-dungeons');
+    const apiResult = await makeApiRequest('/gamecontents/calendar');
     if (apiResult.status === 200 && apiResult.data) {
       this.memoryCache.set(key, apiResult.data, 300000); // 5분
       await this.redisCache.set(key, apiResult.data, 1800); // 30분
@@ -535,6 +599,42 @@ class MarketsService {
     this.database = new DatabaseCache();
   }
 
+  async getOptions() {
+    const key = 'options';
+
+    // 1. Memory Cache 확인
+    let result = this.memoryCache.get(key);
+    if (result) {
+      return result;
+    }
+
+    // 2. Redis Cache 확인
+    result = await this.redisCache.get(key);
+    if (result) {
+      this.memoryCache.set(key, result, 300000); // 5분
+      return result;
+    }
+
+    // 3. Database 확인
+    result = await this.database.load(key);
+    if (result) {
+      await this.redisCache.set(key, result, 1800); // 30분
+      this.memoryCache.set(key, result, 300000); // 5분
+      return result;
+    }
+
+    // 4. API 호출
+    const apiResult = await makeApiRequest('/markets/options');
+    if (apiResult.status === 200 && apiResult.data) {
+      this.memoryCache.set(key, apiResult.data, 300000); // 5분
+      await this.redisCache.set(key, apiResult.data, 1800); // 30분
+      await this.database.save(key, apiResult.data);
+      return apiResult.data;
+    }
+
+    return null;
+  }
+
   async getItems() {
     const key = 'items';
 
@@ -559,8 +659,69 @@ class MarketsService {
       return result;
     }
 
+    // 4. API 호출 (POST 요청)
+    const searchParams = {
+      CategoryCode: 210000, // 보석
+      PageNo: 0,
+      Sort: 'BUY_PRICE',
+      SortCondition: 'ASC',
+    };
+
+    const apiResult = await makeApiRequest('/markets/items', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(searchParams),
+    });
+
+    // 디버깅을 위한 오류 정보 출력
+    if (apiResult.status !== 200) {
+      console.log('MARKETS ITEMS API 오류:', {
+        status: apiResult.status,
+        statusText: apiResult.statusText,
+        error: apiResult.error,
+        url: apiResult.url,
+        params: searchParams,
+      });
+    }
+
+    if (apiResult.status === 200 && apiResult.data) {
+      this.memoryCache.set(key, apiResult.data, 300000); // 5분
+      await this.redisCache.set(key, apiResult.data, 1800); // 30분
+      await this.database.save(key, apiResult.data);
+      return apiResult.data;
+    }
+
+    return null;
+  }
+
+  async getItemById(itemId) {
+    const key = `item-${itemId}`;
+
+    // 1. Memory Cache 확인
+    let result = this.memoryCache.get(key);
+    if (result) {
+      return result;
+    }
+
+    // 2. Redis Cache 확인
+    result = await this.redisCache.get(key);
+    if (result) {
+      this.memoryCache.set(key, result, 300000); // 5분
+      return result;
+    }
+
+    // 3. Database 확인
+    result = await this.database.load(key);
+    if (result) {
+      await this.redisCache.set(key, result, 1800); // 30분
+      this.memoryCache.set(key, result, 300000); // 5분
+      return result;
+    }
+
     // 4. API 호출
-    const apiResult = await makeApiRequest('/markets/items');
+    const apiResult = await makeApiRequest(`/markets/items/${itemId}`);
     if (apiResult.status === 200 && apiResult.data) {
       this.memoryCache.set(key, apiResult.data, 300000); // 5분
       await this.redisCache.set(key, apiResult.data, 1800); // 30분

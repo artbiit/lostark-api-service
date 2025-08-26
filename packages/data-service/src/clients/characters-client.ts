@@ -5,6 +5,9 @@
  * - siblings API 호출 및 에러 처리
  * - Rate Limit 관리
  * - 재시도 로직
+ *
+ * @deprecated CHARACTERS API는 ARMORIES API와 중복됩니다.
+ * 캐릭터 정보는 ArmoriesClient를 사용하세요.
  */
 
 import { logger } from '@lostark/shared';
@@ -16,6 +19,7 @@ import { config } from '../config.js';
 
 /**
  * CHARACTERS API 클라이언트
+ * @deprecated ARMORIES API 클라이언트를 사용하세요
  */
 export class CharactersClient {
   private readonly baseUrl: string;
