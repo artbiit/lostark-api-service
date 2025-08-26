@@ -1,9 +1,13 @@
 /**
- * @cursor-change: 2025-01-27, v1.0.0, data-service index 생성
+ * @cursor-change: 2025-01-27, v1.0.1, data-service index 업데이트 - 모든 API 통합
  *
  * Data Service 메인 엔트리 포인트
  * - CHARACTERS API: 캐릭터 기본 정보 조회
  * - ARMORIES API: 캐릭터 상세 정보 조회
+ * - AUCTIONS API: 경매장 검색
+ * - NEWS API: 공지사항 및 이벤트
+ * - GAMECONTENTS API: 주간 콘텐츠 달력
+ * - MARKETS API: 시장 정보
  * - Redis 캐시: 3계층 캐싱 구조 지원
  */
 
@@ -22,6 +26,24 @@ export { armoriesCache } from './cache/armories-cache.js';
 export { ArmoriesClient } from './clients/armories-client.js';
 export { ArmoriesNormalizer } from './normalizers/armories-normalizer.js';
 export { ArmoriesService } from './services/armories-service.js';
+
+// === AUCTIONS API ===
+export { AuctionsCache } from './cache/auctions-cache.js';
+export { AuctionsClient } from './clients/auctions-client.js';
+export { AuctionsNormalizer } from './normalizers/auctions-normalizer.js';
+export { AuctionsService } from './services/auctions-service.js';
+
+// === NEWS API ===
+export { NewsCache } from './cache/news-cache.js';
+export { NewsClient } from './clients/news-client.js';
+export { NewsNormalizer } from './normalizers/news-normalizer.js';
+export { NewsService } from './services/news-service.js';
+
+// === GAMECONTENTS API ===
+export { GameContentsClient } from './clients/gamecontents-client.js';
+
+// === MARKETS API ===
+export { MarketsClient } from './clients/markets-client.js';
 
 // === 캐시 시스템 ===
 export { cacheManager } from './cache/cache-manager.js';
