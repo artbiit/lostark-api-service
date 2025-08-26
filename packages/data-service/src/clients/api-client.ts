@@ -59,10 +59,14 @@ class RateLimiter {
 
 // === API 클라이언트 ===
 
-export function createApiClient() {
-  const rateLimiter = new RateLimiter(RATE_LIMIT_PER_MINUTE);
+export class ApiClient {
+  private rateLimiter: RateLimiter;
 
-  async function makeRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  constructor() {
+    this.rateLimiter = new RateLimiter(RATE_LIMIT_PER_MINUTE);
+  }
+
+  private async makeRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     const apiKey = process.env.LOSTARK_API_KEY;
 
@@ -71,7 +75,7 @@ export function createApiClient() {
     }
 
     // Rate Limit 대기
-    await rateLimiter.waitForSlot();
+    await this.rateLimiter.waitForSlot();
 
     const requestOptions: RequestInit = {
       method: 'GET',
@@ -90,7 +94,7 @@ export function createApiClient() {
         logger.debug('Making API request', {
           url,
           attempt,
-          remainingRequests: rateLimiter.getRemainingRequests(),
+          remainingRequests: this.rateLimiter.getRemainingRequests(),
         });
 
         const response = await fetch(url, requestOptions);
@@ -144,23 +148,21 @@ export function createApiClient() {
     throw lastError || new Error('Unknown error occurred');
   }
 
-  return {
-    async get<T>(endpoint: string): Promise<T> {
-      return makeRequest<T>(endpoint, { method: 'GET' });
-    },
+  async get<T>(endpoint: string): Promise<T> {
+    return this.makeRequest<T>(endpoint, { method: 'GET' });
+  }
 
-    async post<T>(endpoint: string, body: any): Promise<T> {
-      return makeRequest<T>(endpoint, {
-        method: 'POST',
-        body: JSON.stringify(body),
-      });
-    },
+  async post<T>(endpoint: string, body: any): Promise<T> {
+    return this.makeRequest<T>(endpoint, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  }
 
-    getRateLimitInfo() {
-      return {
-        remaining: rateLimiter.getRemainingRequests(),
-        limit: RATE_LIMIT_PER_MINUTE,
-      };
-    },
-  };
+  getRateLimitInfo() {
+    return {
+      remaining: this.rateLimiter.getRemainingRequests(),
+      limit: RATE_LIMIT_PER_MINUTE,
+    };
+  }
 }

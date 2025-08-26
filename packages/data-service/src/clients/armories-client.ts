@@ -22,7 +22,7 @@ import {
   ArmoryProfileV9,
 } from '@lostark/shared/types/V9/armories.js';
 
-import { createApiClient } from './api-client.js';
+import { ApiClient } from './api-client.js';
 
 // === ARMORIES API 클라이언트 ===
 
@@ -30,10 +30,10 @@ import { createApiClient } from './api-client.js';
  * ARMORIES API 클라이언트
  */
 export class ArmoriesClient {
-  private apiClient: ReturnType<typeof createApiClient>;
+  private apiClient: ApiClient;
 
   constructor() {
-    this.apiClient = createApiClient();
+    this.apiClient = new ApiClient();
   }
 
   /**
