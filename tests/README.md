@@ -9,8 +9,11 @@
 ```
 tests/
 ├── api/                          # API 테스트
-│   └── lostark-api/
-│       └── V9.0.0/              # Lost Ark API v9.0.0 테스트
+│   ├── lostark-api/
+│   │   └── V9.0.0/              # Lost Ark API v9.0.0 테스트
+│   ├── cache-flow-test.mjs      # 전체 API 캐시 플로우 테스트
+│   ├── simple-cache-flow-test.mjs # ARMORIES API 캐시 플로우 테스트
+│   └── all-apis-cache-flow-test.mjs # 모든 API 캐시 플로우 테스트
 ├── character-data/               # 캐릭터 데이터 수집/분석
 │   ├── collector/               # 데이터 수집기
 │   ├── analyzer/                # 데이터 분석기
@@ -19,7 +22,8 @@ tests/
 │   ├── env-loader.mjs          # 환경변수 로드
 │   ├── file-utils.mjs          # 파일 유틸리티
 │   ├── streamer-list.mjs       # 스트리머 목록
-│   └── api-client.mjs          # API 클라이언트
+│   ├── api-client.mjs          # API 클라이언트
+│   └── cache-flow-client.mjs   # 캐시 플로우 테스트용 클라이언트
 ├── shared/                      # 공유 테스트
 └── README.md                    # 이 파일
 ```
@@ -43,6 +47,10 @@ node tests/character-data/analyzer/character-data-analyzer.mjs
 # Lost Ark API 테스트
 node tests/api/lostark-api/V9.0.0/api.test.mjs
 node tests/api/lostark-api/V9.0.0/siblings.test.mjs
+
+# 캐시 플로우 테스트
+node tests/api/simple-cache-flow-test.mjs      # ARMORIES API만 테스트
+node tests/api/all-apis-cache-flow-test.mjs    # 모든 API 테스트
 ```
 
 ## 📊 데이터 수집
@@ -146,6 +154,17 @@ const characterData = await getCharacterInfo('캐릭터명');
 const siblingsData = await getCharacterSiblings('캐릭터명');
 ```
 
+### cache-flow-client.mjs
+
+캐시 플로우 테스트용 API 클라이언트
+
+```javascript
+import { createCacheFlowClient } from './common/cache-flow-client.mjs';
+
+const apiClient = createCacheFlowClient();
+const result = await apiClient.armories.getCharacterDetail('캐릭터명');
+```
+
 ## 📋 스트리머 목록
 
 현재 수집 대상 스트리머들:
@@ -222,5 +241,6 @@ const siblingsData = await getCharacterSiblings('캐릭터명');
 
 ## 🔄 업데이트 이력
 
+- **2025-01-27**: 캐시 플로우 테스트 추가, 3계층 캐시 시스템 검증 도구 구현
 - **2024-12-19**: 디렉토리 구조 정리, 공통 모듈 분리, 캐릭터 데이터 수집/분석
   도구 개선

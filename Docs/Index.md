@@ -42,6 +42,8 @@
 ### 🧪 테스트
 
 - [**Test Structure**](../tests/README.md) - 테스트 디렉토리 구조 및 가이드
+- [**Cache Flow Test Results**](./testing/cache-flow-test-results.md) - 3계층
+  캐시 시스템 테스트 결과
 - [**Cache Directory**](../cache/README.md) - 캐시된 데이터 구조 및 관리
 
 ### 🔧 트러블슈팅
@@ -84,6 +86,7 @@ Docker를 통한 선택적 서비스 실행은 [Docker Setup Guide](./docker-set
 - **CHARACTERS API**: 계정 기반 캐릭터 추적 및 변화 감지 ✅ 완료
 - **ARMORIES API**: 캐릭터 상세 정보 처리 및 큐 기반 처리 ✅ 완료
 - **Data Service**: CHARACTERS/ARMORIES API 통합 서비스 ✅ 완료
+- **Cache System**: 3계층 캐시 (Memory → Redis → MySQL) ✅ 완료
 
 ### 새로운 구조
 
