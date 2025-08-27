@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "moduleResolution": "NodeNext",
+    "paths": {
+      "@lostark/shared": ["../packages/shared/src/index.ts"],
+      "@lostark/shared/*": ["../packages/shared/src/*"],
+      "@lostark/data-service": ["../packages/data-service/src/index.ts"],
+      "@lostark/data-service/*": ["../packages/data-service/src/*"],
+      "@lostark/rest-service": ["../packages/rest-service/src/index.ts"],
+      "@lostark/udp-service": ["../packages/udp-service/src/index.ts"],
+      "@tests/*": ["./*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.mjs"],
+  "exclude": ["node_modules", "dist", "coverage"]
+}

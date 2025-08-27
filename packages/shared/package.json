@@ -56,7 +56,8 @@
     "dev": "tsc --watch",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "test": "node --test ../../tests/shared/env.test.ts"
+    "test": "tsx --test ../../tests/unit/shared/**/*.test.ts",
+    "test:watch": "tsx --test --watch ../../tests/unit/shared/**/*.test.ts"
   },
   "dependencies": {
     "@types/redis": "^4.0.11",

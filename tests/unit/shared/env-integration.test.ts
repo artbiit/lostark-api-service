@@ -10,11 +10,11 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
 
-import { defaultConfig, parseEnv } from '../../packages/shared/dist/config/env.js';
+import { defaultConfig, parseEnv } from '@lostark/shared/config';
 
 test('Environment Variables Integration', async (t) => {
   await t.test('Environment variables should be properly validated with zod', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     // 필수 환경 변수 존재 확인
     assert(env.LOSTARK_API_KEY && env.LOSTARK_API_KEY.length > 0, 'LOSTARK_API_KEY is required');
@@ -43,7 +43,7 @@ test('Environment Variables Integration', async (t) => {
   });
 
   await t.test('No missing environment variables should exist', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     // 모든 필수 환경 변수 확인
     const requiredVars = [
@@ -83,7 +83,7 @@ test('Environment Variables Integration', async (t) => {
     const startTime = Date.now();
 
     // 환경 변수 로딩 (타임아웃 테스트)
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     const endTime = Date.now();
     const loadTime = endTime - startTime;
@@ -97,7 +97,7 @@ test('Environment Variables Integration', async (t) => {
   });
 
   await t.test('Environment variables should have reasonable default values', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     // 기본값 검증
     assert.strictEqual(env.NODE_ENV, 'development', 'NODE_ENV should default to development');
@@ -118,7 +118,7 @@ test('Environment Variables Integration', async (t) => {
   });
 
   await t.test('Default config should match environment variable defaults', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     // defaultConfig와 실제 환경 변수 값 비교
     assert.strictEqual(defaultConfig.NODE_ENV, env.NODE_ENV, 'NODE_ENV should match default');
@@ -152,9 +152,9 @@ test('Environment Variables Integration', async (t) => {
 
   await t.test('Environment variables should be consistent across multiple loads', () => {
     // 여러 번 환경 변수 로딩하여 일관성 확인
-    const env1 = parseEnv(true, '../../.env');
-    const env2 = parseEnv(true, '../../.env');
-    const env3 = parseEnv(true, '../../.env');
+    const env1 = parseEnv(true, '../../../.env');
+    const env2 = parseEnv(true, '../../../.env');
+    const env3 = parseEnv(true, '../../../.env');
 
     // 동일한 값인지 확인
     assert.strictEqual(env1.LOSTARK_API_KEY, env2.LOSTARK_API_KEY, 'API key should be consistent');
