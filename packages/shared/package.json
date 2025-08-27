@@ -55,10 +55,12 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rimraf dist",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/shared/env.test.ts"
   },
   "dependencies": {
     "@types/redis": "^4.0.11",
+    "dotenv": "^17.2.1",
     "mysql2": "^3.14.3",
     "pino": "^8.0.0",
     "pino-pretty": "^10.0.0",

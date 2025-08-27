@@ -91,6 +91,21 @@
 - API 응답 저장: cache/api-test-results/ 활용
 - siblings API 구조: { "캐릭터명": [siblings_array] } 객체 형태 준수
 
+# === 테스트 유형별 규칙 ===
+## 임시 테스트 (Prototype/Exploratory)
+- 목적: 패키지 및 코드베이스와 무관한 빠른 개념 검증
+- 파일 형식: .mjs (ESM) - 컴파일 없이 즉시 실행
+- 위치: tests/prototype/ 또는 tests/exploratory/
+- 특징: 빠른 결과 확인, 실제 코드베이스 반영 확률 높음
+- 예시: API 응답 구조 분석, 데이터 변환 로직 검증, 외부 라이브러리 테스트
+
+## 정규 테스트 (Integration/Unit)
+- 목적: 패키지 및 코드베이스 연관된 실제 동작 검증
+- 파일 형식: .ts - TypeScript 컴파일 환경과 동일
+- 위치: tests/{카테고리}/ (api/, shared/, character-data/ 등)
+- 특징: 실제 환경에서 동작 확인, 기존 기능 정상 동작 검증
+- 예시: 패키지 내 함수 테스트, API 엔드포인트 통합 테스트, 타입 안정성 검증
+
 # === 산출물/문서 관리 ===
 - README.md: 프로젝트 설명, 셋업, 실행, 주요 env, 엔드포인트 포함
 - 의미 있는 변경 시 README 동기화

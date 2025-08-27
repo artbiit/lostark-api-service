@@ -5,10 +5,16 @@
  * - 서버 초기화 및 시작
  * - 프로세스 종료 처리
  * - 에러 핸들링
+ * - dotenv를 통한 일관된 환경변수 로딩
  */
 
 import { logger } from '@lostark/shared';
+import { parseEnv } from '@lostark/shared/config/env.js';
 import { udpServer } from './server.js';
+
+// === 환경변수 로딩 ===
+// parseEnv() 함수가 자동으로 .env 파일을 로드합니다
+const env = parseEnv();
 
 // === 프로세스 종료 처리 ===
 
