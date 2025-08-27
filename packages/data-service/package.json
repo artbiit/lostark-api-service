@@ -10,7 +10,10 @@
     "dev": "tsc --watch",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "tsx --test ../../tests/unit/data-service/**/*.test.ts",
+    "test:watch": "tsx --test --watch ../../tests/unit/data-service/**/*.test.ts",
+    "test:integration": "tsx --test ../../tests/integration/api/**/*.test.ts"
   },
   "dependencies": {
     "@lostark/shared": "workspace:*",

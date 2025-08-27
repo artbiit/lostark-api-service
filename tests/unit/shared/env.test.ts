@@ -11,11 +11,11 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
 
-import { defaultConfig, envSchema, parseEnv } from '../../packages/shared/dist/config/env.js';
+import { defaultConfig, envSchema, parseEnv } from '@lostark/shared/config';
 
 test('Environment Variables', async (t) => {
   await t.test('parseEnv() should load environment variables from .env file', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     assert(env !== undefined);
     assert(typeof env === 'object');
@@ -23,14 +23,14 @@ test('Environment Variables', async (t) => {
   });
 
   await t.test('parseEnv() should have required LOSTARK_API_KEY', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     assert(env.LOSTARK_API_KEY !== undefined);
     assert(env.LOSTARK_API_KEY.length > 0);
   });
 
   await t.test('parseEnv() should apply default values for missing variables', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     assert.strictEqual(env.NODE_ENV, 'development');
     assert.strictEqual(env.LOSTARK_API_VERSION, 'V9.0.0');
@@ -39,7 +39,7 @@ test('Environment Variables', async (t) => {
   });
 
   await t.test('parseEnv() should validate environment variable types', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     // 숫자 타입 검증
     assert.strictEqual(typeof env.REST_API_PORT, 'number');
@@ -105,7 +105,7 @@ test('Environment Variables', async (t) => {
   });
 
   await t.test('Environment variables should validate port numbers are within valid range', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     assert(env.REST_API_PORT > 0);
     assert(env.REST_API_PORT <= 65535);
@@ -114,7 +114,7 @@ test('Environment Variables', async (t) => {
   });
 
   await t.test('Environment variables should validate rate limit values are reasonable', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
 
     assert(env.FETCH_RATE_LIMIT_PER_MINUTE > 0);
     assert(env.FETCH_RATE_LIMIT_PER_MINUTE <= 1000);
@@ -123,7 +123,7 @@ test('Environment Variables', async (t) => {
   });
 
   await t.test('Environment variables should validate log level is valid', () => {
-    const env = parseEnv(true, '../../.env');
+    const env = parseEnv(true, '../../../.env');
     const validLogLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace'];
 
     assert(validLogLevels.includes(env.LOG_LEVEL));

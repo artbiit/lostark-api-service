@@ -1,289 +1,268 @@
 # Tests Directory
 
-<!-- @cursor-change: 2025-01-27, v1.0.1, 문서 최신화 규칙 적용 -->
+<!-- @cursor-change: 2025-01-27, v1.0.2, 테스트 구조 재설계 완료 -->
 
 이 디렉토리는 Lost Ark API 서비스의 테스트 및 데이터 수집 도구들을 포함합니다.
 
-## 📁 디렉토리 구조
+## 📁 새로운 디렉토리 구조
 
 ```
 tests/
-├── api/                          # API 테스트
-│   ├── lostark-api/
-│   │   └── V9.0.0/              # Lost Ark API v9.0.0 테스트
-│   ├── cache-flow-test.mjs      # 전체 API 캐시 플로우 테스트 (레거시)
-│   ├── simple-cache-flow-test.mjs # ARMORIES API 캐시 플로우 테스트 (레거시)
-│   ├── all-apis-cache-flow-test.mjs # 모든 API 캐시 플로우 테스트 (레거시)
-│   ├── package-based-cache-flow-test.ts # 패키지 기반 캐시 플로우 테스트 (새로운)
-│   └── run-package-test.mjs     # 패키지 기반 테스트 실행 스크립트
-├── character-data/               # 캐릭터 데이터 수집/분석
-│   ├── collector/               # 데이터 수집기
-│   ├── analyzer/                # 데이터 분석기
-│   └── run-character-analysis.mjs  # 통합 실행 스크립트
+├── unit/                          # 단위 테스트 (TypeScript)
+│   ├── shared/                   # shared 패키지 테스트
+│   │   ├── env.test.ts          # 환경변수 테스트
+│   │   └── config.test.ts       # 설정 모듈 테스트
+│   ├── data-service/            # data-service 패키지 테스트
+│   ├── rest-service/            # rest-service 패키지 테스트
+│   └── udp-service/             # udp-service 패키지 테스트
+├── integration/                  # 통합 테스트 (TypeScript)
+│   ├── api/                     # API 통합 테스트
+│   │   └── armories.test.ts     # ARMORIES API 테스트
+│   ├── cache/                   # 캐시 통합 테스트
+│   └── services/                # 서비스 간 통합 테스트
+├── e2e/                         # 엔드투엔드 테스트 (TypeScript)
+├── prototype/                   # 프로토타입 테스트 (.mjs)
+│   ├── character-data/          # 캐릭터 데이터 수집/분석
+│   └── legacy/                  # 레거시 테스트 파일들
 ├── common/                      # 공통 모듈
-│   ├── env-loader.mjs          # 환경변수 로드
-│   ├── file-utils.mjs          # 파일 유틸리티
-│   ├── streamer-list.mjs       # 스트리머 목록
-│   ├── api-client.mjs          # API 클라이언트
-│   └── cache-flow-client.mjs   # 캐시 플로우 테스트용 클라이언트
-├── shared/                      # 공유 테스트
-└── README.md                    # 이 파일
+│   ├── test-utils.ts           # 테스트 유틸리티 (TypeScript)
+│   ├── test-runner.ts          # 테스트 실행 스크립트 (TypeScript)
+│   ├── env-loader.mjs          # 환경변수 로드 (레거시)
+│   ├── file-utils.mjs          # 파일 유틸리티 (레거시)
+│   ├── streamer-list.mjs       # 스트리머 목록 (레거시)
+│   ├── api-client.mjs          # API 클라이언트 (레거시)
+│   └── cache-flow-client.mjs   # 캐시 플로우 테스트용 클라이언트 (레거시)
+├── fixtures/                    # 테스트 데이터
+├── run-tests.mjs               # 테스트 실행 메인 스크립트
+└── README.md                   # 이 파일
 ```
 
-## 🚀 사용법
+## 🚀 새로운 테스트 실행 방법
 
-### 캐릭터 데이터 수집 및 분석
+### 기본 테스트 실행
 
 ```bash
-# 전체 프로세스 실행 (수집 + 분석)
-node tests/character-data/run-character-analysis.mjs
+# 전체 테스트 실행
+yarn test
 
-# 개별 실행
-node tests/character-data/collector/character-data-collector.mjs
-node tests/character-data/analyzer/character-data-analyzer.mjs
-```
+# 단위 테스트만 실행
+yarn test:unit
 
-### API 테스트
+# 통합 테스트만 실행
+yarn test:integration
 
-```bash
-# Lost Ark API 테스트
-node tests/api/lostark-api/V9.0.0/api.test.mjs
-node tests/api/lostark-api/V9.0.0/siblings.test.mjs
+# API 테스트만 실행
+yarn test:api
 
-# 캐시 플로우 테스트 (패키지 기반 - 권장)
-yarn test:cache-flow                                    # 패키지 기반 테스트 실행
-node tests/api/run-package-test.mjs                    # 실행 스크립트 사용
-
-# 캐시 플로우 테스트 (레거시 mjs 파일)
-node tests/api/simple-cache-flow-test.mjs              # ARMORIES API만 테스트
-node tests/api/all-apis-cache-flow-test.mjs            # 모든 API 테스트
-```
-
-## 📊 데이터 수집
-
-### 캐릭터 데이터 수집기
-
-스트리머들의 캐릭터 정보를 수집하는 도구입니다.
-
-**기능:**
-
-- 스트리머 목록 기반 대표 캐릭터 정보 수집
-- 형제 캐릭터 목록 수집
-- API 응답 전체(성공/실패 포함) 캐싱
-- 수집 결과 요약 저장
-
-**출력:**
-
-- `cache/character-data/character-{캐릭터명}-{타임스탬프}.json`
-- `cache/character-data/collection-summary-{타임스탬프}.json`
-
-### 캐릭터 데이터 분석기
-
-수집된 캐릭터 데이터를 분석하는 도구입니다.
-
-**기능:**
-
-- 스트리머별 캐릭터 통계 분석
-- 클래스별 통계 분석
-- API 응답 품질 분석
-- 상세 분석 결과 저장
-
-**출력:**
-
-- `cache/character-data/analysis-{타임스탬프}.json`
-
-## 🔧 공통 모듈
-
-### env-loader.mjs
-
-환경변수 로드 및 검증 기능
-
-```javascript
-import {
-  loadEnv,
-  getApiKey,
-  validateRequiredEnvVars,
-} from './common/env-loader.mjs';
-
-loadEnv();
-validateRequiredEnvVars();
-const apiKey = getApiKey();
-```
-
-### file-utils.mjs
-
-파일 관련 유틸리티
-
-```javascript
-import {
-  getCurrentDir,
-  ensureCacheDir,
-  createTimestamp,
-  saveJsonFile,
-  loadJsonFile,
-  loadJsonFilesFromDir,
-} from './common/file-utils.mjs';
-
-const __dirname = getCurrentDir(import.meta.url);
-await ensureCacheDir(cachePath);
-const timestamp = createTimestamp();
-await saveJsonFile(filepath, data);
-```
-
-### streamer-list.mjs
-
-스트리머 목록 관리
-
-```javascript
-import {
-  STREAMERS,
-  getCharacterByStreamer,
-  getStreamerByCharacter,
-  getAllStreamerNames,
-  getAllCharacterNames,
-} from './common/streamer-list.mjs';
-```
-
-### api-client.mjs
-
-Lost Ark API 클라이언트
-
-```javascript
-import {
-  getCharacterInfo,
-  getCharacterSiblings,
-  searchAuctionItems,
-  searchMarketItems,
-} from './common/api-client.mjs';
-
-const characterData = await getCharacterInfo('캐릭터명');
-const siblingsData = await getCharacterSiblings('캐릭터명');
-```
-
-### cache-flow-client.mjs
-
-캐시 플로우 테스트용 API 클라이언트
-
-```javascript
-import { createCacheFlowClient } from './common/cache-flow-client.mjs';
-
-const apiClient = createCacheFlowClient();
-const result = await apiClient.armories.getCharacterDetail('캐릭터명');
-```
-
-## 📦 패키지 기반 테스트
-
-### package-based-cache-flow-test.ts
-
-실제 패키지의 클라이언트를 사용하는 새로운 TypeScript 테스트입니다.
-
-**특징:**
-
-- **실제 패키지 사용**: `@lostark/data-service`의 실제 클라이언트 사용
-- **TypeScript 기반**: 타입 안전성과 IDE 지원 향상
-- **Armories API 특수성 반영**: 전체 API + 개별 섹션 테스트
-- **API 목록 검증**: 공식 문서와 비교하여 누락된 API 확인
-- **더 정확한 테스트**: 실제 서비스 로직과 동일한 환경에서 테스트
-
-**테스트 대상 API:**
-
-1. **ARMORIES API**: 메인 API (383KB) + 9개 개별 섹션
-2. **AUCTIONS API**: 옵션 조회
-3. **NEWS API**: 공지사항 목록
-4. **GAMECONTENTS API**: 주간 콘텐츠 달력
-5. **MARKETS API**: 옵션 조회 + 아이템 ID 조회
-
-**실행 방법:**
-
-```bash
-# 권장 방법
+# 캐시 플로우 테스트 실행
 yarn test:cache-flow
 
-# 또는 실행 스크립트 사용
-node tests/api/run-package-test.mjs
+# 워크스페이스별 테스트 실행
+yarn test:workspace
 ```
 
-**API 목록 검증 결과:**
+### 패키지별 테스트 실행
 
-- ✅ **구현된 API**: NEWS, CHARACTERS, ARMORIES, AUCTIONS, MARKETS, GAMECONTENTS
-- ❌ **누락된 API**: GUILDS (deprecated, 302 리다이렉트로 사용 불가)
+```bash
+# shared 패키지 테스트
+yarn workspace @lostark/shared test
 
-## 📋 스트리머 목록
+# data-service 패키지 테스트
+yarn workspace @lostark/data-service test
 
-현재 수집 대상 스트리머들:
+# rest-service 패키지 테스트
+yarn workspace @lostark/rest-service test
 
-| 스트리머     | 대표 캐릭터  |
-| ------------ | ------------ |
-| 이다         | 이다         |
-| 쫀지         | 쫀지         |
-| 노돌리       | 노돌리       |
-| 박서림       | 박서림       |
-| 로마러       | 로마러       |
-| 성대         | 성대         |
-| 짱여니       | 짱여니       |
-| 선짱         | 선짱         |
-| 도읍지       | 도읍지       |
-| 게임하는인기 | 게임하는인기 |
-| 신선한망치   | 신선한망치   |
-| 새미네집     | 디아스페로   |
-| 숫여우       | 수채화여우   |
-| 리연         | 특치달소     |
-
-## 🔍 분석 결과 예시
-
-### 스트리머별 통계
-
-```json
-{
-  "streamer": "이다",
-  "characters": [
-    {
-      "name": "이다",
-      "level": 60,
-      "class": "버서커",
-      "itemLevel": 1620.5,
-      "server": "아브렐슈드",
-      "type": "main"
-    }
-  ],
-  "totalCharacters": 1,
-  "apiSuccess": 2,
-  "apiFailed": 0
-}
+# udp-service 패키지 테스트
+yarn workspace @lostark/udp-service test
 ```
 
-### 클래스별 통계
+### 스크립트를 통한 실행
 
-```json
-{
-  "class": "버서커",
-  "count": 5,
-  "streamers": ["이다", "쫀지", "노돌리"],
-  "avgLevel": 59.8,
-  "avgItemLevel": 1615.2
-}
+```bash
+# 메인 스크립트 사용
+node tests/run-tests.mjs unit        # 단위 테스트
+node tests/run-tests.mjs integration # 통합 테스트
+node tests/run-tests.mjs api         # API 테스트
+node tests/run-tests.mjs all         # 전체 테스트
 ```
 
-### API 품질
+### 개발 중 테스트
 
-```json
-{
-  "totalRequests": 28,
-  "successfulRequests": 26,
-  "failedRequests": 2,
-  "successRate": "92.9"
-}
+```bash
+# 감시 모드로 테스트 실행
+yarn test:watch
+
+# 특정 패키지 감시 모드
+yarn workspace @lostark/shared test:watch
 ```
 
-## ⚠️ 주의사항
+## 🔧 새로운 테스트 유틸리티
 
-1. **API 키 필요**: `.env` 파일에 `LOSTARK_API_KEY` 설정 필요
-2. **레이트 리밋**: API 호출 간격 조절 (1초 대기)
-3. **캐시 디렉토리**: `cache/character-data/` 자동 생성
-4. **스트리머 목록**: `common/streamer-list.mjs`에서 관리
+### test-utils.ts
 
-## 🔄 업데이트 이력
+TypeScript 기반 테스트 유틸리티
 
-- **2025-01-27**: 캐시 플로우 테스트 추가, 3계층 캐시 시스템 검증 도구 구현
-- **2024-12-19**: 디렉토리 구조 정리, 공통 모듈 분리, 캐릭터 데이터 수집/분석
-  도구 개선
+```typescript
+import {
+  setupTestEnvironment,
+  validateTestEnvironment,
+  createTestClient,
+  withTimeout,
+  saveTestData,
+  loadTestData,
+} from '../common/test-utils';
+
+// 테스트 환경 설정
+const env = setupTestEnvironment();
+
+// 테스트 클라이언트 생성
+const client = createTestClient();
+
+// 타임아웃과 함께 테스트
+const result = await withTimeout(someAsyncOperation(), 10000);
+```
+
+### test-runner.ts
+
+프로그래밍 방식 테스트 실행
+
+```typescript
+import {
+  runUnitTests,
+  runIntegrationTests,
+  runAllTests,
+} from '../common/test-runner';
+
+// 단위 테스트 실행
+const result = await runUnitTests({ verbose: true });
+
+// 전체 테스트 실행
+const summary = await runAllTests();
+```
+
+## 📊 테스트 유형별 특징
+
+### 단위 테스트 (Unit Tests)
+
+- **목적**: 개별 함수/모듈 검증
+- **위치**: `tests/unit/`
+- **형식**: `.test.ts`
+- **실행**: `yarn test:unit`
+
+### 통합 테스트 (Integration Tests)
+
+- **목적**: 모듈 간 상호작용 검증
+- **위치**: `tests/integration/`
+- **형식**: `.test.ts`
+- **실행**: `yarn test:integration`
+
+### API 테스트 (API Tests)
+
+- **목적**: 외부 API 연동 검증
+- **위치**: `tests/integration/api/`
+- **형식**: `.test.ts`
+- **실행**: `yarn test:api`
+
+### 프로토타입 테스트 (Prototype Tests)
+
+- **목적**: 빠른 개념 검증
+- **위치**: `tests/prototype/`
+- **형식**: `.mjs`
+- **실행**: `node tests/prototype/...`
+
+## 🔄 마이그레이션 완료 사항
+
+### ✅ 완료된 작업
+
+1. **Yarn PnP 설정 명시**
+   - `.yarnrc.yml` 생성
+   - PnP 모드 및 TypeScript 지원 설정
+
+2. **테스트 스크립트 표준화**
+   - 루트 `package.json`에 통일된 테스트 스크립트 추가
+   - 모든 패키지에 테스트 스크립트 추가
+
+3. **TypeScript 설정 개선**
+   - `tests/tsconfig.json` 생성
+   - PnP 호환 경로 매핑 설정
+
+4. **테스트 구조 재설계**
+   - `unit/`, `integration/`, `e2e/` 디렉토리 생성
+   - 기존 테스트 파일들을 새로운 구조로 이동
+
+5. **테스트 유틸리티 생성**
+   - `test-utils.ts`: 공통 테스트 함수들
+   - `test-runner.ts`: 프로그래밍 방식 테스트 실행
+
+6. **새로운 테스트 생성**
+   - `config.test.ts`: shared config 모듈 테스트
+   - `armories.test.ts`: ARMORIES API 통합 테스트
+
+7. **테스트 실행 스크립트**
+   - `run-tests.mjs`: 메인 테스트 실행 스크립트
+
+### 🎯 개선된 점
+
+1. **일관된 실행 환경**
+   - 모든 테스트가 `tsx`를 통해 실행
+   - TypeScript 컴파일 없이 직접 실행
+
+2. **명확한 테스트 분류**
+   - 단위/통합/API 테스트 명확히 분리
+   - 각 테스트 유형별 실행 방법 제공
+
+3. **개선된 모듈 해석**
+   - PnP 환경에서 안정적인 모듈 해석
+   - 경로 매핑을 통한 일관된 import
+
+4. **표준화된 테스트 유틸리티**
+   - 공통 테스트 함수들 제공
+   - 환경 설정 및 검증 자동화
+
+## 🚨 주의사항
+
+### 레거시 파일들
+
+다음 파일들은 레거시로 분류되어 점진적으로 마이그레이션됩니다:
+
+- `tests/common/env-loader.mjs`
+- `tests/common/file-utils.mjs`
+- `tests/common/streamer-list.mjs`
+- `tests/common/api-client.mjs`
+- `tests/common/cache-flow-client.mjs`
+- `tests/prototype/` 하위의 모든 `.mjs` 파일들
+
+### 마이그레이션 계획
+
+1. **Phase 1**: 새로운 구조로 테스트 작성
+2. **Phase 2**: 레거시 테스트를 TypeScript로 변환
+3. **Phase 3**: 레거시 파일들 제거
+
+## 📝 테스트 작성 가이드라인
+
+### 새로운 테스트 작성 시
+
+1. **파일 명명**: `{모듈명}.test.ts`
+2. **디렉토리 구조**: `tests/{유형}/{패키지명}/`
+3. **테스트 구조**: `test > describe > test`
+4. **모킹**: `test-utils.ts`의 함수들 활용
+5. **환경변수**: `setupTestEnvironment()` 사용
+
+### 예시
+
+```typescript
+import assert from 'node:assert';
+import { test } from 'node:test';
+import { setupTestEnvironment, withTimeout } from '../../common/test-utils';
+
+test('My Module', async (t) => {
+  await t.test('should work correctly', async () => {
+    const env = setupTestEnvironment();
+
+    const result = await withTimeout(someAsyncOperation(), 5000);
+
+    assert(result !== null);
+  });
+});
+```

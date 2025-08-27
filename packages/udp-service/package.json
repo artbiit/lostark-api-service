@@ -10,7 +10,10 @@
     "dev": "tsc --watch",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "test": "tsx --test ../../tests/unit/udp-service/**/*.test.ts",
+    "test:watch": "tsx --test --watch ../../tests/unit/udp-service/**/*.test.ts",
+    "test:integration": "tsx --test ../../tests/integration/services/**/*.test.ts"
   },
   "dependencies": {
     "@lostark/data-service": "workspace:*",

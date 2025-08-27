@@ -10,7 +10,10 @@
     "dev": "tsc --watch",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "test": "tsx --test ../../tests/unit/rest-service/**/*.test.ts",
+    "test:watch": "tsx --test --watch ../../tests/unit/rest-service/**/*.test.ts",
+    "test:integration": "tsx --test ../../tests/integration/services/**/*.test.ts"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.0",
