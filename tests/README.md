@@ -11,9 +11,11 @@ tests/
 ├── api/                          # API 테스트
 │   ├── lostark-api/
 │   │   └── V9.0.0/              # Lost Ark API v9.0.0 테스트
-│   ├── cache-flow-test.mjs      # 전체 API 캐시 플로우 테스트
-│   ├── simple-cache-flow-test.mjs # ARMORIES API 캐시 플로우 테스트
-│   └── all-apis-cache-flow-test.mjs # 모든 API 캐시 플로우 테스트
+│   ├── cache-flow-test.mjs      # 전체 API 캐시 플로우 테스트 (레거시)
+│   ├── simple-cache-flow-test.mjs # ARMORIES API 캐시 플로우 테스트 (레거시)
+│   ├── all-apis-cache-flow-test.mjs # 모든 API 캐시 플로우 테스트 (레거시)
+│   ├── package-based-cache-flow-test.ts # 패키지 기반 캐시 플로우 테스트 (새로운)
+│   └── run-package-test.mjs     # 패키지 기반 테스트 실행 스크립트
 ├── character-data/               # 캐릭터 데이터 수집/분석
 │   ├── collector/               # 데이터 수집기
 │   ├── analyzer/                # 데이터 분석기
@@ -48,9 +50,13 @@ node tests/character-data/analyzer/character-data-analyzer.mjs
 node tests/api/lostark-api/V9.0.0/api.test.mjs
 node tests/api/lostark-api/V9.0.0/siblings.test.mjs
 
-# 캐시 플로우 테스트
-node tests/api/simple-cache-flow-test.mjs      # ARMORIES API만 테스트
-node tests/api/all-apis-cache-flow-test.mjs    # 모든 API 테스트
+# 캐시 플로우 테스트 (패키지 기반 - 권장)
+yarn test:cache-flow                                    # 패키지 기반 테스트 실행
+node tests/api/run-package-test.mjs                    # 실행 스크립트 사용
+
+# 캐시 플로우 테스트 (레거시 mjs 파일)
+node tests/api/simple-cache-flow-test.mjs              # ARMORIES API만 테스트
+node tests/api/all-apis-cache-flow-test.mjs            # 모든 API 테스트
 ```
 
 ## 📊 데이터 수집
@@ -164,6 +170,43 @@ import { createCacheFlowClient } from './common/cache-flow-client.mjs';
 const apiClient = createCacheFlowClient();
 const result = await apiClient.armories.getCharacterDetail('캐릭터명');
 ```
+
+## 📦 패키지 기반 테스트
+
+### package-based-cache-flow-test.ts
+
+실제 패키지의 클라이언트를 사용하는 새로운 TypeScript 테스트입니다.
+
+**특징:**
+
+- **실제 패키지 사용**: `@lostark/data-service`의 실제 클라이언트 사용
+- **TypeScript 기반**: 타입 안전성과 IDE 지원 향상
+- **Armories API 특수성 반영**: 전체 API + 개별 섹션 테스트
+- **API 목록 검증**: 공식 문서와 비교하여 누락된 API 확인
+- **더 정확한 테스트**: 실제 서비스 로직과 동일한 환경에서 테스트
+
+**테스트 대상 API:**
+
+1. **ARMORIES API**: 메인 API (383KB) + 9개 개별 섹션
+2. **AUCTIONS API**: 옵션 조회
+3. **NEWS API**: 공지사항 목록
+4. **GAMECONTENTS API**: 주간 콘텐츠 달력
+5. **MARKETS API**: 옵션 조회 + 아이템 ID 조회
+
+**실행 방법:**
+
+```bash
+# 권장 방법
+yarn test:cache-flow
+
+# 또는 실행 스크립트 사용
+node tests/api/run-package-test.mjs
+```
+
+**API 목록 검증 결과:**
+
+- ✅ **구현된 API**: NEWS, CHARACTERS, ARMORIES, AUCTIONS, MARKETS, GAMECONTENTS
+- ❌ **누락된 API**: GUILDS (deprecated, 302 리다이렉트로 사용 불가)
 
 ## 📋 스트리머 목록
 

@@ -22,6 +22,8 @@
       "@lostark/shared": ["packages/shared/src/index.ts"],
       "@lostark/shared/*": ["packages/shared/src/*"],
       "@shared/*": ["packages/shared/src/*"],
+      "@lostark/data-service": ["packages/data-service/src/index.ts"],
+      "@lostark/data-service/*": ["packages/data-service/src/*"],
       "@lostark/fetch/*": ["packages/data-service/src/*"],
       "@lostark/rest-api/*": ["packages/rest-service/src/*"],
       "@lostark/udp-gateway/*": ["packages/udp-service/src/*"]

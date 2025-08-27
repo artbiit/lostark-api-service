@@ -5,8 +5,12 @@
  * - Lost Ark API 키 및 엔드포인트
  * - 각 계층별 설정값
  * - 환경별 설정 분리
+ * - dotenv를 통한 일관된 환경변수 로딩
  */
 
+import { join } from 'path';
+
+import dotenv from 'dotenv';
 import { z } from 'zod';
 
 // === 환경변수 스키마 정의 ===
@@ -65,11 +69,46 @@ export const envSchema = z.object({
   DB_CONNECTION_LIMIT: z.coerce.number().min(1).default(10),
 });
 
+// === 환경변수 로딩 ===
+
+/**
+ * .env 파일에서 환경변수 로드
+ * @param envPath .env 파일 경로 (기본값: 현재 디렉토리의 .env)
+ */
+export function loadEnv(envPath?: string): void {
+  try {
+    const path = envPath || join(process.cwd(), '.env');
+    const result = dotenv.config({ path });
+
+    if (result.error) {
+      console.warn(`⚠️  .env 파일 로딩 실패: ${result.error.message}`);
+      console.warn('💡 기본값을 사용합니다.');
+    } else {
+      console.log(`✅ .env 파일 로딩 성공: ${path}`);
+    }
+  } catch (error) {
+    console.warn(
+      `⚠️  .env 파일 로딩 중 오류: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    console.warn('💡 기본값을 사용합니다.');
+  }
+}
+
 // === 환경변수 파싱 및 검증 ===
 
 export type EnvConfig = z.infer<typeof envSchema>;
 
-export function parseEnv(): EnvConfig {
+/**
+ * 환경변수 파싱 및 검증
+ * @param autoLoad .env 파일 자동 로드 여부 (기본값: true)
+ * @param envPath .env 파일 경로
+ */
+export function parseEnv(autoLoad: boolean = true, envPath?: string): EnvConfig {
+  // .env 파일 자동 로드
+  if (autoLoad) {
+    loadEnv(envPath);
+  }
+
   try {
     return envSchema.parse(process.env);
   } catch (error) {
