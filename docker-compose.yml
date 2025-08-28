@@ -1,165 +1,38 @@
+version: '3.8'
+
 services:
-  # === 데이터 서비스 (Fetch & Normalize) ===
-  data-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: data-service
-    container_name: lostark-data-service
-    environment:
-      - NODE_ENV=${NODE_ENV:-development}
-      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
-      - LOSTARK_API_VERSION=${LOSTARK_API_VERSION:-V9.0.0}
-      - FETCH_RATE_LIMIT_PER_MINUTE=${FETCH_RATE_LIMIT_PER_MINUTE:-100}
-      - FETCH_RETRY_ATTEMPTS=${FETCH_RETRY_ATTEMPTS:-3}
-      - FETCH_RETRY_DELAY_MS=${FETCH_RETRY_DELAY_MS:-1000}
-      - FETCH_CIRCUIT_BREAKER_THRESHOLD=${FETCH_CIRCUIT_BREAKER_THRESHOLD:-5}
-      - FETCH_CIRCUIT_BREAKER_TIMEOUT_MS=${FETCH_CIRCUIT_BREAKER_TIMEOUT_MS:-30000}
-      - CACHE_REDIS_URL=${CACHE_REDIS_URL:-redis://redis:6379}
-      - CACHE_REDIS_PASSWORD=${CACHE_REDIS_PASSWORD}
-      - CACHE_REDIS_DB=${CACHE_REDIS_DB:-0}
-      - CACHE_MEMORY_TTL_SECONDS=${CACHE_MEMORY_TTL_SECONDS:-300}
-      - CACHE_REDIS_TTL_SECONDS=${CACHE_REDIS_TTL_SECONDS:-1800}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_USER_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
-      - DB_CONNECTION_LIMIT=${DB_CONNECTION_LIMIT}
-      - LOG_LEVEL=${LOG_LEVEL:-info}
-      - LOG_PRETTY_PRINT=${LOG_PRETTY_PRINT:-true}
-    volumes:
-      - ./packages/data-service:/app/packages/data-service
-      - ./packages/shared:/app/packages/shared
-    working_dir: /app/packages/data-service
-    command: yarn dev
-    depends_on:
-      - redis
-      - mysql
-    profiles:
-      - data
-      - all
-
-  # === REST API 서비스 ===
-  rest-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: rest-service
-    container_name: lostark-rest-service
-    ports:
-      - '${REST_API_PORT:-3000}:3000'
-    environment:
-      - NODE_ENV=${NODE_ENV:-development}
-      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
-      - LOSTARK_API_VERSION=${LOSTARK_API_VERSION:-V9.0.0}
-      - REST_API_PORT=3000
-      - REST_API_HOST=0.0.0.0
-      - REST_API_CORS_ORIGIN=${REST_API_CORS_ORIGIN:-*}
-      - REST_API_RATE_LIMIT_PER_MINUTE=${REST_API_RATE_LIMIT_PER_MINUTE:-100}
-      - CACHE_REDIS_URL=${CACHE_REDIS_URL:-redis://redis:6379}
-      - CACHE_REDIS_PASSWORD=${CACHE_REDIS_PASSWORD}
-      - CACHE_REDIS_DB=${CACHE_REDIS_DB:-0}
-      - CACHE_MEMORY_TTL_SECONDS=${CACHE_MEMORY_TTL_SECONDS:-300}
-      - CACHE_REDIS_TTL_SECONDS=${CACHE_REDIS_TTL_SECONDS:-1800}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_USER_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
-      - DB_CONNECTION_LIMIT=${DB_CONNECTION_LIMIT}
-      - LOG_LEVEL=${LOG_LEVEL:-info}
-      - LOG_PRETTY_PRINT=${LOG_PRETTY_PRINT:-true}
-    volumes:
-      - ./packages/rest-service:/app/packages/rest-service
-      - ./packages/shared:/app/packages/shared
-    working_dir: /app/packages/rest-service
-    command: yarn dev
-    depends_on:
-      - redis
-      - mysql
-    profiles:
-      - rest
-      - all
-
-  # === UDP Gateway 서비스 ===
-  udp-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: udp-service
-    container_name: lostark-udp-service
-    ports:
-      - '${UDP_GATEWAY_PORT:-3001}:3001/udp'
-    environment:
-      - NODE_ENV=${NODE_ENV:-development}
-      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
-      - LOSTARK_API_VERSION=${LOSTARK_API_VERSION:-V9.0.0}
-      - UDP_GATEWAY_PORT=3001
-      - UDP_GATEWAY_HOST=0.0.0.0
-      - UDP_GATEWAY_MAX_MESSAGE_SIZE=${UDP_GATEWAY_MAX_MESSAGE_SIZE:-8192}
-      - UDP_GATEWAY_WORKER_POOL_SIZE=${UDP_GATEWAY_WORKER_POOL_SIZE:-4}
-      - CACHE_REDIS_URL=${CACHE_REDIS_URL:-redis://redis:6379}
-      - CACHE_REDIS_URL=${CACHE_REDIS_URL:-redis://redis:6379}
-      - CACHE_REDIS_PASSWORD=${CACHE_REDIS_PASSWORD}
-      - CACHE_REDIS_DB=${CACHE_REDIS_DB:-0}
-      - CACHE_MEMORY_TTL_SECONDS=${CACHE_MEMORY_TTL_SECONDS:-300}
-      - CACHE_REDIS_TTL_SECONDS=${CACHE_REDIS_TTL_SECONDS:-1800}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_USER_PASSWORD}
-      - DB_DATABASE=${DB_DATABASE}
-      - DB_CONNECTION_LIMIT=${DB_CONNECTION_LIMIT}
-      - LOG_LEVEL=${LOG_LEVEL:-info}
-      - LOG_PRETTY_PRINT=${LOG_PRETTY_PRINT:-true}
-    volumes:
-      - ./packages/udp-service:/app/packages/udp-service
-      - ./packages/data-service:/app/packages/data-service
-      - ./packages/shared:/app/packages/shared
-    working_dir: /app/packages/udp-service
-    command: yarn dev
-    depends_on:
-      - redis
-      - mysql
-    profiles:
-      - udp
-      - all
-
-  # === Redis 캐시 ===
   redis:
     image: redis:7-alpine
-    container_name: lostark-redis
     ports:
-      - '6379:6379'
-    command: >
-      redis-server
-      --appendonly yes
-      ${CACHE_REDIS_PASSWORD:+--requirepass $CACHE_REDIS_PASSWORD}
+      - "6379:6379"
     volumes:
       - redis_data:/data
-    profiles:
-      - redis
-      - all
+    command: redis-server --appendonly yes
 
-  # === MySQL 데이터베이스 ===
   mysql:
     image: mysql:8.0
-    container_name: lostark-mysql
-    ports:
-      - '${DB_PORT}:3306'
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${DB_DATABASE}
-      - MYSQL_USER=${DB_USERNAME}
-      - MYSQL_PASSWORD=${DB_USER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: lostark123
+      MYSQL_DATABASE: lostark_cache
+    ports:
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./legacy/loa.sql:/docker-entrypoint-initdb.d/loa.sql:ro
-    command: --default-authentication-plugin=mysql_native_password
-    profiles:
+
+  lostark-api:
+    build: .
+    ports:
+      - "3000:3000"  # REST Service
+      - "3001:3001"  # UDP Service
+    environment:
+      - NODE_ENV=production
+      - CACHE_REDIS_URL=redis://redis:6379
+      - CACHE_MYSQL_HOST=mysql
+      - CACHE_MYSQL_PASSWORD=lostark123
+    depends_on:
+      - redis
       - mysql
-      - all
+    restart: unless-stopped
 
 volumes:
   redis_data:
