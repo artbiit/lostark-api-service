@@ -164,141 +164,23 @@ grep LOSTARK_API_KEY .env
 yarn test
 ```
 
-# 개발 가이드라인
+## 개발 워크플로우
 
-## 모노레포 의존성 관리
+**상세한 개발 워크플로우와 모노레포 의존성 관리**:
+[개발자 워크플로우](./workflows/development-workflow.md)를 참조하세요.
 
-### 📋 의존성 규칙
+**검증 명령어와 자동화 시스템**:
+[개발자 워크플로우](./workflows/development-workflow.md#검증-명령어)를
+참조하세요.
 
-#### 1. 패키지 간 의존성 방향
+**모범 사례와 코드 품질 가이드**: [모범 사례](./workflows/best-practices.md)를
+참조하세요.
 
-```
-rest-service → data-service → shared
-udp-service → data-service → shared
-```
+## 관련 문서
 
-#### 2. 허용된 참조 관계
-
-- **shared**: 모든 패키지에서 참조 가능
-- **data-service**: rest-service, udp-service에서만 참조 가능
-- **rest-service**: 다른 패키지에서 참조 불가
-- **udp-service**: 다른 패키지에서 참조 불가
-
-#### 3. TypeScript Project References 설정
-
-```json
-{
-  "references": [
-    { "path": "../shared" },
-    { "path": "../data-service" } // 필요한 경우만
-  ]
-}
-```
-
-### 🔧 개발 워크플로우
-
-#### 1. 새 패키지 추가 시
-
-```bash
-# 1. 패키지 생성
-mkdir packages/new-package
-cd packages/new-package
-
-# 2. package.json 설정
-# 3. tsconfig.json 설정 (references 포함)
-# 4. 의존성 검증
-yarn validate:monorepo
-```
-
-#### 2. 의존성 변경 시
-
-```bash
-# 1. package.json 수정
-# 2. tsconfig.json references 수정
-# 3. 검증 실행
-yarn validate:deps
-yarn validate:refs
-```
-
-#### 3. 자동화된 검증 시스템
-
-**Git Hooks (자동 실행)**:
-
-- **pre-commit**: `yarn validate:monorepo && yarn test:unit && yarn lint`
-- **pre-push**: `yarn validate:monorepo && yarn test && yarn build`
-
-**CI/CD Pipeline**:
-
-- GitHub Actions에서 자동 검증
-- main/develop 브랜치 푸시 시 실행
-- Pull Request 시 실행
-
-#### 4. 수동 검증 명령어
-
-```bash
-# 커밋 전 검증 (자동 실행됨)
-yarn precommit
-
-# 푸시 전 검증 (자동 실행됨)
-yarn prepush
-
-# 전체 검증
-yarn validate:full
-```
-
-### 🚨 자주 발생하는 문제들
-
-#### 1. "File is not under 'rootDir'" 오류
-
-**원인**: 다른 패키지의 내부 파일을 직접 import **해결**:
-
-- 패키지의 공개 API만 사용
-- tsconfig.json의 references 설정 확인
-
-#### 2. "File is not listed within the file list" 오류
-
-**원인**: Project References 설정 누락 **해결**:
-
-```json
-{
-  "references": [{ "path": "../shared" }, { "path": "../data-service" }]
-}
-```
-
-#### 3. 순환 참조 오류
-
-**원인**: 패키지 간 순환 의존성 **해결**: 의존성 방향 재설계
-
-### 📝 검증 명령어
-
-```bash
-# 전체 모노레포 검증
-yarn validate:monorepo
-
-# 의존성만 검증
-yarn validate:deps
-
-# TypeScript 참조만 검증
-yarn validate:refs
-
-# 빌드 검증
-yarn validate:build
-
-# 전체 검증 (모든 테스트 + 빌드 + 린트)
-yarn validate:full
-```
-
-### 🛠️ 문제 해결 체크리스트
-
-- [ ] package.json의 dependencies 확인
-- [ ] tsconfig.json의 references 확인
-- [ ] import 경로가 올바른지 확인
-- [ ] 순환 참조가 없는지 확인
-- [ ] 검증 스크립트 실행
-- [ ] 빌드 테스트
-
-### 📚 추가 리소스
-
-- [TypeScript Project References](https://www.typescriptlang.org/docs/handbook/project-references.html)
-- [Yarn Workspaces](https://yarnpkg.com/features/workspaces)
-- [모노레포 모범 사례](https://monorepo.tools/)
+- [설정 가이드](./configuration.md) - 환경변수 및 설정 상세 가이드
+- [개발자 워크플로우](./workflows/development-workflow.md) - 상세한 개발
+  프로세스
+- [모범 사례](./workflows/best-practices.md) - 코드 품질 및 문서화 가이드
+- [문제 해결 가이드](./workflows/troubleshooting-guide.md) - 자주 발생하는 문제
+  해결
