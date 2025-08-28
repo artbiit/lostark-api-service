@@ -30,6 +30,14 @@
 - **문제**: 테스트 파일들이 루트에 산재
 - **해결**: `unit/`, `integration/`, `e2e/` 구조로 체계적 분류
 
+### 5. 환경변수 경로 문제 (최신 해결)
+
+- **문제**: `tests/unit/shared/` 디렉토리의 테스트에서 잘못된 상대 경로로 `.env` 파일을 찾지 못함
+- **해결**: 
+  - `setupTestEnvironment()` 함수를 사용하여 일관된 환경변수 로딩 구현
+  - 모든 테스트에서 `parseEnv(true, '../../../.env')` 대신 `setupTestEnvironment()` 사용
+  - 경로 계산 오류로 인한 "ENOENT: no such file or directory" 문제 완전 해결
+
 ## ✅ 완료된 작업
 
 ### Phase 1: 즉시 적용 (1-2일)
@@ -73,6 +81,11 @@
    - `tests/api/` → `tests/integration/api/`
    - 모든 import 경로 수정
    - `dist/` → `src/` 직접 참조로 변경
+
+7. **환경변수 경로 문제 해결**
+   - `tests/unit/shared/` 디렉토리의 모든 테스트에서 `setupTestEnvironment()` 함수 사용
+   - 잘못된 상대 경로 `../../../.env` 문제 해결
+   - 일관된 환경변수 로딩 방식 구현
 
 ### Phase 3: 표준화 (1주)
 
@@ -138,6 +151,12 @@
 - 공통 테스트 함수들 제공
 - 환경 설정 및 검증 자동화
 - 타임아웃 및 에러 처리 표준화
+
+### 5. 일관된 환경변수 로딩
+
+- `setupTestEnvironment()` 함수로 통일된 환경변수 로딩
+- 경로 계산 오류 완전 해결
+- 모든 테스트에서 안정적인 환경변수 접근
 
 ## 📝 새로운 사용법
 
