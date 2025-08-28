@@ -24,7 +24,12 @@
     "test:integration": "tsx --test tests/integration/**/*.test.ts",
     "test:api": "tsx --test tests/api/**/*.test.ts",
     "test:cache-flow": "tsx tests/api/package-based-cache-flow-test.ts",
-    "test:workspace": "yarn workspaces foreach -A run test"
+    "test:workspace": "yarn workspaces foreach -A run test",
+    "validate:monorepo": "yarn validate:deps && yarn validate:refs && yarn typecheck",
+    "validate:deps": "node scripts/validate-dependencies.mjs",
+    "validate:refs": "node scripts/validate-references.mjs",
+    "validate:build": "yarn build",
+    "precommit": "yarn validate:monorepo && yarn test:unit"
   },
   "repository": {
     "type": "git",
