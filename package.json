@@ -29,7 +29,10 @@
     "validate:deps": "node scripts/validate-dependencies.mjs",
     "validate:refs": "node scripts/validate-references.mjs",
     "validate:build": "yarn build",
-    "precommit": "yarn validate:monorepo && yarn test:unit"
+    "validate:full": "yarn validate:monorepo && yarn test && yarn build && yarn lint",
+    "precommit": "yarn validate:monorepo && yarn test:unit && yarn lint",
+    "prepush": "yarn validate:monorepo && yarn test && yarn build",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
