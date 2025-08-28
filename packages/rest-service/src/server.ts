@@ -19,13 +19,17 @@ logger.info('✅ helmet 모듈 로딩 완료');
 import rateLimit from '@fastify/rate-limit';
 import {
   ArmoriesService,
+  AuctionsService,
   cacheManager,
   cacheOptimizer,
   CharactersService,
   disconnectMySQL,
   disconnectRedis,
+  GameContentsService,
   initializeMySQL,
   initializeRedis,
+  MarketsService,
+  NewsService,
 } from '@lostark/data-service';
 import { logger } from '@lostark/shared';
 logger.info('✅ rate-limit 모듈 로딩 완료');
@@ -87,6 +91,11 @@ export class RestServer {
   private fastify: FastifyInstance;
   private config: ServerConfig;
   private armoriesService: ArmoriesService;
+  private charactersService: CharactersService;
+  private auctionsService: AuctionsService;
+  private newsService: NewsService;
+  private gameContentsService: GameContentsService;
+  private marketsService: MarketsService;
 
   constructor(config: Partial<ServerConfig> = {}) {
     logger.info('🔧 RestServer 생성자 시작');
@@ -134,9 +143,14 @@ export class RestServer {
     });
     logger.info('✅ Fastify 인스턴스 생성 완료');
 
-    logger.info('🎯 ArmoriesService 인스턴스 생성 시작...');
+    logger.info('🎯 서비스 인스턴스 생성 시작...');
     this.armoriesService = new ArmoriesService();
-    logger.info('✅ ArmoriesService 인스턴스 생성 완료');
+    this.charactersService = new CharactersService();
+    this.auctionsService = new AuctionsService();
+    this.newsService = new NewsService();
+    this.gameContentsService = new GameContentsService();
+    this.marketsService = new MarketsService();
+    logger.info('✅ 모든 서비스 인스턴스 생성 완료');
 
     logger.info('🎉 RestServer 생성자 완료');
   }
@@ -819,27 +833,21 @@ export class RestServer {
     try {
       logger.info('Auctions search request', { query });
 
-      // TODO: AuctionsService 구현 후 연결
-      const mockData = {
-        items: [],
-        totalCount: 0,
-        pageNo: query.pageNo ? parseInt(query.pageNo) : 1,
+      const pageNo = query.pageNo ? parseInt(query.pageNo) : 1;
+      const searchRequest = {
+        ...query,
+        PageNo: pageNo,
       };
+
+      const searchResult = await this.auctionsService.searchItemsAdvanced(searchRequest);
 
       const responseTime = Date.now() - startTime;
 
-      reply.header('X-Cache-Hit', 'true');
-      reply.header('X-Cache-Source', 'memory');
       reply.header('X-Response-Time', `${responseTime}ms`);
 
       reply.send({
         success: true,
-        data: mockData,
-        cache: {
-          hit: true,
-          source: 'memory',
-          ttl: 300,
-        },
+        data: searchResult,
         timestamp: new Date().toISOString(),
         responseTime,
       });
@@ -885,12 +893,12 @@ export class RestServer {
     try {
       logger.info('Auctions search refresh request', { body });
 
-      // TODO: AuctionsService 구현 후 연결
-      const mockData = {
-        items: [],
-        totalCount: 0,
-        pageNo: body.pageNo || 1,
+      const searchRequest = {
+        ...body,
+        PageNo: body.pageNo || 1,
       };
+
+      const searchResult = await this.auctionsService.searchItemsAdvanced(searchRequest);
 
       const responseTime = Date.now() - startTime;
 
@@ -899,7 +907,7 @@ export class RestServer {
 
       reply.send({
         success: true,
-        data: mockData,
+        data: searchResult,
         cache: {
           hit: false,
           source: 'api',
@@ -941,27 +949,18 @@ export class RestServer {
     try {
       logger.info('News request', { type, pageNo, refresh: refresh === 'true' });
 
-      // TODO: NewsService 구현 후 연결
-      const mockData = {
-        news: [],
-        totalCount: 0,
-        pageNo: pageNo ? parseInt(pageNo) : 1,
-      };
+      const newsResult =
+        type === 'events'
+          ? await this.newsService.getEvents()
+          : await this.newsService.getNotices();
 
       const responseTime = Date.now() - startTime;
 
-      reply.header('X-Cache-Hit', 'true');
-      reply.header('X-Cache-Source', 'memory');
       reply.header('X-Response-Time', `${responseTime}ms`);
 
       reply.send({
         success: true,
-        data: mockData,
-        cache: {
-          hit: true,
-          source: 'memory',
-          ttl: 300,
-        },
+        data: newsResult,
         timestamp: new Date().toISOString(),
         responseTime,
       });
@@ -998,12 +997,10 @@ export class RestServer {
     try {
       logger.info('News refresh request', { type, pageNo });
 
-      // TODO: NewsService 구현 후 연결
-      const mockData = {
-        news: [],
-        totalCount: 0,
-        pageNo: pageNo ? parseInt(pageNo) : 1,
-      };
+      const newsResult =
+        type === 'events'
+          ? await this.newsService.getEvents()
+          : await this.newsService.getNotices();
 
       const responseTime = Date.now() - startTime;
 
@@ -1012,7 +1009,7 @@ export class RestServer {
 
       reply.send({
         success: true,
-        data: mockData,
+        data: newsResult,
         cache: {
           hit: false,
           source: 'api',
@@ -1055,26 +1052,15 @@ export class RestServer {
     try {
       logger.info('Game contents request', { refresh: refresh === 'true' });
 
-      // TODO: GameContentsService 구현 후 연결
-      const mockData = {
-        contents: [],
-        totalCount: 0,
-      };
+      const gameContentsResult = await this.gameContentsService.getCalendar();
 
       const responseTime = Date.now() - startTime;
 
-      reply.header('X-Cache-Hit', 'true');
-      reply.header('X-Cache-Source', 'memory');
       reply.header('X-Response-Time', `${responseTime}ms`);
 
       reply.send({
         success: true,
-        data: mockData,
-        cache: {
-          hit: true,
-          source: 'memory',
-          ttl: 300,
-        },
+        data: gameContentsResult,
         timestamp: new Date().toISOString(),
         responseTime,
       });
@@ -1103,11 +1089,7 @@ export class RestServer {
     try {
       logger.info('Game contents refresh request');
 
-      // TODO: GameContentsService 구현 후 연결
-      const mockData = {
-        contents: [],
-        totalCount: 0,
-      };
+      const gameContentsResult = await this.gameContentsService.getCalendar();
 
       const responseTime = Date.now() - startTime;
 
@@ -1116,7 +1098,7 @@ export class RestServer {
 
       reply.send({
         success: true,
-        data: mockData,
+        data: gameContentsResult,
         cache: {
           hit: false,
           source: 'api',
@@ -1157,26 +1139,26 @@ export class RestServer {
     try {
       logger.info('Markets request', { itemIds, refresh: refresh === 'true' });
 
-      // TODO: MarketsService 구현 후 연결
-      const mockData = {
-        items: [],
-        totalCount: 0,
-      };
+      if (!itemIds) {
+        reply.status(400).send({
+          error: 'Bad Request',
+          message: 'itemIds is required',
+        });
+        return;
+      }
+
+      const itemIdArray = itemIds.split(',').map((id) => parseInt(id.trim()));
+      const marketResults = await Promise.all(
+        itemIdArray.map((itemId) => this.marketsService.getItemById(itemId)),
+      );
 
       const responseTime = Date.now() - startTime;
 
-      reply.header('X-Cache-Hit', 'true');
-      reply.header('X-Cache-Source', 'memory');
       reply.header('X-Response-Time', `${responseTime}ms`);
 
       reply.send({
         success: true,
-        data: mockData,
-        cache: {
-          hit: true,
-          source: 'memory',
-          ttl: 300,
-        },
+        data: marketResults,
         timestamp: new Date().toISOString(),
         responseTime,
       });
@@ -1212,11 +1194,17 @@ export class RestServer {
     try {
       logger.info('Markets refresh request', { itemIds });
 
-      // TODO: MarketsService 구현 후 연결
-      const mockData = {
-        items: [],
-        totalCount: 0,
-      };
+      if (!itemIds || itemIds.length === 0) {
+        reply.status(400).send({
+          error: 'Bad Request',
+          message: 'itemIds is required',
+        });
+        return;
+      }
+
+      const marketResults = await Promise.all(
+        itemIds.map((itemId) => this.marketsService.getItemById(itemId)),
+      );
 
       const responseTime = Date.now() - startTime;
 
@@ -1225,7 +1213,7 @@ export class RestServer {
 
       reply.send({
         success: true,
-        data: mockData,
+        data: marketResults,
         cache: {
           hit: false,
           source: 'api',
