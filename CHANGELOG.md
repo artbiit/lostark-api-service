@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.0] - 2025-01-27
+## [2.0.0] - 2025-01-27
 
 ### 🎉 Added
 - **직업전용 노드 기능**: 25개 직업별 특화 노드 정보 추가
@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Test Results**: 최종 테스트 결과 보고서 작성
 - **Project Status**: 프로젝트 완성도 현황 문서 작성
 
-## [1.1.0] - 2025-01-27
+## [1.2.0] - 2025-01-27
 
 ### 🎉 Added
 - **GameContentsService**: 주간 콘텐츠 달력 조회 기능
@@ -59,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **의존성 문제**: 패키지 간 의존성 및 빌드 이슈 해결
 - **테스트 환경**: vitest → node:test로 단순화하여 안정성 확보
 
-## [1.0.0] - 2025-01-27
+## [1.1.0] - 2025-01-27
 
 ### 🎉 Added
 - **3-Layer Architecture**: Data Service, REST Service, UDP Service
@@ -93,4 +93,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-**@cursor-change**: 2025-01-27, v1.2.0, CHANGELOG 완성
+**@cursor-change**: 2025-01-27, v2.0.0, 1차 릴리즈 완성
