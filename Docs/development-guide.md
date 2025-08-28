@@ -42,6 +42,78 @@ const env = parseEnv();
 **환경변수 관리 상세 가이드**:
 [설정 가이드](./configuration.md#environment-variables)를 참조하세요.
 
+## 개발 워크플로우
+
+### 1. 빌드 테스트 (Build Validation)
+
+**목적**: 매번 빌드 시도할 때마다 경로 문제, 확장자 문제 등이 발생하지 않도록
+보장
+
+```bash
+# 전체 모노레포 빌드 검증
+yarn validate:build
+
+# 개별 패키지 빌드 검증
+yarn workspace @lostark/rest-api build
+yarn workspace @lostark/data-service build
+yarn workspace @lostark/shared build
+
+# 타입 체크 (빌드 전 검증)
+yarn typecheck
+```
+
+### 2. 실행 테스트 (Runtime Validation)
+
+**목적**: 실시간 코드 상태 반영과 디버깅 용이성 확보
+
+```bash
+# 개발 모드 (실시간 코드 반영 + 서버 자동시작)
+yarn workspace @lostark/rest-api dev
+
+# 프로덕션 모드 (빌드 후 실행)
+yarn workspace @lostark/rest-api build && yarn workspace @lostark/rest-api start
+
+# 헬스 체크 검증
+curl http://localhost:3000/health
+```
+
+**특징**:
+
+- ✅ 서버가 자동으로 시작됨
+- ✅ Cursor가 블로킹되지 않음
+- ✅ 실시간 로그 확인 가능
+- ✅ TypeScript 컴파일 에러 실시간 감지
+
+### 3. 단위 테스트 (Unit Testing)
+
+**목적**: 빌드, 실행이 실제로 되고 실 서비스에 대해 보장
+
+```bash
+# 전체 테스트
+yarn test
+
+# 단위 테스트만
+yarn test:unit
+
+# 통합 테스트만
+yarn test:integration
+
+# API 테스트만
+yarn test:api
+```
+
+### 4. 임시 테스트 (Exploratory Testing)
+
+**목적**: 빠른 가설 검증, 사전 조사적 성향
+
+```bash
+# 프로토타입 테스트 (빠른 검증)
+node tests/prototype/quick-test.mjs
+
+# 캐시 플로우 테스트
+yarn test:cache-flow
+```
+
 ## 빌드 및 실행
 
 ### 1. 전체 프로젝트 빌드
@@ -171,6 +243,16 @@ grep LOSTARK_API_KEY .env
 
 # 테스트 재실행
 yarn test
+```
+
+### 4. TypeScript 컴파일 에러
+
+```bash
+# 타입 체크
+yarn typecheck
+
+# 특정 패키지 타입 체크
+yarn workspace @lostark/rest-api typecheck
 ```
 
 ## 개발 워크플로우

@@ -44,6 +44,21 @@ logger.info('✅ Fastify import 완료');
 
 logger.info('🎯 모든 모듈 로딩 완료 - 서버 클래스 정의 시작');
 
+// === 유틸리티 함수 ===
+
+/**
+ * 에러 메시지를 안전하게 추출하는 함수
+ */
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === 'object' && error !== null && 'message' in error) {
+    return String((error as { message: unknown }).message);
+  }
+  return String(error);
+}
+
 // === 서버 설정 ===
 
 export interface ServerConfig {
@@ -255,9 +270,10 @@ export class RestServer {
       try {
         await Promise.race([redisPromise, redisTimeout]);
         logger.info('Redis connected successfully');
-      } catch (error) {
+      } catch (error: unknown) {
+        const errorMessage = getErrorMessage(error);
         logger.warn('Redis connection failed, continuing without Redis', {
-          error: error instanceof Error ? error.message : String(error),
+          error: errorMessage,
         });
       }
 
@@ -270,9 +286,10 @@ export class RestServer {
       try {
         await Promise.race([mysqlPromise, mysqlTimeout]);
         logger.info('MySQL connected successfully');
-      } catch (error) {
+      } catch (error: unknown) {
+        const errorMessage = getErrorMessage(error);
         logger.warn('MySQL connection failed, continuing without MySQL', {
-          error: error instanceof Error ? error.message : String(error),
+          error: errorMessage,
         });
       }
 
@@ -282,9 +299,10 @@ export class RestServer {
           try {
             cacheOptimizer.startOptimization();
             logger.info('Cache optimization started');
-          } catch (error) {
+          } catch (error: unknown) {
+            const errorMessage = getErrorMessage(error);
             logger.warn('Cache optimization failed', {
-              error: error instanceof Error ? error.message : String(error),
+              error: errorMessage,
             });
           }
         });

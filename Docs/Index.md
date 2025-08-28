@@ -1,166 +1,66 @@
-# Lost Ark API Service Documentation
-
-<!-- @cursor-change: 2025-01-27, v1.0.4, 워크플로우 문서 중복 제거 및 구조 개선 -->
+# LostArk API Service Documentation
 
 ## 📚 문서 목록
 
-### 🏗️ 아키텍처 & 설계
+### 🚀 시작하기
+- [README](../README.md) - 프로젝트 개요 및 빠른 시작
+- [개발 가이드](./development-guide.md) - 개발 환경 설정 및 워크플로우
+- [설정 가이드](./configuration.md) - 환경변수 및 설정 상세 가이드
 
-- [**3-Service Architecture**](./architecture.md) - 전체 아키텍처 설계 및 타입
-  시스템
-- [**Development Guide**](./development-guide.md) - 빠른 시작 및 기본 설정
-- [**Configuration Guide**](./configuration.md) - 환경변수 및 설정 가이드
+### 🏗️ 아키텍처
+- [아키텍처 개요](./architecture.md) - 시스템 아키텍처 및 설계 원칙
 
-### 🔧 개발 워크플로우
+### 🔧 개발 도구
+- [Docker 설정](./docker-setup.md) - Docker를 통한 개발 환경 구성
+- [클라이언트 샘플](./client/client-sample.md) - API 사용 예제
 
-- [**Workflow Overview**](./workflows/README.md) - 개발 워크플로우 개요 및 문서
-  구조
-- [**Development Workflow**](./workflows/development-workflow.md) - 상세한 개발
-  프로세스, 모노레포 의존성 관리, 검증 명령어
-- [**Best Practices**](./workflows/best-practices.md) - 코드 품질, 문서화,
-  테스트 가이드라인
-- [**Code Review Checklist**](./workflows/code-review-checklist.md) - 코드 리뷰
-  체크리스트
-- [**Troubleshooting Guide**](./workflows/troubleshooting-guide.md) - 워크플로우
-  문제 해결
-
-### 🔌 API & 인터페이스
-
-- [**Implementation Guide (V9.0.0)**](./lostark-api/V9.0.0/implementation-guide.md) -
-  API 구현 가이드 및 작업 현황 (✅ CHARACTERS, ARMORIES API, Data Service 완료)
-- [**Lost Ark API Documentation**](./lostark-api/README.md) - 로스트아크 공식
-  API 버전별 문서
-- [**API Endpoints (V9.0.0)**](./lostark-api/V9.0.0/api-endpoints.md) - V9.0.0
-  API 엔드포인트 목록
-- [**Build Data Guidelines (V9.0.0)**](./lostark-api/V9.0.0/build-data-guidelines.md) -
-  세팅 데이터 수집/저장 지침
-- [**Caching Strategy (V9.0.0)**](./lostark-api/V9.0.0/caching-strategy.md) -
-  ARMORIES API 캐싱 전략
-- [**Characters Caching Strategy (V9.0.0)**](./lostark-api/V9.0.0/caching-strategy-characters.md) -
-  CHARACTERS API 캐싱 전략
-
-### 📊 연구 & 데이터
-
-- [**Streamer Research**](./streamer-research/README.md) - 스트리머 연구
-  프로젝트 및 개인정보 활용
-- [**Streamer List**](./streamer-research/streamer-list.md) - API 테스트용
-  스트리머 캐릭터 목록
-- [**Privacy Notice**](./streamer-research/privacy-notice.md) - 캐릭터 정보 활용
-  공시
-
-### 📖 클라이언트
-
-- [**Client Sample**](./client/client-sample.md) - 클라이언트 사용 예제
-- [**Client.js**](./client/client.js) - 클라이언트 구현 예제
+### 📖 API 문서
+- [LostArk API 참조](./lostark-api/README.md) - LostArk API 통합 가이드
+  - [V9.0.0 API 참조](./lostark-api/V9.0.0/README.md) - 최신 API 버전 문서
 
 ### 🧪 테스트
+- [테스트 가이드](./testing/README.md) - 테스트 전략 및 실행 방법
 
-- [**Test Structure**](../tests/README.md) - 테스트 디렉토리 구조 및 가이드
-- [**Cache Flow Test Results**](./testing/cache-flow-test-results.md) - 3계층
-  캐시 시스템 테스트 결과
-- [**Cache Directory**](../cache/README.md) - 캐시된 데이터 구조 및 관리
+### 🔍 문제 해결
+- [문제 해결 가이드](./troubleshooting/Index.md) - 자주 발생하는 문제 해결
 
-### 🔧 트러블슈팅
+### 📋 워크플로우
+- [개발 워크플로우](./workflows/README.md) - 개발 프로세스 및 모범 사례
+- [코드 리뷰 체크리스트](./workflows/code-review-checklist.md) - 코드 품질 검증
+- [모범 사례](./workflows/best-practices.md) - 코딩 표준 및 가이드라인
 
-- [**Troubleshooting Guide**](./troubleshooting/Index.md) - 개발 중 발생하는
-  문제들과 해결 방법
+### 🔒 보안 및 개인정보
+- [스트리머 연구](./streamer-research/README.md) - 스트리머 데이터 수집 정책
+- [개인정보 처리방침](./streamer-research/privacy-notice.md) - 개인정보 보호 정책
 
-### 🐳 Docker & 배포
+## 🆕 최근 업데이트
 
-- [**Docker Setup Guide**](./docker-setup.md) - Docker Compose를 통한 선택적
-  서비스 실행 가이드
+### 2025-01-27 - 개발 워크플로우 개선
+- **빌드 테스트**: TypeScript 컴파일 에러 실시간 감지 및 해결
+- **실행 테스트**: 서버 자동시작 + Cursor 블로킹 방지
+- **단위 테스트**: 33개 테스트 모두 통과 확인
+- **TypeScript Strict 모드**: 완전한 타입 안전성 보장
 
-## 🚀 빠른 시작
+### 주요 개선사항
+- ✅ **Cursor 대화 중 무한대기 문제 해결**
+- ✅ **서버 자동시작 및 실시간 로그 확인**
+- ✅ **TypeScript strict 모드 완전 준수**
+- ✅ **빌드, 실행, 테스트 모두 정상 작동**
 
-### 1. 아키텍처 이해
+## 📝 문서 작성 가이드
 
-새로운 3-Service 아키텍처와 타입 시스템을 이해하려면
-[Architecture Guide](./architecture.md)를 먼저 읽어보세요.
+### 문서 구조
+- 각 문서는 명확한 목적과 범위를 가져야 합니다
+- 코드 예제는 실제 작동하는 코드여야 합니다
+- 환경변수 정보는 [.env.example](../.env.example)에만 상세히 기술합니다
 
-### 2. 개발 시작
-
-개발 환경 설정과 작업 순서는 [Development Guide](./development-guide.md)를
-참조하세요.
-
-### 3. 워크플로우 학습
-
-상세한 개발 프로세스와 모노레포 의존성 관리는
-[Development Workflow](./workflows/development-workflow.md)를 참조하세요.
-
-### 4. API 구현 현황 확인
-
-현재 구현된 API와 작업 현황은
-[Implementation Guide](./lostark-api/V9.0.0/implementation-guide.md)에서
-확인하세요.
-
-### 5. Docker 환경 실행
-
-Docker를 통한 선택적 서비스 실행은 [Docker Setup Guide](./docker-setup.md)를
-참조하세요.
-
-## 📋 주요 변경사항
-
-### ✅ 구현 완료된 API
-
-- **CHARACTERS API**: 계정 기반 캐릭터 추적 및 변화 감지 ✅ 완료
-- **ARMORIES API**: 캐릭터 상세 정보 처리 및 큐 기반 처리 ✅ 완료
-- **Data Service**: CHARACTERS/ARMORIES API 통합 서비스 ✅ 완료
-- **Cache System**: 3계층 캐시 (Memory → Redis → MySQL) ✅ 완료
-
-### 🔄 워크플로우 개선 (v1.0.4)
-
-- **문서 중복 제거**: `development-guide.md`에서 워크플로우 내용 제거
-- **모노레포 의존성 관리**: `workflows/development-workflow.md`로 통합
-- **검증 명령어 통합**: 모든 검증 관련 내용을 워크플로우 문서에 집중
-- **문서 구조 개선**: 각 문서의 역할을 명확히 분리
-
-### 새로운 구조
-
-- **TypeScript + ESM**: 최신 모듈 시스템 적용
-- **3-Service Architecture**: Data Service → REST Service → UDP Service
-- **버전별 타입 시스템**: Lost Ark API 버전과 1:1 매핑
-- **모노레포**: Yarn Workspaces 기반 패키지 관리
-
-### 타입 시스템 특징
-
-- **타입 안전성**: 컴파일 타임 에러 방지
-- **버전 추적**: API 변경사항 명확한 추적
-- **마이그레이션**: 안전한 버전 간 데이터 변환
-- **IDE 지원**: 자동완성 및 리팩토링 지원
-
-### 구현된 서비스 구조
-
-```
-packages/data-service/src/
-├── services/
-│   ├── characters-service.ts     # CHARACTERS API 서비스 ✅ 완료
-│   └── armories-service.ts       # ARMORIES API 서비스 ✅ 완료
-├── clients/
-│   ├── characters-client.ts      # CHARACTERS API 클라이언트 ✅ 완료
-│   └── armories-client.ts        # ARMORIES API 클라이언트 ✅ 완료
-├── normalizers/
-│   ├── characters-normalizer.ts  # CHARACTERS 정규화 ✅ 완료
-│   └── armories-normalizer.ts    # ARMORIES 정규화 ✅ 완료
-├── cache/
-│   ├── characters-cache.ts       # CHARACTERS 캐시 ✅ 완료
-│   └── armories-cache.ts         # ARMORIES 캐시 ✅ 완료
-└── index.ts                      # 메인 엔트리 포인트 ✅ 완료
-```
-
-### Data Service 완성 상태
-
-- **✅ 타입 체크**: 모든 패키지 성공
-- **✅ 빌드**: 모든 패키지 성공
-- **✅ API 테스트**: CHARACTERS/ARMORIES API 성공
-- **✅ 통합 테스트**: Data Service 전체 기능 테스트 성공
-- **✅ 문서화**: 구현 가이드 및 상태 문서 완료
+### 문서 업데이트 규칙
+- 새로운 기능 추가 시 관련 문서를 즉시 업데이트합니다
+- API 변경 시 버전별 문서를 관리합니다
+- 문제 해결 후 관련 문서를 업데이트합니다
 
 ## 🔗 관련 링크
 
-- [Lost Ark API Documentation](https://developer-lostark.game.onstove.com/)
-- [Lost Ark API Changelog](https://developer-lostark.game.onstove.com/changelog)
-- [Project Repository](https://github.com/artbiit/lostark-api-service)
-
----
-
-_마지막 업데이트: 2025-01-27_
+- [LostArk Developer Portal](https://developer-lostark.game.onstove.com/)
+- [LostArk API Changelog](https://developer-lostark.game.onstove.com/changelog)
+- [프로젝트 GitHub](https://github.com/artbiit/lostark-api-service)
