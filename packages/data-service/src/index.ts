@@ -12,14 +12,23 @@
  * - dotenv를 통한 일관된 환경변수 로딩
  */
 
+logger.info('📦 data-service 패키지 로딩 시작');
+
+logger.info('📥 shared 패키지 import 시작...');
 import { logger } from '@lostark/shared';
-import { parseEnv } from '@lostark/shared/config/env.js';
 import { mysqlClient } from '@lostark/shared/db/mysql.js';
 import { redisClient } from '@lostark/shared/db/redis.js';
+logger.info('✅ logger import 완료');
+
+logger.info('📥 MySQL 클라이언트 import 시작...');
+logger.info('✅ MySQL 클라이언트 import 완료');
+
+logger.info('📥 Redis 클라이언트 import 시작...');
+logger.info('✅ Redis 클라이언트 import 완료');
 
 // === 환경변수 로딩 ===
-// parseEnv() 함수가 자동으로 .env 파일을 로드합니다
-const env = parseEnv();
+// parseEnv() 함수는 필요할 때만 호출하도록 수정
+// const env = parseEnv();
 
 // === CHARACTERS API ===
 export { charactersCache } from './cache/characters-cache.js';

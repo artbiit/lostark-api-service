@@ -7,14 +7,23 @@
 프로젝트 루트에 `.env` 파일을 생성하고 환경변수를 설정하세요:
 
 ```bash
-# .env.example 파일을 복사하여 .env 파일 생성
-cp .env.example .env
+# ⚠️  보안 주의: .env.example을 복사하지 마세요!
+# .env.example 파일은 템플릿일 뿐이며, 실제 값이 포함되어 있지 않습니다.
+
+# 수동으로 .env 파일을 생성하고 환경변수를 설정하세요
+touch .env
 
 # .env 파일을 편집하여 실제 값으로 수정
 # 특히 LOSTARK_API_KEY는 반드시 설정해야 합니다
 ```
 
 **환경변수 템플릿**: [.env.example](../.env.example) 파일을 참조하세요.
+
+**⚠️ 보안 규칙**:
+
+- `.env.example` 파일을 `.env`로 복사하는 것을 절대 금지합니다
+- `.env` 파일은 수동으로 생성하고 실제 값만 입력하세요
+- `.env` 파일은 절대 Git에 커밋하지 마세요
 
 **상세 설정 가이드**: [설정 가이드](./configuration.md#environment-variables)를
 참조하세요.

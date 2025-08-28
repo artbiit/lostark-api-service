@@ -9,8 +9,9 @@
  */
 
 import { createClient, RedisClientType } from 'redis';
-import { logger } from '../config/logger.js';
+
 import { parseEnv } from '../config/env.js';
+import { logger } from '../config/logger.js';
 
 // === Redis 통계 타입 ===
 
@@ -32,14 +33,38 @@ export class RedisClient {
   private reconnectDelay = 1000; // 1초
 
   constructor() {
+    // 생성자에서 parseEnv() 호출 제거 - 지연 초기화로 변경
+    this.client = createClient({
+      url: 'redis://localhost:6379', // 기본값 사용
+      socket: {
+        connectTimeout: 3000, // 3초로 단축
+        commandTimeout: 2000, // 명령 타임아웃 추가
+        lazyConnect: true, // 지연 연결 활성화
+      },
+    });
+
+    this.setupEventHandlers();
+  }
+
+  /**
+   * Redis 클라이언트 초기화 (환경변수 적용)
+   */
+  private initializeClient(): void {
     const env = parseEnv();
-    
+
+    // 기존 클라이언트가 있으면 연결 해제
+    if (this.client) {
+      this.client.disconnect().catch(() => {});
+    }
+
     this.client = createClient({
       url: env.CACHE_REDIS_URL || 'redis://localhost:6379',
       ...(env.CACHE_REDIS_PASSWORD && { password: env.CACHE_REDIS_PASSWORD }),
       database: env.CACHE_REDIS_DB,
       socket: {
-        connectTimeout: 5000, // 5초
+        connectTimeout: 3000,
+        commandTimeout: 2000,
+        lazyConnect: true,
       },
     });
 
@@ -54,7 +79,7 @@ export class RedisClient {
       await this.client.connect();
       this.isConnected = true;
       this.reconnectAttempts = 0;
-      
+
       logger.info('Redis connected successfully', {
         url: this.client.options?.url?.replace(/\/\/.*@/, '//***:***@'), // 비밀번호 마스킹
         database: this.client.options?.database,
@@ -76,7 +101,7 @@ export class RedisClient {
     try {
       await this.client.quit();
       this.isConnected = false;
-      
+
       logger.info('Redis disconnected successfully');
     } catch (error) {
       logger.error('Failed to disconnect from Redis', {
@@ -96,7 +121,7 @@ export class RedisClient {
       }
 
       const value = await this.client.get(key);
-      
+
       logger.debug('Redis get operation', {
         key,
         found: value !== null,
@@ -154,7 +179,7 @@ export class RedisClient {
       }
 
       const deleted = await this.client.del(key);
-      
+
       logger.debug('Redis del operation', {
         key,
         deleted: deleted > 0,
@@ -178,7 +203,7 @@ export class RedisClient {
       }
 
       const deleted = await this.client.del(keys);
-      
+
       logger.debug('Redis delMultiple operation', {
         keysCount: keys.length,
         deletedCount: deleted,

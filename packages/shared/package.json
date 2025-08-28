@@ -8,39 +8,67 @@
   "exports": {
     ".": {
       "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "import": "./dist/index.js"
     },
     "./types": {
       "types": "./src/types/latest/index.ts",
-      "import": "./src/types/latest/index.ts"
+      "import": "./dist/types/latest/index.js"
     },
     "./types/latest": {
       "types": "./src/types/latest/index.ts",
-      "import": "./src/types/latest/index.ts"
+      "import": "./dist/types/latest/index.js"
     },
     "./types/V9": {
       "types": "./src/types/V9/index.ts",
-      "import": "./src/types/V9/index.ts"
+      "import": "./dist/types/V9/index.js"
     },
     "./types/V8": {
       "types": "./src/types/V8/index.ts",
-      "import": "./src/types/V8/index.ts"
+      "import": "./dist/types/V8/index.js"
     },
     "./types/V7": {
       "types": "./src/types/V7/index.ts",
-      "import": "./src/types/V7/index.ts"
+      "import": "./dist/types/V7/index.js"
     },
     "./types/domain": {
       "types": "./src/types/domain/index.ts",
-      "import": "./src/types/domain/index.ts"
+      "import": "./dist/types/domain/index.js"
     },
     "./types/domain/account": {
       "types": "./src/types/domain/account.ts",
-      "import": "./src/types/domain/account.ts"
+      "import": "./dist/types/domain/account.js"
+    },
+    "./types/V9/armories": {
+      "types": "./src/types/V9/armories.ts",
+      "import": "./dist/types/V9/armories.js"
+    },
+    "./types/V9/auctions": {
+      "types": "./src/types/V9/auctions.ts",
+      "import": "./dist/types/V9/auctions.js"
+    },
+    "./types/V9/characters": {
+      "types": "./src/types/V9/characters.ts",
+      "import": "./dist/types/V9/characters.js"
+    },
+    "./types/V9/gamecontents": {
+      "types": "./src/types/V9/gamecontents.ts",
+      "import": "./dist/types/V9/gamecontents.js"
+    },
+    "./types/V9/markets": {
+      "types": "./src/types/V9/markets.ts",
+      "import": "./dist/types/V9/markets.js"
+    },
+    "./types/V9/news": {
+      "types": "./src/types/V9/news.ts",
+      "import": "./dist/types/V9/news.js"
     },
     "./config": {
       "types": "./src/config/index.ts",
-      "import": "./src/config/index.ts"
+      "import": "./dist/config/index.js"
+    },
+    "./config/env": {
+      "types": "./src/config/env.ts",
+      "import": "./dist/config/env.js"
     },
     "./utils": {
       "types": "./src/utils/index.ts",
@@ -48,7 +76,15 @@
     },
     "./db": {
       "types": "./src/db/index.ts",
-      "import": "./src/db/index.ts"
+      "import": "./dist/db/index.js"
+    },
+    "./db/mysql": {
+      "types": "./src/db/mysql.ts",
+      "import": "./dist/db/mysql.js"
+    },
+    "./db/redis": {
+      "types": "./src/db/redis.ts",
+      "import": "./dist/db/redis.js"
     }
   },
   "scripts": {
