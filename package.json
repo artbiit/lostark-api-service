@@ -1,6 +1,6 @@
 {
   "name": "lostark-api-service",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Lostark API Service - 3-tier architecture for Lost Ark API integration",
   "type": "module",
   "private": true,
