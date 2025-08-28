@@ -4,50 +4,20 @@
 
 ### 1. .env 파일 설정
 
-프로젝트 루트에 `.env` 파일을 생성하고 다음 환경변수들을 설정하세요:
+프로젝트 루트에 `.env` 파일을 생성하고 환경변수를 설정하세요:
 
 ```bash
-# === 환경 설정 ===
-NODE_ENV=development
+# .env.example 파일을 복사하여 .env 파일 생성
+cp .env.example .env
 
-# === Lost Ark API 설정 ===
-LOSTARK_API_KEY=your_lostark_api_key_here
-
-# === Fetch Layer 설정 ===
-FETCH_RATE_LIMIT_PER_MINUTE=100
-FETCH_RETRY_ATTEMPTS=3
-FETCH_RETRY_DELAY_MS=1000
-FETCH_CIRCUIT_BREAKER_THRESHOLD=5
-FETCH_CIRCUIT_BREAKER_TIMEOUT_MS=30000
-
-# === REST API 설정 ===
-REST_API_PORT=3000
-REST_API_HOST=0.0.0.0
-REST_API_CORS_ORIGIN=*
-REST_API_RATE_LIMIT_PER_MINUTE=100
-
-# === UDP Gateway 설정 ===
-UDP_GATEWAY_PORT=3001
-UDP_GATEWAY_HOST=0.0.0.0
-UDP_GATEWAY_MAX_MESSAGE_SIZE=8192
-UDP_GATEWAY_WORKER_POOL_SIZE=4
-
-# === 캐시 설정 ===
-CACHE_MEMORY_TTL_SECONDS=300
-CACHE_REDIS_TTL_SECONDS=1800
-
-# === 로깅 설정 ===
-LOG_LEVEL=info
-LOG_PRETTY_PRINT=false
-
-# === 데이터베이스 설정 ===
-DB_HOST=localhost
-DB_PORT=3306
-DB_USERNAME=root
-DB_PASSWORD=
-DB_DATABASE=lostark
-DB_CONNECTION_LIMIT=10
+# .env 파일을 편집하여 실제 값으로 수정
+# 특히 LOSTARK_API_KEY는 반드시 설정해야 합니다
 ```
+
+**환경변수 템플릿**: [.env.example](../.env.example) 파일을 참조하세요.
+
+**상세 설정 가이드**: [설정 가이드](./configuration.md#environment-variables)를
+참조하세요.
 
 ### 2. 환경변수 로딩 방식
 
@@ -59,6 +29,9 @@ import { parseEnv } from '@lostark/shared/config/env.js';
 // parseEnv() 함수가 자동으로 .env 파일을 로드하고 검증합니다
 const env = parseEnv();
 ```
+
+**환경변수 관리 상세 가이드**:
+[설정 가이드](./configuration.md#environment-variables)를 참조하세요.
 
 ## 빌드 및 실행
 
@@ -135,15 +108,9 @@ yarn workspace @lostark/data-service test
 
 ### 2. 기본값
 
-대부분의 환경변수는 기본값이 설정되어 있어 `.env` 파일에 명시하지 않아도 됩니다:
+대부분의 환경변수는 기본값이 설정되어 있어 `.env` 파일에 명시하지 않아도 됩니다.
 
-- `NODE_ENV`: development
-- `LOSTARK_API_VERSION`: V9.0.0
-- `REST_API_PORT`: 3000
-- `UDP_GATEWAY_PORT`: 3001
-- `FETCH_RATE_LIMIT_PER_MINUTE`: 100
-- `FETCH_RETRY_ATTEMPTS`: 3
-- `LOG_LEVEL`: info
+**환경변수 기본값 목록**: [.env.example](../.env.example) 파일을 참조하세요.
 
 ### 3. 타입 안전성
 
