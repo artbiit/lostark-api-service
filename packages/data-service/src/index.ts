@@ -56,9 +56,11 @@ export { NewsService } from './services/news-service.js';
 
 // === GAMECONTENTS API ===
 export { GameContentsClient } from './clients/gamecontents-client.js';
+export { GameContentsService } from './services/gamecontents-service.js';
 
 // === MARKETS API ===
 export { MarketsClient } from './clients/markets-client.js';
+export { MarketsService } from './services/markets-service.js';
 
 // === 캐시 시스템 ===
 export { cacheManager } from './cache/cache-manager.js';
