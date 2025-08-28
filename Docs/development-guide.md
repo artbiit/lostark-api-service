@@ -253,12 +253,30 @@ yarn validate:deps
 yarn validate:refs
 ```
 
-#### 3. 커밋 전 검증
+#### 3. 자동화된 검증 시스템
+
+**Git Hooks (자동 실행)**:
+
+- **pre-commit**: `yarn validate:monorepo && yarn test:unit && yarn lint`
+- **pre-push**: `yarn validate:monorepo && yarn test && yarn build`
+
+**CI/CD Pipeline**:
+
+- GitHub Actions에서 자동 검증
+- main/develop 브랜치 푸시 시 실행
+- Pull Request 시 실행
+
+#### 4. 수동 검증 명령어
 
 ```bash
-# 자동으로 실행됨 (pre-commit 훅)
-yarn validate:monorepo
-yarn test:unit
+# 커밋 전 검증 (자동 실행됨)
+yarn precommit
+
+# 푸시 전 검증 (자동 실행됨)
+yarn prepush
+
+# 전체 검증
+yarn validate:full
 ```
 
 ### 🚨 자주 발생하는 문제들
@@ -298,6 +316,9 @@ yarn validate:refs
 
 # 빌드 검증
 yarn validate:build
+
+# 전체 검증 (모든 테스트 + 빌드 + 린트)
+yarn validate:full
 ```
 
 ### 🛠️ 문제 해결 체크리스트

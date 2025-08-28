@@ -9,7 +9,6 @@ build/
 # VCS/도구
 .git/
 .gitignore
-.husky/
 coverage/
 .vscode/
 .yarn/*
