@@ -10,12 +10,12 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
 
-import { parseEnv } from '@lostark/shared/config';
+import { setupTestEnvironment } from '../../common/test-utils.js';
 
 test('Package Environment Variable Consistency', async (t) => {
   await t.test('All packages should use shared environment variable loading', () => {
     // 모든 패키지에서 동일한 parseEnv 함수를 사용하는지 확인
-    const env = parseEnv(true, '../../../.env');
+    const env = setupTestEnvironment();
 
     // 공통 환경 변수들이 모든 패키지에서 동일하게 사용되는지 확인
     const commonVars = [
@@ -35,7 +35,7 @@ test('Package Environment Variable Consistency', async (t) => {
   });
 
   await t.test('Service-specific environment variables should be properly configured', () => {
-    const env = parseEnv(true, '../../../.env');
+    const env = setupTestEnvironment();
 
     // REST Service 관련 환경 변수
     const restVars = [
@@ -85,7 +85,7 @@ test('Package Environment Variable Consistency', async (t) => {
   });
 
   await t.test('Cache configuration should be consistent across packages', () => {
-    const env = parseEnv(true, '../../../.env');
+    const env = setupTestEnvironment();
 
     const cacheVars = ['CACHE_MEMORY_TTL_SECONDS', 'CACHE_REDIS_TTL_SECONDS', 'CACHE_REDIS_DB'];
 
@@ -110,7 +110,7 @@ test('Package Environment Variable Consistency', async (t) => {
   });
 
   await t.test('Database configuration should be available', () => {
-    const env = parseEnv(true, '../../../.env');
+    const env = setupTestEnvironment();
 
     const dbVars = [
       'DB_HOST',
@@ -130,7 +130,7 @@ test('Package Environment Variable Consistency', async (t) => {
   });
 
   await t.test('Environment variables should have correct types for each package', () => {
-    const env = parseEnv(true, '../../../.env');
+    const env = setupTestEnvironment();
 
     // 포트 번호들은 숫자여야 함
     assert(typeof env.REST_API_PORT === 'number', 'REST_API_PORT should be a number');
@@ -188,7 +188,7 @@ test('Package Environment Variable Consistency', async (t) => {
   });
 
   await t.test('Environment variables should have reasonable value ranges', () => {
-    const env = parseEnv(true, '../../../.env');
+    const env = setupTestEnvironment();
 
     // 포트 번호 범위 검증
     assert(
@@ -247,7 +247,7 @@ test('Package Environment Variable Consistency', async (t) => {
 
     // 여러 번 환경 변수 로딩하여 성능 및 안정성 확인
     for (let i = 0; i < 10; i++) {
-      const env = parseEnv(true, '../../../.env');
+      const env = setupTestEnvironment();
       assert(env !== undefined, `Environment variables should be loaded on iteration ${i + 1}`);
       assert(
         typeof env === 'object',
