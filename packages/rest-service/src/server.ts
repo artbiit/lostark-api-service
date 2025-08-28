@@ -226,6 +226,10 @@ export class RestServer {
       '/api/v1/armories/:characterName/partial',
       this.getCharacterDetailPartial.bind(this),
     );
+    this.fastify.get(
+      '/api/v1/armories/:characterName/class-nodes',
+      this.getClassSpecificNodes.bind(this),
+    );
 
     // CHARACTERS API
     this.fastify.get('/api/v1/characters/:characterName', this.getCharacter.bind(this));
@@ -549,6 +553,64 @@ export class RestServer {
         message: 'Failed to refresh character detail',
         responseTime,
       });
+    }
+  }
+
+  /**
+   * 직업전용 노드 정보 조회
+   */
+  async getClassSpecificNodes(
+    request: FastifyRequest<{
+      Params: { characterName: string };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const { characterName } = request.params;
+
+    try {
+      logger.info('Class specific nodes request', { characterName });
+
+      const classNodes = await this.armoriesService.getClassSpecificNodes(characterName);
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: classNodes,
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to get class specific nodes', {
+        characterName,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      if (error instanceof Error && error.message.includes('not found')) {
+        reply.status(404).send({
+          error: 'Not Found',
+          message: error.message,
+          responseTime,
+        });
+      } else if (error instanceof Error && error.message.includes('Item level too low')) {
+        reply.status(400).send({
+          error: 'Bad Request',
+          message: error.message,
+          responseTime,
+        });
+      } else {
+        reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Failed to get class specific nodes',
+          responseTime,
+        });
+      }
     }
   }
 
