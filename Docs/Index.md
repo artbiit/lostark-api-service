@@ -1,6 +1,6 @@
 # Lost Ark API Service Documentation
 
-<!-- @cursor-change: 2025-01-27, v1.0.3, Data Service 완성 상태 반영 -->
+<!-- @cursor-change: 2025-01-27, v1.0.4, 워크플로우 문서 중복 제거 및 구조 개선 -->
 
 ## 📚 문서 목록
 
@@ -8,14 +8,21 @@
 
 - [**3-Service Architecture**](./architecture.md) - 전체 아키텍처 설계 및 타입
   시스템
-- [**Development Guide**](./development-guide.md) - 개발 가이드 및 워크플로우
+- [**Development Guide**](./development-guide.md) - 빠른 시작 및 기본 설정
 - [**Configuration Guide**](./configuration.md) - 환경변수 및 설정 가이드
 
 ### 🔧 개발 워크플로우
 
-- [**Workflow Overview**](./workflows/README.md) - 개발 워크플로우 개요
-- [**Development Workflow**](./workflows/development-workflow.md) - 개발자 워크플로우
-- [**Code Review Checklist**](./workflows/code-review-checklist.md) - 코드 리뷰 체크리스트
+- [**Workflow Overview**](./workflows/README.md) - 개발 워크플로우 개요 및 문서
+  구조
+- [**Development Workflow**](./workflows/development-workflow.md) - 상세한 개발
+  프로세스, 모노레포 의존성 관리, 검증 명령어
+- [**Best Practices**](./workflows/best-practices.md) - 코드 품질, 문서화,
+  테스트 가이드라인
+- [**Code Review Checklist**](./workflows/code-review-checklist.md) - 코드 리뷰
+  체크리스트
+- [**Troubleshooting Guide**](./workflows/troubleshooting-guide.md) - 워크플로우
+  문제 해결
 
 ### 🔌 API & 인터페이스
 
@@ -57,7 +64,6 @@
 
 - [**Troubleshooting Guide**](./troubleshooting/Index.md) - 개발 중 발생하는
   문제들과 해결 방법
-- [**Workflow Troubleshooting**](./workflows/troubleshooting-guide.md) - 워크플로우 문제 해결
 
 ### 🐳 Docker & 배포
 
@@ -76,13 +82,18 @@
 개발 환경 설정과 작업 순서는 [Development Guide](./development-guide.md)를
 참조하세요.
 
-### 3. API 구현 현황 확인
+### 3. 워크플로우 학습
+
+상세한 개발 프로세스와 모노레포 의존성 관리는
+[Development Workflow](./workflows/development-workflow.md)를 참조하세요.
+
+### 4. API 구현 현황 확인
 
 현재 구현된 API와 작업 현황은
 [Implementation Guide](./lostark-api/V9.0.0/implementation-guide.md)에서
 확인하세요.
 
-### 4. Docker 환경 실행
+### 5. Docker 환경 실행
 
 Docker를 통한 선택적 서비스 실행은 [Docker Setup Guide](./docker-setup.md)를
 참조하세요.
@@ -95,6 +106,13 @@ Docker를 통한 선택적 서비스 실행은 [Docker Setup Guide](./docker-set
 - **ARMORIES API**: 캐릭터 상세 정보 처리 및 큐 기반 처리 ✅ 완료
 - **Data Service**: CHARACTERS/ARMORIES API 통합 서비스 ✅ 완료
 - **Cache System**: 3계층 캐시 (Memory → Redis → MySQL) ✅ 완료
+
+### 🔄 워크플로우 개선 (v1.0.4)
+
+- **문서 중복 제거**: `development-guide.md`에서 워크플로우 내용 제거
+- **모노레포 의존성 관리**: `workflows/development-workflow.md`로 통합
+- **검증 명령어 통합**: 모든 검증 관련 내용을 워크플로우 문서에 집중
+- **문서 구조 개선**: 각 문서의 역할을 명확히 분리
 
 ### 새로운 구조
 
