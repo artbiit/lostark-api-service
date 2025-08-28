@@ -12,6 +12,7 @@ export * from './config/logger.js';
 
 // 타입 관련
 export * from './types/latest/index.js';
+export * from './types/domain/character.js';
 
 // 유틸리티 관련 (향후 추가)
 // export * from './utils/index.js';

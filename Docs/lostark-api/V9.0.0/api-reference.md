@@ -1,323 +1,490 @@
-# Lost Ark API Reference
+# Lost Ark API V9.0.0 - REST Service API 참조
 
-> **참조**:
-> [Lost Ark API Documentation](https://developer-lostark.game.onstove.com/getting-started)
->
-> **버전**: V9.0.0
->
-> **@cursor-change**: 2025-01-27, v1.0.0, API 참조 문서 생성
+> **@cursor-change**: 2025-01-27, v1.1.0, REST Service 완성 상태 반영
 
 ## 📋 개요
 
-로스트아크 공식 API V9.0.0의 모든 엔드포인트에 대한 기술적 참조 문서입니다.
-
-**Rate Limit**: 100 requests/minute
-
----
-
-## 📰 NEWS API
-
-### 공지사항 및 이벤트 정보
-
-#### 1. 공지사항 목록
-
-```
-GET /news/notices
-```
-
-**파라미터**:
-
-- `searchText` (optional): 검색어
-- `type` (optional): 공지사항 타입
-
-**응답**: 공지사항 목록
-
-#### 2. 이벤트 목록
-
-```
-GET /news/events
-```
-
-**응답**: 진행 중인 이벤트 목록
-
----
-
-## 👤 CHARACTERS API
-
-### 캐릭터 기본 정보
-
-#### 1. 캐릭터 형제 정보
-
-```
-GET /characters/{characterName}/siblings
-```
-
-**파라미터**:
-
-- `characterName`: 캐릭터명
-
-**응답**: 해당 계정의 모든 캐릭터 프로필
-
----
-
-## ⚔️ ARMORIES API
-
-### 캐릭터 상세 정보 (무기고)
-
-#### 1. 캐릭터 전체 정보
-
-```
-GET /armories/characters/{characterName}
-```
-
-**파라미터**:
-
-- `characterName`: 캐릭터명
-
-**응답**: 캐릭터의 모든 상세 정보 (프로필, 장비, 각인, 카드, 보석, 전투 스킬,
-아바타, 증명의 전장, 수집품)
-
-#### 2. 캐릭터 기본 능력치
-
-```
-GET /armories/characters/{characterName}/profiles
-```
-
-**응답**: 캐릭터의 기본 능력치 요약
-
-#### 3. 캐릭터 장비 정보
-
-```
-GET /armories/characters/{characterName}/equipment
-```
-
-**응답**: 캐릭터의 장착된 아이템 요약
-
-#### 4. 캐릭터 아바타 정보
-
-```
-GET /armories/characters/{characterName}/avatars
-```
-
-**응답**: 캐릭터의 장착된 아바타 요약
-
-#### 5. 캐릭터 전투 스킬
-
-```
-GET /armories/characters/{characterName}/combat-skills
-```
-
-**응답**: 캐릭터의 전투 스킬 요약
-
-#### 6. 캐릭터 각인 정보
-
-```
-GET /armories/characters/{characterName}/engravings
-```
-
-**응답**: 캐릭터의 장착된 각인서
-
-#### 7. 캐릭터 카드 정보
-
-```
-GET /armories/characters/{characterName}/cards
-```
-
-**응답**: 캐릭터의 장착된 카드
-
-#### 8. 캐릭터 보석 정보
-
-```
-GET /armories/characters/{characterName}/gems
-```
-
-**응답**: 캐릭터의 장착된 보석
-
-#### 9. 캐릭터 증명의 전장 정보
-
-```
-GET /armories/characters/{characterName}/colosseums
-```
-
-**응답**: 캐릭터의 증명의 전장 정보
-
-#### 10. 캐릭터 수집품 정보
-
-```
-GET /armories/characters/{characterName}/collectibles
-```
-
-**응답**: 캐릭터의 수집품 정보
-
----
-
-## 🏪 AUCTIONS API
-
-### 경매장 검색
-
-#### 1. 경매장 검색 옵션
-
-```
-GET /auctions/options
-```
-
-**응답**: 경매장 검색에 사용할 수 있는 옵션들
-
-#### 2. 경매장 아이템 검색
-
-```
-POST /auctions/items
-```
-
-**요청 본문**:
+Lost Ark API V9.0.0을 기반으로 한 REST Service의 모든 엔드포인트 문서입니다.
+
+### 기본 정보
+- **Base URL**: `http://localhost:3000` (기본값)
+- **Content-Type**: `application/json`
+- **인증**: API Key (헤더에 `Authorization: Bearer {API_KEY}`)
+
+### 응답 형식
+모든 API 응답은 다음과 같은 기본 형식을 따릅니다:
 
 ```json
 {
-  "CategoryCode": 210000,
-  "Sort": "BUY_PRICE",
-  "SortCondition": "ASC",
-  "ItemName": "검색할 아이템명",
-  "PageNo": 0
+  "success": true,
+  "data": { /* 실제 데이터 */ },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 150
 }
 ```
 
-**응답**: 검색된 경매장 아이템 목록
+### 에러 응답
+```json
+{
+  "error": "Error Type",
+  "message": "에러 메시지",
+  "responseTime": 50
+}
+```
 
 ---
 
-## 🛒 MARKETS API
+## 🔍 헬스 체크
 
-### 시장 정보
+### GET /health
+서버 상태 및 캐시 레이어 상태를 확인합니다.
 
-#### 1. 시장 검색 옵션
-
+**응답 예시:**
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "cache": {
+    "memory": "connected",
+    "redis": "connected",
+    "database": "connected"
+  }
+}
 ```
-GET /markets/options
-```
-
-**응답**: 시장 검색에 사용할 수 있는 옵션들
-
-#### 2. 아이템 ID로 시장 정보 조회
-
-```
-GET /markets/items/{itemId}
-```
-
-**파라미터**:
-
-- `itemId`: 아이템 ID
-
-**응답**: 해당 아이템의 시장 정보
-
-#### 3. 시장 아이템 검색
-
-```
-POST /markets/items
-```
-
-**요청 본문**: 검색 조건
-
-**응답**: 검색된 시장 아이템 목록
 
 ---
 
-## 🎮 GAMECONTENTS API
+## 📊 캐시 관리
 
-### 게임 콘텐츠 정보
+### GET /cache/status
+캐시 통계 및 최적화 정보를 조회합니다.
 
-#### 1. 주간 콘텐츠 달력
-
+**응답 예시:**
+```json
+{
+  "cache": {
+    "memory": {
+      "hitCount": 150,
+      "missCount": 25,
+      "hitRate": 0.857
+    },
+    "redis": {
+      "hitCount": 80,
+      "missCount": 15,
+      "hitRate": 0.842
+    },
+    "database": {
+      "hitCount": 30,
+      "missCount": 5,
+      "hitRate": 0.857
+    }
+  },
+  "optimization": {
+    "lastRun": "2025-01-27T10:25:00.000Z",
+    "itemsOptimized": 15
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z"
+}
 ```
-GET /gamecontents/calendar
+
+### POST /cache/optimize
+캐시 최적화를 실행합니다.
+
+**응답 예시:**
+```json
+{
+  "success": true,
+  "optimization": {
+    "timestamp": "2025-01-27T10:30:00.000Z",
+    "itemsOptimized": 12,
+    "memoryFreed": "2.5MB"
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z"
+}
 ```
 
-**응답**: 이번 주 콘텐츠 달력 (프로키온의 나침반 등)
+### DELETE /cache/characters/{characterName}
+특정 캐릭터의 캐시를 삭제합니다.
 
-> **⚠️ 주의**: 도비스 던전과 도가토 API는 더 이상 사용되지 않습니다.
+**응답 예시:**
+```json
+{
+  "success": true,
+  "message": "Cache for character '테스트캐릭터1' deleted successfully",
+  "timestamp": "2025-01-27T10:30:00.000Z"
+}
+```
 
 ---
 
-## 🏆 GUILDS API
+## 👤 캐릭터 API
 
-### 길드 정보
+### GET /characters/{characterName}
+캐릭터 상세 정보를 조회합니다.
 
-> **⚠️ 주의**: 길드 API는 더 이상 사용되지 않습니다.
+**경로 파라미터:**
+- `characterName` (string): 캐릭터 이름
 
-#### 1. 길드 순위 (사용 불가)
-
+**응답 예시:**
+```json
+{
+  "success": true,
+  "data": {
+    "character": {
+      "name": "테스트캐릭터1",
+      "level": 60,
+      "class": "버서커",
+      "itemLevel": 1620.5,
+      "server": "카마인"
+    },
+    "equipment": [/* 장비 정보 */],
+    "engravings": [/* 각인 정보 */],
+    "skills": [/* 스킬 정보 */]
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 150
+}
 ```
-GET /guilds/rankings
+
+### POST /characters/{characterName}/refresh
+캐릭터 정보를 강제로 새로고침합니다.
+
+**응답 예시:**
+```json
+{
+  "success": true,
+  "data": { /* 캐릭터 정보 */ },
+  "cache": {
+    "hit": false,
+    "source": "api"
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 1200
+}
 ```
-
-**파라미터**:
-
-- `serverName`: 서버명 (예: "루페온", "실리안", "아만" 등)
-
-**응답**: 해당 서버의 길드 순위
-
-> **상태**: 302 리다이렉트로 `/notfound`로 이동하여 사용 불가
 
 ---
 
-## 🔧 공통 설정
+## 🛒 경매장 API
 
-### 인증
+### GET /auctions/search
+경매장 아이템을 검색합니다.
 
+**쿼리 파라미터:**
+- `itemName` (string, optional): 아이템 이름
+- `categoryCode` (number, optional): 카테고리 코드
+- `itemTier` (string, optional): 아이템 티어
+- `itemGrade` (string, optional): 아이템 등급
+- `itemLevel` (string, optional): 아이템 레벨
+- `skillOption` (string, optional): 스킬 옵션
+- `engravingName` (string, optional): 각인 이름
+- `pageNo` (string, optional): 페이지 번호 (기본값: 1)
+- `sort` (string, optional): 정렬 기준
+- `refresh` (string, optional): 강제 새로고침 ("true")
+
+**응답 예시:**
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": 12345,
+        "name": "파괴석",
+        "icon": "icon_url",
+        "grade": "고급",
+        "tier": 3,
+        "level": 1,
+        "auctionInfo": {
+          "startPrice": 1000,
+          "buyPrice": 1200,
+          "bidPrice": 1100,
+          "endDate": "2025-01-28T10:30:00.000Z",
+          "bidCount": 5,
+          "bidStartPrice": 1000,
+          "isCompetitive": true,
+          "tradeAllowCount": 1
+        },
+        "options": [/* 옵션 정보 */],
+        "normalizedAt": "2025-01-27T10:30:00.000Z"
+      }
+    ],
+    "totalCount": 150,
+    "pageNo": 1,
+    "pageSize": 20,
+    "normalizedAt": "2025-01-27T10:30:00.000Z"
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 300
+}
 ```
-Authorization: bearer {JWT_TOKEN}
+
+### POST /auctions/search/refresh
+경매장 검색 결과를 강제로 새로고침합니다.
+
+**요청 본문:**
+```json
+{
+  "itemName": "파괴석",
+  "categoryCode": 0,
+  "itemTier": "3",
+  "itemGrade": "고급",
+  "pageNo": 1,
+  "sort": "BUY_PRICE"
+}
 ```
 
-### Rate Limiting 헤더
-
-- `X-RateLimit-Limit`: 분당 최대 요청 수
-- `X-RateLimit-Remaining`: 남은 요청 수
-- `X-RateLimit-Reset`: 다음 할당량 갱신 시간 (epoch)
-
-### 에러 코드
-
-- `401`: API 키 오류
-- `403`: 권한 문제
-- `429`: Rate Limit 초과
-- `500`: 서버 오류
-- `503`: 점검 중
-
----
-
-## 📊 데이터 크기 분석
-
-### 작은 데이터 (1-10KB)
-
-- 캐릭터 기본 정보
-- 공지사항 목록 (11.73KB)
-- 이벤트 목록 (5.11KB)
-- 캐릭터 형제 정보 (1.38KB)
-- 경매장 아이템 검색 (5.51KB)
-
-### 중간 데이터 (10-100KB)
-
-- 캐릭터 장비 정보 (76.63KB)
-- 캐릭터 보석 정보 (81.18KB)
-- 경매장 검색 옵션 (147.69KB)
-
-### 큰 데이터 (100KB-1MB+)
-
-- 캐릭터 수집품 정보 (28.12KB)
-- 캐릭터 전투 스킬 (150.22KB)
-- 주간 콘텐츠 달력 (419.75KB)
-- 전체 ARMORIES 응답 (411.40KB)
+**응답 예시:**
+```json
+{
+  "success": true,
+  "data": { /* 검색 결과 */ },
+  "cache": {
+    "hit": false,
+    "source": "api"
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 400
+}
+```
 
 ---
 
-## 📝 참고사항
+## 📰 공지사항 API
 
-- 모든 API는 JWT 토큰 인증이 필요합니다
-- Rate Limit은 100 requests/minute입니다
-- 응답 데이터는 JSON 형식입니다
-- 일부 API는 null 값을 반환할 수 있습니다
-- API 버전 변경 시 하위 호환성을 고려해야 합니다
+### GET /news
+공지사항 또는 이벤트 목록을 조회합니다.
+
+**쿼리 파라미터:**
+- `type` (string, optional): "notices" 또는 "events" (기본값: "notices")
+- `pageNo` (string, optional): 페이지 번호
+- `refresh` (string, optional): 강제 새로고침 ("true")
+
+**응답 예시 (공지사항):**
+```json
+{
+  "success": true,
+  "data": {
+    "notices": [
+      {
+        "title": "서버 점검 안내",
+        "date": "2025-01-27T10:30:00.000Z",
+        "link": "https://lostark.com/notice/123",
+        "type": "점검"
+      }
+    ],
+    "totalCount": 50,
+    "pageNo": 1,
+    "pageSize": 20,
+    "normalizedAt": "2025-01-27T10:30:00.000Z"
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 200
+}
+```
+
+**응답 예시 (이벤트):**
+```json
+{
+  "success": true,
+  "data": {
+    "events": [
+      {
+        "title": "신규 이벤트",
+        "thumbnail": "thumbnail_url",
+        "link": "https://lostark.com/event/456",
+        "startDate": "2025-01-27T10:30:00.000Z",
+        "endDate": "2025-02-27T10:30:00.000Z",
+        "rewardDate": "2025-02-28T10:30:00.000Z",
+        "rewardItems": [
+          {
+            "name": "보상 아이템",
+            "icon": "icon_url",
+            "grade": "고급"
+          }
+        ]
+      }
+    ],
+    "totalCount": 10,
+    "normalizedAt": "2025-01-27T10:30:00.000Z"
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 180
+}
+```
+
+### POST /news/refresh
+공지사항을 강제로 새로고침합니다.
+
+**쿼리 파라미터:**
+- `type` (string, optional): "notices" 또는 "events"
+
+**응답 예시:**
+```json
+{
+  "success": true,
+  "data": { /* 공지사항/이벤트 데이터 */ },
+  "cache": {
+    "hit": false,
+    "source": "api"
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 250
+}
+```
 
 ---
 
-**문서 버전**: 1.0.0  
-**최종 업데이트**: 2025-01-27  
-**@cursor-change**: 2025-01-27, v1.0.0, API 참조 문서 생성
+## 🎮 게임 콘텐츠 API
+
+### GET /game-contents
+주간 콘텐츠 달력을 조회합니다.
+
+**쿼리 파라미터:**
+- `refresh` (string, optional): 강제 새로고침 ("true")
+
+**응답 예시:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "name": "카오스 던전",
+      "categoryName": "일일 콘텐츠",
+      "startTimes": ["2025-01-27T10:00:00.000Z", "2025-01-27T18:00:00.000Z"],
+      "endTimes": ["2025-01-27T11:00:00.000Z", "2025-01-27T19:00:00.000Z"],
+      "minItemLevel": 1302,
+      "maxItemLevel": 9999,
+      "rewards": [/* 보상 정보 */]
+    }
+  ],
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 150
+}
+```
+
+### POST /game-contents/refresh
+게임 콘텐츠 정보를 강제로 새로고침합니다.
+
+**응답 예시:**
+```json
+{
+  "success": true,
+  "data": [/* 게임 콘텐츠 데이터 */],
+  "cache": {
+    "hit": false,
+    "source": "api"
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 200
+}
+```
+
+---
+
+## 🏪 시장 API
+
+### GET /markets
+아이템 ID로 시장 정보를 조회합니다.
+
+**쿼리 파라미터:**
+- `itemIds` (string, required): 콤마로 구분된 아이템 ID 목록
+- `refresh` (string, optional): 강제 새로고침 ("true")
+
+**응답 예시:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "item": {
+        "id": 66110223,
+        "name": "파괴석",
+        "icon": "icon_url",
+        "grade": "고급",
+        "tier": 3,
+        "level": 1,
+        "marketInfo": {
+          "currentMinPrice": 1200,
+          "currentMaxPrice": 1500,
+          "avgPrice": 1350,
+          "tradeCount": 150,
+          "lastUpdateTime": "2025-01-27T10:30:00.000Z"
+        },
+        "options": [/* 옵션 정보 */],
+        "normalizedAt": "2025-01-27T10:30:00.000Z"
+      }
+    }
+  ],
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 250
+}
+```
+
+### POST /markets/refresh
+시장 정보를 강제로 새로고침합니다.
+
+**요청 본문:**
+```json
+{
+  "itemIds": [66110223, 66110224]
+}
+```
+
+**응답 예시:**
+```json
+{
+  "success": true,
+  "data": [/* 시장 데이터 */],
+  "cache": {
+    "hit": false,
+    "source": "api"
+  },
+  "timestamp": "2025-01-27T10:30:00.000Z",
+  "responseTime": 300
+}
+```
+
+---
+
+## 📈 성능 지표
+
+### 응답 시간 목표
+- **헬스 체크**: ≤ 50ms
+- **캐시 상태**: ≤ 100ms
+- **캐릭터 정보 (캐시 히트)**: ≤ 200ms
+- **공지사항**: ≤ 300ms
+- **시장 정보**: ≤ 400ms
+- **경매장 검색**: ≤ 500ms
+- **캐릭터 정보 (API 호출)**: ≤ 2000ms
+
+### 캐시 성능
+- **Memory Cache**: 초기 응답
+- **Redis Cache**: 중간 지속성
+- **Database Cache**: 장기 지속성
+
+### 동시 요청 처리
+- **헬스 체크**: 10개 동시 요청 ≤ 1초
+- **일반 API**: 5개 동시 요청 ≤ 2초
+- **부하 테스트**: 20개 버스트 요청 ≤ 2초
+
+---
+
+## 🔧 에러 코드
+
+| HTTP 상태 코드 | 에러 타입 | 설명 |
+|---------------|-----------|------|
+| 400 | Bad Request | 잘못된 요청 파라미터 |
+| 404 | Not Found | 리소스를 찾을 수 없음 |
+| 429 | Too Many Requests | 요청 한도 초과 |
+| 500 | Internal Server Error | 서버 내부 오류 |
+| 503 | Service Unavailable | 서비스 일시적 사용 불가 |
+
+---
+
+## 📝 변경 이력
+
+- **v1.1.0** (2025-01-27): REST Service 완성, 모든 API 엔드포인트 구현
+- **v1.0.0** (2025-01-27): 초기 API 참조 문서 생성
+
+**@cursor-change**: 2025-01-27, v1.1.0, REST Service 완성 상태 반영

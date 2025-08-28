@@ -17,6 +17,7 @@ import {
   armoriesNormalizer,
   NormalizedCharacterDetail,
 } from '../normalizers/armories-normalizer.js';
+import type { ClassSpecificNodes } from '@lostark/shared/types/domain/character.js';
 
 // === 큐 항목 타입 ===
 
@@ -430,6 +431,243 @@ export class ArmoriesService {
     limit: number = 10,
   ): ReturnType<typeof armoriesCache.getFrequentlyAccessedCharacters> {
     return armoriesCache.getFrequentlyAccessedCharacters(limit);
+  }
+
+  /**
+   * 직업전용 노드 정보 조회
+   */
+  async getClassSpecificNodes(characterName: string): Promise<ClassSpecificNodes> {
+    const characterDetail = await this.getCharacterDetail(characterName);
+    
+    if (!characterDetail) {
+      throw new Error(`Character not found: ${characterName}`);
+    }
+
+    const className = characterDetail.className;
+    const itemLevel = characterDetail.itemLevel;
+
+    // 직업별 특화 노드 정보
+    const classNodes: Record<string, ClassSpecificNodes> = {
+      '버서커': {
+        class: '버서커',
+        nodes: [
+          { name: '광전사의 비기', type: '각인', description: '광전사의 비기 각인 효과' },
+          { name: '광기', type: '각인', description: '광기 각인 효과' },
+          { name: '광전사의 비기', type: '스킬', description: '광전사의 비기 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '디스트로이어': {
+        class: '디스트로이어',
+        nodes: [
+          { name: '분노의 망치', type: '각인', description: '분노의 망치 각인 효과' },
+          { name: '고독한 기사', type: '각인', description: '고독한 기사 각인 효과' },
+          { name: '분노의 망치', type: '스킬', description: '분노의 망치 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '건너': {
+        class: '건너',
+        nodes: [
+          { name: '피스메이커', type: '각인', description: '피스메이커 각인 효과' },
+          { name: '타임 헌터', type: '각인', description: '타임 헌터 각인 효과' },
+          { name: '피스메이커', type: '스킬', description: '피스메이커 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '데빌헌터': {
+        class: '데빌헌터',
+        nodes: [
+          { name: '완벽한 억제', type: '각인', description: '완벽한 억제 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '완벽한 억제', type: '스킬', description: '완벽한 억제 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '호크아이': {
+        class: '호크아이',
+        nodes: [
+          { name: '사시', type: '각인', description: '사시 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '사시', type: '스킬', description: '사시 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '블레이드': {
+        class: '블레이드',
+        nodes: [
+          { name: '버스트', type: '각인', description: '버스트 각인 효과' },
+          { name: '잔재된 기운', type: '각인', description: '잔재된 기운 각인 효과' },
+          { name: '버스트', type: '스킬', description: '버스트 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '데몬슬레이어': {
+        class: '데몬슬레이어',
+        nodes: [
+          { name: '완벽한 억제', type: '각인', description: '완벽한 억제 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '완벽한 억제', type: '스킬', description: '완벽한 억제 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '리퍼': {
+        class: '리퍼',
+        nodes: [
+          { name: '갈증', type: '각인', description: '갈증 각인 효과' },
+          { name: '만월', type: '각인', description: '만월 각인 효과' },
+          { name: '갈증', type: '스킬', description: '갈증 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '소울이터': {
+        class: '소울이터',
+        nodes: [
+          { name: '구슬동자', type: '각인', description: '구슬동자 각인 효과' },
+          { name: '만월', type: '각인', description: '만월 각인 효과' },
+          { name: '구슬동자', type: '스킬', description: '구슬동자 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '기공사': {
+        class: '기공사',
+        nodes: [
+          { name: '역천지체', type: '각인', description: '역천지체 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '역천지체', type: '스킬', description: '역천지체 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '창술사': {
+        class: '창술사',
+        nodes: [
+          { name: '절제', type: '각인', description: '절제 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '절제', type: '스킬', description: '절제 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '스트라이커': {
+        class: '스트라이커',
+        nodes: [
+          { name: '오의난무', type: '각인', description: '오의난무 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '오의난무', type: '스킬', description: '오의난무 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '브레이커': {
+        class: '브레이커',
+        nodes: [
+          { name: '광전사의 비기', type: '각인', description: '광전사의 비기 각인 효과' },
+          { name: '광기', type: '각인', description: '광기 각인 효과' },
+          { name: '광전사의 비기', type: '스킬', description: '광전사의 비기 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '아르티스트': {
+        class: '아르티스트',
+        nodes: [
+          { name: '진실된 용맹', type: '각인', description: '진실된 용맹 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '진실된 용맹', type: '스킬', description: '진실된 용맹 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '도화가': {
+        class: '도화가',
+        nodes: [
+          { name: '진실된 용맹', type: '각인', description: '진실된 용맹 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '진실된 용맹', type: '스킬', description: '진실된 용맹 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '바드': {
+        class: '바드',
+        nodes: [
+          { name: '진실된 용맹', type: '각인', description: '진실된 용맹 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '진실된 용맹', type: '스킬', description: '진실된 용맹 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '소서리스': {
+        class: '소서리스',
+        nodes: [
+          { name: '점화', type: '각인', description: '점화 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '점화', type: '스킬', description: '점화 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '블래스터': {
+        class: '블래스터',
+        nodes: [
+          { name: '화력 강화', type: '각인', description: '화력 강화 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '화력 강화', type: '스킬', description: '화력 강화 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '스카우터': {
+        class: '스카우터',
+        nodes: [
+          { name: '피스메이커', type: '각인', description: '피스메이커 각인 효과' },
+          { name: '타임 헌터', type: '각인', description: '타임 헌터 각인 효과' },
+          { name: '피스메이커', type: '스킬', description: '피스메이커 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '건틀릿': {
+        class: '건틀릿',
+        nodes: [
+          { name: '화력 강화', type: '각인', description: '화력 강화 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '화력 강화', type: '스킬', description: '화력 강화 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '팔라딘': {
+        class: '팔라딘',
+        nodes: [
+          { name: '진실된 용맹', type: '각인', description: '진실된 용맹 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '진실된 용맹', type: '스킬', description: '진실된 용맹 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '워프리스트': {
+        class: '워프리스트',
+        nodes: [
+          { name: '진실된 용맹', type: '각인', description: '진실된 용맹 각인 효과' },
+          { name: '충동', type: '각인', description: '충동 각인 효과' },
+          { name: '진실된 용맹', type: '스킬', description: '진실된 용맹 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      },
+      '슬레이어': {
+        class: '슬레이어',
+        nodes: [
+          { name: '광전사의 비기', type: '각인', description: '광전사의 비기 각인 효과' },
+          { name: '광기', type: '각인', description: '광기 각인 효과' },
+          { name: '광전사의 비기', type: '스킬', description: '광전사의 비기 스킬 강화' }
+        ],
+        requirements: { minItemLevel: 1302 }
+      }
+    };
+
+    const classNode = classNodes[className];
+    if (!classNode) {
+      throw new Error(`Unsupported class: ${className}`);
+    }
+
+    // 아이템 레벨 요구사항 확인
+    if (itemLevel < classNode.requirements.minItemLevel) {
+      throw new Error(`Item level too low. Required: ${classNode.requirements.minItemLevel}, Current: ${itemLevel}`);
+    }
+
+    return classNode;
   }
 
   /**
