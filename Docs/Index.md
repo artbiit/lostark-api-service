@@ -9,6 +9,13 @@
 - [**3-Service Architecture**](./architecture.md) - 전체 아키텍처 설계 및 타입
   시스템
 - [**Development Guide**](./development-guide.md) - 개발 가이드 및 워크플로우
+- [**Configuration Guide**](./configuration.md) - 환경변수 및 설정 가이드
+
+### 🔧 개발 워크플로우
+
+- [**Workflow Overview**](./workflows/README.md) - 개발 워크플로우 개요
+- [**Development Workflow**](./workflows/development-workflow.md) - 개발자 워크플로우
+- [**Code Review Checklist**](./workflows/code-review-checklist.md) - 코드 리뷰 체크리스트
 
 ### 🔌 API & 인터페이스
 
@@ -50,6 +57,7 @@
 
 - [**Troubleshooting Guide**](./troubleshooting/Index.md) - 개발 중 발생하는
   문제들과 해결 방법
+- [**Workflow Troubleshooting**](./workflows/troubleshooting-guide.md) - 워크플로우 문제 해결
 
 ### 🐳 Docker & 배포
 
