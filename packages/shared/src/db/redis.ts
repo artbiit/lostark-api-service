@@ -38,8 +38,6 @@ export class RedisClient {
       url: 'redis://localhost:6379', // 기본값 사용
       socket: {
         connectTimeout: 3000, // 3초로 단축
-        commandTimeout: 2000, // 명령 타임아웃 추가
-        lazyConnect: true, // 지연 연결 활성화
       },
     });
 
@@ -63,8 +61,6 @@ export class RedisClient {
       database: env.CACHE_REDIS_DB,
       socket: {
         connectTimeout: 3000,
-        commandTimeout: 2000,
-        lazyConnect: true,
       },
     });
 
