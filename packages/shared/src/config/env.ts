@@ -98,19 +98,28 @@ export function loadEnv(envPath?: string): void {
 
 export type EnvConfig = z.infer<typeof envSchema>;
 
+// 환경변수 캐싱
+let cachedEnv: EnvConfig | null = null;
+
 /**
- * 환경변수 파싱 및 검증
+ * 환경변수 파싱 및 검증 (캐싱 적용)
  * @param autoLoad .env 파일 자동 로드 여부 (기본값: true)
  * @param envPath .env 파일 경로
  */
 export function parseEnv(autoLoad: boolean = true, envPath?: string): EnvConfig {
+  // 이미 파싱된 환경변수가 있으면 반환
+  if (cachedEnv) {
+    return cachedEnv;
+  }
+
   // .env 파일 자동 로드
   if (autoLoad) {
     loadEnv(envPath);
   }
 
   try {
-    return envSchema.parse(process.env);
+    cachedEnv = envSchema.parse(process.env);
+    return cachedEnv;
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error('❌ 환경변수 검증 실패:');

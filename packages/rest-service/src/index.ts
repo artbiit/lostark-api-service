@@ -9,7 +9,7 @@
  */
 
 import { logger } from '@lostark/shared';
-import { parseEnv } from '@lostark/shared/config/env.js';
+import { parseEnv } from '@lostark/shared/config/env';
 import { restServer } from './server.js';
 
 // === 환경변수 로딩 ===
@@ -23,7 +23,7 @@ const env = parseEnv();
  */
 async function gracefulShutdown(signal: string): Promise<void> {
   logger.info(`Received ${signal}, starting graceful shutdown`);
-  
+
   try {
     await restServer.stop();
     logger.info('REST service stopped successfully');
@@ -44,14 +44,14 @@ function handleUncaughtError(error: Error): void {
     error: error.message,
     stack: error.stack,
   });
-  
+
   // 서버 중지 시도
   restServer.stop().catch((stopError) => {
     logger.error('Failed to stop server during error handling', {
       error: stopError instanceof Error ? stopError.message : String(stopError),
     });
   });
-  
+
   process.exit(1);
 }
 
@@ -63,14 +63,14 @@ function handleUnhandledRejection(reason: unknown, promise: Promise<unknown>): v
     reason: reason instanceof Error ? reason.message : String(reason),
     promise: promise.toString(),
   });
-  
+
   // 서버 중지 시도
   restServer.stop().catch((stopError) => {
     logger.error('Failed to stop server during unhandled rejection', {
       error: stopError instanceof Error ? stopError.message : String(stopError),
     });
   });
-  
+
   process.exit(1);
 }
 
@@ -82,13 +82,13 @@ function handleUnhandledRejection(reason: unknown, promise: Promise<unknown>): v
 async function startRestService(): Promise<void> {
   try {
     logger.info('Starting REST service');
-    
+
     // 서버 초기화
     await restServer.initialize();
-    
+
     // 서버 시작
     await restServer.start();
-    
+
     logger.info('REST service started successfully');
   } catch (error) {
     logger.error('Failed to start REST service', {
@@ -120,5 +120,5 @@ startRestService().catch((error) => {
 
 // === 모듈 export ===
 
-export { restServer };
 export * from './server.js';
+export { restServer };

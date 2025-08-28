@@ -8,21 +8,41 @@
  * - 에러 처리 및 응답 캐싱
  */
 
-import Fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+logger.info('🚀 REST 서버 시작 - 모듈 로딩 시작');
+
 import cors from '@fastify/cors';
+logger.info('✅ cors 모듈 로딩 완료');
+
 import helmet from '@fastify/helmet';
+logger.info('✅ helmet 모듈 로딩 완료');
+
 import rateLimit from '@fastify/rate-limit';
-import { logger } from '@lostark/shared';
-import { parseEnv } from '@lostark/shared/config/env.js';
-import { 
-  initializeRedis, 
-  disconnectRedis, 
-  initializeMySQL, 
-  disconnectMySQL,
+import {
+  ArmoriesService,
   cacheManager,
   cacheOptimizer,
-  ArmoriesService,
+  CharactersService,
+  disconnectMySQL,
+  disconnectRedis,
+  initializeMySQL,
+  initializeRedis,
 } from '@lostark/data-service';
+import { logger } from '@lostark/shared';
+logger.info('✅ rate-limit 모듈 로딩 완료');
+
+logger.info('📦 data-service 패키지 import 시작...');
+logger.info('✅ data-service 패키지 import 완료');
+
+logger.info('📦 shared 패키지 import 시작...');
+logger.info('✅ logger import 완료');
+
+import { parseEnv } from '@lostark/shared/config/env.js';
+logger.info('✅ parseEnv import 완료');
+
+import Fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+logger.info('✅ Fastify import 완료');
+
+logger.info('🎯 모든 모듈 로딩 완료 - 서버 클래스 정의 시작');
 
 // === 서버 설정 ===
 
@@ -54,8 +74,13 @@ export class RestServer {
   private armoriesService: ArmoriesService;
 
   constructor(config: Partial<ServerConfig> = {}) {
+    logger.info('🔧 RestServer 생성자 시작');
+
+    logger.info('📋 환경변수 파싱 시작...');
     const env = parseEnv();
-    
+    logger.info('✅ 환경변수 파싱 완료');
+
+    logger.info('⚙️ 서버 설정 구성 시작...');
     this.config = {
       port: env.REST_SERVER_PORT || 3000,
       host: env.REST_SERVER_HOST || '0.0.0.0',
@@ -73,7 +98,9 @@ export class RestServer {
       },
       ...config,
     };
+    logger.info('✅ 서버 설정 구성 완료');
 
+    logger.info('🚀 Fastify 인스턴스 생성 시작...');
     this.fastify = Fastify({
       logger: {
         level: env.LOG_LEVEL || 'info',
@@ -90,8 +117,13 @@ export class RestServer {
       },
       trustProxy: true,
     });
+    logger.info('✅ Fastify 인스턴스 생성 완료');
 
+    logger.info('🎯 ArmoriesService 인스턴스 생성 시작...');
     this.armoriesService = new ArmoriesService();
+    logger.info('✅ ArmoriesService 인스턴스 생성 완료');
+
+    logger.info('🎉 RestServer 생성자 완료');
   }
 
   /**
@@ -101,13 +133,13 @@ export class RestServer {
     try {
       // 플러그인 등록
       await this.registerPlugins();
-      
+
       // 라우트 등록
       await this.registerRoutes();
-      
+
       // 캐시 시스템 초기화
       await this.initializeCacheSystem();
-      
+
       logger.info('REST server initialized successfully');
     } catch (error) {
       logger.error('Failed to initialize REST server', {
@@ -123,12 +155,12 @@ export class RestServer {
   private async registerPlugins(): Promise<void> {
     // CORS
     await this.fastify.register(cors, this.config.cors);
-    
+
     // 보안 헤더
     await this.fastify.register(helmet, {
       contentSecurityPolicy: false, // 개발 환경에서 비활성화
     });
-    
+
     // Rate Limiting
     await this.fastify.register(rateLimit, {
       max: this.config.rateLimit.max,
@@ -148,18 +180,48 @@ export class RestServer {
   private async registerRoutes(): Promise<void> {
     // 헬스 체크
     this.fastify.get('/health', this.healthCheck.bind(this));
-    
+
     // 캐시 상태
     this.fastify.get('/cache/status', this.cacheStatus.bind(this));
-    
+
     // 캐시 최적화
     this.fastify.post('/cache/optimize', this.optimizeCache.bind(this));
-    
+
     // ARMORIES API
     this.fastify.get('/api/v1/armories/:characterName', this.getCharacterDetail.bind(this));
-    this.fastify.get('/api/v1/armories/:characterName/refresh', this.refreshCharacterDetail.bind(this));
-    this.fastify.get('/api/v1/armories/:characterName/partial', this.getCharacterDetailPartial.bind(this));
-    
+    this.fastify.get(
+      '/api/v1/armories/:characterName/refresh',
+      this.refreshCharacterDetail.bind(this),
+    );
+    this.fastify.get(
+      '/api/v1/armories/:characterName/partial',
+      this.getCharacterDetailPartial.bind(this),
+    );
+
+    // CHARACTERS API
+    this.fastify.get('/api/v1/characters/:characterName', this.getCharacter.bind(this));
+    this.fastify.get(
+      '/api/v1/characters/:characterName/siblings',
+      this.getCharacterSiblings.bind(this),
+    );
+    this.fastify.get('/api/v1/characters/:characterName/refresh', this.refreshCharacter.bind(this));
+
+    // AUCTIONS API
+    this.fastify.get('/api/v1/auctions/search', this.searchAuctions.bind(this));
+    this.fastify.post('/api/v1/auctions/search', this.searchAuctionsRefresh.bind(this));
+
+    // NEWS API
+    this.fastify.get('/api/v1/news', this.getNews.bind(this));
+    this.fastify.get('/api/v1/news/refresh', this.refreshNews.bind(this));
+
+    // GAMECONTENTS API
+    this.fastify.get('/api/v1/gamecontents', this.getGameContents.bind(this));
+    this.fastify.get('/api/v1/gamecontents/refresh', this.refreshGameContents.bind(this));
+
+    // MARKETS API
+    this.fastify.get('/api/v1/markets', this.getMarkets.bind(this));
+    this.fastify.post('/api/v1/markets', this.refreshMarkets.bind(this));
+
     // 캐시 관리
     this.fastify.delete('/api/v1/cache/:characterName', this.deleteCharacterCache.bind(this));
     this.fastify.get('/api/v1/cache/stats', this.getCacheStats.bind(this));
@@ -170,19 +232,65 @@ export class RestServer {
    */
   private async initializeCacheSystem(): Promise<void> {
     try {
-      // Redis 연결
-      await initializeRedis();
-      
-      // MySQL 연결
-      await initializeMySQL();
-      
-      // 캐시 최적화 시작
-      if (this.config.cache.enableOptimization) {
-        cacheOptimizer.startOptimization();
-        logger.info('Cache optimization started');
+      // 개발 환경에서 캐시 시스템 완전 비활성화 (임시)
+      logger.info('Cache system disabled for debugging');
+      return;
+
+      // 개발 환경에서 캐시 시스템 선택적 비활성화
+      const env = parseEnv();
+      if (env.NODE_ENV === 'development' && !env.CACHE_REDIS_URL) {
+        logger.info('Cache system disabled in development mode (no Redis URL)');
+        return;
       }
-      
-      logger.info('Cache system initialized successfully');
+
+      // 타임아웃 설정 (3초로 단축)
+      const timeout = 3000;
+
+      // Redis 연결 (타임아웃 적용)
+      const redisPromise = initializeRedis();
+      const redisTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Redis connection timeout')), timeout),
+      );
+
+      try {
+        await Promise.race([redisPromise, redisTimeout]);
+        logger.info('Redis connected successfully');
+      } catch (error) {
+        logger.warn('Redis connection failed, continuing without Redis', {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+
+      // MySQL 연결 (타임아웃 적용)
+      const mysqlPromise = initializeMySQL();
+      const mysqlTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('MySQL connection timeout')), timeout),
+      );
+
+      try {
+        await Promise.race([mysqlPromise, mysqlTimeout]);
+        logger.info('MySQL connected successfully');
+      } catch (error) {
+        logger.warn('MySQL connection failed, continuing without MySQL', {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+
+      // 캐시 최적화 시작 (비동기로 실행, 실패해도 서버 시작 계속)
+      if (this.config.cache.enableOptimization) {
+        setImmediate(() => {
+          try {
+            cacheOptimizer.startOptimization();
+            logger.info('Cache optimization started');
+          } catch (error) {
+            logger.warn('Cache optimization failed', {
+              error: error instanceof Error ? error.message : String(error),
+            });
+          }
+        });
+      }
+
+      logger.info('Cache system initialization completed');
     } catch (error) {
       logger.error('Failed to initialize cache system', {
         error: error instanceof Error ? error.message : String(error),
@@ -200,12 +308,12 @@ export class RestServer {
         port: this.config.port,
         host: this.config.host,
       });
-      
+
       logger.info('REST server started successfully', {
         port: this.config.port,
         host: this.config.host,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to start REST server', {
         error: error instanceof Error ? error.message : String(error),
       });
@@ -220,16 +328,16 @@ export class RestServer {
     try {
       // 캐시 최적화 중지
       cacheOptimizer.stopOptimization();
-      
+
       // 캐시 연결 해제
       await disconnectRedis();
       await disconnectMySQL();
-      
+
       // Fastify 서버 중지
       await this.fastify.close();
-      
+
       logger.info('REST server stopped successfully');
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to stop REST server', {
         error: error instanceof Error ? error.message : String(error),
       });
@@ -244,7 +352,7 @@ export class RestServer {
    */
   async healthCheck(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const cacheStatus = cacheManager.getCacheLayerStatus();
-    
+
     reply.send({
       status: 'ok',
       timestamp: new Date().toISOString(),
@@ -263,7 +371,7 @@ export class RestServer {
     try {
       const cacheStats = await cacheManager.getCacheStats();
       const optimizationStats = cacheOptimizer.getLastOptimizationStats();
-      
+
       reply.send({
         cache: cacheStats,
         optimization: optimizationStats,
@@ -273,7 +381,7 @@ export class RestServer {
       logger.error('Failed to get cache status', {
         error: error instanceof Error ? error.message : String(error),
       });
-      
+
       reply.status(500).send({
         error: 'Internal Server Error',
         message: 'Failed to get cache status',
@@ -287,7 +395,7 @@ export class RestServer {
   async optimizeCache(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
       const optimizationStats = await cacheOptimizer.performOptimization();
-      
+
       reply.send({
         success: true,
         optimization: optimizationStats,
@@ -297,7 +405,7 @@ export class RestServer {
       logger.error('Failed to optimize cache', {
         error: error instanceof Error ? error.message : String(error),
       });
-      
+
       reply.status(500).send({
         error: 'Internal Server Error',
         message: 'Failed to optimize cache',
@@ -316,12 +424,12 @@ export class RestServer {
   ): Promise<void> {
     const startTime = Date.now();
     const { characterName } = request.params;
-    
+
     try {
       logger.info('Character detail request', { characterName });
-      
+
       const characterDetail = await this.armoriesService.getCharacterDetail(characterName);
-      
+
       if (!characterDetail) {
         reply.status(404).send({
           error: 'Not Found',
@@ -329,13 +437,13 @@ export class RestServer {
         });
         return;
       }
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       // 응답 헤더에 캐시 정보 추가
       reply.header('X-Cache-Hit', 'true');
       reply.header('X-Response-Time', `${responseTime}ms`);
-      
+
       reply.send({
         success: true,
         data: characterDetail,
@@ -344,13 +452,13 @@ export class RestServer {
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
-      
+
       logger.error('Failed to get character detail', {
         characterName,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
       });
-      
+
       reply.status(500).send({
         error: 'Internal Server Error',
         message: 'Failed to get character detail',
@@ -370,12 +478,12 @@ export class RestServer {
   ): Promise<void> {
     const startTime = Date.now();
     const { characterName } = request.params;
-    
+
     try {
       logger.info('Character detail refresh request', { characterName });
-      
+
       const characterDetail = await this.armoriesService.refreshCharacterDetail(characterName);
-      
+
       if (!characterDetail) {
         reply.status(404).send({
           error: 'Not Found',
@@ -383,12 +491,12 @@ export class RestServer {
         });
         return;
       }
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       reply.header('X-Cache-Refreshed', 'true');
       reply.header('X-Response-Time', `${responseTime}ms`);
-      
+
       reply.send({
         success: true,
         data: characterDetail,
@@ -397,13 +505,13 @@ export class RestServer {
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
-      
+
       logger.error('Failed to refresh character detail', {
         characterName,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
       });
-      
+
       reply.status(500).send({
         error: 'Internal Server Error',
         message: 'Failed to refresh character detail',
@@ -425,16 +533,28 @@ export class RestServer {
     const startTime = Date.now();
     const { characterName } = request.params;
     const { sections } = request.query;
-    
+
     try {
       logger.info('Character detail partial request', { characterName, sections });
-      
-      const sectionsArray = sections ? sections.split(',') as Array<'profile' | 'equipment' | 'avatars' | 'combat-skills' | 'engravings' | 'cards' | 'gems' | 'colosseums' | 'collectibles'> : [];
+
+      const sectionsArray = sections
+        ? (sections.split(',') as Array<
+            | 'profile'
+            | 'equipment'
+            | 'avatars'
+            | 'combat-skills'
+            | 'engravings'
+            | 'cards'
+            | 'gems'
+            | 'colosseums'
+            | 'collectibles'
+          >)
+        : [];
       const characterDetail = await this.armoriesService.getCharacterDetailPartial(
         characterName,
         sectionsArray,
       );
-      
+
       if (!characterDetail) {
         reply.status(404).send({
           error: 'Not Found',
@@ -442,12 +562,12 @@ export class RestServer {
         });
         return;
       }
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       reply.header('X-Cache-Hit', 'true');
       reply.header('X-Response-Time', `${responseTime}ms`);
-      
+
       reply.send({
         success: true,
         data: characterDetail,
@@ -457,17 +577,656 @@ export class RestServer {
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
-      
+
       logger.error('Failed to get character detail partial', {
         characterName,
         sections,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
       });
-      
+
       reply.status(500).send({
         error: 'Internal Server Error',
         message: 'Failed to get character detail partial',
+        responseTime,
+      });
+    }
+  }
+
+  // === CHARACTERS API ===
+
+  /**
+   * 캐릭터 기본 정보 조회
+   */
+  async getCharacter(
+    request: FastifyRequest<{
+      Params: { characterName: string };
+      Querystring: { refresh?: string };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const { characterName } = request.params;
+    const { refresh } = request.query;
+
+    try {
+      logger.info('Character request', { characterName, refresh: refresh === 'true' });
+
+      const charactersService = new CharactersService();
+
+      const result = await charactersService.getAccountInfo(characterName);
+
+      if (!result) {
+        reply.status(404).send({
+          success: false,
+          error: 'Character not found',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Hit', 'true');
+      reply.header('X-Cache-Source', 'memory');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: result,
+        cache: {
+          hit: true,
+          source: 'memory',
+          ttl: 300,
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to get character', {
+        characterName,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to get character',
+        responseTime,
+      });
+    }
+  }
+
+  /**
+   * 캐릭터 Siblings 정보 조회
+   */
+  async getCharacterSiblings(
+    request: FastifyRequest<{
+      Params: { characterName: string };
+      Querystring: { refresh?: string };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const { characterName } = request.params;
+    const { refresh } = request.query;
+
+    try {
+      logger.info('Character siblings request', { characterName, refresh: refresh === 'true' });
+
+      const charactersService = new CharactersService();
+
+      const result = await charactersService.getAccountInfo(characterName);
+
+      if (!result) {
+        reply.status(404).send({
+          success: false,
+          error: 'Character not found',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Hit', 'true');
+      reply.header('X-Cache-Source', 'memory');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: result,
+        cache: {
+          hit: true,
+          source: 'memory',
+          ttl: 300,
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to get character siblings', {
+        characterName,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to get character siblings',
+        responseTime,
+      });
+    }
+  }
+
+  /**
+   * 캐릭터 정보 강제 새로고침
+   */
+  async refreshCharacter(
+    request: FastifyRequest<{
+      Params: { characterName: string };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const { characterName } = request.params;
+
+    try {
+      logger.info('Character refresh request', { characterName });
+
+      const charactersService = new CharactersService();
+      const result = await charactersService.refreshAccountInfo(characterName);
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Refreshed', 'true');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: result,
+        cache: {
+          hit: false,
+          source: 'api',
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to refresh character', {
+        characterName,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to refresh character',
+        responseTime,
+      });
+    }
+  }
+
+  // === AUCTIONS API ===
+
+  /**
+   * 경매장 검색
+   */
+  async searchAuctions(
+    request: FastifyRequest<{
+      Querystring: {
+        itemName?: string;
+        categoryCode?: string;
+        itemTier?: string;
+        itemGrade?: string;
+        itemLevel?: string;
+        skillOption?: string;
+        engravingName?: string;
+        pageNo?: string;
+        sort?: string;
+        refresh?: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const query = request.query;
+
+    try {
+      logger.info('Auctions search request', { query });
+
+      // TODO: AuctionsService 구현 후 연결
+      const mockData = {
+        items: [],
+        totalCount: 0,
+        pageNo: query.pageNo ? parseInt(query.pageNo) : 1,
+      };
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Hit', 'true');
+      reply.header('X-Cache-Source', 'memory');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: mockData,
+        cache: {
+          hit: true,
+          source: 'memory',
+          ttl: 300,
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to search auctions', {
+        query,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to search auctions',
+        responseTime,
+      });
+    }
+  }
+
+  /**
+   * 경매장 검색 강제 새로고침
+   */
+  async searchAuctionsRefresh(
+    request: FastifyRequest<{
+      Body: {
+        itemName?: string;
+        categoryCode?: string;
+        itemTier?: string;
+        itemGrade?: string;
+        itemLevel?: string;
+        skillOption?: string;
+        engravingName?: string;
+        pageNo?: number;
+        sort?: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const body = request.body;
+
+    try {
+      logger.info('Auctions search refresh request', { body });
+
+      // TODO: AuctionsService 구현 후 연결
+      const mockData = {
+        items: [],
+        totalCount: 0,
+        pageNo: body.pageNo || 1,
+      };
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Refreshed', 'true');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: mockData,
+        cache: {
+          hit: false,
+          source: 'api',
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to refresh auctions search', {
+        body,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to refresh auctions search',
+        responseTime,
+      });
+    }
+  }
+
+  // === NEWS API ===
+
+  /**
+   * 공지사항 조회
+   */
+  async getNews(
+    request: FastifyRequest<{
+      Querystring: { type?: string; pageNo?: string; refresh?: string };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const { type, pageNo, refresh } = request.query;
+
+    try {
+      logger.info('News request', { type, pageNo, refresh: refresh === 'true' });
+
+      // TODO: NewsService 구현 후 연결
+      const mockData = {
+        news: [],
+        totalCount: 0,
+        pageNo: pageNo ? parseInt(pageNo) : 1,
+      };
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Hit', 'true');
+      reply.header('X-Cache-Source', 'memory');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: mockData,
+        cache: {
+          hit: true,
+          source: 'memory',
+          ttl: 300,
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to get news', {
+        type,
+        pageNo,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to get news',
+        responseTime,
+      });
+    }
+  }
+
+  /**
+   * 공지사항 강제 새로고침
+   */
+  async refreshNews(
+    request: FastifyRequest<{
+      Querystring: { type?: string; pageNo?: string };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const { type, pageNo } = request.query;
+
+    try {
+      logger.info('News refresh request', { type, pageNo });
+
+      // TODO: NewsService 구현 후 연결
+      const mockData = {
+        news: [],
+        totalCount: 0,
+        pageNo: pageNo ? parseInt(pageNo) : 1,
+      };
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Refreshed', 'true');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: mockData,
+        cache: {
+          hit: false,
+          source: 'api',
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to refresh news', {
+        type,
+        pageNo,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to refresh news',
+        responseTime,
+      });
+    }
+  }
+
+  // === GAMECONTENTS API ===
+
+  /**
+   * 게임 콘텐츠 정보 조회
+   */
+  async getGameContents(
+    request: FastifyRequest<{
+      Querystring: { refresh?: string };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const { refresh } = request.query;
+
+    try {
+      logger.info('Game contents request', { refresh: refresh === 'true' });
+
+      // TODO: GameContentsService 구현 후 연결
+      const mockData = {
+        contents: [],
+        totalCount: 0,
+      };
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Hit', 'true');
+      reply.header('X-Cache-Source', 'memory');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: mockData,
+        cache: {
+          hit: true,
+          source: 'memory',
+          ttl: 300,
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to get game contents', {
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to get game contents',
+        responseTime,
+      });
+    }
+  }
+
+  /**
+   * 게임 콘텐츠 정보 강제 새로고침
+   */
+  async refreshGameContents(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const startTime = Date.now();
+
+    try {
+      logger.info('Game contents refresh request');
+
+      // TODO: GameContentsService 구현 후 연결
+      const mockData = {
+        contents: [],
+        totalCount: 0,
+      };
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Refreshed', 'true');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: mockData,
+        cache: {
+          hit: false,
+          source: 'api',
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to refresh game contents', {
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to refresh game contents',
+        responseTime,
+      });
+    }
+  }
+
+  // === MARKETS API ===
+
+  /**
+   * 시장 정보 조회
+   */
+  async getMarkets(
+    request: FastifyRequest<{
+      Querystring: { itemIds?: string; refresh?: string };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const { itemIds, refresh } = request.query;
+
+    try {
+      logger.info('Markets request', { itemIds, refresh: refresh === 'true' });
+
+      // TODO: MarketsService 구현 후 연결
+      const mockData = {
+        items: [],
+        totalCount: 0,
+      };
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Hit', 'true');
+      reply.header('X-Cache-Source', 'memory');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: mockData,
+        cache: {
+          hit: true,
+          source: 'memory',
+          ttl: 300,
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to get markets', {
+        itemIds,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to get markets',
+        responseTime,
+      });
+    }
+  }
+
+  /**
+   * 시장 정보 강제 새로고침
+   */
+  async refreshMarkets(
+    request: FastifyRequest<{
+      Body: { itemIds?: number[] };
+    }>,
+    reply: FastifyReply,
+  ): Promise<void> {
+    const startTime = Date.now();
+    const { itemIds } = request.body;
+
+    try {
+      logger.info('Markets refresh request', { itemIds });
+
+      // TODO: MarketsService 구현 후 연결
+      const mockData = {
+        items: [],
+        totalCount: 0,
+      };
+
+      const responseTime = Date.now() - startTime;
+
+      reply.header('X-Cache-Refreshed', 'true');
+      reply.header('X-Response-Time', `${responseTime}ms`);
+
+      reply.send({
+        success: true,
+        data: mockData,
+        cache: {
+          hit: false,
+          source: 'api',
+        },
+        timestamp: new Date().toISOString(),
+        responseTime,
+      });
+    } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      logger.error('Failed to refresh markets', {
+        itemIds,
+        error: error instanceof Error ? error.message : String(error),
+        responseTime,
+      });
+
+      reply.status(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to refresh markets',
         responseTime,
       });
     }
@@ -483,12 +1242,12 @@ export class RestServer {
     reply: FastifyReply,
   ): Promise<void> {
     const { characterName } = request.params;
-    
+
     try {
       logger.info('Delete character cache request', { characterName });
-      
+
       await cacheManager.deleteCharacterDetail(characterName);
-      
+
       reply.send({
         success: true,
         message: `Cache for character '${characterName}' deleted successfully`,
@@ -499,7 +1258,7 @@ export class RestServer {
         characterName,
         error: error instanceof Error ? error.message : String(error),
       });
-      
+
       reply.status(500).send({
         error: 'Internal Server Error',
         message: 'Failed to delete character cache',
@@ -514,7 +1273,7 @@ export class RestServer {
     try {
       const cacheStats = await cacheManager.getCacheStats();
       const performanceReport = await cacheOptimizer.generatePerformanceReport();
-      
+
       reply.send({
         success: true,
         cache: cacheStats,
@@ -525,7 +1284,7 @@ export class RestServer {
       logger.error('Failed to get cache stats', {
         error: error instanceof Error ? error.message : String(error),
       });
-      
+
       reply.status(500).send({
         error: 'Internal Server Error',
         message: 'Failed to get cache stats',
@@ -536,7 +1295,33 @@ export class RestServer {
 
 // === 서버 인스턴스 ===
 
+logger.info('🏗️ 서버 인스턴스 생성 시작...');
+
 /**
  * REST 서버 인스턴스
  */
 export const restServer = new RestServer();
+
+logger.info('🎊 서버 인스턴스 생성 완료 - 모듈 로딩 완료');
+
+// === 서버 시작 ===
+logger.info('🚀 서버 시작 프로세스 시작...');
+
+// 서버 초기화 및 시작
+async function startServer() {
+  try {
+    logger.info('🔧 서버 초기화 시작...');
+    await restServer.initialize();
+    logger.info('✅ 서버 초기화 완료');
+
+    logger.info('🚀 서버 시작...');
+    await restServer.start();
+    logger.info('🎉 서버가 성공적으로 시작되었습니다!');
+  } catch (error) {
+    logger.error('❌ 서버 시작 실패:', error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+}
+
+// 서버 시작
+startServer();

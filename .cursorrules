@@ -77,6 +77,7 @@
 
 # === SECURITY/ENVIRONMENT VARIABLES ===
 - [ENV_PROTECTION] Prohibit .env file creation/modification/overwriting and env var creation/modification/overwriting
+- [ENV_EXAMPLE_COPY_PROHIBITION] Absolutely prohibit copying .env.example to .env or overwriting .env with .env.example content
 - [SENSITIVE_APPROVAL] Require explicit user approval for sensitive information changes
 - [ENV_GUIDANCE] Provide modification suggestions only, no direct modification for env var issues
 - [SECURITY_SCOPE] Specify changes and impact scope before security-related setting changes
