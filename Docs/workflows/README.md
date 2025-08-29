@@ -35,6 +35,7 @@
 
 ### 핵심 워크플로우 문서
 
+- **[GitFlow 브랜치 컨벤션](./gitflow.md)** - 브랜치 전략 및 워크플로우
 - **[개발자 워크플로우](./development-workflow.md)** - 상세한 개발 프로세스,
   모노레포 의존성 관리, 검증 명령어
 - **[모범 사례](./best-practices.md)** - 코드 품질, 문서화, 테스트 가이드라인
@@ -53,15 +54,16 @@
 
 ```
 workflows/README.md (개요)
+├── gitflow.md (브랜치 전략)
 ├── development-workflow.md (핵심 워크플로우)
 ├── best-practices.md (품질 가이드)
 ├── code-review-checklist.md (리뷰 기준)
 └── troubleshooting-guide.md (문제 해결)
+```
 
-참조 문서:
-├── ../development-guide.md (빠른 시작)
-├── ../configuration.md (설정 가이드)
-└── ../.env.example (환경변수 템플릿)
+참조 문서: ├── ../development-guide.md (빠른 시작) ├── ../configuration.md (설정
+가이드) └── ../.env.example (환경변수 템플릿)
+
 ```
 
 ## 🚀 빠른 시작
@@ -69,3 +71,4 @@ workflows/README.md (개요)
 1. **[개발 가이드](../development-guide.md)** - 환경변수 설정 및 기본 실행
 2. **[개발자 워크플로우](./development-workflow.md)** - 상세한 개발 프로세스
 3. **[모범 사례](./best-practices.md)** - 코드 품질 가이드라인
+```
