@@ -1,0 +1,8 @@
+---
+description: 모노레포 규칙(공유 패키지 영향/TS 참조/순환 금지)
+alwaysApply: true
+---
+
+- shared-* 변경 시 영향 범위를 요약하고 순환 의존을 금지합니다.
+- TypeScript Project References 그래프를 유지하고, 깨질 경우 변경 요약을 첨부합니다.
+- 패키지 간 계약/타입 변경은 단계적으로 배포하고, 호환성 경고를 명시합니다.

@@ -1,0 +1,11 @@
+---
+description: 성능/레이트리밋 규칙(p95 목표/동시성/헤더/드롭 정책)
+globs:
+  - packages/rest-service/src/**/*.ts
+  - packages/udp-service/src/**/*.ts
+---
+
+- REST p95 ≤ 50ms(캐시 히트 기준) 목표. UDP p95 ≤ 10ms.
+- REST: 바운디드 컨커런시, 응답 캐시 헤더(ETag/Cache-Control) 일관 적용.
+- 레이트리밋: REST와 Fetch 분리, X-RateLimit-* 일관 관리.
+- UDP: 과부하 시 드롭, 백프레셔 정책 문서화.

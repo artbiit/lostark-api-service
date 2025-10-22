@@ -1,0 +1,11 @@
+---
+description: 코드 스타일/품질 규칙(TS/ESM/네이밍/주석/형식)
+alwaysApply: true
+---
+
+- TypeScript: strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes.
+- 모듈: ESM, `@/*` 경로 별칭 사용, 불필요한 의존성 추가 금지.
+- 린트/포맷: ESLint + Prettier 단일 포맷터, import 정렬/미사용 제거 활성화.
+- 네이밍: 타입/클래스 PascalCase, 변수/함수 camelCase, 상수 UPPER_SNAKE_CASE.
+- 주석은 왜/경계/의도 중심으로 간결하게, 자명한 설명 금지.
+- 비동기: async/await 우선, 모든 Promise 에러 처리.

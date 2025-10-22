@@ -94,3 +94,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 **@cursor-change**: 2025-01-27, v2.0.0, 1차 릴리즈 완성
+### Changed
+- 커서 레거시 규칙을 로 이관했습니다.
+- 모델 라우팅 규칙을 제거하고 모델 수동 지정을 적용했습니다.

@@ -1,0 +1,11 @@
+---
+description: 데이터 페치/정규화/캐시 규칙(singleflight/백오프/키 설계)
+globs:
+  - src/**/*.ts
+---
+
+- Fetch: singleflight, circuit breaker, 지수 백오프 재시도 적용.
+- 캐시 계층: 메모리(짧은 TTL) → Redis(중간 TTL) → (선택) 영속 DB.
+- 키 설계: `char:<name>:v<schemaVersion>`, 메타데이터: `updatedAt`, `version`.
+- stale-while-revalidate 허용, 강제 갱신(쿼리/헤더) 제공.
+- 외부 API 실패 시 캐시 서빙(그레이스풀 디그레이드).
