@@ -1,0 +1,10 @@
+---
+description: 테스트 규칙(구조/이름/실행/실데이터 원칙)
+globs:
+  - tests/**
+---
+
+- 테스트 디렉터리: `tests/` 하위 카테고리 구조 유지.
+- 파일 규칙: `tests/{category}/{module}.test.mjs|.test.ts`.
+- 실데이터 기반: 외부 API 테스트는 실제 응답만 사용, 스냅샷은 `cache/api-test-results/` 활용.
+- UDP 테스트: 인코딩/디코딩/에코/최대 길이(한글 포함) 검증 포함.

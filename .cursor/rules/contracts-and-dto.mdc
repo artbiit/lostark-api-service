@@ -1,0 +1,9 @@
+---
+description: 계약/DTO 규칙(버전/스냅샷/호환성 주석)
+globs:
+  - packages/shared/src/**/*.ts
+---
+
+- Public DTO는 버전(v1)을 명시하며, 도메인 DTO는 내부 전용으로 구분합니다.
+- REST/UDP/DTO 계약 변경 시 스냅샷 테스트를 유지하고, 호환성 주석을 추가합니다.
+- Lost Ark API 버전 변경 시 README/문서/테스트를 동기화합니다.

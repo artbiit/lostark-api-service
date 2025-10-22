@@ -68,3 +68,4 @@
 - [LostArk Developer Portal](https://developer-lostark.game.onstove.com/)
 - [LostArk API Changelog](https://developer-lostark.game.onstove.com/changelog)
 - [프로젝트 GitHub](https://github.com/artbiit/lostark-api-service)
+> 참고: 이 프로젝트는 Cursor Project Rules(.mdc) 기반으로 운영됩니다. 규칙은 `.cursor/rules/` 및 각 패키지의 `.cursor/rules/`에 존재하며, 모델 라우팅 규칙은 제거되었고 모델은 수동 지정합니다.

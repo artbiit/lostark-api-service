@@ -1,0 +1,8 @@
+---
+description: 릴리스/버전 규칙(semver/CHANGELOG/API 버전 동기화)
+type: manual
+---
+
+- semver: 내부 변경=patch, 계약 추가=minor, 계약 변경=major.
+- CHANGELOG는 Added/Changed/Fixed/Deprecated/Removed/Security 섹션으로 관리.
+- Lost Ark API 버전 변경 시 코드/문서/테스트를 동기화합니다.
