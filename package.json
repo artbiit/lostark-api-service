@@ -30,7 +30,6 @@
     "validate:refs": "node scripts/validate-references.mjs",
     "validate:build": "yarn build",
     "validate:full": "yarn validate:monorepo && yarn test && yarn build && yarn lint",
-    "validate:cursorrules-sync": "node scripts/validate-cursorrules-sync.mjs",
     "precommit": "yarn validate:monorepo && yarn test:unit && yarn lint",
     "prepush": "yarn validate:monorepo && yarn test && yarn build",
     "prepare": "husky"
