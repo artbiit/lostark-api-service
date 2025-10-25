@@ -1,10 +1,41 @@
 ---
-description: 문서/Docs 규칙(구조/중복/인덱스/ENV 참조)
-globs:
-  - Docs/**/*.md
+title: Docs-first & Documentation Rules (문서화 우선 규칙)
+scope: workspace
+applies_to: [all]
+severity_levels: [MUST, SHOULD]
+description: 작업 전 탐색/작업 후 최신화/구조 일치/ENV 단일 출처 규칙
+alwaysApply: true
+version: v1
+@cursor-change: 2025-10-25, 0.1.0, add docs-first rules
 ---
 
-- 문서는 카테고리 기반 구조를 유지하고, 변경 시 같은 레벨의 Index.md를 동기화합니다.
-- 존재하지 않는 파일/디렉터리를 문서화하지 않습니다. 파일 구조는 실제와 동일해야 합니다.
-- 환경변수 상세 설명은 `.env.example`에만 존재합니다. Docs에는 참조 링크만 둡니다.
-- 대용량 JSON/로그/스냅샷은 `cache/**`에 저장하며 문서에 인라인하지 않습니다.
+## 목적
+
+작업 전·중·후 문서 우선 흐름을 통해 지식 공유와 변경 추적을 보장합니다.
+
+## 원칙
+
+- 작업 시작 전 관련 문서를 탐색하고 요구사항/계약을 정리(Docs-first)
+- 작업 후 문서를 최신화하고 참조 링크를 검증
+- 파일 구조 문서는 실제 파일 시스템과 정확히 일치
+
+## 규칙
+
+- [MUST] DOC-01 작업 시작 전 관련 문서를 탐색/정리하고, 주요 요구/계약을 문서에 반영합니다.
+- [MUST] DOC-02 작업 완료 후 변경 사항을 문서(README/Docs/Index)에 즉시 반영하고 교차 링크를 점검합니다.
+- [MUST] DOC-03 환경변수 상세는 `.env.example`만을 단일 출처로 유지하고, 다른 문서는 참조 링크만 둡니다.
+- [MUST] DOC-04 파일 구조/경로가 포함된 문서는 실제 파일 시스템과 일치해야 합니다.
+- [SHOULD] DOC-05 10+ 파일 변경 또는 아키텍처 변경 시 Docs/Index.md와 architecture.md를 동기화합니다.
+
+## 예외/경계
+
+- 긴급 수정 시 사후 문서화가 가능하나, 다음 배포 전 반드시 반영합니다.
+
+## 레퍼런스
+
+- Docs/Index.md, Docs/architecture.md
+- Docs/workflows/development-workflow.md
+
+## 변경 이력
+
+- 2025-10-25: 신규 생성(DOC-01~05)
