@@ -1,11 +1,42 @@
 ---
-description: 성능/레이트리밋 규칙(p95 목표/동시성/헤더/드롭 정책)
-globs:
-  - packages/rest-service/src/**/*.ts
-  - packages/udp-service/src/**/*.ts
+title: Performance & Rate Limit Rules (성능/레이트리밋 규칙)
+scope: workspace
+applies_to: [all]
+severity_levels: [MUST, SHOULD]
+description: p95 목표/동시성/레이트리밋/캐시/드롭 정책 규칙
+version: v1
+@cursor-change: 2025-10-25, 0.1.0, standardize header + MUST/SHOULD
 ---
 
-- REST p95 ≤ 50ms(캐시 히트 기준) 목표. UDP p95 ≤ 10ms.
-- REST: 바운디드 컨커런시, 응답 캐시 헤더(ETag/Cache-Control) 일관 적용.
-- 레이트리밋: REST와 Fetch 분리, X-RateLimit-* 일관 관리.
-- UDP: 과부하 시 드롭, 백프레셔 정책 문서화.
+## 목적
+
+핵심 경로의 지연을 최소화하고 안정적인 처리율을 보장합니다.
+
+## 원칙
+
+- 명확한 성능 목표와 측정 기준을 유지
+- 과부하 시에도 서비스 일관성을 유지(드롭/백프레셔 정책)
+- 캐시/동시성/레이트리밋을 체계적으로 적용
+
+## 규칙
+
+- [MUST] PERF-01 REST p95 ≤ 50ms(캐시 히트 기준), UDP p95 ≤ 10ms 목표를 유지합니다.
+- [MUST] PERF-02 REST는 바운디드 컨커런시를 적용합니다.
+- [MUST] PERF-03 REST 응답에 ETag/Cache-Control 헤더를 일관 적용합니다.
+- [MUST] PERF-04 레이트리밋은 REST와 Fetch 경로를 분리하고 X-RateLimit-\* 헤더를 일관 관리합니다.
+- [MUST] PERF-05 UDP는 과부하 시 드롭 정책과 백프레셔 정책을 문서화하고 적용합니다.
+- [SHOULD] PERF-06 외부 API 호출은 singleflight/circuit breaker/지수 백오프 재시도를 사용합니다.
+- [SHOULD] PERF-07 캐시 계층(메모리→Redis)과 stale-while-revalidate, 강제 리프레시 옵션을 제공합니다.
+
+## 예외/경계
+
+- 긴급 대응으로 임시 완화가 필요한 경우, 기간/범위를 명시하고 사후 정상화합니다.
+
+## 레퍼런스
+
+- packages/rest-service/src/**, packages/udp-service/src/**
+- Docs/lostark-api/V9.0.0/caching-strategies.md
+
+## 변경 이력
+
+- 2025-10-25: 헤더 표준화 및 MUST/SHOULD 강도 적용(PERF-01~07)
