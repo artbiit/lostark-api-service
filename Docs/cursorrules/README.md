@@ -1,6 +1,7 @@
 # 커서룰 한국어 번역 문서
 
-# @cursor-change: 2025-01-27, 1.0.0, 시니어 개발자 마인드셋 섹션 번역 완료 및 동기화
+> @cursor-change: 2025-01-27, 1.0.0, 시니어 개발자 마인드셋 섹션 번역 완료 및
+> 동기화
 
 ## 📋 개요
 
@@ -17,7 +18,7 @@
 
 ## 📚 문서 구조
 
-```
+```text
 Docs/cursorrules/
 ├── README.md (이 파일) - 개요 및 구조 설명
 ├── environment-variables.md - 환경변수 관련 규칙
@@ -84,6 +85,18 @@ git commit -m "feat: 새로운 규칙 추가"
 - [.cursorrules.korean](../../.cursorrules.korean) - 한국어 원본 커서룰 (백업)
 - [개발 가이드](../development-guide.md) - 개발 환경 설정
 - [워크플로우 가이드](../workflows/development-workflow.md) - 상세 개발 프로세스
+
+### 커서 규칙 소스(.mdc)
+
+- [.cursor/rules/security.mdc](../../.cursor/rules/security.mdc)
+- [.cursor/rules/env-and-secrets.mdc](../../.cursor/rules/env-and-secrets.mdc)
+- [.cursor/rules/monorepo.mdc](../../.cursor/rules/monorepo.mdc)
+- [.cursor/rules/editing-and-tools.mdc](../../.cursor/rules/editing-and-tools.mdc)
+- [.cursor/rules/performance-and-rate-limit.mdc](../../.cursor/rules/performance-and-rate-limit.mdc)
+- [.cursor/rules/release-and-versioning.mdc](../../.cursor/rules/release-and-versioning.mdc)
+- [.cursor/rules/contracts-and-dto.mdc](../../.cursor/rules/contracts-and-dto.mdc)
+- [.cursor/rules/docs.mdc](../../.cursor/rules/docs.mdc) (Docs-first 규칙 포함)
+- [.cursor/rules/tests.mdc](../../.cursor/rules/tests.mdc)
 
 ## 📝 변경 이력
 
