@@ -1,8 +1,40 @@
 ---
-description: 릴리스/버전 규칙(semver/CHANGELOG/API 버전 동기화)
-type: manual
+title: Release & Versioning Rules (릴리스/버전 규칙)
+scope: workspace
+applies_to: [all]
+severity_levels: [MUST, SHOULD]
+description: semver/CHANGELOG/API 버전 동기화/브레이킹 게이트 규칙
+version: v1
+@cursor-change: 2025-10-25, 0.1.0, standardize header + MUST/SHOULD
 ---
 
-- semver: 내부 변경=patch, 계약 추가=minor, 계약 변경=major.
-- CHANGELOG는 Added/Changed/Fixed/Deprecated/Removed/Security 섹션으로 관리.
-- Lost Ark API 버전 변경 시 코드/문서/테스트를 동기화합니다.
+## 목적
+
+릴리스 절차와 버전 정책을 일관되게 적용하여 예측 가능성과 호환성을 보장합니다.
+
+## 원칙
+
+- semver를 엄격히 적용하여 변경 의미를 명확히 표현
+- 문서/코드/테스트는 버전 변경 시 동기화
+- 파괴적 변경은 단계적 절차로 관리
+
+## 규칙
+
+- [MUST] REL-01 semver 매핑: 내부 변경=patch, 계약 추가=minor, 계약 변경=major를 적용합니다.
+- [MUST] REL-02 CHANGELOG는 Added/Changed/Fixed/Deprecated/Removed/Security 섹션으로 관리합니다.
+- [MUST] REL-03 Lost Ark API 버전 변경 시 코드/문서/테스트를 동기화합니다.
+- [MUST] REL-04 파괴적 변경은 Deprecation→백필→교체→삭제 순서로 진행합니다(브레이킹 체인지 게이트).
+- [SHOULD] REL-05 릴리스 노트에는 영향 범위/리스크/롤백 전략을 요약합니다.
+
+## 예외/경계
+
+- 긴급 패치의 경우 사후에 CHANGELOG/문서를 보완하고 다음 배포에서 정식 반영합니다.
+
+## 레퍼런스
+
+- CHANGELOG.md
+- Docs/deployment-guide.md
+
+## 변경 이력
+
+- 2025-10-25: 헤더 표준화 및 MUST/SHOULD 강도 적용(REL-01~05)
