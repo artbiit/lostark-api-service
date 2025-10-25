@@ -1,8 +1,41 @@
 ---
-description: 모노레포 규칙(공유 패키지 영향/TS 참조/순환 금지)
+title: Monorepo Rules (모노레포 규칙)
+scope: workspace
+applies_to: [all]
+severity_levels: [MUST, SHOULD]
+description: 모노레포 의존성/순환 금지/TS References 무결성 유지 규칙
 alwaysApply: true
+version: v1
+@cursor-change: 2025-10-25, 0.1.0, standardize header + MUST/SHOULD
 ---
 
-- shared-* 변경 시 영향 범위를 요약하고 순환 의존을 금지합니다.
-- TypeScript Project References 그래프를 유지하고, 깨질 경우 변경 요약을 첨부합니다.
-- 패키지 간 계약/타입 변경은 단계적으로 배포하고, 호환성 경고를 명시합니다.
+## 목적
+
+모노레포 환경에서 의존성 안정성과 변경 관리 효율을 보장합니다.
+
+## 원칙
+
+- 공유 패키지 변경 영향 최소화, 순환 의존 금지
+- TS Project References 일관 유지, 그래프 무결성 보전
+- 1 목적/원자적 변경, 다중 패키지 변경은 사전 승인
+
+## 규칙
+
+- [MUST] MONO-01 shared-\* 변경 시 영향 범위를 요약하고, 순환 의존을 금지합니다.
+- [MUST] MONO-02 TypeScript Project References 그래프를 유지하고, 깨질 경우 변경 요약을 첨부합니다.
+- [MUST] MONO-03 패키지 간 계약/타입 변경은 단계적으로 배포하고, 호환성 경고를 명시합니다.
+- [SHOULD] MONO-04 3개 이상 패키지 영향 변경은 사전 승인 후 진행합니다.
+- [SHOULD] MONO-05 모듈 시스템은 ESM을 유지하고, `@/*` 경로 별칭을 사용합니다.
+
+## 예외/경계
+
+- 긴급 장애 복구 시 다중 패키지 동시 수정이 필요할 수 있으며, 사후에 영향 분석과 정리 커밋을 수행합니다.
+
+## 레퍼런스
+
+- Docs/architecture.md
+- Docs/workflows/development-workflow.md
+
+## 변경 이력
+
+- 2025-10-25: 헤더 표준화 및 MUST/SHOULD 강도 적용(MONO-01~05)
