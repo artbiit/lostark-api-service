@@ -155,6 +155,53 @@ yarn workspace @lostark/rest-api typecheck
 
 # 3. 빌드 순서 확인
 yarn build
+
+### Git push 실패: Husky pre-push 훅 오류 (tsx PnP 해석 실패)
+
+**문제**: `git push` 시 pre-push 훅에서 아래와 같은 오류로 실패
+
+```
+husky - DEPRECATED
+
+Please remove the following two lines from .husky/pre-push:
+
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+They WILL FAIL in v10.0.0
+
+Usage Error: Couldn't find tsx@npm:4.20.5 in the currently installed PnP map - running an install might help
+
+husky - pre-push script failed (code 1)
+```
+
+**원인**:
+- Yarn PnP(strict)에서 pre-push 훅이 루트 컨텍스트로 `tsx`를 호출하는데, PnP 맵에 선언/락파일 버전 불일치로 `tsx` 해석 실패
+- `.husky/pre-push`가 구식 헤더(`husky.sh` 소스) 사용으로 불필요한 경고 발생
+
+**해결 방법**:
+```bash
+# 1) pre-push 구식 헤더 제거 (husky v9 권고 포맷)
+sed -i '' '1,2d' .husky/pre-push
+echo 'yarn prepush' > .husky/pre-push
+chmod +x .husky/pre-push
+
+# 2) 루트 devDependency의 tsx 버전을 락파일과 정렬
+# package.json의 devDependencies.tsx 를 ^4.20.5 로 업데이트
+
+# 3) 의존성 동기화로 PnP 맵 갱신
+yarn install --inline-builds --check-cache
+
+# 4) prepush가 호출하는 절차를 수동 점검
+yarn validate:monorepo && yarn test && yarn build
+```
+
+**검증 결과**:
+- `tsx v4.20.5` 정상 출력, unit/integration 테스트 통과, 빌드 정상
+- 이후 `git push` 성공
+
+**비고**:
+- Husky v10로 업그레이드 시에도 위 포맷 유지 필요(구식 헤더 미사용)
 ```
 
 ## 🔍 로그 및 디버깅
