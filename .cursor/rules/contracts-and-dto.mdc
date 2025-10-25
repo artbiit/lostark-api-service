@@ -1,9 +1,40 @@
 ---
-description: 계약/DTO 규칙(버전/스냅샷/호환성 주석)
-globs:
-  - packages/shared/src/**/*.ts
+title: Contracts & DTO Rules (계약/DTO 규칙)
+scope: workspace
+applies_to: [all]
+severity_levels: [MUST, SHOULD]
+description: 공개/도메인 계약/DTO 버전/스냅샷/호환성 규칙
+version: v1
+@cursor-change: 2025-10-25, 0.1.0, add new rules file
 ---
 
-- Public DTO는 버전(v1)을 명시하며, 도메인 DTO는 내부 전용으로 구분합니다.
-- REST/UDP/DTO 계약 변경 시 스냅샷 테스트를 유지하고, 호환성 주석을 추가합니다.
-- Lost Ark API 버전 변경 시 README/문서/테스트를 동기화합니다.
+## 목적
+
+공개/도메인 계약(REST/UDP/DTO)의 호환성을 보장하고 버전 관리를 체계화합니다.
+
+## 원칙
+
+- 파괴적 변경 금지(Deprecation→백필→교체→삭제)
+- 계약은 버전 디렉터리로 관리하고 스냅샷 테스트를 유지
+- 공개 DTO는 v1 등 공개 버전으로 분리
+
+## 규칙
+
+- [MUST] CTR-01 공개 DTO는 버전 디렉터리(`packages/shared-types/v1/...`)에 두고, 변경 시 호환 코멘트를 남깁니다.
+- [MUST] CTR-02 계약/DTO 변경은 스냅샷 테스트를 추가/갱신합니다.
+- [MUST] CTR-03 파괴적 변경은 Deprecation→백필→교체→삭제 절차를 따릅니다.
+- [MUST] CTR-04 REST/UDP/DTO 계약 변경은 Breaking Change Proposal 승인을 받아야 합니다.
+- [SHOULD] CTR-05 캐시 키는 `char:<name>:v<schemaVersion>` 형태로 관리하고, 메타데이터(updatedAt, version)를 포함합니다.
+
+## 예외/경계
+
+- 외부 API 강제 변경 시 임시 어댑터로 완화하고, 다음 버전에 정식 반영합니다.
+
+## 레퍼런스
+
+- Docs/lostark-api/V9.0.0/README.md
+- tests/README.md
+
+## 변경 이력
+
+- 2025-10-25: 신규 생성(CTR-01~05)
