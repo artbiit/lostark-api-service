@@ -38,11 +38,13 @@ export class CharactersClient {
    * 캐릭터 siblings 정보 조회
    */
   async getSiblings(characterName: string): Promise<CharacterSiblingsResponseV9> {
-    const endpoint = CHARACTERS_ENDPOINTS.SIBLINGS(characterName);
+    const encodedName = encodeURIComponent(characterName);
+    const endpoint = CHARACTERS_ENDPOINTS.SIBLINGS(encodedName);
     const url = `${this.baseUrl}${endpoint}`;
 
     logger.info('Fetching character siblings', {
       characterName,
+      encodedName,
       endpoint,
       requestId: this.generateRequestId(),
     });
@@ -103,7 +105,18 @@ export class CharactersClient {
     this.checkRateLimit(response, attempt);
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      const errorBody = await response.text().catch(() => '');
+
+      logger.error('Characters API request failed', {
+        status: response.status,
+        statusText: response.statusText,
+        url,
+        body: errorBody,
+        attempt,
+        requestId: this.generateRequestId(),
+      });
+
+      throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorBody}`);
     }
 
     const data = await response.json();

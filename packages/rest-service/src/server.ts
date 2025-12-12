@@ -706,31 +706,29 @@ export class RestServer {
     try {
       logger.info('Character request', { characterName, refresh: refresh === 'true' });
 
-      const charactersService = new CharactersService();
+      const shouldRefresh = refresh === 'true';
+      const cachedAccount = shouldRefresh
+        ? null
+        : await this.charactersService.getAccountInfo(characterName);
 
-      const result = await charactersService.getAccountInfo(characterName);
+      const cacheHit = Boolean(cachedAccount) && !shouldRefresh;
 
-      if (!result) {
-        reply.status(404).send({
-          success: false,
-          error: 'Character not found',
-          timestamp: new Date().toISOString(),
-        });
-        return;
-      }
+      const result =
+        cachedAccount ??
+        (await this.charactersService.processCharacterSiblings(characterName)).accountInfo;
 
       const responseTime = Date.now() - startTime;
 
-      reply.header('X-Cache-Hit', 'true');
-      reply.header('X-Cache-Source', 'memory');
+      reply.header('X-Cache-Hit', cacheHit ? 'true' : 'false');
+      reply.header('X-Cache-Source', cacheHit ? 'memory' : 'api');
       reply.header('X-Response-Time', `${responseTime}ms`);
 
       reply.send({
         success: true,
         data: result,
         cache: {
-          hit: true,
-          source: 'memory',
+          hit: cacheHit,
+          source: cacheHit ? 'memory' : 'api',
           ttl: 300,
         },
         timestamp: new Date().toISOString(),
@@ -738,6 +736,16 @@ export class RestServer {
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
+
+      if (error instanceof Error && error.message.includes('404')) {
+        reply.status(404).send({
+          success: false,
+          error: 'Character not found',
+          timestamp: new Date().toISOString(),
+          responseTime,
+        });
+        return;
+      }
 
       logger.error('Failed to get character', {
         characterName,
@@ -770,31 +778,27 @@ export class RestServer {
     try {
       logger.info('Character siblings request', { characterName, refresh: refresh === 'true' });
 
-      const charactersService = new CharactersService();
-
-      const result = await charactersService.getAccountInfo(characterName);
-
-      if (!result) {
-        reply.status(404).send({
-          success: false,
-          error: 'Character not found',
-          timestamp: new Date().toISOString(),
-        });
-        return;
-      }
+      const shouldRefresh = refresh === 'true';
+      const cachedAccount = shouldRefresh
+        ? null
+        : await this.charactersService.getAccountInfo(characterName);
+      const cacheHit = Boolean(cachedAccount) && !shouldRefresh;
+      const result =
+        cachedAccount ??
+        (await this.charactersService.processCharacterSiblings(characterName)).accountInfo;
 
       const responseTime = Date.now() - startTime;
 
-      reply.header('X-Cache-Hit', 'true');
-      reply.header('X-Cache-Source', 'memory');
+      reply.header('X-Cache-Hit', cacheHit ? 'true' : 'false');
+      reply.header('X-Cache-Source', cacheHit ? 'memory' : 'api');
       reply.header('X-Response-Time', `${responseTime}ms`);
 
       reply.send({
         success: true,
         data: result,
         cache: {
-          hit: true,
-          source: 'memory',
+          hit: cacheHit,
+          source: cacheHit ? 'memory' : 'api',
           ttl: 300,
         },
         timestamp: new Date().toISOString(),
@@ -802,6 +806,16 @@ export class RestServer {
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
+
+      if (error instanceof Error && error.message.includes('404')) {
+        reply.status(404).send({
+          success: false,
+          error: 'Character not found',
+          timestamp: new Date().toISOString(),
+          responseTime,
+        });
+        return;
+      }
 
       logger.error('Failed to get character siblings', {
         characterName,
@@ -832,8 +846,7 @@ export class RestServer {
     try {
       logger.info('Character refresh request', { characterName });
 
-      const charactersService = new CharactersService();
-      const result = await charactersService.refreshAccountInfo(characterName);
+      const result = await this.charactersService.refreshAccountInfo(characterName);
 
       const responseTime = Date.now() - startTime;
 
