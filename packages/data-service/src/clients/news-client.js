@@ -5,7 +5,7 @@
  * - 공지사항 목록 조회
  * - 이벤트 목록 조회
  */
-import { NEWS_ENDPOINTS } from '@lostark/shared/types/V9/news.js';
+import { NEWS_ENDPOINTS } from '@lostark/shared/types/V9/news';
 import { ApiClient } from './api-client.js';
 /**
  * NEWS API 클라이언트

@@ -7,7 +7,7 @@
  * - 재시도 로직 및 로깅
  */
 import { logger } from '@lostark/shared';
-import { ARMORIES_ENDPOINTS, } from '@lostark/shared/types/V9/armories.js';
+import { ARMORIES_ENDPOINTS, } from '@lostark/shared/types/V9/armories';
 import { ApiClient } from './api-client.js';
 // === ARMORIES API 클라이언트 ===
 /**

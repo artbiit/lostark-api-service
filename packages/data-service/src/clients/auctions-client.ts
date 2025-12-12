@@ -10,8 +10,8 @@ import type {
   AuctionOptionsV9,
   AuctionSearchRequestV9,
   AuctionSearchResponseV9,
-} from '@lostark/shared/types/V9/auctions.js';
-import { AUCTIONS_ENDPOINTS } from '@lostark/shared/types/V9/auctions.js';
+} from '@lostark/shared/types/V9/auctions';
+import { AUCTIONS_ENDPOINTS } from '@lostark/shared/types/V9/auctions';
 import { ApiClient } from './api-client.js';
 
 /**

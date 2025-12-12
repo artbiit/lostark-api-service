@@ -68,4 +68,4 @@ tests/
 
 # Yarn
 .yarn/
-.yarnrc.yml
+!.yarnrc.yml

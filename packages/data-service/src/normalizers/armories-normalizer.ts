@@ -7,7 +7,7 @@
  */
 
 import { logger } from '@lostark/shared';
-import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories.js';
+import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories';
 
 // === 도메인 모델 ===
 

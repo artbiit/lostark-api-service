@@ -4,7 +4,7 @@
  * Lost Ark API V9.0.0 GAMECONTENTS API 클라이언트
  * - 주간 콘텐츠 달력 조회
  */
-import type { GameContentsCalendarResponseV9 } from '@lostark/shared/types/V9/gamecontents.js';
+import type { GameContentsCalendarResponseV9 } from '@lostark/shared/types/V9/gamecontents';
 import { ApiClient } from './api-client.js';
 /**
  * GAMECONTENTS API 클라이언트

@@ -5,7 +5,7 @@
  * - 경매장 검색 옵션 정규화
  * - 경매장 아이템 검색 결과 정규화
  */
-import type { AuctionItemV9, AuctionOptionsV9, AuctionSearchResponseV9 } from '@lostark/shared/types/V9/auctions.js';
+import type { AuctionItemV9, AuctionOptionsV9, AuctionSearchResponseV9 } from '@lostark/shared/types/V9/auctions';
 /**
  * 정규화된 경매장 검색 옵션
  */

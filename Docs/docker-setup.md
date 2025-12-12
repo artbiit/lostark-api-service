@@ -7,6 +7,13 @@
 Lost Ark API Service는 Docker Compose를 통해 선택적으로 서비스를 실행할 수
 있습니다. 5개의 서비스 중 필요한 것만 선택하여 실행할 수 있습니다.
 
+## 빌드 전제
+
+- 컨테이너 빌드는 Corepack 활성화 후 Yarn 4.9.2(berry) `--immutable` 플래그를
+  사용합니다.
+- 로컬에서 `docker build` 시 Yarn 버전 충돌이 나면
+  `corepack prepare yarn@4.9.2 --activate` 후 재시도하세요.
+
 ## 서비스 구성
 
 ### 1. 데이터 서비스 (data-service)

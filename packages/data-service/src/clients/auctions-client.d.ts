@@ -5,7 +5,7 @@
  * - 경매장 검색 옵션 조회
  * - 경매장 아이템 검색
  */
-import type { AuctionOptionsV9, AuctionSearchRequestV9, AuctionSearchResponseV9 } from '@lostark/shared/types/V9/auctions.js';
+import type { AuctionOptionsV9, AuctionSearchRequestV9, AuctionSearchResponseV9 } from '@lostark/shared/types/V9/auctions';
 import { ApiClient } from './api-client.js';
 /**
  * AUCTIONS API 클라이언트

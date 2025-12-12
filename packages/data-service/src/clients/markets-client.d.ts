@@ -6,7 +6,7 @@
  * - 아이템 ID로 시장 정보 조회
  * - 아이템 검색
  */
-import type { MarketItemByIdResponseV9, MarketOptionsV9, MarketSearchRequestV9, MarketSearchResponseV9 } from '@lostark/shared/types/V9/markets.js';
+import type { MarketItemByIdResponseV9, MarketOptionsV9, MarketSearchRequestV9, MarketSearchResponseV9 } from '@lostark/shared/types/V9/markets';
 import { ApiClient } from './api-client.js';
 /**
  * MARKETS API 클라이언트

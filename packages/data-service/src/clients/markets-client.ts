@@ -12,8 +12,8 @@ import type {
   MarketOptionsV9,
   MarketSearchRequestV9,
   MarketSearchResponseV9,
-} from '@lostark/shared/types/V9/markets.js';
-import { MARKETS_ENDPOINTS } from '@lostark/shared/types/V9/markets.js';
+} from '@lostark/shared/types/V9/markets';
+import { MARKETS_ENDPOINTS } from '@lostark/shared/types/V9/markets';
 import { ApiClient } from './api-client.js';
 
 /**

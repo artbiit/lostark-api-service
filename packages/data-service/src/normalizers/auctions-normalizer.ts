@@ -12,7 +12,7 @@ import type {
   AuctionSearchResponseV9,
   SkillOptionV9,
   TripodOptionV9,
-} from '@lostark/shared/types/V9/auctions.js';
+} from '@lostark/shared/types/V9/auctions';
 
 /**
  * 정규화된 경매장 검색 옵션

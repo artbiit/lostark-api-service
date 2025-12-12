@@ -6,7 +6,7 @@
  * - 경매장 아이템 검색
  */
 
-import type { AuctionSearchRequestV9 } from '@lostark/shared/types/V9/auctions.js';
+import type { AuctionSearchRequestV9 } from '@lostark/shared/types/V9/auctions';
 import { AuctionsCache } from '../cache/auctions-cache.js';
 import { AuctionsClient } from '../clients/auctions-client.js';
 import type {

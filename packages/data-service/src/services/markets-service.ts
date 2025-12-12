@@ -12,8 +12,8 @@ import type {
   MarketOptionsV9,
   MarketSearchRequestV9,
   MarketSearchResponseV9,
-} from '@lostark/shared/types/V9/markets.js';
-import { MarketSort, SortCondition } from '@lostark/shared/types/V9/base.js';
+} from '@lostark/shared/types/V9/markets';
+import { MarketSort, SortCondition } from '@lostark/shared/types/V9/base';
 import { MarketsClient } from '../clients/markets-client.js';
 
 /**

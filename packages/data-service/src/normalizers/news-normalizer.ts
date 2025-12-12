@@ -12,7 +12,7 @@ import type {
   EventV9,
   NoticesResponseV9,
   NoticeV9,
-} from '@lostark/shared/types/V9/news.js';
+} from '@lostark/shared/types/V9/news';
 
 /**
  * 정규화된 공지사항

@@ -5,7 +5,7 @@
  * - 공지사항 정규화
  * - 이벤트 정규화
  */
-import type { EventsResponseV9, EventV9, NoticesResponseV9, NoticeV9 } from '@lostark/shared/types/V9/news.js';
+import type { EventsResponseV9, EventV9, NoticesResponseV9, NoticeV9 } from '@lostark/shared/types/V9/news';
 /**
  * 정규화된 공지사항
  */

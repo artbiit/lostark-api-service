@@ -8,7 +8,7 @@
  */
 
 import { logger } from '@lostark/shared';
-import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories.js';
+import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories';
 
 import { armoriesCache } from '../cache/armories-cache.js';
 import { cacheManager, startCacheManagerCleanupScheduler } from '../cache/cache-manager.js';
@@ -17,7 +17,7 @@ import {
   armoriesNormalizer,
   NormalizedCharacterDetail,
 } from '../normalizers/armories-normalizer.js';
-import type { ClassSpecificNodes } from '@lostark/shared/types/domain/character.js';
+import type { ClassSpecificNodes } from '@lostark/shared/types/domain/character';
 
 // === 큐 항목 타입 ===
 

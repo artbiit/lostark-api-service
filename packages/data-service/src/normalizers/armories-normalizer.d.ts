@@ -5,7 +5,7 @@
  * - API 응답을 내부 도메인 모델로 변환
  * - 데이터 검증 및 정제
  */
-import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories.js';
+import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories';
 /**
  * 정규화된 캐릭터 상세 정보
  */

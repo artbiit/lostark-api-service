@@ -16,8 +16,8 @@ logger.info('📦 data-service 패키지 로딩 시작');
 
 logger.info('📥 shared 패키지 import 시작...');
 import { logger } from '@lostark/shared';
-import { mysqlClient } from '@lostark/shared/db/mysql.js';
-import { redisClient } from '@lostark/shared/db/redis.js';
+import { mysqlClient } from '@lostark/shared/db/mysql';
+import { redisClient } from '@lostark/shared/db/redis';
 logger.info('✅ logger import 완료');
 
 logger.info('📥 MySQL 클라이언트 import 시작...');

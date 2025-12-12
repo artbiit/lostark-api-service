@@ -10,8 +10,8 @@ import type {
   EventsResponseV9,
   NoticeSearchParams,
   NoticesResponseV9,
-} from '@lostark/shared/types/V9/news.js';
-import { NEWS_ENDPOINTS } from '@lostark/shared/types/V9/news.js';
+} from '@lostark/shared/types/V9/news';
+import { NEWS_ENDPOINTS } from '@lostark/shared/types/V9/news';
 import { ApiClient } from './api-client.js';
 
 /**

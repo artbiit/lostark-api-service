@@ -6,7 +6,7 @@
  * - 이벤트 목록 조회
  */
 
-import type { NoticeSearchParams } from '@lostark/shared/types/V9/news.js';
+import type { NoticeSearchParams } from '@lostark/shared/types/V9/news';
 import { NewsCache } from '../cache/news-cache.js';
 import { NewsClient } from '../clients/news-client.js';
 import type {

@@ -40,7 +40,7 @@ logger.info('✅ data-service 패키지 import 완료');
 logger.info('📦 shared 패키지 import 시작...');
 logger.info('✅ logger import 완료');
 
-import { parseEnv } from '@lostark/shared/config/env.js';
+import { parseEnv } from '@lostark/shared/config/env';
 logger.info('✅ parseEnv import 완료');
 
 import Fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';

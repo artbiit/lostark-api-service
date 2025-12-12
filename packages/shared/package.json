@@ -22,6 +22,14 @@
       "types": "./src/types/V9/index.ts",
       "import": "./dist/types/V9/index.js"
     },
+    "./types/V9/*": {
+      "types": "./src/types/V9/*.ts",
+      "import": "./dist/types/V9/*.js"
+    },
+    "./types/V9/*.js": {
+      "types": "./src/types/V9/*.ts",
+      "import": "./dist/types/V9/*.js"
+    },
     "./types/V8": {
       "types": "./src/types/V8/index.ts",
       "import": "./dist/types/V8/index.js"
@@ -33,6 +41,10 @@
     "./types/domain": {
       "types": "./src/types/domain/index.ts",
       "import": "./dist/types/domain/index.js"
+    },
+    "./types/domain/*": {
+      "types": "./src/types/domain/*.ts",
+      "import": "./dist/types/domain/*.js"
     },
     "./types/domain/account": {
       "types": "./src/types/domain/account.ts",

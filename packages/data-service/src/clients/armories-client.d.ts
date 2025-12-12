@@ -6,7 +6,7 @@
  * - Rate Limit 관리 및 에러 처리
  * - 재시도 로직 및 로깅
  */
-import { ArmoryAvatarsV9, ArmoryCardsV9, ArmoryCharacterV9, ArmoryCollectiblesV9, ArmoryColosseumsV9, ArmoryCombatSkillsV9, ArmoryEngravingV9, ArmoryEquipmentV9, ArmoryGemsV9, ArmoryProfileV9 } from '@lostark/shared/types/V9/armories.js';
+import { ArmoryAvatarsV9, ArmoryCardsV9, ArmoryCharacterV9, ArmoryCollectiblesV9, ArmoryColosseumsV9, ArmoryCombatSkillsV9, ArmoryEngravingV9, ArmoryEquipmentV9, ArmoryGemsV9, ArmoryProfileV9 } from '@lostark/shared/types/V9/armories';
 /**
  * ARMORIES API 클라이언트
  */

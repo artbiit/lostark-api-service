@@ -12,9 +12,9 @@
  * - dotenv를 통한 일관된 환경변수 로딩
  */
 import { logger } from '@lostark/shared';
-import { parseEnv } from '@lostark/shared/config/env.js';
-import { mysqlClient } from '@lostark/shared/db/mysql.js';
-import { redisClient } from '@lostark/shared/db/redis.js';
+import { parseEnv } from '@lostark/shared/config/env';
+import { mysqlClient } from '@lostark/shared/db/mysql';
+import { redisClient } from '@lostark/shared/db/redis';
 // === 환경변수 로딩 ===
 // parseEnv() 함수가 자동으로 .env 파일을 로드합니다
 const env = parseEnv();

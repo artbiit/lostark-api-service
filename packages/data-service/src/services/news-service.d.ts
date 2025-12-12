@@ -5,7 +5,7 @@
  * - 공지사항 목록 조회
  * - 이벤트 목록 조회
  */
-import type { NoticeSearchParams } from '@lostark/shared/types/V9/news.js';
+import type { NoticeSearchParams } from '@lostark/shared/types/V9/news';
 import type { NormalizedEventsResult, NormalizedNoticesResult } from '../normalizers/news-normalizer.js';
 /**
  * NEWS API 서비스 클래스

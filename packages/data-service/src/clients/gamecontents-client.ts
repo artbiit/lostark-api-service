@@ -5,8 +5,8 @@
  * - 주간 콘텐츠 달력 조회
  */
 
-import type { GameContentsCalendarResponseV9 } from '@lostark/shared/types/V9/gamecontents.js';
-import { GAMECONTENTS_ENDPOINTS } from '@lostark/shared/types/V9/gamecontents.js';
+import type { GameContentsCalendarResponseV9 } from '@lostark/shared/types/V9/gamecontents';
+import { GAMECONTENTS_ENDPOINTS } from '@lostark/shared/types/V9/gamecontents';
 import { ApiClient } from './api-client.js';
 
 /**
