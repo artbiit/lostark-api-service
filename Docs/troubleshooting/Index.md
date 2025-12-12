@@ -7,6 +7,7 @@
 #### Redis 클라이언트 설정 에러
 
 **문제**: Redis 클라이언트 설정에서 TypeScript 에러 발생
+
 ```
 error TS2353: Object literal may only specify known properties, and 'commandTimeout' does not exist in type 'RedisSocketOptions'.
 error TS2353: Object literal may only specify known properties, and 'lazyConnect' does not exist in type 'RedisSocketOptions'.
@@ -15,31 +16,34 @@ error TS2353: Object literal may only specify known properties, and 'lazyConnect
 **원인**: Redis 클라이언트 타입 정의에서 지원하지 않는 속성 사용
 
 **해결 방법**:
+
 ```typescript
 // ❌ 지원하지 않는 속성
 this.client = createClient({
   socket: {
     connectTimeout: 3000,
-    commandTimeout: 2000,  // 지원하지 않음
-    lazyConnect: true,     // 지원하지 않음
+    commandTimeout: 2000, // 지원하지 않음
+    lazyConnect: true, // 지원하지 않음
   },
 });
 
 // ✅ 지원되는 속성만 사용
 this.client = createClient({
   socket: {
-    connectTimeout: 3000,  // 지원됨
+    connectTimeout: 3000, // 지원됨
   },
 });
 ```
 
-**참고**: Redis 클라이언트 버전에 따라 지원되는 속성이 다를 수 있습니다. 최신 타입 정의를 확인하세요.
+**참고**: Redis 클라이언트 버전에 따라 지원되는 속성이 다를 수 있습니다. 최신
+타입 정의를 확인하세요.
 
 ### 환경변수 로딩 실패
 
 **문제**: `.env` 파일이 로드되지 않음
 
 **해결 방법**:
+
 ```bash
 # 1. .env 파일 존재 확인
 ls -la .env
@@ -52,6 +56,7 @@ touch .env
 ```
 
 **주의사항**:
+
 - `.env.example`을 `.env`로 복사하지 마세요
 - `.env` 파일은 수동으로 생성하고 실제 값만 입력하세요
 
@@ -60,6 +65,7 @@ touch .env
 **문제**: 패키지 빌드가 실패함
 
 **해결 방법**:
+
 ```bash
 # 1. 의존성 재설치
 yarn install
@@ -79,6 +85,7 @@ yarn workspace @lostark/rest-api build
 **문제**: 단위 테스트가 실패함
 
 **해결 방법**:
+
 ```bash
 # 1. 환경변수 설정 확인
 grep LOSTARK_API_KEY .env
@@ -97,6 +104,7 @@ yarn test:unit
 **문제**: 서버 시작 시 포트가 이미 사용 중
 
 **해결 방법**:
+
 ```bash
 # 1. 사용 중인 포트 확인
 lsof -i :3000
@@ -113,6 +121,7 @@ REST_SERVER_PORT=3001 yarn workspace @lostark/rest-api start
 **문제**: Cursor 대화 중 서버 실행으로 인한 무한대기
 
 **해결 방법**:
+
 ```bash
 # 1. 개발 모드 사용 (권장)
 yarn workspace @lostark/rest-api dev
@@ -123,6 +132,27 @@ nohup yarn workspace @lostark/rest-api start &
 # 3. 별도 터미널에서 실행
 ```
 
+### ARMORIES 엔드포인트 404/500
+
+**문제**: `/api/v1/armories/:characterName` 404,
+`/api/v1/armories/:characterName/refresh` 500 발생
+
+**원인**: ARMORIES 캐시 미스 상태에서 API 미호출 혹은 Lostark API 404 응답을
+내부 500으로 변환
+
+**해결 방법**:
+
+```bash
+# 1) 캐릭터 상세 요청 시 자동 API 호출·캐시 채움 (v1.0.1 이후 기본 동작)
+curl "http://localhost:3000/api/v1/armories/아트네"
+
+# 2) 강제 새로고침 시 404는 그대로 전달, 500은 로그 확인
+curl "http://localhost:3000/api/v1/armories/아트네/refresh"
+
+# 3) STILL 404 → 캐릭터명 오타 확인, LOSTARK_API_KEY 존재 확인
+echo "$LOSTARK_API_KEY" | head -c 5
+```
+
 ## 📦 모노레포 문제
 
 ### 의존성 순환 참조
@@ -130,6 +160,7 @@ nohup yarn workspace @lostark/rest-api start &
 **문제**: 패키지 간 순환 참조 발생
 
 **해결 방법**:
+
 ```bash
 # 1. 의존성 검증
 yarn validate:deps
@@ -146,6 +177,7 @@ yarn validate:monorepo
 **문제**: 패키지 간 타입 참조 실패
 
 **해결 방법**:
+
 ```bash
 # 1. TypeScript 프로젝트 참조 확인
 yarn typecheck
@@ -161,19 +193,21 @@ yarn build
 **문제**: `git push` 시 pre-push 훅에서 아래와 같은 오류로 실패
 
 ```
+
 husky - DEPRECATED
 
 Please remove the following two lines from .husky/pre-push:
 
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/usr/bin/env sh . "$(dirname -- "$0")/\_/husky.sh"
 
 They WILL FAIL in v10.0.0
 
-Usage Error: Couldn't find tsx@npm:4.20.5 in the currently installed PnP map - running an install might help
+Usage Error: Couldn't find tsx@npm:4.20.5 in the currently installed PnP map -
+running an install might help
 
 husky - pre-push script failed (code 1)
-```
+
+````
 
 **원인**:
 - Yarn PnP(strict)에서 pre-push 훅이 루트 컨텍스트로 `tsx`를 호출하는데, PnP 맵에 선언/락파일 버전 불일치로 `tsx` 해석 실패
@@ -194,15 +228,18 @@ yarn install --inline-builds --check-cache
 
 # 4) prepush가 호출하는 절차를 수동 점검
 yarn validate:monorepo && yarn test && yarn build
-```
+````
 
 **검증 결과**:
+
 - `tsx v4.20.5` 정상 출력, unit/integration 테스트 통과, 빌드 정상
 - 이후 `git push` 성공
 
 **비고**:
+
 - Husky v10로 업그레이드 시에도 위 포맷 유지 필요(구식 헤더 미사용)
-```
+
+````
 
 ## 🔍 로그 및 디버깅
 
@@ -217,13 +254,14 @@ LOG_LEVEL=debug  # 상세 로그
 LOG_LEVEL=info   # 일반 로그
 LOG_LEVEL=warn   # 경고만
 LOG_LEVEL=error  # 에러만
-```
+````
 
 ### 캐시 문제
 
 **문제**: 캐시가 제대로 작동하지 않음
 
 **해결 방법**:
+
 ```bash
 # 1. 캐시 상태 확인
 curl http://localhost:3000/cache/status

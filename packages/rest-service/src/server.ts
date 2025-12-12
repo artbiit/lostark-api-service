@@ -464,12 +464,18 @@ export class RestServer {
     try {
       logger.info('Character detail request', { characterName });
 
-      const characterDetail = await this.armoriesService.getCharacterDetail(characterName);
+      const cachedDetail = await cacheManager.getCharacterDetail(characterName);
+      const cacheHit = Boolean(cachedDetail);
+
+      const characterDetail =
+        cachedDetail ?? (await this.armoriesService.getCharacterDetail(characterName));
 
       if (!characterDetail) {
         reply.status(404).send({
-          error: 'Not Found',
+          success: false,
+          error: 'Character not found',
           message: `Character '${characterName}' not found`,
+          timestamp: new Date().toISOString(),
         });
         return;
       }
@@ -477,21 +483,39 @@ export class RestServer {
       const responseTime = Date.now() - startTime;
 
       // 응답 헤더에 캐시 정보 추가
-      reply.header('X-Cache-Hit', 'true');
+      reply.header('X-Cache-Hit', cacheHit ? 'true' : 'false');
+      reply.header('X-Cache-Source', cacheHit ? 'cache' : 'api');
       reply.header('X-Response-Time', `${responseTime}ms`);
 
       reply.send({
         success: true,
         data: characterDetail,
+        cache: {
+          hit: cacheHit,
+          source: cacheHit ? 'cache' : 'api',
+        },
         timestamp: new Date().toISOString(),
         responseTime,
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      if (errorMessage.includes('404')) {
+        reply.status(404).send({
+          success: false,
+          error: 'Character not found',
+          message: `Character '${characterName}' not found`,
+          timestamp: new Date().toISOString(),
+          responseTime,
+        });
+        return;
+      }
+
       logger.error('Failed to get character detail', {
         characterName,
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage,
         responseTime,
       });
 
@@ -522,8 +546,10 @@ export class RestServer {
 
       if (!characterDetail) {
         reply.status(404).send({
-          error: 'Not Found',
+          success: false,
+          error: 'Character not found',
           message: `Character '${characterName}' not found`,
+          timestamp: new Date().toISOString(),
         });
         return;
       }
@@ -542,9 +568,22 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      if (errorMessage.includes('404')) {
+        reply.status(404).send({
+          success: false,
+          error: 'Character not found',
+          message: `Character '${characterName}' not found`,
+          timestamp: new Date().toISOString(),
+          responseTime,
+        });
+        return;
+      }
+
       logger.error('Failed to refresh character detail', {
         characterName,
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage,
         responseTime,
       });
 

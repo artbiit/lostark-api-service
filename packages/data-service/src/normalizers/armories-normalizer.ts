@@ -200,6 +200,21 @@ export class ArmoriesNormalizer {
     try {
       // 1. 기본 정보 추출
       const profile = armoryData.ArmoryProfile;
+
+      if (!profile) {
+        throw new Error('404: Armory profile not found');
+      }
+
+      const stats = Array.isArray(profile.Stats) ? profile.Stats : [];
+      const tendencies = Array.isArray(profile.Tendencies) ? profile.Tendencies : [];
+      const equipment = Array.isArray(armoryData.ArmoryEquipment) ? armoryData.ArmoryEquipment : [];
+      const engravings = armoryData.ArmoryEngraving ?? {};
+      const cards = armoryData.ArmoryCard ?? {};
+      const gems = armoryData.ArmoryGem ?? {};
+      const combatSkills = armoryData.ArmorySkill ?? {};
+      const avatars = armoryData.ArmoryAvatar ?? {};
+      const colosseums = armoryData.ArmoryColosseum ?? {};
+      const collectibles = armoryData.Collectibles ?? {};
       const characterNameFromProfile = this.extractCharacterName(profile);
       const serverName = this.extractServerName(profile);
       const className = this.extractClassName(profile);
@@ -223,17 +238,17 @@ export class ArmoriesNormalizer {
             used: profile.UsingSkillPoint,
             total: profile.TotalSkillPoint,
           },
-          stats: this.normalizeStats(profile.Stats),
-          tendencies: this.normalizeTendencies(profile.Tendencies),
+          stats: this.normalizeStats(stats),
+          tendencies: this.normalizeTendencies(tendencies),
         },
-        equipment: this.normalizeEquipment(armoryData.ArmoryEquipment),
-        engravings: this.normalizeEngravings(armoryData.ArmoryEngraving),
-        cards: this.normalizeCards(armoryData.ArmoryCard),
-        gems: this.normalizeGems(armoryData.ArmoryGem),
-        combatSkills: this.normalizeCombatSkills(armoryData.ArmorySkill),
-        avatars: this.normalizeAvatars(armoryData.ArmoryAvatar),
-        colosseums: this.normalizeColosseums(armoryData.ArmoryColosseum),
-        collectibles: this.normalizeCollectibles(armoryData.Collectibles),
+        equipment: this.normalizeEquipment(equipment),
+        engravings: this.normalizeEngravings(engravings),
+        cards: this.normalizeCards(cards),
+        gems: this.normalizeGems(gems),
+        combatSkills: this.normalizeCombatSkills(combatSkills),
+        avatars: this.normalizeAvatars(avatars),
+        colosseums: this.normalizeColosseums(colosseums),
+        collectibles: this.normalizeCollectibles(collectibles),
         metadata: {
           normalizedAt: new Date(),
           apiVersion: 'V9.0.0',
@@ -272,8 +287,10 @@ export class ArmoriesNormalizer {
   /**
    * 스탯 정보 정규화
    */
-  private normalizeStats(stats: any[]): Array<{ type: string; value: number; tooltip: string[] }> {
-    return stats.map((stat) => ({
+  private normalizeStats(
+    stats: any[] | undefined,
+  ): Array<{ type: string; value: number; tooltip: string[] }> {
+    return (stats ?? []).map((stat) => ({
       type: stat.Type,
       value: this.parseStatValue(stat.Value),
       tooltip: stat.Tooltip || [],
@@ -284,9 +301,9 @@ export class ArmoriesNormalizer {
    * 성향 정보 정규화
    */
   private normalizeTendencies(
-    tendencies: any[],
+    tendencies: any[] | undefined,
   ): Array<{ type: string; point: number; maxPoint: number }> {
-    return tendencies.map((tendency) => ({
+    return (tendencies ?? []).map((tendency) => ({
       type: tendency.Type,
       point: tendency.Point,
       maxPoint: tendency.MaxPoint,
@@ -297,9 +314,9 @@ export class ArmoriesNormalizer {
    * 장비 정보 정규화
    */
   private normalizeEquipment(
-    equipment: any[],
+    equipment: any[] | undefined,
   ): Array<{ type: string; name: string; icon: string; grade: string; tooltip: string }> {
-    return equipment.map((item) => ({
+    return (equipment ?? []).map((item) => ({
       type: item.Type,
       name: item.Name,
       icon: item.Icon,
@@ -314,7 +331,9 @@ export class ArmoriesNormalizer {
   private normalizeEngravings(
     engravingData: any,
   ): Array<{ slot: number; name: string; icon: string; tooltip: string }> {
-    return (engravingData.Engravings || []).map((engraving: any) => ({
+    const engravings = engravingData?.Engravings ?? [];
+
+    return engravings.map((engraving: any) => ({
       slot: engraving.Slot,
       name: engraving.Name,
       icon: engraving.Icon,
@@ -334,7 +353,9 @@ export class ArmoriesNormalizer {
     grade: string;
     tooltip: string;
   }> {
-    return (cardData.Cards || []).map((card: any) => ({
+    const cards = cardData?.Cards ?? [];
+
+    return cards.map((card: any) => ({
       slot: card.Slot,
       name: card.Name,
       icon: card.Icon,
@@ -356,7 +377,9 @@ export class ArmoriesNormalizer {
     grade: string;
     tooltip: string;
   }> {
-    return (gemData.Gems || []).map((gem: any) => ({
+    const gems = gemData?.Gems ?? [];
+
+    return gems.map((gem: any) => ({
       slot: gem.Slot,
       name: gem.Name,
       icon: gem.Icon,
@@ -388,7 +411,9 @@ export class ArmoriesNormalizer {
       icon: string;
     };
   }> {
-    return (skillData.CombatSkills || []).map((skill: any) => ({
+    const skills = skillData?.CombatSkills ?? [];
+
+    return skills.map((skill: any) => ({
       name: skill.Name,
       icon: skill.Icon,
       level: skill.Level,
@@ -423,7 +448,9 @@ export class ArmoriesNormalizer {
     isInner: boolean;
     tooltip: string;
   }> {
-    return (avatarData.Avatars || []).map((avatar: any) => ({
+    const avatars = avatarData?.Avatars ?? [];
+
+    return avatars.map((avatar: any) => ({
       type: avatar.Type,
       name: avatar.Name,
       icon: avatar.Icon,
@@ -444,7 +471,9 @@ export class ArmoriesNormalizer {
     deathmatch: any;
     teamElimination: any;
   }> {
-    return (colosseumData.Colosseums || []).map((colosseum: any) => ({
+    const colosseums = colosseumData?.Colosseums ?? [];
+
+    return colosseums.map((colosseum: any) => ({
       seasonName: colosseum.SeasonName,
       competitive: colosseum.Competitive,
       teamDeathmatch: colosseum.TeamDeathmatch,
@@ -467,7 +496,9 @@ export class ArmoriesNormalizer {
       maxPoint: number;
     }>;
   }> {
-    return (collectibleData.Collectibles || []).map((collectible: any) => ({
+    const collectibles = collectibleData?.Collectibles ?? [];
+
+    return collectibles.map((collectible: any) => ({
       type: collectible.Type,
       icon: collectible.Icon,
       point: collectible.Point,
