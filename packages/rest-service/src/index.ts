@@ -10,11 +10,14 @@
 
 import { logger } from '@lostark/shared';
 import { parseEnv } from '@lostark/shared/config/env';
-import { restServer } from './server.js';
+import { RestServer } from './server.js';
 
 // === 환경변수 로딩 ===
-// parseEnv() 함수가 자동으로 .env 파일을 로드합니다
-const env = parseEnv();
+// parseEnv() 가 .env 파일을 로드한다 (RestServer 생성자에서도 호출되지만, 여기서 먼저 실행해 초기 실패를 조기 노출).
+parseEnv();
+
+// === REST 서버 인스턴스 ===
+const restServer = new RestServer();
 
 // === 프로세스 종료 처리 ===
 
@@ -121,4 +124,3 @@ startRestService().catch((error) => {
 // === 모듈 export ===
 
 export * from './server.js';
-export { restServer };

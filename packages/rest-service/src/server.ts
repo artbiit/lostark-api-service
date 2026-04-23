@@ -17,6 +17,8 @@ import helmet from '@fastify/helmet';
 logger.info('✅ helmet 모듈 로딩 완료');
 
 import rateLimit from '@fastify/rate-limit';
+import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
 import {
   ArmoriesService,
   AuctionsService,
@@ -182,6 +184,40 @@ export class RestServer {
    * 플러그인 등록
    */
   private async registerPlugins(): Promise<void> {
+    // OpenAPI 스펙 — 다른 플러그인/라우트 등록 전에 먼저 붙여야 라우트 수집 가능
+    await this.fastify.register(swagger, {
+      openapi: {
+        openapi: '3.0.3',
+        info: {
+          title: 'Lostark Remote Kakao REST API',
+          description: '로스트아크 원격 API 래퍼 서비스',
+          version: '2.0.0',
+        },
+        servers: [
+          { url: 'http://localhost:3000', description: 'Local' },
+        ],
+        tags: [
+          { name: 'health', description: '서버 상태' },
+          { name: 'cache', description: '캐시 관리' },
+          { name: 'armories', description: '캐릭터 상세' },
+          { name: 'characters', description: '캐릭터 기본 정보' },
+          { name: 'auctions', description: '경매장' },
+          { name: 'news', description: '공지/이벤트' },
+          { name: 'gamecontents', description: '게임 콘텐츠' },
+          { name: 'markets', description: '시장' },
+        ],
+      },
+    });
+
+    // Swagger UI — /docs 로 서빙
+    await this.fastify.register(swaggerUi, {
+      routePrefix: '/docs',
+      uiConfig: {
+        docExpansion: 'list',
+        deepLinking: true,
+      },
+    });
+
     // CORS
     await this.fastify.register(cors, this.config.cors);
 
@@ -207,8 +243,41 @@ export class RestServer {
    * 라우트 등록
    */
   private async registerRoutes(): Promise<void> {
+    // OpenAPI 스펙 JSON — contracts 동기화용 프로그래매틱 엔드포인트.
+    // @fastify/swagger 의 declare module 'fastify' 증강이 PnP tsc 에서 적용되지 않아
+    // swagger() 는 any 캐스트로 호출한다 (런타임엔 플러그인이 데코레이트함).
+    this.fastify.get('/openapi.json', async () =>
+      (this.fastify as unknown as { swagger: () => unknown }).swagger(),
+    );
+
     // 헬스 체크
-    this.fastify.get('/health', this.healthCheck.bind(this));
+    this.fastify.get(
+      '/health',
+      {
+        schema: {
+          tags: ['health'],
+          summary: '서버 헬스 체크',
+          response: {
+            200: {
+              type: 'object',
+              properties: {
+                status: { type: 'string' },
+                timestamp: { type: 'string' },
+                cache: {
+                  type: 'object',
+                  properties: {
+                    memory: { type: 'object', additionalProperties: true },
+                    redis: { type: 'object', additionalProperties: true },
+                    database: { type: 'object', additionalProperties: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      this.healthCheck.bind(this),
+    );
 
     // 캐시 상태
     this.fastify.get('/cache/status', this.cacheStatus.bind(this));
@@ -333,6 +402,27 @@ export class RestServer {
       });
       // 캐시 시스템 실패 시에도 서버는 계속 동작
     }
+  }
+
+  /**
+   * 현재 등록된 라우트/스키마 기반으로 OpenAPI 문서를 문자열로 덤프한다.
+   * contracts 동기화 스크립트에서 사용. initialize() 이후 호출해야 한다.
+   */
+  async dumpOpenApi(format: 'json' | 'yaml' = 'yaml'): Promise<string> {
+    await this.fastify.ready();
+    // @fastify/swagger 의 declare module 'fastify' 증강이 PnP tsc 에서 적용되지 않아 캐스트 필요.
+    const fastify = this.fastify as unknown as {
+      swagger: (opts?: { yaml?: boolean }) => unknown;
+    };
+    const result = fastify.swagger({ yaml: format === 'yaml' });
+    return typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+  }
+
+  /**
+   * 외부에서 Fastify 인스턴스를 닫을 수 있도록 공개. 테스트/스크립트 한정.
+   */
+  async close(): Promise<void> {
+    await this.fastify.close();
   }
 
   /**
@@ -1413,35 +1503,6 @@ export class RestServer {
   }
 }
 
-// === 서버 인스턴스 ===
-
-logger.info('🏗️ 서버 인스턴스 생성 시작...');
-
-/**
- * REST 서버 인스턴스
- */
-export const restServer = new RestServer();
-
-logger.info('🎊 서버 인스턴스 생성 완료 - 모듈 로딩 완료');
-
-// === 서버 시작 ===
-logger.info('🚀 서버 시작 프로세스 시작...');
-
-// 서버 초기화 및 시작
-async function startServer() {
-  try {
-    logger.info('🔧 서버 초기화 시작...');
-    await restServer.initialize();
-    logger.info('✅ 서버 초기화 완료');
-
-    logger.info('🚀 서버 시작...');
-    await restServer.start();
-    logger.info('🎉 서버가 성공적으로 시작되었습니다!');
-  } catch (error) {
-    logger.error('❌ 서버 시작 실패:', error instanceof Error ? error.message : String(error));
-    process.exit(1);
-  }
-}
-
-// 서버 시작
-startServer();
+// 모듈 로드 시 서버를 자동 기동하지 않는다.
+// 진입점(index.ts) 또는 덤프 스크립트(scripts/dump-openapi.ts) 등 호출부에서
+// new RestServer() 로 인스턴스를 만들어 initialize/start 를 제어한다.
