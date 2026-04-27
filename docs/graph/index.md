@@ -1,8 +1,9 @@
 ---
 kind: graphify-meta
-last_generated_at: null
-source_commit: null
-scopes: []
+last_generated_at: 2026-04-27T11:00:00+09:00
+source_commit: f637d3271329635afb4114c620d1852968b65605
+scopes:
+  - full
 ---
 
 # Graph — graphify 산출물 메타
@@ -14,7 +15,7 @@ scopes: []
 - `rest-service` — Fastify 라우트/플러그인/스키마
 - `data-service` — 공식 API 호출 / 3-tier 캐시
 - `shared` — env/logger/공통 타입
-- `full` — 세 패키지 + 연결
+- `full` — 네 패키지(shared/data-service/rest-service/udp-service) + docs/contracts 통합 (현재 유일 scope)
 
 ## 엔트리포인트 사용법
 
@@ -30,17 +31,19 @@ docs/graph/
 ├── index.md               # 이 파일 — 메타, 커밋 대상
 ├── .gitignore             # 본체 무시
 └── <scope>/               # scope 별 산출물 디렉토리 (무시됨)
-    ├── graph.html
-    ├── graph.json
-    └── audit.md
+    ├── GRAPH_REPORT.md    # plain-language audit
+    ├── graph.html         # 인터랙티브 viz
+    ├── graph.json         # GraphRAG-ready 원본
+    ├── manifest.json      # detect() 결과 (--update 대조용)
+    ├── cost.json          # 누적 토큰 비용
+    └── cache/             # 파일별 추출 캐시 (--update 가속)
 ```
 
 ## Scopes
 
-_현재 생성된 그래프 없음._
-
 | scope | 마지막 생성 | 소스 커밋 | 대상 경로 | 요약 |
 | --- | --- | --- | --- | --- |
+| full | 2026-04-27 | `f637d32` | 레포 전체 (packages/*/src + docs + tests + legacy) | 848 nodes · 1068 edges · 67 communities. God nodes: RestServer, ArmoriesNormalizer, CacheOptimizer. 3-Tier Cache / 3-Service Architecture / OpenAPI Pipeline 이 핵심 하이퍼엣지. |
 
 ## 갱신 시 체크리스트
 

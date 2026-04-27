@@ -1,3 +1,11 @@
+# ---> graphify
+# /graphify 가 cwd 기준 graphify-out/ 에 산출물을 쓴다. 본 레포는 docs/graph/<scope>/ 로 옮겨 보관하지만,
+# 재생성 시 임시 디렉토리가 루트에 생길 수 있으므로 안전하게 무시.
+graphify-out/
+.graphify_*.json
+.graphify_*.txt
+.graphify_python
+
 # ---> Node
 # Logs
 logs
