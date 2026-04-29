@@ -47,8 +47,8 @@ export declare function disconnectRedis(): Promise<void>;
 /**
  * MySQL 연결 초기화
  */
-export declare function initializeMySQL(): Promise<void>;
+export declare function initializePostgres(): Promise<void>;
 /**
  * MySQL 연결 해제
  */
-export declare function disconnectMySQL(): Promise<void>;
+export declare function disconnectPostgres(): Promise<void>;

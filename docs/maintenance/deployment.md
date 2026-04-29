@@ -67,12 +67,13 @@ CACHE_DATABASE_TTL=86400
 CACHE_REDIS_URL=redis://localhost:6379
 CACHE_REDIS_PASSWORD=
 
-# MySQL 설정 (선택사항)
-CACHE_MYSQL_HOST=localhost
-CACHE_MYSQL_PORT=3306
-CACHE_MYSQL_USER=root
-CACHE_MYSQL_PASSWORD=
-CACHE_MYSQL_DATABASE=lostark_cache
+# PostgreSQL 설정 (kord-postgres 재사용)
+# 사전 준비: docker exec -it kord-postgres psql -U kord -c "CREATE DATABASE lostark_cache;"
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=kord
+DB_PASSWORD=password
+DB_DATABASE=lostark_cache
 ```
 
 #### 1.2 의존성 설치
@@ -177,16 +178,6 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
 
-  mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: your_password
-      MYSQL_DATABASE: lostark_cache
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
   lostark-api:
     build: .
     ports:
@@ -195,16 +186,24 @@ services:
     environment:
       - NODE_ENV=production
       - CACHE_REDIS_URL=redis://redis:6379
-      - CACHE_MYSQL_HOST=mysql
-      - CACHE_MYSQL_PASSWORD=your_password
+      - DB_HOST=kord-postgres
+      - DB_PORT=5432
+      - DB_USERNAME=kord
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - DB_DATABASE=lostark_cache
+    networks:
+      - default
+      - kord_default
     depends_on:
       - redis
-      - mysql
     restart: unless-stopped
 
 volumes:
   redis_data:
-  mysql_data:
+
+networks:
+  kord_default:
+    external: true
 ```
 
 ##### 배포 명령
@@ -387,8 +386,8 @@ echo "your_api_key" | docker secret create lostark_api_key -
 # Redis 백업
 redis-cli BGSAVE
 
-# MySQL 백업
-mysqldump -u root -p lostark_cache > backup_$(date +%Y%m%d).sql
+# PostgreSQL 백업
+pg_dump -U kord lostark_cache > backup_$(date +%Y%m%d).sql
 
 # 설정 파일 백업
 tar -czf config_backup_$(date +%Y%m%d).tar.gz .env docker-compose.yml
@@ -397,8 +396,8 @@ tar -czf config_backup_$(date +%Y%m%d).tar.gz .env docker-compose.yml
 #### 7.2 복구 절차
 
 ```bash
-# MySQL 복구
-mysql -u root -p lostark_cache < backup_20250127.sql
+# PostgreSQL 복구
+psql -U kord lostark_cache < backup_20250127.sql
 
 # Redis 복구
 redis-cli FLUSHALL

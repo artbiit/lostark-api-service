@@ -22,8 +22,7 @@
     "test:integration": "tsx --test ../../tests/integration/api/**/*.test.ts"
   },
   "dependencies": {
-    "@lostark/shared": "workspace:*",
-    "mysql2": "^3.14.3"
+    "@lostark/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

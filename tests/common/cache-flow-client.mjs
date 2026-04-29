@@ -2,7 +2,7 @@
  * @cursor-change: 2025-01-27, v1.0.0, 캐시 플로우 테스트용 API 클라이언트 생성
  *
  * 캐시 플로우 테스트를 위한 확장된 API 클라이언트
- * - in-memory → Redis → MySQL 데이터 이동 확인
+ * - in-memory → Redis → PostgreSQL 데이터 이동 확인
  * - 각 API별 캐시 상태 모니터링
  */
 
@@ -142,7 +142,7 @@ class RedisCache {
 }
 
 /**
- * MySQL 시뮬레이션
+ * PostgreSQL 시뮬레이션
  */
 class DatabaseCache {
   constructor() {

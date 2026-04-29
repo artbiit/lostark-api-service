@@ -90,9 +90,9 @@
       "types": "./src/db/index.ts",
       "import": "./dist/db/index.js"
     },
-    "./db/mysql": {
-      "types": "./src/db/mysql.ts",
-      "import": "./dist/db/mysql.js"
+    "./db/postgres": {
+      "types": "./src/db/postgres.ts",
+      "import": "./dist/db/postgres.js"
     },
     "./db/redis": {
       "types": "./src/db/redis.ts",
@@ -108,9 +108,10 @@
     "test:watch": "tsx --test --watch ../../tests/unit/shared/**/*.test.ts"
   },
   "dependencies": {
+    "@types/pg": "^8.11.11",
     "@types/redis": "^4.0.11",
     "dotenv": "^17.2.1",
-    "mysql2": "^3.14.3",
+    "pg": "^8.13.3",
     "pino": "^8.0.0",
     "pino-pretty": "^10.0.0",
     "redis": "^5.8.2",

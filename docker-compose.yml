@@ -9,16 +9,6 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
 
-  mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: lostark123
-      MYSQL_DATABASE: lostark_cache
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
   lostark-api:
     build: .
     ports:
@@ -27,14 +17,20 @@ services:
     environment:
       - NODE_ENV=production
       - CACHE_REDIS_URL=redis://redis:6379
-      - CACHE_MYSQL_HOST=mysql
-      - CACHE_MYSQL_PASSWORD=lostark123
-      - LOSTARK_API_KEY=${LOSTARK_API_KEY:-dev-placeholder}
-    depends_on:
-      - redis
-      - mysql
+      - DB_HOST=kord-postgres
+      - DB_PORT=5432
+      - DB_USERNAME=kord
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - DB_DATABASE=lostark_cache
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+    networks:
+      - default
+      - kord_default
     restart: unless-stopped
 
 volumes:
   redis_data:
-  mysql_data:
+
+networks:
+  kord_default:
+    external: true

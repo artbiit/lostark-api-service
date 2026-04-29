@@ -2,7 +2,7 @@
  * @cursor-change: 2025-01-27, v1.0.0, 캐시 플로우 테스트 생성
  *
  * API 단위 캐시 플로우 테스트
- * - in-memory → Redis → MySQL 데이터 이동 확인
+ * - in-memory → Redis → PostgreSQL 데이터 이동 확인
  * - 각 API별 캐시 동작 검증
  */
 
@@ -69,21 +69,21 @@ async function checkCacheStatus(service, characterName) {
       dataSize: redisResult ? JSON.stringify(redisResult).length : 0,
     });
 
-    // MySQL 확인
-    const mysqlResult = await service.getFromDatabase(characterName);
-    log(`MySQL - ${characterName}:`, {
-      exists: !!mysqlResult,
-      dataSize: mysqlResult ? JSON.stringify(mysqlResult).length : 0,
+    // PostgreSQL 확인
+    const postgresqlResult = await service.getFromDatabase(characterName);
+    log(`PostgreSQL - ${characterName}:`, {
+      exists: !!postgresqlResult,
+      dataSize: postgresqlResult ? JSON.stringify(postgresqlResult).length : 0,
     });
 
     return {
       memory: !!memoryResult,
       redis: !!redisResult,
-      mysql: !!mysqlResult,
+      postgresql: !!postgresqlResult,
     };
   } catch (error) {
     log(`Cache status check failed for ${characterName}:`, { error: error.message });
-    return { memory: false, redis: false, mysql: false };
+    return { memory: false, redis: false, postgresql: false };
   }
 }
 
@@ -125,8 +125,8 @@ async function testCharactersAPI() {
     await delay(5000);
     await checkCacheStatus(apiClient.characters, characterName);
 
-    // 5. MySQL 저장 확인
-    log('5. MySQL 저장 확인');
+    // 5. PostgreSQL 저장 확인
+    log('5. PostgreSQL 저장 확인');
     await apiClient.characters.saveToDatabase(characterName);
     await checkCacheStatus(apiClient.characters, characterName);
 
@@ -173,8 +173,8 @@ async function testArmoriesAPI() {
     await delay(10000);
     await checkCacheStatus(apiClient.armories, characterName);
 
-    // 5. MySQL 저장 확인
-    log('5. MySQL 저장 확인');
+    // 5. PostgreSQL 저장 확인
+    log('5. PostgreSQL 저장 확인');
     await apiClient.armories.saveToDatabase(characterName);
     await checkCacheStatus(apiClient.armories, characterName);
 
@@ -221,7 +221,7 @@ async function testAuctionsAPI() {
   await delay(5000);
   await checkCacheStatus(apiClient.auctions, JSON.stringify(searchParams));
 
-  log('5. MySQL 저장 확인');
+  log('5. PostgreSQL 저장 확인');
   await apiClient.auctions.saveToDatabase(searchParams);
   await checkCacheStatus(apiClient.auctions, JSON.stringify(searchParams));
 }
@@ -256,7 +256,7 @@ async function testNewsAPI() {
   await delay(5000);
   await checkCacheStatus(apiClient.news, 'notices');
 
-  log('5. MySQL 저장 확인');
+  log('5. PostgreSQL 저장 확인');
   await apiClient.news.saveToDatabase('notices');
   await checkCacheStatus(apiClient.news, 'notices');
 }
@@ -291,7 +291,7 @@ async function testGameContentsAPI() {
   await delay(5000);
   await checkCacheStatus(apiClient.gamecontents, 'calendar');
 
-  log('5. MySQL 저장 확인');
+  log('5. PostgreSQL 저장 확인');
   await apiClient.gamecontents.saveToDatabase('calendar');
   await checkCacheStatus(apiClient.gamecontents, 'calendar');
 }
@@ -326,7 +326,7 @@ async function testMarketsAPI() {
   await delay(5000);
   await checkCacheStatus(apiClient.markets, 'items');
 
-  log('5. MySQL 저장 확인');
+  log('5. PostgreSQL 저장 확인');
   await apiClient.markets.saveToDatabase('items');
   await checkCacheStatus(apiClient.markets, 'items');
 }

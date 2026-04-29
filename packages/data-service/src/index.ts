@@ -16,12 +16,12 @@ logger.info('📦 data-service 패키지 로딩 시작');
 
 logger.info('📥 shared 패키지 import 시작...');
 import { logger } from '@lostark/shared';
-import { mysqlClient } from '@lostark/shared/db/mysql';
+import { pgClient } from '@lostark/shared/db/postgres';
 import { redisClient } from '@lostark/shared/db/redis';
 logger.info('✅ logger import 완료');
 
-logger.info('📥 MySQL 클라이언트 import 시작...');
-logger.info('✅ MySQL 클라이언트 import 완료');
+logger.info('📥 PostgreSQL 클라이언트 import 시작...');
+logger.info('✅ PostgreSQL 클라이언트 import 완료');
 
 logger.info('📥 Redis 클라이언트 import 시작...');
 logger.info('✅ Redis 클라이언트 import 완료');
@@ -106,32 +106,32 @@ export async function disconnectRedis(): Promise<void> {
   }
 }
 
-// === MySQL 연결 초기화 ===
+// === PostgreSQL 연결 초기화 ===
 
 /**
- * MySQL 연결 초기화
+ * PostgreSQL 연결 초기화
  */
-export async function initializeMySQL(): Promise<void> {
+export async function initializePostgres(): Promise<void> {
   try {
-    await mysqlClient.connect();
-    logger.info('MySQL connection initialized successfully');
+    await pgClient.connect();
+    logger.info('PostgreSQL connection initialized successfully');
   } catch (error) {
-    logger.error('Failed to initialize MySQL connection', {
+    logger.error('Failed to initialize PostgreSQL connection', {
       error: error instanceof Error ? error.message : String(error),
     });
-    // MySQL 연결 실패 시에도 서비스는 계속 동작 (Memory/Redis Cache만 사용)
+    // PostgreSQL 연결 실패 시에도 서비스는 계속 동작 (Memory/Redis Cache만 사용)
   }
 }
 
 /**
- * MySQL 연결 해제
+ * PostgreSQL 연결 해제
  */
-export async function disconnectMySQL(): Promise<void> {
+export async function disconnectPostgres(): Promise<void> {
   try {
-    await mysqlClient.disconnect();
-    logger.info('MySQL connection disconnected successfully');
+    await pgClient.disconnect();
+    logger.info('PostgreSQL connection disconnected successfully');
   } catch (error) {
-    logger.error('Failed to disconnect MySQL connection', {
+    logger.error('Failed to disconnect PostgreSQL connection', {
       error: error instanceof Error ? error.message : String(error),
     });
   }

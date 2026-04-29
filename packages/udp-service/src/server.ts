@@ -15,8 +15,8 @@ import { parseEnv } from '@lostark/shared/config/env.js';
 import { 
   initializeRedis, 
   disconnectRedis, 
-  initializeMySQL, 
-  disconnectMySQL,
+  initializePostgres, 
+  disconnectPostgres,
   cacheManager,
   ArmoriesService,
 } from '@lostark/data-service';
@@ -351,7 +351,7 @@ export class UdpServer extends EventEmitter {
     try {
       // 캐시 시스템 초기화
       await initializeRedis();
-      await initializeMySQL();
+      await initializePostgres();
       
       // 워커 풀 시작
       this.workerPool.start();
@@ -589,7 +589,7 @@ export class UdpServer extends EventEmitter {
 
       // 캐시 연결 해제
       await disconnectRedis();
-      await disconnectMySQL();
+      await disconnectPostgres();
 
       this.isRunning = false;
       

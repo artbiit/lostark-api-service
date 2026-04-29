@@ -25,10 +25,10 @@ import {
   cacheManager,
   cacheOptimizer,
   CharactersService,
-  disconnectMySQL,
+  disconnectPostgres,
   disconnectRedis,
   GameContentsService,
-  initializeMySQL,
+  initializePostgres,
   initializeRedis,
   MarketsService,
   NewsService,
@@ -365,13 +365,13 @@ export class RestServer {
       }
 
       // MySQL 연결 (타임아웃 적용)
-      const mysqlPromise = initializeMySQL();
+      const pgPromise = initializePostgres();
       const mysqlTimeout = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('MySQL connection timeout')), timeout),
       );
 
       try {
-        await Promise.race([mysqlPromise, mysqlTimeout]);
+        await Promise.race([pgPromise, mysqlTimeout]);
         logger.info('MySQL connected successfully');
       } catch (error: unknown) {
         const errorMessage = getErrorMessage(error);
@@ -457,7 +457,7 @@ export class RestServer {
 
       // 캐시 연결 해제
       await disconnectRedis();
-      await disconnectMySQL();
+      await disconnectPostgres();
 
       // Fastify 서버 중지
       await this.fastify.close();

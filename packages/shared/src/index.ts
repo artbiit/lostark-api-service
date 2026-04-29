@@ -19,5 +19,5 @@ export * from './types/domain/character.js';
 
 // 데이터베이스 관련
 export * from './db/migrations.js';
-export * from './db/mysql.js';
+export * from './db/postgres.js';
 export * from './db/redis.js';

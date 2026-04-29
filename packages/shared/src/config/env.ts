@@ -62,10 +62,10 @@ export const envSchema = z.object({
 
   // === 데이터베이스 설정 ===
   DB_HOST: z.string().default('localhost'),
-  DB_PORT: z.coerce.number().min(1).max(65535).default(3306),
-  DB_USERNAME: z.string().default('root'),
+  DB_PORT: z.coerce.number().min(1).max(65535).default(5432),
+  DB_USERNAME: z.string().default('kord'),
   DB_PASSWORD: z.string().default(''),
-  DB_DATABASE: z.string().default('lostark'),
+  DB_DATABASE: z.string().default('lostark_cache'),
   DB_CONNECTION_LIMIT: z.coerce.number().min(1).default(10),
 });
 
@@ -164,10 +164,10 @@ export const defaultConfig: EnvConfig = {
   LOG_LEVEL: 'info',
   LOG_PRETTY_PRINT: false,
   DB_HOST: 'localhost',
-  DB_PORT: 3306,
-  DB_USERNAME: 'root',
+  DB_PORT: 5432,
+  DB_USERNAME: 'kord',
   DB_PASSWORD: '',
-  DB_DATABASE: 'lostark',
+  DB_DATABASE: 'lostark_cache',
   DB_CONNECTION_LIMIT: 10,
 };
 

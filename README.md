@@ -111,25 +111,28 @@ Docker Compose를 사용하여 선택적으로 서비스를 실행할 수 있습
 #### 빠른 시작
 
 ```bash
+# kord-postgres 에 DB 생성 (최초 1회)
+docker exec -it kord-postgres psql -U kord -c "CREATE DATABASE lostark_cache;"
+
 # 실행 스크립트 사용 (권장)
-./scripts/docker-run.sh rest redis mysql
+./scripts/docker-run.sh rest redis
 
 # 또는 직접 docker-compose 사용
-docker-compose --profile rest --profile redis --profile mysql up -d
+docker-compose --profile rest --profile redis up -d
 ```
 
 #### 서비스 선택
 
-- **REST API만**: `./scripts/docker-run.sh rest redis mysql`
-- **UDP Gateway만**: `./scripts/docker-run.sh udp redis mysql`
-- **데이터 서비스만**: `./scripts/docker-run.sh data redis mysql`
+- **REST API만**: `./scripts/docker-run.sh rest redis`
+- **UDP Gateway만**: `./scripts/docker-run.sh udp redis`
+- **데이터 서비스만**: `./scripts/docker-run.sh data redis`
 - **모든 서비스**: `./scripts/docker-run.sh all`
 
 #### 개발 모드
 
 ```bash
 # 핫 리로드로 개발
-./scripts/docker-run.sh rest redis mysql
+./scripts/docker-run.sh rest redis
 ```
 
 자세한 내용은 [Docker Setup Guide](Docs/docker-setup.md)를 참조하세요.
@@ -189,7 +192,7 @@ lostark-remote-kakao/
 - **HTTP Server**: Fastify
 - **Logging**: Pino
 - **Validation**: Zod
-- **Database**: MySQL2
+- **Database**: PostgreSQL (node-postgres)
 - **Cache**: Redis (선택사항)
 - **Containerization**: Docker & Docker Compose
 
