@@ -188,15 +188,7 @@ export class MigrationManager {
         name: migration.name,
       });
 
-      // pgClient.execute 는 단일 statement 단위로 동작하므로 세미콜론 분리 후 순차 실행
-      const statements = sql
-        .split(/;[ \t]*\n/)
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-
-      for (const statement of statements) {
-        await pgClient.execute(statement);
-      }
+      await pgClient.execute(sql);
 
       const executionTime = Date.now() - startTime;
 
