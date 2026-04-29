@@ -15,7 +15,7 @@
 logger.info('📦 data-service 패키지 로딩 시작');
 
 logger.info('📥 shared 패키지 import 시작...');
-import { logger } from '@lostark/shared';
+import { logger, migrationManager } from '@lostark/shared';
 import { pgClient } from '@lostark/shared/db/postgres';
 import { redisClient } from '@lostark/shared/db/redis';
 logger.info('✅ logger import 완료');
@@ -115,6 +115,7 @@ export async function initializePostgres(): Promise<void> {
   try {
     await pgClient.connect();
     logger.info('PostgreSQL connection initialized successfully');
+    await migrationManager.migrate();
   } catch (error) {
     logger.error('Failed to initialize PostgreSQL connection', {
       error: error instanceof Error ? error.message : String(error),
