@@ -10,7 +10,7 @@
     "dev": "tsc --watch",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "start": "node dist/server.js",
+    "start": "node dist/index.js",
     "dump:openapi": "tsx scripts/dump-openapi.ts",
     "test": "tsx --test ../../tests/unit/rest-service/**/*.test.ts",
     "test:watch": "tsx --test --watch ../../tests/unit/rest-service/**/*.test.ts",
