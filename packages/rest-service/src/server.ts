@@ -24,6 +24,7 @@ import {
   AuctionsService,
   cacheManager,
   cacheOptimizer,
+  CharactersClient,
   CharactersService,
   disconnectPostgres,
   disconnectRedis,
@@ -905,31 +906,16 @@ export class RestServer {
     const { refresh } = request.query;
 
     try {
-      logger.info('Character siblings request', { characterName, refresh: refresh === 'true' });
+      logger.info('Character siblings request', { characterName });
 
-      const shouldRefresh = refresh === 'true';
-      const cachedAccount = shouldRefresh
-        ? null
-        : await this.charactersService.getAccountInfo(characterName);
-      const cacheHit = Boolean(cachedAccount) && !shouldRefresh;
-      const result =
-        cachedAccount ??
-        (await this.charactersService.processCharacterSiblings(characterName)).accountInfo;
-
+      const client = new CharactersClient();
+      const data = await client.getSiblings(characterName);
       const responseTime = Date.now() - startTime;
 
-      reply.header('X-Cache-Hit', cacheHit ? 'true' : 'false');
-      reply.header('X-Cache-Source', cacheHit ? 'memory' : 'api');
       reply.header('X-Response-Time', `${responseTime}ms`);
-
       reply.send({
         success: true,
-        data: result,
-        cache: {
-          hit: cacheHit,
-          source: cacheHit ? 'memory' : 'api',
-          ttl: 300,
-        },
+        data,
         timestamp: new Date().toISOString(),
         responseTime,
       });
