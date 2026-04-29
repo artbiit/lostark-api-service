@@ -1,7 +1,7 @@
 ---
 kind: graphify-meta
-last_generated_at: 2026-04-27T11:00:00+09:00
-source_commit: f637d3271329635afb4114c620d1852968b65605
+last_generated_at: 2026-04-29T10:45:00+09:00
+source_commit: 7bd5177b89a0be9afef0c1ec6dfc2c2f2c8f9f90
 scopes:
   - full
 ---
@@ -43,7 +43,7 @@ docs/graph/
 
 | scope | 마지막 생성 | 소스 커밋 | 대상 경로 | 요약 |
 | --- | --- | --- | --- | --- |
-| full | 2026-04-27 | `f637d32` | 레포 전체 (packages/*/src + docs + tests + legacy) | 848 nodes · 1068 edges · 67 communities. God nodes: RestServer, ArmoriesNormalizer, CacheOptimizer. 3-Tier Cache / 3-Service Architecture / OpenAPI Pipeline 이 핵심 하이퍼엣지. |
+| full | 2026-04-29 | `7bd5177` | 레포 전체 (packages/*/src + docs + tests + legacy) | 713 nodes · 860 edges · 82 communities. God nodes: RestServer (30), ArmoriesNormalizer (20), CacheOptimizer (15). pg 전환 반영, 3-Tier Cache / 3-Service Architecture / MessengerBotR UDP Protocol 이 핵심 하이퍼엣지. |
 
 ## 갱신 시 체크리스트
 
