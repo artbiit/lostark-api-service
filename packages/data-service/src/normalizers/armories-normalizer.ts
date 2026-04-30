@@ -515,16 +515,18 @@ export class ArmoriesNormalizer {
    * 캐릭터명 추출
    */
   private extractCharacterName(profile: any): string {
-    // CharacterImage URL에서 캐릭터명 추출 시도
-    const imageUrl = profile.CharacterImage;
+    // CharacterName 필드가 있으면 우선 사용 (공식 API 필드)
+    if (profile.CharacterName) {
+      return profile.CharacterName as string;
+    }
+    // 방어적 fallback: CharacterImage URL에서 캐릭터명 추출 시도
+    const imageUrl = profile.CharacterImage as string | undefined;
     if (imageUrl) {
       const match = imageUrl.match(/\/armory\/[^\/]+\/([^\/]+)\.jpg/);
-      if (match) {
+      if (match && match[1]) {
         return decodeURIComponent(match[1]);
       }
     }
-
-    // 기본값으로 빈 문자열 반환 (실제로는 API에서 제공해야 함)
     return '';
   }
 
@@ -532,27 +534,24 @@ export class ArmoriesNormalizer {
    * 서버명 추출
    */
   private extractServerName(profile: any): string {
-    // 실제 구현에서는 API 응답에서 서버명을 추출해야 함
-    // 현재는 샘플 데이터 기반으로 추정
-    return '아브렐슈드'; // 기본값
+    return (profile.ServerName as string) ?? '';
   }
 
   /**
    * 클래스명 추출
    */
   private extractClassName(profile: any): string {
-    // 실제 구현에서는 API 응답에서 클래스명을 추출해야 함
-    // 현재는 샘플 데이터 기반으로 추정
-    return '디스트로이어'; // 기본값
+    return (profile.CharacterClassName as string) ?? '';
   }
 
   /**
    * 아이템 레벨 계산
    */
   private calculateItemLevel(profile: any): number {
-    // Stats에서 아이템 레벨 관련 정보를 찾아 계산
-    // 실제 구현에서는 더 정확한 계산 로직 필요
-    return 1460; // 기본값
+    // ItemAvgLevel 은 "1,620.00" 형식의 문자열
+    const raw = profile.ItemAvgLevel as string | undefined;
+    if (!raw) return 0;
+    return parseFloat(raw.replace(/,/g, '')) || 0;
   }
 
   /**
