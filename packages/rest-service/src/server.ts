@@ -335,10 +335,6 @@ export class RestServer {
    */
   private async initializeCacheSystem(): Promise<void> {
     try {
-      // 개발 환경에서 캐시 시스템 완전 비활성화 (임시)
-      logger.info('Cache system disabled for debugging');
-      return;
-
       // 개발 환경에서 캐시 시스템 선택적 비활성화
       const env = parseEnv();
       if (env.NODE_ENV === 'development' && !env.CACHE_REDIS_URL) {

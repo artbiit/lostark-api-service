@@ -107,14 +107,17 @@ export class CharactersClient {
     if (!response.ok) {
       const errorBody = await response.text().catch(() => '');
 
-      logger.error('Characters API request failed', {
-        status: response.status,
-        statusText: response.statusText,
-        url,
-        body: errorBody,
-        attempt,
-        requestId: this.generateRequestId(),
-      });
+      logger.error(
+        {
+          status: response.status,
+          statusText: response.statusText,
+          url,
+          body: errorBody,
+          attempt,
+          requestId: this.generateRequestId(),
+        },
+        'Characters API request failed',
+      );
 
       throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorBody}`);
     }

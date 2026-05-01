@@ -91,44 +91,48 @@ export class ApiClient {
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
-        logger.debug('Making API request', {
-          url,
-          attempt,
-          remainingRequests: this.rateLimiter.getRemainingRequests(),
-        });
+        logger.debug(
+          {
+            url,
+            attempt,
+            remainingRequests: this.rateLimiter.getRemainingRequests(),
+          },
+          'Making API request',
+        );
 
         const response = await fetch(url, requestOptions);
 
         // Rate Limit 헤더 확인
         const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
         if (rateLimitRemaining) {
-          logger.debug('Rate limit info', {
-            remaining: rateLimitRemaining,
-          });
+          logger.debug({ remaining: rateLimitRemaining }, 'Rate limit info');
         }
 
         if (!response.ok) {
-          const errorText = await response.text();
+          const errorText = await response.text().catch(() => '');
           throw new Error(`HTTP ${response.status}: ${errorText}`);
         }
 
         const data = await response.json();
 
-        logger.debug('API request successful', {
-          url,
-          attempt,
-          dataSize: JSON.stringify(data).length,
-        });
+        logger.debug(
+          { url, attempt, dataSize: JSON.stringify(data).length },
+          'API request successful',
+        );
 
         return data as T;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
 
-        logger.warn('API request failed', {
-          url,
-          attempt,
-          error: lastError.message,
-        });
+        logger.warn(
+          {
+            url,
+            attempt,
+            error: lastError.message,
+            errName: lastError.name,
+          },
+          'API request failed',
+        );
 
         // 마지막 시도가 아니면 재시도
         if (attempt < MAX_RETRIES) {
@@ -139,11 +143,15 @@ export class ApiClient {
     }
 
     // 모든 재시도 실패
-    logger.error('API request failed after all retries', {
-      url,
-      attempts: MAX_RETRIES,
-      error: lastError?.message,
-    });
+    logger.error(
+      {
+        url,
+        attempts: MAX_RETRIES,
+        error: lastError?.message,
+        errName: lastError?.name,
+      },
+      'API request failed after all retries',
+    );
 
     throw lastError || new Error('Unknown error occurred');
   }
