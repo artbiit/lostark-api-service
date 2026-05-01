@@ -5,6 +5,7 @@
 ## 목록
 
 - [deployment](./deployment.md) — 배포 가이드 (Docker, 환경변수, 헬스체크)
+- [host-node-run](./host-node-run.md) — macOS 호스트에서 Node 로 직접 실행 시 절차 (CA prefix 필수) + 장애 원인 분리 가이드
 
 ## 관련
 
