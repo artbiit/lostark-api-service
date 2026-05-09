@@ -29,31 +29,9 @@ export class RedisClient {
   private client: RedisClientType;
   private isConnected = false;
   private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
-  private reconnectDelay = 1000; // 1초
 
   constructor() {
-    // 생성자에서 parseEnv() 호출 제거 - 지연 초기화로 변경
-    this.client = createClient({
-      url: 'redis://localhost:6379', // 기본값 사용
-      socket: {
-        connectTimeout: 3000, // 3초로 단축
-      },
-    });
-
-    this.setupEventHandlers();
-  }
-
-  /**
-   * Redis 클라이언트 초기화 (환경변수 적용)
-   */
-  private initializeClient(): void {
     const env = parseEnv();
-
-    // 기존 클라이언트가 있으면 연결 해제
-    if (this.client) {
-      this.client.disconnect().catch(() => {});
-    }
 
     this.client = createClient({
       url: env.CACHE_REDIS_URL || 'redis://localhost:6379',
