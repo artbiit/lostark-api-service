@@ -1,7 +1,7 @@
 ---
 kind: graphify-meta
-last_generated_at: 2026-04-29T10:45:00+09:00
-source_commit: 7bd5177b89a0be9afef0c1ec6dfc2c2f2c8f9f90
+last_generated_at: 2026-05-15T17:28:00+09:00
+source_commit: 56bd8c72867727985f304e8bbb0cd48e3d9bf5ae
 scopes:
   - full
 ---
@@ -43,7 +43,7 @@ docs/graph/
 
 | scope | 마지막 생성 | 소스 커밋 | 대상 경로 | 요약 |
 | --- | --- | --- | --- | --- |
-| full | 2026-04-29 | `7bd5177` | 레포 전체 (packages/*/src + docs + tests + legacy) | 713 nodes · 860 edges · 82 communities. God nodes: RestServer (30), ArmoriesNormalizer (20), CacheOptimizer (15). pg 전환 반영, 3-Tier Cache / 3-Service Architecture / MessengerBotR UDP Protocol 이 핵심 하이퍼엣지. |
+| full | 2026-05-15 | `56bd8c7` | 레포 전체 (packages/*/src + docs + tests + legacy) | 1345 nodes · 1815 edges · 112 communities. `--update` 53 변경 파일 증분 추출 (4/29 → 5/15). God nodes: RestServer (30×2), ArmoriesNormalizer (20×2), createCacheFlowClient (16), CacheOptimizer (15), ArmoriesService (15). 핵심 하이퍼엣지: 3-Tier Cache Flow / API Comprehensive Test Suite / REST orchestrates domain services / Character Data Collection Pipeline. 1345 노드는 ID-기반 union merge 결과로 일부 파편화 가능 — 다음 sweep 시 풀 재빌드 검토. |
 
 ## 갱신 시 체크리스트
 
