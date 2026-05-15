@@ -15,6 +15,11 @@
   레퍼런스 (`/task` 진입)
 - [verification-strategies](./verification-strategies.md) — 검증 사다리(L1~L4) +
   변경 범주별 의무 레벨 + 전략 레지스트리
+- [coding-standards](./coding-standards.md) — 권위 코딩 컨벤션 풀
+- [yarn-berry-pnp](./yarn-berry-pnp.md) — Yarn Berry PnP 운용 +
+  `declare module 'fastify'` 함정
+- [monorepo-workflow](./monorepo-workflow.md) — 모노레포 작업 단위 규약 + 패키지
+  추가/제거 절차
 
 ## 워크플로우
 

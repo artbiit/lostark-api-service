@@ -4,7 +4,8 @@
 
 ## 📋 개요
 
-Lost Ark API Service의 배포 가이드입니다. 3계층 아키텍처(Data Service, REST Service, UDP Service)를 포함한 전체 시스템의 배포 방법을 설명합니다.
+Lost Ark API Service의 배포 가이드입니다. 3계층 아키텍처(Data Service, REST
+Service, UDP Service)를 포함한 전체 시스템의 배포 방법을 설명합니다.
 
 ## 🏗️ 아키텍처 개요
 
@@ -28,6 +29,62 @@ Lost Ark API Service의 배포 가이드입니다. 3계층 아키텍처(Data Ser
 - **rest-service**: REST API 엔드포인트 제공
 - **udp-service**: UDP 게이트웨이 (초저지연)
 - **shared**: 공통 모듈 (타입, 설정, DB 연결)
+
+## 운영 게이트 (작업 단위 종료 직전)
+
+`/task` 세션 또는 의미 있는 변경 단위가 끝날 때 통과해야 하는 운영 게이트. 본
+절은 [agent-team-protocol §9](../development/agent-team-protocol.md) 의 세션
+종료 조건과 정합한다.
+
+### 1. 빌드 / 검증
+
+- `yarn verify` (= `yarn validate:full`) 통과 — L1 (`validate:monorepo` + 전체
+  `test` + `build` + `lint`).
+- L2/L3 의 의무 적용 여부는
+  [verification-strategies](../development/verification-strategies.md) 의 변경
+  범주 → 의무 L 레벨 표 참조.
+
+### 2. REST 계약 변경 시 OpenAPI dump 갱신
+
+```bash
+yarn workspace @lostark/rest-api dump:openapi
+```
+
+- 산출물 위치: `docs/contracts/` 아래 (스크립트가 직접 쓰는 경로 확인).
+- diff 가 발생하면 같은 커밋에 포함.
+- LoA-Bot 등 다운스트림 컨슈머가 본 산출물을 `openapi-typescript` 로 직접 타입
+  생성하므로, 컨슈머 측 generated.ts 재생성 필요 여부를 **커밋 메시지에
+  명시**한다 (특히 `../LoA-Bot/src/infra/lostark/generated.ts`).
+- OpenAPI dump 의 외부 공개 게시 (gist, pastebin 등) 는
+  [agent-team-protocol §6](../development/agent-team-protocol.md) 파괴적 조작
+  게이트 대상.
+
+### 3. loa-platform compose 의존 서비스
+
+본 서비스 운영 기동 전제:
+
+- MySQL / Redis 가 외부에서 이미 구동 중이라고 가정 (loa-platform 의
+  `docker-compose.yml`).
+- 의존 서비스가 **사전 기동되었는지 확인** 후에만 본 서비스 컨테이너를 기동한다.
+  실패 시 회로가 빨라야 알람이 의미 있음.
+- 본 레포 내부 `docker-compose.yml` 의 자체 db/redis 는 **개발 전용** — 운영에서
+  사용하지 않는다.
+
+운영 기동 흐름:
+
+```bash
+# 1. loa-platform 측에서 공유 인프라 기동 (별도 레포)
+#    cd ../loa-platform && docker compose up -d mysql redis
+
+# 2. 본 레포 빌드 + 컨테이너 기동
+yarn build
+docker compose up -d   # 운영 환경에서는 loa-platform 의 compose 파일을 사용
+```
+
+### 4. 다운스트림 영향 안내
+
+- REST 계약 breaking change → ADR 발행 + LoA-Bot 등 다운스트림 사전 공지.
+- 캐시 키 prefix / TTL 변경 → maintenance/ 또는 changes/ 에 기록.
 
 ## 🚀 배포 방법
 
@@ -173,7 +230,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
@@ -181,8 +238,8 @@ services:
   lostark-api:
     build: .
     ports:
-      - "3000:3000"  # REST Service
-      - "3001:3001"  # UDP Service
+      - '3000:3000' # REST Service
+      - '3001:3001' # UDP Service
     environment:
       - NODE_ENV=production
       - CACHE_REDIS_URL=redis://redis:6379
@@ -412,6 +469,7 @@ docker-compose restart
 #### 8.1 일반적인 문제
 
 **문제**: API 응답이 느림
+
 ```bash
 # 캐시 상태 확인
 curl http://localhost:3000/cache/status
@@ -421,6 +479,7 @@ curl -X POST http://localhost:3000/cache/optimize
 ```
 
 **문제**: 메모리 사용량 높음
+
 ```bash
 # 메모리 사용량 확인
 pm2 monit
@@ -430,6 +489,7 @@ curl -X POST http://localhost:3000/cache/optimize
 ```
 
 **문제**: Redis 연결 실패
+
 ```bash
 # Redis 상태 확인
 redis-cli ping
@@ -451,16 +511,19 @@ grep "responseTime" logs/application.log | awk '{print $NF}' | sort -n
 ## 📊 성능 최적화
 
 ### 캐시 최적화
+
 - Memory Cache: 자주 접근하는 데이터
 - Redis Cache: 중간 빈도 데이터
 - Database Cache: 장기 보관 데이터
 
 ### 네트워크 최적화
+
 - HTTP/2 활성화
 - Gzip 압축
 - CDN 사용
 
 ### 데이터베이스 최적화
+
 - 인덱스 최적화
 - 쿼리 최적화
 - 연결 풀 설정
