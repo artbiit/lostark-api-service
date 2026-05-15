@@ -71,6 +71,8 @@ jobs:
 
       - name: Run unit tests
         run: yarn test:unit
+        env:
+          LOSTARK_API_KEY: ${{ secrets.LOSTARK_API_KEY }}
 
       - name: Run integration tests
         run: yarn test:integration
