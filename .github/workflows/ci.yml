@@ -32,7 +32,10 @@ jobs:
       
     - name: Validate TypeScript references
       run: yarn validate:refs
-      
+
+    - name: Build packages (project references)
+      run: yarn build
+
     - name: Type check
       run: yarn typecheck
       
