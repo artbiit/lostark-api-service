@@ -66,6 +66,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Build packages (project references)
+        run: yarn build
+
       - name: Run unit tests
         run: yarn test:unit
 
