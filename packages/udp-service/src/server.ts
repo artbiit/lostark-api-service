@@ -1,25 +1,41 @@
 /**
- * @cursor-change: 2025-01-27, v1.0.0, UDP 게이트웨이 서버 구현
+ * UDP 카카오톡 명령 봇 게이트웨이.
  *
- * UDP 게이트웨이 서버
- * - lock-free 큐 시스템
- * - 워커 풀 기반 메시지 처리
- * - 초저지연 응답
- * - 과부하 시 메시지 드롭
+ * 클라이언트(메신저봇R Android)는 `{event:'message', data:KakaoMessage, session}`
+ * envelope 을 UDP 로 보낸다. 본 서버는 message envelope 만 처리하고,
+ * data.content 가 명령 prefix(`!`)로 시작할 때만 라우터로 디스패치한다.
+ * 응답은 `{event:'reply:<session>', data:'<text>'}` envelope 으로 송신한다.
+ *
+ * - WorkerPool 의 각 worker 는 ServiceContext (모듈 싱글톤) 를 공유한다.
+ * - 모르는 명령 / 비-message event / parse 실패 → silent drop.
  */
 
 import { createSocket, Socket, RemoteInfo } from 'dgram';
 import { EventEmitter } from 'events';
+
 import { logger } from '@lostark/shared';
 import { parseEnv } from '@lostark/shared/config/env.js';
 import {
-  initializeRedis,
+  cacheManager,
+  disconnectPostgres,
   disconnectRedis,
   initializePostgres,
-  disconnectPostgres,
-  cacheManager,
-  ArmoriesService,
+  initializeRedis,
 } from '@lostark/data-service';
+
+import {
+  ClientEnvelope,
+  ClientEnvelopeSchema,
+  KakaoMessage,
+  ReplyEnvelope,
+} from './contracts/envelope.js';
+import { parseCommand } from './routing/parser.js';
+import { createRouter, Router } from './routing/router.js';
+import { commandRegistry } from './commands/registry.js';
+import {
+  ServiceContext,
+  createServiceContext,
+} from './services/service-context.js';
 
 // === UDP 서버 설정 ===
 
@@ -30,35 +46,11 @@ export interface UdpServerConfig {
   workerPoolSize: number;
   queueSize: number;
   timeout: number;
-}
-
-// === 메시지 타입 ===
-
-export interface UdpMessage {
-  id: string;
-  type: 'character_detail' | 'character_refresh' | 'cache_status' | 'ping';
-  payload: {
-    characterName?: string;
-    sections?: string[];
-    [key: string]: unknown;
-  };
-  timestamp: number;
-}
-
-export interface UdpResponse {
-  id: string;
-  success: boolean;
-  data?: unknown;
-  error?: string;
-  timestamp: number;
-  responseTime: number;
+  commandPrefix: string;
 }
 
 // === Lock-free 큐 ===
 
-/**
- * Lock-free 큐 구현
- */
 export class LockFreeQueue<T> {
   private queue: T[] = [];
   private maxSize: number;
@@ -68,9 +60,6 @@ export class LockFreeQueue<T> {
     this.maxSize = maxSize;
   }
 
-  /**
-   * 메시지 추가 (큐가 가득 찬 경우 드롭)
-   */
   enqueue(item: T): boolean {
     if (this.queue.length >= this.maxSize) {
       this.droppedCount++;
@@ -80,37 +69,22 @@ export class LockFreeQueue<T> {
     return true;
   }
 
-  /**
-   * 메시지 제거
-   */
   dequeue(): T | undefined {
     return this.queue.shift();
   }
 
-  /**
-   * 큐 크기
-   */
   get size(): number {
     return this.queue.length;
   }
 
-  /**
-   * 큐가 비어있는지 확인
-   */
   get isEmpty(): boolean {
     return this.queue.length === 0;
   }
 
-  /**
-   * 드롭된 메시지 수
-   */
   get droppedMessages(): number {
     return this.droppedCount;
   }
 
-  /**
-   * 큐 통계
-   */
   getStats() {
     return {
       size: this.size,
@@ -121,189 +95,72 @@ export class LockFreeQueue<T> {
   }
 }
 
-// === 워커 풀 ===
+// === 워커 ===
 
-/**
- * UDP 메시지 워커
- */
+interface QueueItem {
+  envelope: ClientEnvelope;
+  remoteInfo: RemoteInfo;
+}
+
 export class UdpWorker {
   private id: number;
   private isRunning = false;
-  private armoriesService: ArmoriesService;
+  private router: Router;
+  private ctx: ServiceContext;
+  private prefix: string;
 
-  constructor(id: number) {
+  constructor(id: number, router: Router, ctx: ServiceContext, prefix: string) {
     this.id = id;
-    this.armoriesService = new ArmoriesService();
+    this.router = router;
+    this.ctx = ctx;
+    this.prefix = prefix;
   }
 
-  /**
-   * 워커 시작
-   */
   start(): void {
     this.isRunning = true;
     logger.info(`UDP worker ${this.id} started`);
   }
 
-  /**
-   * 워커 중지
-   */
   stop(): void {
     this.isRunning = false;
     logger.info(`UDP worker ${this.id} stopped`);
   }
 
   /**
-   * 메시지 처리
+   * envelope 처리.
+   * @returns reply 문자열 또는 silent drop (null).
    */
-  async processMessage(message: UdpMessage): Promise<UdpResponse> {
-    const startTime = Date.now();
+  async processEnvelope(envelope: ClientEnvelope): Promise<string | null> {
+    if (!this.isRunning) return null;
 
-    try {
-      if (!this.isRunning) {
-        throw new Error('Worker is not running');
-      }
+    const { content } = envelope.data;
+    const parsed = parseCommand(content, this.prefix);
+    if (!parsed) return null;
 
-      logger.debug(`Worker ${this.id} processing message`, {
-        messageId: message.id,
-        type: message.type,
-      });
-
-      let data: unknown;
-
-      switch (message.type) {
-        case 'character_detail':
-          data = await this.handleCharacterDetail(message);
-          break;
-        case 'character_refresh':
-          data = await this.handleCharacterRefresh(message);
-          break;
-        case 'cache_status':
-          data = await this.handleCacheStatus();
-          break;
-        case 'ping':
-          data = { pong: true };
-          break;
-        default:
-          throw new Error(`Unknown message type: ${message.type}`);
-      }
-
-      const responseTime = Date.now() - startTime;
-
-      return {
-        id: message.id,
-        success: true,
-        data,
-        timestamp: Date.now(),
-        responseTime,
-      };
-    } catch (error) {
-      const responseTime = Date.now() - startTime;
-
-      logger.error(`Worker ${this.id} failed to process message`, {
-        messageId: message.id,
-        error: error instanceof Error ? error.message : String(error),
-        responseTime,
-      });
-
-      return {
-        id: message.id,
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: Date.now(),
-        responseTime,
-      };
-    }
-  }
-
-  /**
-   * 캐릭터 상세 정보 처리
-   */
-  private async handleCharacterDetail(message: UdpMessage): Promise<unknown> {
-    const { characterName, sections } = message.payload;
-
-    if (!characterName) {
-      throw new Error('Character name is required');
-    }
-
-    if (sections && sections.length > 0) {
-      return await this.armoriesService.getCharacterDetailPartial(
-        characterName,
-        sections as Array<
-          | 'profile'
-          | 'equipment'
-          | 'avatars'
-          | 'combat-skills'
-          | 'engravings'
-          | 'cards'
-          | 'gems'
-          | 'colosseums'
-          | 'collectibles'
-        >,
-      );
-    } else {
-      return await this.armoriesService.getCharacterDetail(characterName);
-    }
-  }
-
-  /**
-   * 캐릭터 새로고침 처리
-   */
-  private async handleCharacterRefresh(message: UdpMessage): Promise<unknown> {
-    const { characterName } = message.payload;
-
-    if (!characterName) {
-      throw new Error('Character name is required');
-    }
-
-    return await this.armoriesService.refreshCharacterDetail(characterName);
-  }
-
-  /**
-   * 캐시 상태 처리
-   */
-  private async handleCacheStatus(): Promise<unknown> {
-    const cacheStats = await cacheManager.getCacheStats();
-    const cacheStatus = cacheManager.getCacheLayerStatus();
-
-    return {
-      stats: cacheStats,
-      status: cacheStatus,
-    };
+    return this.router.dispatch(parsed, envelope.data, this.ctx);
   }
 }
 
-/**
- * 워커 풀
- */
 export class WorkerPool {
   private workers: UdpWorker[] = [];
   private currentWorkerIndex = 0;
 
-  constructor(size: number) {
+  constructor(size: number, router: Router, ctx: ServiceContext, prefix: string) {
     for (let i = 0; i < size; i++) {
-      this.workers.push(new UdpWorker(i));
+      this.workers.push(new UdpWorker(i, router, ctx, prefix));
     }
   }
 
-  /**
-   * 워커 풀 시작
-   */
   start(): void {
     this.workers.forEach((worker) => worker.start());
     logger.info(`Worker pool started with ${this.workers.length} workers`);
   }
 
-  /**
-   * 워커 풀 중지
-   */
   stop(): void {
     this.workers.forEach((worker) => worker.stop());
     logger.info('Worker pool stopped');
   }
 
-  /**
-   * 다음 워커 선택 (라운드 로빈)
-   */
   getNextWorker(): UdpWorker {
     const worker = this.workers[this.currentWorkerIndex];
     if (!worker) {
@@ -313,9 +170,6 @@ export class WorkerPool {
     return worker;
   }
 
-  /**
-   * 워커 풀 통계
-   */
   getStats() {
     return {
       workerCount: this.workers.length,
@@ -326,17 +180,13 @@ export class WorkerPool {
 
 // === UDP 서버 ===
 
-/**
- * UDP 게이트웨이 서버
- */
 export class UdpServer extends EventEmitter {
   private socket: Socket;
   private config: UdpServerConfig;
-  private messageQueue: LockFreeQueue<{
-    message: UdpMessage;
-    remoteInfo: RemoteInfo;
-  }>;
+  private messageQueue: LockFreeQueue<QueueItem>;
   private workerPool: WorkerPool;
+  private router: Router;
+  private ctx: ServiceContext;
   private isRunning = false;
   private processingInterval: NodeJS.Timeout | null = null;
 
@@ -351,31 +201,37 @@ export class UdpServer extends EventEmitter {
       maxMessageSize: env.UDP_GATEWAY_MAX_MESSAGE_SIZE || 8192,
       workerPoolSize: env.UDP_GATEWAY_WORKER_POOL_SIZE || 4,
       queueSize: 1000,
-      timeout: 5000, // 5초
+      timeout: 5000,
+      commandPrefix: env.COMMAND_PREFIX || '!',
       ...config,
     };
 
     this.socket = createSocket('udp4');
     this.messageQueue = new LockFreeQueue(this.config.queueSize);
-    this.workerPool = new WorkerPool(this.config.workerPoolSize);
+    this.ctx = createServiceContext();
+    this.router = createRouter(commandRegistry);
+    this.workerPool = new WorkerPool(
+      this.config.workerPoolSize,
+      this.router,
+      this.ctx,
+      this.config.commandPrefix,
+    );
   }
 
   /**
-   * 서버 초기화
+   * 서버 초기화 (DB/캐시 연결, 워커 풀 시작).
    */
   async initialize(): Promise<void> {
     try {
-      // 캐시 시스템 초기화
       await initializeRedis();
       await initializePostgres();
 
-      // 워커 풀 시작
       this.workerPool.start();
-
-      // UDP 소켓 이벤트 리스너 등록
       this.setupSocketEventHandlers();
 
-      logger.info('UDP server initialized successfully');
+      logger.info('UDP server initialized successfully', {
+        registeredCommands: this.router.listing.length,
+      });
     } catch (error) {
       logger.error('Failed to initialize UDP server', {
         error: error instanceof Error ? error.message : String(error),
@@ -384,14 +240,9 @@ export class UdpServer extends EventEmitter {
     }
   }
 
-  /**
-   * 소켓 이벤트 핸들러 설정
-   */
   private setupSocketEventHandlers(): void {
     this.socket.on('error', (error) => {
-      logger.error('UDP socket error', {
-        error: error.message,
-      });
+      logger.error('UDP socket error', { error: error.message });
     });
 
     this.socket.on('message', (msg, remoteInfo) => {
@@ -407,11 +258,11 @@ export class UdpServer extends EventEmitter {
   }
 
   /**
-   * 들어오는 메시지 처리
+   * 들어오는 UDP datagram → ClientEnvelope 파싱 후 큐 적재.
+   * 파싱 실패는 모두 silent drop + warn 로그.
    */
   private handleIncomingMessage(msg: Buffer, remoteInfo: RemoteInfo): void {
     try {
-      // 메시지 크기 검증
       if (msg.length > this.config.maxMessageSize) {
         logger.warn('Message too large, dropping', {
           size: msg.length,
@@ -421,35 +272,38 @@ export class UdpServer extends EventEmitter {
         return;
       }
 
-      // JSON 파싱
-      const messageStr = msg.toString('utf8');
-      const message: UdpMessage = JSON.parse(messageStr);
-
-      // 메시지 유효성 검증
-      if (!this.validateMessage(message)) {
-        logger.warn('Invalid message format, dropping', {
-          message,
+      const text = msg.toString('utf8');
+      let raw: unknown;
+      try {
+        raw = JSON.parse(text);
+      } catch (err) {
+        logger.warn('UDP payload is not JSON, dropping', {
+          error: err instanceof Error ? err.message : String(err),
           remote: `${remoteInfo.address}:${remoteInfo.port}`,
         });
         return;
       }
 
-      // 큐에 메시지 추가
-      const enqueued = this.messageQueue.enqueue({ message, remoteInfo });
+      const parsed = ClientEnvelopeSchema.safeParse(raw);
+      if (!parsed.success) {
+        logger.warn('Unknown envelope, dropping', {
+          remote: `${remoteInfo.address}:${remoteInfo.port}`,
+        });
+        return;
+      }
+
+      const enqueued = this.messageQueue.enqueue({
+        envelope: parsed.data,
+        remoteInfo,
+      });
 
       if (!enqueued) {
         logger.warn('Message queue full, dropping message', {
-          messageId: message.id,
+          session: parsed.data.session,
           queueSize: this.messageQueue.size,
           remote: `${remoteInfo.address}:${remoteInfo.port}`,
         });
       }
-
-      logger.debug('Message enqueued', {
-        messageId: message.id,
-        type: message.type,
-        queueSize: this.messageQueue.size,
-      });
     } catch (error) {
       logger.error('Failed to handle incoming message', {
         error: error instanceof Error ? error.message : String(error),
@@ -458,96 +312,58 @@ export class UdpServer extends EventEmitter {
     }
   }
 
-  /**
-   * 메시지 유효성 검증
-   */
-  private validateMessage(message: UdpMessage): boolean {
-    return !!(
-      message.id &&
-      message.type &&
-      message.payload &&
-      typeof message.timestamp === 'number'
-    );
-  }
-
-  /**
-   * 메시지 처리 루프 시작
-   */
   private startMessageProcessing(): void {
-    if (this.processingInterval) {
-      return;
-    }
+    if (this.processingInterval) return;
 
     this.processingInterval = setInterval(async () => {
-      if (this.messageQueue.isEmpty) {
-        return;
-      }
+      if (this.messageQueue.isEmpty) return;
 
       const item = this.messageQueue.dequeue();
-      if (!item) {
-        return;
-      }
+      if (!item) return;
 
-      const { message, remoteInfo } = item;
-
+      const { envelope, remoteInfo } = item;
       try {
-        // 워커에게 메시지 전달
         const worker = this.workerPool.getNextWorker();
-        const response = await worker.processMessage(message);
-
-        // 응답 전송
-        await this.sendResponse(response, remoteInfo);
-
-        logger.debug('Message processed successfully', {
-          messageId: message.id,
-          responseTime: response.responseTime,
-        });
+        const reply = await worker.processEnvelope(envelope);
+        if (reply !== null) {
+          this.sendReply(envelope.session, reply, remoteInfo);
+        }
       } catch (error) {
-        logger.error('Failed to process message', {
-          messageId: message.id,
+        logger.error('Failed to process envelope', {
+          session: envelope.session,
           error: error instanceof Error ? error.message : String(error),
         });
-
-        // 에러 응답 전송
-        const errorResponse: UdpResponse = {
-          id: message.id,
-          success: false,
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-          responseTime: 0,
-        };
-
-        await this.sendResponse(errorResponse, remoteInfo);
       }
-    }, 1); // 1ms 간격으로 처리
+    }, 1);
   }
 
   /**
-   * 응답 전송
+   * reply envelope 송신.
    */
-  private async sendResponse(response: UdpResponse, remoteInfo: RemoteInfo): Promise<void> {
+  private sendReply(session: string, text: string, remoteInfo: RemoteInfo): void {
+    const reply: ReplyEnvelope = {
+      event: `reply:${session}`,
+      data: text,
+    };
     try {
-      const responseBuffer = Buffer.from(JSON.stringify(response), 'utf8');
-
-      this.socket.send(responseBuffer, remoteInfo.port, remoteInfo.address, (error) => {
+      const buffer = Buffer.from(JSON.stringify(reply), 'utf8');
+      this.socket.send(buffer, remoteInfo.port, remoteInfo.address, (error) => {
         if (error) {
-          logger.error('Failed to send response', {
+          logger.error('Failed to send reply', {
             error: error.message,
+            session,
             remote: `${remoteInfo.address}:${remoteInfo.port}`,
           });
         }
       });
     } catch (error) {
-      logger.error('Failed to serialize response', {
+      logger.error('Failed to serialize reply', {
         error: error instanceof Error ? error.message : String(error),
-        remote: `${remoteInfo.address}:${remoteInfo.port}`,
+        session,
       });
     }
   }
 
-  /**
-   * 서버 시작
-   */
   async start(): Promise<void> {
     try {
       if (this.isRunning) {
@@ -555,18 +371,12 @@ export class UdpServer extends EventEmitter {
         return;
       }
 
-      // 소켓 바인딩
       await new Promise<void>((resolve, reject) => {
-        this.socket.bind(this.config.port, this.config.host, () => {
-          resolve();
-        });
-
+        this.socket.bind(this.config.port, this.config.host, () => resolve());
         this.socket.once('error', reject);
       });
 
       this.isRunning = true;
-
-      // 메시지 처리 루프 시작
       this.startMessageProcessing();
 
       logger.info('UDP server started successfully', {
@@ -581,9 +391,6 @@ export class UdpServer extends EventEmitter {
     }
   }
 
-  /**
-   * 서버 중지
-   */
   async stop(): Promise<void> {
     try {
       if (!this.isRunning) {
@@ -591,24 +398,18 @@ export class UdpServer extends EventEmitter {
         return;
       }
 
-      // 메시지 처리 루프 중지
       if (this.processingInterval) {
         clearInterval(this.processingInterval);
         this.processingInterval = null;
       }
 
-      // 워커 풀 중지
       this.workerPool.stop();
-
-      // 소켓 닫기
       this.socket.close();
 
-      // 캐시 연결 해제
       await disconnectRedis();
       await disconnectPostgres();
 
       this.isRunning = false;
-
       logger.info('UDP server stopped successfully');
     } catch (error) {
       logger.error('Failed to stop UDP server', {
@@ -618,22 +419,24 @@ export class UdpServer extends EventEmitter {
     }
   }
 
-  /**
-   * 서버 상태 조회
-   */
   getServerStats() {
     return {
       isRunning: this.isRunning,
       config: this.config,
       queue: this.messageQueue.getStats(),
       workers: this.workerPool.getStats(),
+      registeredCommands: this.router.listing.length,
     };
   }
 }
 
-// === 서버 인스턴스 ===
+// === 모듈 export ===
 
-/**
- * UDP 서버 인스턴스
- */
+/** UDP 서버 싱글톤. */
 export const udpServer = new UdpServer();
+
+/** cacheManager 는 index.ts 에서 직접 사용 가능하도록 re-export. */
+export { cacheManager };
+
+/** UDP envelope/Kakao 타입을 외부(테스트)에서 import 할 수 있도록 re-export. */
+export type { ClientEnvelope, KakaoMessage, ReplyEnvelope };

@@ -9,6 +9,12 @@ _기존 프로젝트(v1 → v2.0.0 전환) 시기의 결정은 명시적 ADR 문
 이후 중요한 결정(캐시 전략 변경, 인증 도입, 스택 업그레이드 등) 부터
 `ADR-NNNN-<slug>.md` 로 기록한다._
 
+- [ADR-0001](./ADR-0001-udp-envelope-adoption.md) — UDP envelope: 클라이언트
+  `{event,data,session}` 채택 및 UdpMessage 4종 폐기 (2026-05-16)
+- [ADR-0002](./ADR-0002-normalizer-colosseums-breaking.md) — armories-normalizer:
+  normalizeColosseums breaking 변경 (`deathmatch` 제거 + V9 실키 추가) 및
+  normalizeCards Effects 정정 (2026-05-16)
+
 ## 템플릿
 
 구조: Status / Context / Decision / Consequences / Alternatives considered /

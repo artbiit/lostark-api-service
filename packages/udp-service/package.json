@@ -17,9 +17,11 @@
   },
   "dependencies": {
     "@lostark/data-service": "workspace:*",
-    "@lostark/shared": "workspace:*"
+    "@lostark/shared": "workspace:*",
+    "zod": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0"
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.2"
   }
 }

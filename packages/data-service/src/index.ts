@@ -34,13 +34,13 @@ logger.info('✅ Redis 클라이언트 import 완료');
 export { charactersCache } from './cache/characters-cache.js';
 export { CharactersClient } from './clients/characters-client.js';
 export { CharactersNormalizer } from './normalizers/characters-normalizer.js';
-export { CharactersService } from './services/characters-service.js';
+export { CharactersService, charactersService } from './services/characters-service.js';
 
 // === ARMORIES API ===
 export { armoriesCache } from './cache/armories-cache.js';
 export { ArmoriesClient } from './clients/armories-client.js';
 export { ArmoriesNormalizer } from './normalizers/armories-normalizer.js';
-export { ArmoriesService } from './services/armories-service.js';
+export { ArmoriesService, armoriesService } from './services/armories-service.js';
 
 // === AUCTIONS API ===
 export { AuctionsCache } from './cache/auctions-cache.js';

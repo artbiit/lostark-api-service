@@ -49,6 +49,9 @@ export const envSchema = z.object({
   UDP_GATEWAY_MAX_MESSAGE_SIZE: z.coerce.number().min(1024).default(8192),
   UDP_GATEWAY_WORKER_POOL_SIZE: z.coerce.number().min(1).default(4),
 
+  // === 카카오톡 명령 봇 ===
+  COMMAND_PREFIX: z.string().min(1).default('!'),
+
   // === 캐시 설정 ===
   CACHE_REDIS_URL: z.string().url().optional(),
   CACHE_REDIS_PASSWORD: z.string().optional(),
@@ -156,6 +159,7 @@ export const defaultConfig: EnvConfig = {
   UDP_GATEWAY_HOST: '0.0.0.0',
   UDP_GATEWAY_MAX_MESSAGE_SIZE: 8192,
   UDP_GATEWAY_WORKER_POOL_SIZE: 4,
+  COMMAND_PREFIX: '!',
   CACHE_REDIS_URL: undefined,
   CACHE_REDIS_PASSWORD: undefined,
   CACHE_REDIS_DB: 0,

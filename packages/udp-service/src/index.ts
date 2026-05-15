@@ -121,4 +121,11 @@ startUdpService().catch((error) => {
 // === 모듈 export ===
 
 export { udpServer };
-export * from './server.js';
+export {
+  LockFreeQueue,
+  UdpServer,
+  UdpWorker,
+  WorkerPool,
+  cacheManager,
+} from './server.js';
+export type { ClientEnvelope, KakaoMessage, ReplyEnvelope, UdpServerConfig } from './server.js';

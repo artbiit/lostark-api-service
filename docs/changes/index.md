@@ -4,6 +4,11 @@
 
 ## 2026-05
 
+- feat+fix(udp-service,data-service,shared):
+  [udp-service 카카오봇 승격 + normalizer 정정](./2026-05-16-udp-service-kakao-bot-promotion.md)
+  — 27종 카카오톡 명령 이식, envelope 계약 변경(breaking),
+  normalizeCards Effects 정정, normalizeColosseums deathmatch 제거(breaking).
+  (session 20260515-231420)
 - fix(tests): [tests/api/ alias 결함 정정](./2026-05-15-tests-api-alias-fix.md)
   — 패키지.json 스크립트 + test-runner 경로를 `tests/integration/api/` 로
   재지정, 4개 문서 경로 인용 정정. (20260515 옵션 b 채택)

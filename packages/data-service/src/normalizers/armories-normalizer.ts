@@ -55,15 +55,22 @@ export interface NormalizedCharacterDetail {
     icon: string;
     tooltip: string;
   }>;
-  cards: Array<{
-    slot: number;
-    name: string;
-    icon: string;
-    awakeCount: number;
-    awakeTotal: number;
-    grade: string;
-    tooltip: string;
-  }>;
+  cards: {
+    cards: Array<{
+      slot: number;
+      name: string;
+      icon: string;
+      awakeCount: number;
+      awakeTotal: number;
+      grade: string;
+      tooltip: string;
+    }>;
+    effects: Array<{
+      index: number;
+      cardSlots: number[];
+      items: Array<{ name: string; description: string }>;
+    }>;
+  };
   gems: Array<{
     slot: number;
     name: string;
@@ -102,46 +109,12 @@ export interface NormalizedCharacterDetail {
   }>;
   colosseums: Array<{
     seasonName: string;
-    competitive: {
-      rank: number;
-      rankName: string;
-      rankIcon: string;
-      classRank: number;
-      classRankName: string;
-      classRankIcon: string;
-      score: number;
-      maxScore: number;
-    };
-    teamDeathmatch: {
-      rank: number;
-      rankName: string;
-      rankIcon: string;
-      classRank: number;
-      classRankName: string;
-      classRankIcon: string;
-      score: number;
-      maxScore: number;
-    };
-    deathmatch: {
-      rank: number;
-      rankName: string;
-      rankIcon: string;
-      classRank: number;
-      classRankName: string;
-      classRankIcon: string;
-      score: number;
-      maxScore: number;
-    };
-    teamElimination: {
-      rank: number;
-      rankName: string;
-      rankIcon: string;
-      classRank: number;
-      classRankName: string;
-      classRankIcon: string;
-      score: number;
-      maxScore: number;
-    };
+    competitive?: unknown;
+    teamDeathmatch?: unknown;
+    teamElimination?: unknown;
+    coOpBattle?: unknown;
+    oneDeathmatch?: unknown;
+    oneDeathmatchRank?: unknown;
   }>;
   collectibles: Array<{
     type: string;
@@ -342,20 +315,25 @@ export class ArmoriesNormalizer {
   }
 
   /**
-   * 카드 정보 정규화
+   * 카드 정보 정규화 (세트 효과 Effects 포함)
    */
-  private normalizeCards(cardData: any): Array<{
-    slot: number;
-    name: string;
-    icon: string;
-    awakeCount: number;
-    awakeTotal: number;
-    grade: string;
-    tooltip: string;
-  }> {
-    const cards = cardData?.Cards ?? [];
-
-    return cards.map((card: any) => ({
+  private normalizeCards(cardData: any): {
+    cards: Array<{
+      slot: number;
+      name: string;
+      icon: string;
+      awakeCount: number;
+      awakeTotal: number;
+      grade: string;
+      tooltip: string;
+    }>;
+    effects: Array<{
+      index: number;
+      cardSlots: number[];
+      items: Array<{ name: string; description: string }>;
+    }>;
+  } {
+    const cards = (cardData?.Cards ?? []).map((card: any) => ({
       slot: card.Slot,
       name: card.Name,
       icon: card.Icon,
@@ -364,6 +342,17 @@ export class ArmoriesNormalizer {
       grade: card.Grade,
       tooltip: card.Tooltip,
     }));
+
+    const effects = (cardData?.Effects ?? []).map((effect: any) => ({
+      index: effect.Index,
+      cardSlots: Array.isArray(effect.CardSlots) ? effect.CardSlots : [],
+      items: (effect.Items ?? []).map((item: any) => ({
+        name: item.Name,
+        description: item.Description,
+      })),
+    }));
+
+    return { cards, effects };
   }
 
   /**
@@ -462,24 +451,45 @@ export class ArmoriesNormalizer {
   }
 
   /**
-   * 증명의 전장 정보 정규화
+   * 증명의 전장 정보 정규화 (V9 실 응답 스키마 매핑)
+   * - 비어있는 모드는 키 자체 생략 (optional)
+   * - legacy 의 deathmatch 키는 폐기 (API 응답에 없음)
    */
   private normalizeColosseums(colosseumData: any): Array<{
     seasonName: string;
-    competitive: any;
-    teamDeathmatch: any;
-    deathmatch: any;
-    teamElimination: any;
+    competitive?: unknown;
+    teamDeathmatch?: unknown;
+    teamElimination?: unknown;
+    coOpBattle?: unknown;
+    oneDeathmatch?: unknown;
+    oneDeathmatchRank?: unknown;
   }> {
     const colosseums = colosseumData?.Colosseums ?? [];
 
-    return colosseums.map((colosseum: any) => ({
-      seasonName: colosseum.SeasonName,
-      competitive: colosseum.Competitive,
-      teamDeathmatch: colosseum.TeamDeathmatch,
-      deathmatch: colosseum.Deathmatch,
-      teamElimination: colosseum.TeamElimination,
-    }));
+    return colosseums.map((colosseum: any) => {
+      const result: {
+        seasonName: string;
+        competitive?: unknown;
+        teamDeathmatch?: unknown;
+        teamElimination?: unknown;
+        coOpBattle?: unknown;
+        oneDeathmatch?: unknown;
+        oneDeathmatchRank?: unknown;
+      } = {
+        seasonName: colosseum.SeasonName,
+      };
+
+      if (colosseum.Competitive != null) result.competitive = colosseum.Competitive;
+      if (colosseum.TeamDeathmatch != null) result.teamDeathmatch = colosseum.TeamDeathmatch;
+      if (colosseum.TeamElimination != null) result.teamElimination = colosseum.TeamElimination;
+      if (colosseum.CoOpBattle != null) result.coOpBattle = colosseum.CoOpBattle;
+      if (colosseum.OneDeathmatch != null) result.oneDeathmatch = colosseum.OneDeathmatch;
+      if (colosseum.OneDeathmatchRank != null) {
+        result.oneDeathmatchRank = colosseum.OneDeathmatchRank;
+      }
+
+      return result;
+    });
   }
 
   /**

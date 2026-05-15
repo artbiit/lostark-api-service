@@ -11,7 +11,8 @@
       "@lostark/data-service": ["../packages/data-service/src/index.ts"],
       "@lostark/data-service/*": ["../packages/data-service/src/*"],
       "@lostark/rest-service": ["../packages/rest-service/src/index.ts"],
-      "@lostark/udp-service": ["../packages/udp-service/src/index.ts"],
+      "@lostark/udp-gateway": ["../packages/udp-service/src/index.ts"],
+      "@lostark/udp-gateway/*": ["../packages/udp-service/src/*"],
       "@tests/*": ["./*"]
     }
   },
