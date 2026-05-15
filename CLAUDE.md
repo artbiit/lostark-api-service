@@ -2,6 +2,15 @@
 
 로스트아크 공식 Developer API (`developer-lostark.game.onstove.com`) 를 **Fastify 기반 HTTP 서비스로 래핑·캐싱·재노출** 하는 독립 백엔드. 하위 소비자(LoA-Bot Discord 봇, 웹 대시보드 등) 의 공용 업스트림 역할을 한다.
 
+## 에이전트 팀 운영 (명령어 진입)
+
+이 프로젝트는 **`/task` 스킬로 명시 호출** 할 때만 Orchestrator + Advisor + Worker 3-tier 에이전트 팀 모드에 진입한다. 자동 적용되지 않는다. 작은 작업은 메인 에이전트가 직접 처리.
+
+- 명령: `/task [요청]` — `.claude/skills/task/SKILL.md`
+- 권위 레퍼런스: [docs/development/agent-team-protocol.md](./docs/development/agent-team-protocol.md)
+- 에이전트 정의: `.claude/agents/*.md` (Phase 3 에서 풀세트 도입; 현재는 `graph-refresh-checker` 만 보유)
+- 이식 단계 출처: LoA-Bot 측 `.claude/work-session/20260515-123244/` (read-only) 의 phases — Phase 0 (`/task` skill + protocol) 만 적용된 상태
+
 ## 프로젝트 목적
 
 - 로스트아크 공식 API 호출 집중화 (레이트 리밋 단일 지점 관리).

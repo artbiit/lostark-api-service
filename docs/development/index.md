@@ -9,6 +9,7 @@
 - [docker-setup](./docker-setup.md) — Docker 개발 환경 구성
 - [documentation-guidelines](./documentation-guidelines.md) — 문서 작성/갱신 규칙
 - [document-category-classification](./document-category-classification.md) — 이 `docs/` 카테고리 분류 기준
+- [agent-team-protocol](./agent-team-protocol.md) — 에이전트 팀 운영 권위 레퍼런스 (`/task` 진입)
 
 ## 워크플로우
 
