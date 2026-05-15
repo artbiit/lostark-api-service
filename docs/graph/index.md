@@ -1,7 +1,7 @@
 ---
 kind: graphify-meta
-last_generated_at: 2026-05-15T17:28:00+09:00
-source_commit: 56bd8c72867727985f304e8bbb0cd48e3d9bf5ae
+last_generated_at: 2026-05-15T22:18:00+09:00
+source_commit: acd006a3ad5aa10ddac50054ca20e7d340d5747a
 scopes:
   - full
 ---
@@ -47,7 +47,7 @@ docs/graph/
 
 | scope | 마지막 생성 | 소스 커밋 | 대상 경로                                           | 요약                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | ----- | ----------- | --------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| full  | 2026-05-15  | `56bd8c7` | 레포 전체 (packages/\*/src + docs + tests + legacy) | 1345 nodes · 1815 edges · 112 communities. `--update` 53 변경 파일 증분 추출 (4/29 → 5/15). God nodes: RestServer (30×2), ArmoriesNormalizer (20×2), createCacheFlowClient (16), CacheOptimizer (15), ArmoriesService (15). 핵심 하이퍼엣지: 3-Tier Cache Flow / API Comprehensive Test Suite / REST orchestrates domain services / Character Data Collection Pipeline. 1345 노드는 ID-기반 union merge 결과로 일부 파편화 가능 — 다음 sweep 시 풀 재빌드 검토. |
+| full  | 2026-05-15  | `acd006a` | 레포 전체 (packages/\*/src + docs + tests + legacy) | 2040 nodes · 2740 edges · 183 communities. 풀 재빌드 (235 파일, AST 1783+semantic 260 nodes). God nodes: ArmoriesService, ArmoriesCache, ArmoriesClient, ArmoriesNormalizer, ApiClient. 핵심 커뮤니티: Armories Component Hub / HTTP API Client Base / REST Server Core / Cache Lifecycle Management / V9 API Type Definitions. |
 
 ## 갱신 시 체크리스트
 
