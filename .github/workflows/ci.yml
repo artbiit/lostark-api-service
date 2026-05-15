@@ -75,9 +75,14 @@ jobs:
           LOSTARK_API_KEY: ${{ secrets.LOSTARK_API_KEY || 'ci-dummy-token-for-zod-validation' }}
 
       - name: Run integration tests
+        if: ${{ secrets.LOSTARK_API_KEY != '' }}
         run: yarn test:integration
         env:
-          LOSTARK_API_KEY: ${{ secrets.LOSTARK_API_KEY || 'ci-dummy-token-for-zod-validation' }}
+          LOSTARK_API_KEY: ${{ secrets.LOSTARK_API_KEY }}
+
+      - name: Skip integration tests (no LOSTARK_API_KEY secret)
+        if: ${{ secrets.LOSTARK_API_KEY == '' }}
+        run: echo "Skipping integration tests — repo secret LOSTARK_API_KEY is not configured."
 
   build:
     name: Build Packages
