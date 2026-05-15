@@ -6,6 +6,10 @@ graphify-out/
 .graphify_*.txt
 .graphify_python
 
+# ---> Claude Code 에이전트 팀 세션 산출물 (per-session, LoA-Bot 정책과 동일)
+.claude/work-session/
+.claude/settings.local.json
+
 # ---> Node
 # Logs
 logs
