@@ -72,12 +72,12 @@ jobs:
       - name: Run unit tests
         run: yarn test:unit
         env:
-          LOSTARK_API_KEY: ${{ secrets.LOSTARK_API_KEY }}
+          LOSTARK_API_KEY: ${{ secrets.LOSTARK_API_KEY || 'ci-dummy-token-for-zod-validation' }}
 
       - name: Run integration tests
         run: yarn test:integration
         env:
-          LOSTARK_API_KEY: ${{ secrets.LOSTARK_API_KEY }}
+          LOSTARK_API_KEY: ${{ secrets.LOSTARK_API_KEY || 'ci-dummy-token-for-zod-validation' }}
 
   build:
     name: Build Packages
