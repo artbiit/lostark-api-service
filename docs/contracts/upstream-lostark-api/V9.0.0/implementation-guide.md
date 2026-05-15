@@ -572,7 +572,7 @@ packages/data-service/src/
 ### **테스트 구조**
 
 ```
-tests/api/lostark-api/V9.0.0/
+tests/integration/api/lostark-api/V9.0.0/
 ├── characters-service.test.mjs   # CHARACTERS 서비스 테스트 ✅ 완료
 ├── armories-service.test.mjs     # ARMORIES 서비스 테스트 ✅ 완료
 └── simple-armories-test.mjs      # ARMORIES 간단 테스트 ✅ 완료

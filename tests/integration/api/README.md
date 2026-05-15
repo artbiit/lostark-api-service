@@ -33,13 +33,13 @@ api/
 
 ```bash
 # ARMORIES API만 테스트 (가장 큰 단위)
-node tests/api/simple-cache-flow-test.mjs
+node tests/integration/api/simple-cache-flow-test.mjs
 
 # 모든 API 테스트
-node tests/api/all-apis-cache-flow-test.mjs
+node tests/integration/api/all-apis-cache-flow-test.mjs
 
 # 전체 캐시 플로우 테스트 (상세)
-node tests/api/cache-flow-test.mjs
+node tests/integration/api/cache-flow-test.mjs
 ```
 
 ### 테스트 시나리오

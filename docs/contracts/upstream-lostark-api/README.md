@@ -49,7 +49,7 @@ cp -r V9.0.0 V10.0.0
 # packages/shared/src/types/V10/ 디렉토리에서 타입 수정
 
 # 3. 샘플 데이터 재수집
-# tests/api/lostark-api/V10.0.0/api.test.mjs 실행하여 새 데이터 수집
+# tests/integration/api/lostark-api/V10.0.0/api.test.mjs 실행하여 새 데이터 수집
 
 # 4. 문서 업데이트
 # V10.0.0/README.md 수정

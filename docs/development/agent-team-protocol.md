@@ -308,6 +308,28 @@ user_signals:
 | scope ≥ 3 재생성이 정례화                                            | `scope-regen` worker                                                                                                        | graphify-update-advisor tier 3 승격                                                       |
 | 세션 ≥ 10 누적 후 장기 패턴 분석 요구                                | `retro-aggregator` advisor 또는 worker                                                                                      | 별도 ADR 고려                                                                             |
 
+### 9.1 graph-refresh deviation 절차
+
+`graph-refresh-checker` 가 `fully-stale` 또는 `partial-stale` 판정을 내렸을 때,
+판정의 근거가 **본 세션의 변경**이 아니라 **누적 부채(이전 세션들에서 쌓인 미반영
+구조 변동)** 인 경우가 있다. 즉:
+
+- 본 세션의 변경 자체는 호출 그래프 토폴로지·타입 시그니처·모듈 경계에 영향 없음
+- 그러나 graph source_commit 이후 누적된 다른 커밋들이 영향을 미쳐 stale 판정
+
+이때 두 경로가 정합적이다:
+
+- **(A) 즉시 재생성**: `/graphify <scope>` 를 본 세션 안에서 실행. 정합성 즉시 회복.
+- **(B) deviation 처리**: 사용자 명시 승인을 받아 다음 세션 첫 작업으로 이월.
+  반드시 `report.md` 의 `Open Items` 와 `graph_refresh` 섹션에 다음을 기록:
+  - 판정 결과(`fully-stale` 등)와 누적 commit 수
+  - 본 세션 변경이 그래프에 무영향임을 명시
+  - 다음 세션이 실행할 정확한 명령 (예: `/graphify packages/shared/src ...`)
+  - 메타 갱신 대상(`docs/graph/index.md` frontmatter + Scopes 표)
+
+(B) 는 CLAUDE.md §9-4 의무에 대한 **명시적 deviation** 이다. 사용자 승인 없는 자동
+이월은 금지. AskUserQuestion 으로 (A)/(B) 결정을 받고 그 답을 보고서에 인용한다.
+
 ## 10. MCP / 외부 도구 통합 규칙
 
 - MCP 서버 추가는 `~/.claude/settings.json` 또는 `.claude/settings.json` 의

@@ -17,7 +17,7 @@
 | ------ | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | **L1** | 단위·회귀 + 워크스페이스 정합       | `yarn typecheck` + `yarn test:unit` + `yarn validate:monorepo`                                                                                     | "내가 고친 라인이 깨지지 않음" + "과거 버그가 재발하지 않음" + "패키지 의존/refs 가 일관"         |
 | **L2** | 공식 로스트아크 API envelope 계약   | `yarn test:integration` (현재 `tests/integration/api/armories.test.ts`) — `developer-lostark.game.onstove.com` live 호출                           | "공식 API 의 응답 envelope·필드·V9 스키마가 우리 normalizer/타입과 정합"                          |
-| **L3** | 3-tier 캐시 동선 + API key 인증 e2e | `yarn test:cache-flow` (현재 alias 가 부재 디렉토리를 가리키는 결함 있음 — Open Items 참조) + `tests/integration/api/*-cache-flow-test.mjs`        | "메모리 → Redis → MySQL 데이터 이동, TTL 만료, MySQL 복원" 까지 실제로 돈다                       |
+| **L3** | 3-tier 캐시 동선 + API key 인증 e2e | `yarn test:cache-flow` (정상 동작 — `tests/integration/api/simple-cache-flow-test.mjs` 실행) + `tests/integration/api/*-cache-flow-test.mjs`        | "메모리 → Redis → MySQL 데이터 이동, TTL 만료, MySQL 복원" 까지 실제로 돈다                       |
 | **L4** | 배포 준비성                         | `deploy-advisor` (Phase 6 도입 후) 산출 — `yarn build` + `yarn workspace @lostark/rest-api dump:openapi` + `loa-platform` compose 의존 서비스 검증 | "멀티 패키지 docker 이미지 빌드 가능, OpenAPI dump 갱신, 의존 인프라(MySQL/Redis) 사전 기동 확인" |
 
 **시점 주의**: 본 서비스는 공식 로스트아크 API 의 wrapper 본체다. 따라서 L2 의
@@ -131,6 +131,10 @@ strategies:
     note: |
       공식 로스트아크 API 의 응답 envelope/필드/V9 스키마가 우리 normalizer/타입과 정합한지 검증.
       blocker 인 이유: 공식 API 가 응답을 바꿨는데 우리 타입이 안 맞으면 캐시 적재 단계에서 production 장애.
+      macOS 환경에서 Node 22+ 가 시스템 keychain 의 corporate/self-signed CA chain 을 신뢰하지 않을 경우
+      `TypeError: fetch failed (self-signed certificate in certificate chain)` 가 발생한다. 이때
+      `NODE_OPTIONS='--use-system-ca'` 를 prefix 로 두고 재실행 (예: `NODE_OPTIONS='--use-system-ca' yarn test:integration`).
+      SKIP_LIVE_API 토글 구현 전까지 유효한 workaround.
 
   # ── L3 ────────────────────────────────────────
   - id: cache-flow
@@ -147,7 +151,7 @@ strategies:
     note: |
       메모리 → Redis → MySQL 캐시 계층 이동, TTL 만료, MySQL 복원까지 검증.
       현재 standalone .mjs 스크립트로 분리되어 있으며 node:test 통합은 후속 과제.
-      `package.json` 의 `test:cache-flow` 스크립트는 부재 디렉토리(`tests/api/...`)를 가리키는 결함 — 별도 issue.
+      `package.json` 의 `test:cache-flow` 스크립트는 `node tests/integration/api/simple-cache-flow-test.mjs` 로 정정 완료 (2026-05-15).
 
   # ── 통합 ──────────────────────────────────────
   - id: verify-all
@@ -187,10 +191,11 @@ strategies:
 
 - `SKIP_LIVE_API=1` 토글 코드 구현 — `tests/common/test-utils.ts` + 필요 시
   `packages/shared/src/config/env.ts` 분기. 별도 phase/PR.
-- `package.json` 의 `test:api`, `test:cache-flow` 스크립트가 부재
-  디렉토리(`tests/api/**`) 를 가리킴. 실 자산은 `tests/integration/api/**` 로
-  이동되어 있음. issues/maintenance 카테고리에 별도 정리.
-- L3 (`tests/integration/api/*-cache-flow-test.mjs`) 의 `node:test` 통합 또는
-  단일 진입점(`yarn test:cache-flow`) 정합화.
+- ~~`package.json` 의 `test:api`, `test:cache-flow` 스크립트가 부재
+  디렉토리(`tests/api/**`) 를 가리킴.~~ **[CLOSED]** `tests/integration/api/**`
+  경로로 정정 완료 (2026-05-15). 변경 파일: `package.json` L25-26 + `tests/common/test-runner.ts` L138.
+- ~~L3 (`tests/integration/api/*-cache-flow-test.mjs`) 의 `node:test` 통합 또는
+  단일 진입점(`yarn test:cache-flow`) 정합화.~~ **[CLOSED — 부분]** `yarn test:cache-flow` 진입점은
+  `simple-cache-flow-test.mjs` 로 정합화 완료 (2026-05-15). `node:test` 통합은 별도 phase/PR.
 - `verification-advisor` agent 도입 (Phase 3) 시 본 문서를 자동 매칭 입력으로
   사용.

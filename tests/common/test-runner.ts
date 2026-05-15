@@ -135,7 +135,7 @@ export async function runIntegrationTests(options: Omit<TestOptions, 'pattern'> 
 export async function runApiTests(options: Omit<TestOptions, 'pattern'> = {}) {
   return runTests({
     ...options,
-    pattern: 'tests/api/**/*.test.ts',
+    pattern: 'tests/integration/api/**/*.test.ts',
   });
 }
 
