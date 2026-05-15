@@ -4,7 +4,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
@@ -12,8 +12,8 @@ services:
   lostark-api:
     build: .
     ports:
-      - "3000:3000"  # REST Service
-      - "3001:3001"  # UDP Service
+      - '3000:3000' # REST Service
+      - '3001:3001' # UDP Service
     environment:
       - NODE_ENV=production
       - CACHE_REDIS_URL=redis://redis:6379

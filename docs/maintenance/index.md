@@ -5,9 +5,11 @@
 ## 목록
 
 - [deployment](./deployment.md) — 배포 가이드 (Docker, 환경변수, 헬스체크)
-- [host-node-run](./host-node-run.md) — macOS 호스트에서 Node 로 직접 실행 시 절차 (CA prefix 필수) + 장애 원인 분리 가이드
+- [host-node-run](./host-node-run.md) — macOS 호스트에서 Node 로 직접 실행 시
+  절차 (CA prefix 필수) + 장애 원인 분리 가이드
 
 ## 관련
 
-- 개발 환경 Docker 세팅은 `development/docker-setup.md` (분리 유지: 개발용 자체 compose vs 운영용 공유 인프라).
+- 개발 환경 Docker 세팅은 `development/docker-setup.md` (분리 유지: 개발용 자체
+  compose vs 운영용 공유 인프라).
 - 운영 오케스트레이션은 상위 레포 `loa-platform/docker-compose.yml` 가 담당.

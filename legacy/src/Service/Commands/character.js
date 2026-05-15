@@ -1,5 +1,5 @@
-const api = require("../../../libs/API");
-const utils = require("../../../libs/utils");
+const api = require('../../../libs/API');
+const utils = require('../../../libs/utils');
 async function siblings(args) {
   let name = args[0];
   let api_result = await api.character_siblings(name);
@@ -14,7 +14,7 @@ async function siblings(args) {
   }
 
   let characters = {};
-  let sameServer = "";
+  let sameServer = '';
   const compareName = name.toUpperCase();
   for (let v of data) {
     let server = v.ServerName;
@@ -55,7 +55,7 @@ async function siblings(args) {
     result.push(`[${c.class}] Lv.${c.level} (${c.item_level})\n\t${c.name}`);
   }
 
-  return result.join("\n");
+  return result.join('\n');
 }
 
 // async function test() {

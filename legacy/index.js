@@ -1,13 +1,13 @@
-const logger = require("./libs/logger");
-const utils = require("./libs/utils");
-const env = require("./libs/env");
-const mysqlService = require("./src/Mysql/MysqlService");
+const logger = require('./libs/logger');
+const utils = require('./libs/utils');
+const env = require('./libs/env');
+const mysqlService = require('./src/Mysql/MysqlService');
 
 global.logger = logger;
 global.utils = utils;
 global.env = env;
 
-process.on("uncaughtException", (err) => {
+process.on('uncaughtException', (err) => {
   // log the exception
   logger.error(`uncaught exception detected, err: ${err}\n${err.stack}`);
 });
@@ -15,10 +15,10 @@ process.on("uncaughtException", (err) => {
 async function initialize() {
   try {
     global.mysql = await mysqlService.create();
-    logger.info("process start...");
+    logger.info('process start...');
 
-    require("./src/scheduler");
-    const service = require("./src/Service/Service");
+    require('./src/scheduler');
+    const service = require('./src/Service/Service');
     await service.init();
 
     while (true) {

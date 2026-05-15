@@ -1,6 +1,6 @@
-const logger = require("./logger");
+const logger = require('./logger');
 
-require("dotenv").config();
+require('dotenv').config();
 
 const env = init();
 
@@ -8,22 +8,22 @@ function init() {
   const env = {};
   const keys = [
     //SETTINGS
-    "PREFIX",
-    "PORT",
+    'PREFIX',
+    'PORT',
     //DB
-    "DB_USER",
-    "DB_HOST",
-    "DB_PORT",
-    "DB_SCHEMA",
-    "DB_PASSWORD",
+    'DB_USER',
+    'DB_HOST',
+    'DB_PORT',
+    'DB_SCHEMA',
+    'DB_PASSWORD',
     //API
-    "api_key",
-    "base_url",
+    'api_key',
+    'base_url',
   ];
   for (let key of keys) {
     env[key] = check(key);
   }
-  logger.info("env. initailized.");
+  logger.info('env. initailized.');
   return env;
 }
 

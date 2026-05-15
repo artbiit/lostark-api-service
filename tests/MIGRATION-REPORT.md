@@ -32,10 +32,12 @@
 
 ### 5. 환경변수 경로 문제 (최신 해결)
 
-- **문제**: `tests/unit/shared/` 디렉토리의 테스트에서 잘못된 상대 경로로 `.env` 파일을 찾지 못함
-- **해결**: 
+- **문제**: `tests/unit/shared/` 디렉토리의 테스트에서 잘못된 상대 경로로 `.env`
+  파일을 찾지 못함
+- **해결**:
   - `setupTestEnvironment()` 함수를 사용하여 일관된 환경변수 로딩 구현
-  - 모든 테스트에서 `parseEnv(true, '../../../.env')` 대신 `setupTestEnvironment()` 사용
+  - 모든 테스트에서 `parseEnv(true, '../../../.env')` 대신
+    `setupTestEnvironment()` 사용
   - 경로 계산 오류로 인한 "ENOENT: no such file or directory" 문제 완전 해결
 
 ## ✅ 완료된 작업
@@ -83,7 +85,8 @@
    - `dist/` → `src/` 직접 참조로 변경
 
 7. **환경변수 경로 문제 해결**
-   - `tests/unit/shared/` 디렉토리의 모든 테스트에서 `setupTestEnvironment()` 함수 사용
+   - `tests/unit/shared/` 디렉토리의 모든 테스트에서 `setupTestEnvironment()`
+     함수 사용
    - 잘못된 상대 경로 `../../../.env` 문제 해결
    - 일관된 환경변수 로딩 방식 구현
 

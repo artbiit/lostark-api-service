@@ -7,6 +7,7 @@
 #### 문제: pre-commit hook이 실행되지 않음
 
 **증상**:
+
 ```bash
 # 커밋 시 검증이 실행되지 않음
 git commit -m "feat: 새로운 기능"
@@ -14,11 +15,13 @@ git commit -m "feat: 새로운 기능"
 ```
 
 **원인**:
+
 - Husky가 제대로 설치되지 않음
 - .husky 디렉토리 권한 문제
 - .cursorignore에서 .husky/ 제외됨
 
 **해결방법**:
+
 ```bash
 # 1. Husky 재설치
 yarn add -D husky
@@ -35,12 +38,14 @@ chmod +x .husky/pre-push
 #### 문제: pre-commit hook에서 검증 실패
 
 **증상**:
+
 ```bash
 git commit -m "feat: 새로운 기능"
 # → 검증 실패로 커밋이 차단됨
 ```
 
 **해결방법**:
+
 ```bash
 # 1. 수동으로 검증 실행
 yarn validate:monorepo
@@ -56,16 +61,19 @@ yarn lint
 #### 문제: 순환 참조 오류
 
 **증상**:
+
 ```bash
 yarn validate:deps
 # → 순환 참조 발견
 ```
 
 **원인**:
+
 - 패키지 간 순환 의존성
 - 잘못된 import/export 관계
 
 **해결방법**:
+
 ```bash
 # 1. 의존성 관계 분석
 # shared → data-service → rest-service → udp-service 방향 확인
@@ -81,16 +89,19 @@ yarn validate:deps
 #### 문제: TypeScript 참조 오류
 
 **증상**:
+
 ```bash
 yarn validate:refs
 # → TypeScript 참조 오류
 ```
 
 **원인**:
+
 - tsconfig.json의 references 설정 누락
 - 잘못된 경로 참조
 
 **해결방법**:
+
 ```bash
 # 1. tsconfig.json 확인
 # references 배열에 필요한 패키지 경로 추가
@@ -107,10 +118,12 @@ yarn validate:refs
 #### 문제: 동일한 내용이 여러 문서에 중복
 
 **증상**:
+
 - .env 관련 내용이 development-guide.md와 .env.example에 중복
 - 설정 가이드가 여러 문서에 분산
 
 **해결방법**:
+
 ```bash
 # 1. 중복 내용 식별
 grep -r "관련_키워드" . --exclude-dir=node_modules
@@ -128,12 +141,14 @@ grep -r "관련_키워드" . --exclude-dir=node_modules
 #### 문제: TypeScript 컴파일 오류
 
 **증상**:
+
 ```bash
 yarn build
 # → TypeScript 컴파일 오류
 ```
 
 **해결방법**:
+
 ```bash
 # 1. 타입 오류 확인
 yarn typecheck
@@ -149,12 +164,14 @@ yarn build
 #### 문제: 의존성 오류
 
 **증상**:
+
 ```bash
 yarn build
 # → 모듈을 찾을 수 없음
 ```
 
 **해결방법**:
+
 ```bash
 # 1. 의존성 재설치
 yarn install
@@ -171,12 +188,14 @@ yarn build
 #### 문제: 환경변수 관련 테스트 실패
 
 **증상**:
+
 ```bash
 yarn test
 # → 환경변수 로딩 실패
 ```
 
 **해결방법**:
+
 ```bash
 # 1. .env 파일 확인
 ls -la .env
@@ -194,12 +213,14 @@ yarn test
 #### 문제: API 테스트 타임아웃
 
 **증상**:
+
 ```bash
 yarn test
 # → API 호출 타임아웃
 ```
 
 **해결방법**:
+
 ```bash
 # 1. 네트워크 연결 확인
 # 2. API 키 유효성 확인
@@ -242,24 +263,28 @@ yarn workspace @lostark/shared typecheck
 ## 📋 문제 해결 체크리스트
 
 ### Git Hooks 문제
+
 - [ ] Husky 설치 확인
 - [ ] .husky 디렉토리 권한 확인
 - [ ] .cursorignore에서 .husky/ 제거 확인
 - [ ] pre-commit/pre-push 파일 실행 권한 확인
 
 ### 의존성 문제
+
 - [ ] 순환 참조 확인
 - [ ] TypeScript 참조 설정 확인
 - [ ] 패키지 경로 확인
 - [ ] 의존성 재설치
 
 ### 빌드 문제
+
 - [ ] TypeScript 오류 확인
 - [ ] 의존성 설치 확인
 - [ ] 캐시 정리
 - [ ] 환경변수 설정 확인
 
 ### 테스트 문제
+
 - [ ] .env 파일 존재 확인
 - [ ] 필수 환경변수 설정 확인
 - [ ] 네트워크 연결 확인

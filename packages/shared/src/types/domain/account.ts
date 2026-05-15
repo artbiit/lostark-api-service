@@ -1,6 +1,6 @@
 /**
  * @cursor-change: 2025-01-27, v1.0.0, 계정 도메인 모델 생성
- * 
+ *
  * 계정 도메인 모델
  * - CHARACTERS API siblings 데이터를 기반으로 한 계정 정보
  * - 계정 단위 캐릭터 관리 및 서버 분포 추적
@@ -16,7 +16,9 @@ import { ServerName, ClassName } from '../V9/base.js';
 export function generateAccountId(characterName: string, serverName: ServerName): string {
   // 계정 식별을 위한 해시 생성
   const data = `${characterName}:${serverName}`;
-  return `account:${Buffer.from(data).toString('base64').replace(/[^a-zA-Z0-9]/g, '')}`;
+  return `account:${Buffer.from(data)
+    .toString('base64')
+    .replace(/[^a-zA-Z0-9]/g, '')}`;
 }
 
 // === 계정 정보 ===
@@ -110,16 +112,20 @@ export function parseItemLevel(itemLevelStr: string): number {
  * 서버 분포 계산
  */
 export function calculateServerDistribution(characters: CharacterInfo[]): ServerDistribution[] {
-  const serverMap = new Map<ServerName, { count: number; totalLevel: number; lastActivity: Date }>();
-  
+  const serverMap = new Map<
+    ServerName,
+    { count: number; totalLevel: number; lastActivity: Date }
+  >();
+
   for (const char of characters) {
     if (!char.isActive) continue;
-    
+
     const existing = serverMap.get(char.serverName);
     if (existing) {
       existing.count++;
       existing.totalLevel += char.itemLevel;
-      existing.lastActivity = char.lastSeen > existing.lastActivity ? char.lastSeen : existing.lastActivity;
+      existing.lastActivity =
+        char.lastSeen > existing.lastActivity ? char.lastSeen : existing.lastActivity;
     } else {
       serverMap.set(char.serverName, {
         count: 1,
@@ -128,7 +134,7 @@ export function calculateServerDistribution(characters: CharacterInfo[]): Server
       });
     }
   }
-  
+
   return Array.from(serverMap.entries()).map(([serverName, data]) => ({
     serverName,
     characterCount: data.count,
@@ -142,8 +148,8 @@ export function calculateServerDistribution(characters: CharacterInfo[]): Server
  */
 export function findMostActiveServer(distribution: ServerDistribution[]): ServerName {
   if (distribution.length === 0) throw new Error('No server distribution data');
-  
-  return distribution.reduce((mostActive, current) => 
-    current.lastActivity > mostActive.lastActivity ? current : mostActive
+
+  return distribution.reduce((mostActive, current) =>
+    current.lastActivity > mostActive.lastActivity ? current : mostActive,
   ).serverName;
 }

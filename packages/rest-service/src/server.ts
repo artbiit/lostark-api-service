@@ -194,9 +194,7 @@ export class RestServer {
           description: '로스트아크 원격 API 래퍼 서비스',
           version: '2.0.0',
         },
-        servers: [
-          { url: 'http://localhost:3000', description: 'Local' },
-        ],
+        servers: [{ url: 'http://localhost:3000', description: 'Local' }],
         tags: [
           { name: 'health', description: '서버 상태' },
           { name: 'cache', description: '캐시 관리' },

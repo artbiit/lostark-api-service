@@ -12,10 +12,10 @@ import { createSocket, Socket, RemoteInfo } from 'dgram';
 import { EventEmitter } from 'events';
 import { logger } from '@lostark/shared';
 import { parseEnv } from '@lostark/shared/config/env.js';
-import { 
-  initializeRedis, 
-  disconnectRedis, 
-  initializePostgres, 
+import {
+  initializeRedis,
+  disconnectRedis,
+  initializePostgres,
   disconnectPostgres,
   cacheManager,
   ArmoriesService,
@@ -157,16 +157,19 @@ export class UdpWorker {
    */
   async processMessage(message: UdpMessage): Promise<UdpResponse> {
     const startTime = Date.now();
-    
+
     try {
       if (!this.isRunning) {
         throw new Error('Worker is not running');
       }
 
-      logger.debug(`Worker ${this.id} processing message`, { messageId: message.id, type: message.type });
+      logger.debug(`Worker ${this.id} processing message`, {
+        messageId: message.id,
+        type: message.type,
+      });
 
       let data: unknown;
-      
+
       switch (message.type) {
         case 'character_detail':
           data = await this.handleCharacterDetail(message);
@@ -195,7 +198,7 @@ export class UdpWorker {
       };
     } catch (error) {
       const responseTime = Date.now() - startTime;
-      
+
       logger.error(`Worker ${this.id} failed to process message`, {
         messageId: message.id,
         error: error instanceof Error ? error.message : String(error),
@@ -217,13 +220,26 @@ export class UdpWorker {
    */
   private async handleCharacterDetail(message: UdpMessage): Promise<unknown> {
     const { characterName, sections } = message.payload;
-    
+
     if (!characterName) {
       throw new Error('Character name is required');
     }
 
     if (sections && sections.length > 0) {
-      return await this.armoriesService.getCharacterDetailPartial(characterName, sections as Array<'profile' | 'equipment' | 'avatars' | 'combat-skills' | 'engravings' | 'cards' | 'gems' | 'colosseums' | 'collectibles'>);
+      return await this.armoriesService.getCharacterDetailPartial(
+        characterName,
+        sections as Array<
+          | 'profile'
+          | 'equipment'
+          | 'avatars'
+          | 'combat-skills'
+          | 'engravings'
+          | 'cards'
+          | 'gems'
+          | 'colosseums'
+          | 'collectibles'
+        >,
+      );
     } else {
       return await this.armoriesService.getCharacterDetail(characterName);
     }
@@ -234,7 +250,7 @@ export class UdpWorker {
    */
   private async handleCharacterRefresh(message: UdpMessage): Promise<unknown> {
     const { characterName } = message.payload;
-    
+
     if (!characterName) {
       throw new Error('Character name is required');
     }
@@ -248,7 +264,7 @@ export class UdpWorker {
   private async handleCacheStatus(): Promise<unknown> {
     const cacheStats = await cacheManager.getCacheStats();
     const cacheStatus = cacheManager.getCacheLayerStatus();
-    
+
     return {
       stats: cacheStats,
       status: cacheStatus,
@@ -273,7 +289,7 @@ export class WorkerPool {
    * 워커 풀 시작
    */
   start(): void {
-    this.workers.forEach(worker => worker.start());
+    this.workers.forEach((worker) => worker.start());
     logger.info(`Worker pool started with ${this.workers.length} workers`);
   }
 
@@ -281,7 +297,7 @@ export class WorkerPool {
    * 워커 풀 중지
    */
   stop(): void {
-    this.workers.forEach(worker => worker.stop());
+    this.workers.forEach((worker) => worker.stop());
     logger.info('Worker pool stopped');
   }
 
@@ -326,9 +342,9 @@ export class UdpServer extends EventEmitter {
 
   constructor(config: Partial<UdpServerConfig> = {}) {
     super();
-    
+
     const env = parseEnv();
-    
+
     this.config = {
       port: env.UDP_GATEWAY_PORT || 3001,
       host: env.UDP_GATEWAY_HOST || '0.0.0.0',
@@ -352,13 +368,13 @@ export class UdpServer extends EventEmitter {
       // 캐시 시스템 초기화
       await initializeRedis();
       await initializePostgres();
-      
+
       // 워커 풀 시작
       this.workerPool.start();
-      
+
       // UDP 소켓 이벤트 리스너 등록
       this.setupSocketEventHandlers();
-      
+
       logger.info('UDP server initialized successfully');
     } catch (error) {
       logger.error('Failed to initialize UDP server', {
@@ -420,7 +436,7 @@ export class UdpServer extends EventEmitter {
 
       // 큐에 메시지 추가
       const enqueued = this.messageQueue.enqueue({ message, remoteInfo });
-      
+
       if (!enqueued) {
         logger.warn('Message queue full, dropping message', {
           messageId: message.id,
@@ -473,15 +489,15 @@ export class UdpServer extends EventEmitter {
       }
 
       const { message, remoteInfo } = item;
-      
+
       try {
         // 워커에게 메시지 전달
         const worker = this.workerPool.getNextWorker();
         const response = await worker.processMessage(message);
-        
+
         // 응답 전송
         await this.sendResponse(response, remoteInfo);
-        
+
         logger.debug('Message processed successfully', {
           messageId: message.id,
           responseTime: response.responseTime,
@@ -491,7 +507,7 @@ export class UdpServer extends EventEmitter {
           messageId: message.id,
           error: error instanceof Error ? error.message : String(error),
         });
-        
+
         // 에러 응답 전송
         const errorResponse: UdpResponse = {
           id: message.id,
@@ -500,7 +516,7 @@ export class UdpServer extends EventEmitter {
           timestamp: Date.now(),
           responseTime: 0,
         };
-        
+
         await this.sendResponse(errorResponse, remoteInfo);
       }
     }, 1); // 1ms 간격으로 처리
@@ -512,7 +528,7 @@ export class UdpServer extends EventEmitter {
   private async sendResponse(response: UdpResponse, remoteInfo: RemoteInfo): Promise<void> {
     try {
       const responseBuffer = Buffer.from(JSON.stringify(response), 'utf8');
-      
+
       this.socket.send(responseBuffer, remoteInfo.port, remoteInfo.address, (error) => {
         if (error) {
           logger.error('Failed to send response', {
@@ -544,15 +560,15 @@ export class UdpServer extends EventEmitter {
         this.socket.bind(this.config.port, this.config.host, () => {
           resolve();
         });
-        
+
         this.socket.once('error', reject);
       });
 
       this.isRunning = true;
-      
+
       // 메시지 처리 루프 시작
       this.startMessageProcessing();
-      
+
       logger.info('UDP server started successfully', {
         port: this.config.port,
         host: this.config.host,
@@ -592,7 +608,7 @@ export class UdpServer extends EventEmitter {
       await disconnectPostgres();
 
       this.isRunning = false;
-      
+
       logger.info('UDP server stopped successfully');
     } catch (error) {
       logger.error('Failed to stop UDP server', {

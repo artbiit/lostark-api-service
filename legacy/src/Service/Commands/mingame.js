@@ -1,6 +1,6 @@
-const logger = require("../../../libs/logger");
-const api = require("../../../libs/API");
-const cUtils = require("./commandUtils");
+const logger = require('../../../libs/logger');
+const api = require('../../../libs/API');
+const cUtils = require('./commandUtils');
 
 async function dice(args) {
   let start = Math.ceil(Number(args[0] || 0));
@@ -55,24 +55,24 @@ async function synergy(args) {
 }
 
 let cards = [
-  "니나브",
-  "바훈투르",
-  "샨디",
-  "실리안",
-  "아제나&이난나",
-  "에스더 갈라투르",
-  "일리아칸",
-  "가디언 루 카드",
-  "광기를 잃은 쿠크세이튼",
-  "국왕 실리안",
-  "데런 아만",
-  "베아트리스",
-  "아만",
-  "에스더 루테란",
-  "에스더 시엔",
-  "웨이",
-  "진저웨일",
-  "카마인",
+  '니나브',
+  '바훈투르',
+  '샨디',
+  '실리안',
+  '아제나&이난나',
+  '에스더 갈라투르',
+  '일리아칸',
+  '가디언 루 카드',
+  '광기를 잃은 쿠크세이튼',
+  '국왕 실리안',
+  '데런 아만',
+  '베아트리스',
+  '아만',
+  '에스더 루테란',
+  '에스더 시엔',
+  '웨이',
+  '진저웨일',
+  '카마인',
 ];
 
 async function randomCard(args, msg) {
@@ -95,7 +95,7 @@ async function fortuneTeller(args, msg) {
 
 async function reforgeGame(args, msg) {
   if (args.length === 0) {
-    return "상태 : 재련 레벨과 확률을 알려줍니다.\n도전 : 재련을 시도합니다. 마지막 실패로부터 1시간이 지나야 가능합니다.";
+    return '상태 : 재련 레벨과 확률을 알려줍니다.\n도전 : 재련을 시도합니다. 마지막 실패로부터 1시간이 지나야 가능합니다.';
   }
 
   let name = msg.sender.name;
@@ -108,13 +108,11 @@ async function reforgeGame(args, msg) {
     let probability = (data.probability * 100.0).toFixed(2);
     let remaining = Math.floor((hour - timeDiff) / (60 * 1000));
     switch (args[0]) {
-      case "상태":
-        return `${name}님의 재련 상태\n단계 : ${
-          data.level
-        }\n확률 : ${probability}%\n도전 : ${
-          isAllow ? "가능합니다." : `${remaining}분 후에 가능합니다.`
+      case '상태':
+        return `${name}님의 재련 상태\n단계 : ${data.level}\n확률 : ${probability}%\n도전 : ${
+          isAllow ? '가능합니다.' : `${remaining}분 후에 가능합니다.`
         }`;
-      case "도전":
+      case '도전':
         if (isAllow) {
           let rand = Math.random();
           if (rand <= data.probability) {

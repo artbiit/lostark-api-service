@@ -74,7 +74,7 @@ export const NEWS_ENDPOINTS = {
   EVENTS: '/news/events',
 } as const;
 
-export type NewsEndpoint = typeof NEWS_ENDPOINTS[keyof typeof NEWS_ENDPOINTS];
+export type NewsEndpoint = (typeof NEWS_ENDPOINTS)[keyof typeof NEWS_ENDPOINTS];
 
 // === 현재 버전 별칭 ===
 

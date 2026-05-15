@@ -1,18 +1,18 @@
-const test = require("./Commands/test");
-const armories = require("./Commands/armories");
-const env = require("../../libs/env");
-const logger = require("../../libs/logger");
-const { UDPServer } = require("@remote-kakao/core");
-const prefix = env["PREFIX"];
-const port = env["PORT"];
-const server = new UDPServer({ serviceName: "lostark remote kakao" });
-const help = require("./Commands/help");
-const minigame = require("./Commands/mingame");
-const character = require("./Commands/character");
-const gamecontents = require("./Commands/gamecontents");
-const auctions = require("./Commands/auctions");
-const markets = require("./Commands/marckets");
-require("../scheduler.js");
+const test = require('./Commands/test');
+const armories = require('./Commands/armories');
+const env = require('../../libs/env');
+const logger = require('../../libs/logger');
+const { UDPServer } = require('@remote-kakao/core');
+const prefix = env['PREFIX'];
+const port = env['PORT'];
+const server = new UDPServer({ serviceName: 'lostark remote kakao' });
+const help = require('./Commands/help');
+const minigame = require('./Commands/mingame');
+const character = require('./Commands/character');
+const gamecontents = require('./Commands/gamecontents');
+const auctions = require('./Commands/auctions');
+const markets = require('./Commands/marckets');
+require('../scheduler.js');
 
 const handlers = {
   ping: { handler: test.ping, argsLength: 0 },
@@ -47,15 +47,15 @@ const handlers = {
 };
 
 async function init() {
-  server.once("ready", (port) => {
+  server.once('ready', (port) => {
     console.log(`Server ready on port ${port}!`);
   });
 
-  server.on("message", async (msg) => {
-    msg.content = msg.content || "";
+  server.on('message', async (msg) => {
+    msg.content = msg.content || '';
     if (!msg.content.startsWith(prefix)) return;
 
-    const args = msg.content.split(" ");
+    const args = msg.content.split(' ');
     const cmd = args.shift()?.slice(prefix.length);
     const handler = handlers[cmd];
 
@@ -67,9 +67,7 @@ async function init() {
         send = await msg.replyText(result);
       } catch (error) {
         logger.error(
-          `Service.message. : ${error.message}\n${
-            error.stack
-          }\n\n${JSON.stringify(msg)}`
+          `Service.message. : ${error.message}\n${error.stack}\n\n${JSON.stringify(msg)}`,
         );
         return;
       }

@@ -1,8 +1,8 @@
-const logger = require("../../../libs/logger");
-const api = require("../../../libs/API");
-const cUtils = require("./commandUtils");
-const utils = require("../../../libs/utils");
-const fs = require("fs");
+const logger = require('../../../libs/logger');
+const api = require('../../../libs/API');
+const cUtils = require('./commandUtils');
+const utils = require('../../../libs/utils');
+const fs = require('fs');
 async function profile(args) {
   try {
     await parseCharacterInfo(args[0]);
@@ -40,15 +40,14 @@ async function createProfileResult(name) {
     result.push(character.class_name);
   }
 
-  let eTxt = ["", "", ""];
+  let eTxt = ['', '', ''];
   for (let e of engravings) {
-    eTxt[0] += e.name[0] + " "; // 한글 뒤에 한 칸 공백 추가
-    eTxt[1] += e.grade[0] + " "; // 한 칸 공백 추가
-    eTxt[2] += " " + e.level + " "; // 숫자 앞뒤로 공백 추가
+    eTxt[0] += e.name[0] + ' '; // 한글 뒤에 한 칸 공백 추가
+    eTxt[1] += e.grade[0] + ' '; // 한 칸 공백 추가
+    eTxt[2] += ' ' + e.level + ' '; // 숫자 앞뒤로 공백 추가
   }
 
-  if (engravings.length !== 0)
-    result.push(`\n${eTxt[0]}\n${eTxt[1]}\n${eTxt[2]}`);
+  if (engravings.length !== 0) result.push(`\n${eTxt[0]}\n${eTxt[1]}\n${eTxt[2]}`);
 
   let isPowerStone = 0;
   if (stones.length > 0) {
@@ -61,17 +60,15 @@ async function createProfileResult(name) {
     });
   }
   if (isPowerStone >= 16) {
-    result.push(
-      `"${stones[0].activity_value}${stones[1].activity_value}돌 오우너"`
-    );
+    result.push(`"${stones[0].activity_value}${stones[1].activity_value}돌 오우너"`);
   }
-  result.push("");
+  result.push('');
   result.push(
-    `템/전/원\t${character.item_avg_level}/${character.char_level}/${character.expedition_level}`
+    `템/전/원\t${character.item_avg_level}/${character.char_level}/${character.expedition_level}`,
   );
   if (character.guild_id) {
     result.push(
-      `서버/길드\t${character.server}/${character.guild_name}의 ${character.guild_grade}`
+      `서버/길드\t${character.server}/${character.guild_name}의 ${character.guild_grade}`,
     );
   } else {
     result.push(`서버/길드\t${character.server}/없음`);
@@ -79,31 +76,25 @@ async function createProfileResult(name) {
 
   if (stats) {
     result.push(
-      `전투특성\t${stats[2].type[0]}:${stats[2].value} ${stats[3].type[0]}:${stats[3].value}`
+      `전투특성\t${stats[2].type[0]}:${stats[2].value} ${stats[3].type[0]}:${stats[3].value}`,
     );
   } else {
     result.push(`전투특성\t없음`);
   }
 
-  result.push(
-    `스킬포인트\t${character.using_skill_point}/${character.total_skill_point}`
-  );
+  result.push(`스킬포인트\t${character.using_skill_point}/${character.total_skill_point}`);
   result.push(`pvp\t${character.pvp_grade_name}`);
   result.push(`공격력/체력\t${stats[1].value}/${stats[0].value}`);
 
-  const totalElixirLevel = await cUtils.selectTotalElixirLevel(
-    character.seq_no
-  );
-  const totalTranscendenceCount = await cUtils.selectTotalTranscendenceCount(
-    character.seq_no
-  );
+  const totalElixirLevel = await cUtils.selectTotalElixirLevel(character.seq_no);
+  const totalTranscendenceCount = await cUtils.selectTotalTranscendenceCount(character.seq_no);
   result.push(
     `엘/초/상\t${totalElixirLevel}/${totalTranscendenceCount}/${await cUtils.selectTotalAdvancedReforge(
-      character.seq_no
-    )}`
+      character.seq_no,
+    )}`,
   );
   result.push(
-    `진/깨/도\t${character.ark_passive_evolution}/${character.ark_passive_realization}/${character.ark_passive_leap}`
+    `진/깨/도\t${character.ark_passive_evolution}/${character.ark_passive_realization}/${character.ark_passive_leap}`,
   );
 
   //지성/담력/친절/매력
@@ -114,7 +105,7 @@ async function createProfileResult(name) {
   }
 
   result.push(`\n\n갱신된 시간 ${utils.elapsedTime(character.last_update)}`);
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function parseCharacterInfo(characterName, forceParse) {
@@ -131,10 +122,7 @@ async function parseCharacterInfo(characterName, forceParse) {
     api_result.data = {};
     return api_result;
   }
-  api_result = await api.armories_character(
-    characterName,
-    api.armories_types.summary
-  );
+  api_result = await api.armories_character(characterName, api.armories_types.summary);
 
   if (api_result.status !== 200) {
     return api_result;
@@ -148,7 +136,7 @@ async function parseCharacterInfo(characterName, forceParse) {
     profile,
     data.ArkPassive,
     guildId,
-    now
+    now,
   );
   api_result.characterId = characterId;
   let jobs = [];
@@ -180,16 +168,16 @@ async function createEquipmentsResult(name) {
   let advancedReforgeSum = 0;
 
   for (let eq of equipments) {
-    var str = `+${eq.upgrade_level}(${String(eq.quality).padStart(3, "0")}) ${
+    var str = `+${eq.upgrade_level}(${String(eq.quality).padStart(3, '0')}) ${
       eq.slot_type
-    }(${eq.evolution_level}) ${String(eq.item_level).padStart(4, "0")}`;
+    }(${eq.evolution_level}) ${String(eq.item_level).padStart(4, '0')}`;
 
     if (eq.transcendence_level) {
-      str += ` ⚜️${String(eq.transcendence_count).padStart(2, "0")}`;
+      str += ` ⚜️${String(eq.transcendence_count).padStart(2, '0')}`;
     }
 
     if (eq.advanced_reforge > 0) {
-      str += ` 🔱${String(eq.advanced_reforge).padStart(2, "0")}`;
+      str += ` 🔱${String(eq.advanced_reforge).padStart(2, '0')}`;
     }
 
     result.push(str);
@@ -199,26 +187,22 @@ async function createEquipmentsResult(name) {
     advancedReforgeSum += eq.advanced_reforge;
   }
   result.splice(1, 0, `아이템 레벨 : ${character.item_avg_level}`);
-  result.splice(
-    2,
-    0,
-    `평균 품질 : ${(qualitySum / equipments.length).toFixed(2)}`
-  );
+  result.splice(2, 0, `평균 품질 : ${(qualitySum / equipments.length).toFixed(2)}`);
   result.splice(3, 0, `초월⚜️합계 : ${transcendenceSum}`);
   result.splice(4, 0, `상재🔱합계 : ${advancedReforgeSum}\n`);
 
   if (elixirSum) {
-    result.push("\n<엘릭서 정보>");
+    result.push('\n<엘릭서 정보>');
     let elixir = await cUtils.selectElixir(character.seq_no);
     for (let key in elixir) {
       let e = elixir[key];
       let txt = `- ${key}) `;
       for (let info of e) {
         let name = info.name;
-        if (name.indexOf("(") > -1) {
-          name = name.split(" ")[0];
-        } else if (name.length > 5 && name.indexOf(" ") > -1) {
-          let arg = (name = name.split(" "));
+        if (name.indexOf('(') > -1) {
+          name = name.split(' ')[0];
+        } else if (name.length > 5 && name.indexOf(' ') > -1) {
+          let arg = (name = name.split(' '));
           name = `${arg[0].at(0)}${arg[1].at(0)}`;
         }
 
@@ -229,7 +213,7 @@ async function createEquipmentsResult(name) {
     result.splice(3, 0, `엘릭서 합계 : ${elixirSum}`);
   }
   result.push(`\n갱신된 시간 ${utils.elapsedTime(character.last_update)}`);
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function avatar_url(args) {
@@ -260,9 +244,9 @@ async function skills(args) {
   let tripods = {};
   for (let skill of skills) {
     if (skill.Level <= 1) continue;
-    let txt = "";
+    let txt = '';
 
-    txt += `Lv.${skill.Level}${skill.Level < 10 ? "  " : " "}${skill.Name}`;
+    txt += `Lv.${skill.Level}${skill.Level < 10 ? '  ' : ' '}${skill.Name}`;
     if (skill.Rune) {
       txt += ` [${skill.Rune.Grade[0]} ${skill.Rune.Name}] `;
     }
@@ -292,7 +276,7 @@ async function skills(args) {
       let t = tripods[key];
       let txt = `[${key}] `;
 
-      let args = ["", ""]; // 트포 슬롯, 레벨
+      let args = ['', '']; // 트포 슬롯, 레벨
       for (let value of t) {
         args[0] += value.slot;
         args[1] += value.level;
@@ -301,7 +285,7 @@ async function skills(args) {
       result.push(txt);
     }
   }
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function gems(args) {
@@ -323,7 +307,7 @@ async function gems(args) {
   for (let key of Object.keys(data)) {
     const g = data[key];
 
-    let tooltip = JSON.parse(utils.removeHtmlTag(g["Tooltip"]));
+    let tooltip = JSON.parse(utils.removeHtmlTag(g['Tooltip']));
     let level;
     let gemName;
     let isImputed;
@@ -333,31 +317,29 @@ async function gems(args) {
     for (let key of Object.keys(tooltip)) {
       const element = tooltip[key];
       switch (element.type) {
-        case "NameTagBox":
-          gemName = element.value.split(" ")[1].replace("의", "");
-          isImputed = element.value.includes("귀속");
+        case 'NameTagBox':
+          gemName = element.value.split(' ')[1].replace('의', '');
+          isImputed = element.value.includes('귀속');
           break;
-        case "ItemTitle":
-          level = element.value.slotData.rtString.replace("Lv.", "");
+        case 'ItemTitle':
+          level = element.value.slotData.rtString.replace('Lv.', '');
           level = Number(level);
           tier = element.value.leftStr2;
           tier = tier[tier.length - 1];
           tier = Number(tier);
           break;
-        case "ItemPartBox":
+        case 'ItemPartBox':
           effect = element.value.Element_001;
           break;
       }
     }
 
-    let find = "] ";
+    let find = '] ';
     let index = effect.indexOf(find) + find.length;
     effect = effect.substring(index);
 
-    const validEffects = ["피해", "재사용", "지원"];
-    let effectIndex = validEffects
-      .map((m) => effect.indexOf(m))
-      .filter((i) => i !== -1);
+    const validEffects = ['피해', '재사용', '지원'];
+    let effectIndex = validEffects.map((m) => effect.indexOf(m)).filter((i) => i !== -1);
     if (effectIndex.length > 0) {
       effectIndex = effectIndex[0];
       effect = effect.substring(0, effectIndex);
@@ -388,12 +370,10 @@ async function gems(args) {
   });
 
   for (let i of info) {
-    result.push(
-      `[${i.name}] Lv.${i.level}${i.level < 10 ? "  " : " "}${i.effect}`
-    );
+    result.push(`[${i.name}] Lv.${i.level}${i.level < 10 ? '  ' : ' '}${i.effect}`);
   }
 
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function abilityStone(args) {
@@ -418,7 +398,7 @@ async function abilityStone(args) {
     result.push(`${r.activity_name} Lv.${r.activity_value}`);
   }
 
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function engravings(args) {
@@ -443,7 +423,7 @@ async function engravings(args) {
     result.push(` [${row.name}] Lv.${row.level}`);
   }
 
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function collectibles(args) {
@@ -473,15 +453,12 @@ async function collectibles(args) {
   }
   totalPercent /= rows.length;
   result.push(` [전체 진행도] ${totalPoint} (${totalPercent.toFixed(1)}%)`);
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function avatar_equips(args) {
   const name = args[0];
-  const api_result = await api.armories_character(
-    name,
-    api.armories_types.avatars
-  );
+  const api_result = await api.armories_character(name, api.armories_types.avatars);
 
   if (api_result.status !== 200) {
     return api_result.comment;
@@ -493,8 +470,8 @@ async function avatar_equips(args) {
 
   let info = {};
   for (let a of api_result.data) {
-    let type = a.Type.split(" ")[0].substring(0, 2);
-    if (!type) type = "이동";
+    let type = a.Type.split(' ')[0].substring(0, 2);
+    if (!type) type = '이동';
     let name = a.Name;
     let isInner = a.IsInner;
     if (!info[isInner]) {
@@ -523,7 +500,7 @@ async function avatar_equips(args) {
   for (let a of info[true]) {
     result.push(` [${a.type}] ${a.name}`);
   }
-  return result.join("\n");
+  return result.join('\n');
 }
 
 // async function test() {

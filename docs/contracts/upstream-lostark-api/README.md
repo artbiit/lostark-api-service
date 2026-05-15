@@ -19,7 +19,9 @@
 - **상태**: 최신 버전
 - **조사 날짜**: 2025-01-15
 - **문서**: [V9.0.0/README.md](./V9.0.0/README.md)
-- **구현 가이드**: [V9.0.0/implementation-guide.md](./V9.0.0/implementation-guide.md) ✅ **CHARACTERS, ARMORIES API 완료**
+- **구현 가이드**:
+  [V9.0.0/implementation-guide.md](./V9.0.0/implementation-guide.md) ✅
+  **CHARACTERS, ARMORIES API 완료**
 - **API 엔드포인트**: [V9.0.0/api-endpoints.md](./V9.0.0/api-endpoints.md)
 - **세팅 데이터 지침**:
   [V9.0.0/build-data-guidelines.md](./V9.0.0/build-data-guidelines.md)

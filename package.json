@@ -25,7 +25,7 @@
     "test:api": "tsx --test tests/integration/api/**/*.test.ts",
     "test:cache-flow": "node tests/integration/api/simple-cache-flow-test.mjs",
     "test:workspace": "yarn workspaces foreach -At run test",
-    "validate:monorepo": "yarn validate:deps && yarn validate:refs && yarn typecheck",
+    "validate:monorepo": "yarn validate:deps && yarn validate:refs && yarn build && yarn typecheck",
     "db:migrate": "tsx scripts/migrate.ts",
     "validate:deps": "node scripts/validate-dependencies.mjs",
     "validate:refs": "node scripts/validate-references.mjs",

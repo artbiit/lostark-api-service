@@ -7,7 +7,16 @@
  * - 경매장 아이템 검색
  */
 
-import { ApiVersion, BaseItem, ItemOption, AuctionInfo, PaginationInfo, AuctionSort, SortCondition, ClassName } from './base.js';
+import {
+  ApiVersion,
+  BaseItem,
+  ItemOption,
+  AuctionInfo,
+  PaginationInfo,
+  AuctionSort,
+  SortCondition,
+  ClassName,
+} from './base.js';
 
 // === 경매장 검색 옵션 API ===
 
@@ -88,7 +97,7 @@ export const AUCTIONS_ENDPOINTS = {
   ITEMS: '/auctions/items',
 } as const;
 
-export type AuctionEndpoint = typeof AUCTIONS_ENDPOINTS[keyof typeof AUCTIONS_ENDPOINTS];
+export type AuctionEndpoint = (typeof AUCTIONS_ENDPOINTS)[keyof typeof AUCTIONS_ENDPOINTS];
 
 // === 현재 버전 별칭 ===
 

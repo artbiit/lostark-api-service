@@ -171,7 +171,11 @@ export class PgClient {
     return this.isConnected;
   }
 
-  getPoolStatus(): { totalConnections: number; activeConnections: number; idleConnections: number } {
+  getPoolStatus(): {
+    totalConnections: number;
+    activeConnections: number;
+    idleConnections: number;
+  } {
     return {
       totalConnections: this.pool.totalCount,
       activeConnections: this.pool.totalCount - this.pool.idleCount,

@@ -4,7 +4,8 @@
 
 ### 개요
 
-Lost Ark API Service는 환경변수를 통해 모든 설정을 관리합니다. 환경변수는 `.env` 파일을 통해 로드되며, Zod 스키마를 통해 타입 안전성이 보장됩니다.
+Lost Ark API Service는 환경변수를 통해 모든 설정을 관리합니다. 환경변수는 `.env`
+파일을 통해 로드되며, Zod 스키마를 통해 타입 안전성이 보장됩니다.
 
 ### 환경변수 템플릿
 
@@ -154,7 +155,9 @@ REST_API_PORT: z.coerce.number().min(1).max(65535).default(3000);
 LOG_PRETTY_PRINT: z.coerce.boolean().default(false);
 
 // 열거형 검증
-LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info');
+LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default(
+  'info',
+);
 ```
 
 ### 환경별 설정

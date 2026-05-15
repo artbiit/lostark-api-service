@@ -1,28 +1,26 @@
-const fs = require("fs");
-const utils = require("../../libs/utils");
-const env = require("../../libs/env");
-const mysql = require("mysql2");
-const logger = require("../../libs/logger");
+const fs = require('fs');
+const utils = require('../../libs/utils');
+const env = require('../../libs/env');
+const mysql = require('mysql2');
+const logger = require('../../libs/logger');
 class MysqlService {
   dmlQueue = [];
   queryQueue = [];
 
-  constructor() {
+  constructor() {}
 
-  }
-
-  async init(){
+  async init() {
     this.createConnectionPool();
     await this.createTables();
   }
 
   createConnectionPool() {
     this.inerternalPool = mysql.createPool({
-      host: env["DB_HOST"],
-      port: env["DB_PORT"],
-      user: env["DB_USER"],
-      password: env["DB_PASSWORD"],
-      database: env["DB_SCHEMA"],
+      host: env['DB_HOST'],
+      port: env['DB_PORT'],
+      user: env['DB_USER'],
+      password: env['DB_PASSWORD'],
+      database: env['DB_SCHEMA'],
       connectionLimit: 30,
       enableKeepAlive: true,
       queueLimit: 0,
@@ -32,8 +30,8 @@ class MysqlService {
   }
 
   async createTables() {
-    const text = fs.readFileSync(`${__dirname}/schema.txt`, "utf-8");
-    text.split(";").forEach(async (qry) => {
+    const text = fs.readFileSync(`${__dirname}/schema.txt`, 'utf-8');
+    text.split(';').forEach(async (qry) => {
       if (qry.IsNullOrWhiteSpace()) {
         return;
       }
@@ -49,8 +47,7 @@ class MysqlService {
     return await this.pool.query(qry, params);
   }
 
-
-  async transaction(querySet){
+  async transaction(querySet) {
     // let querySet = [
     //   {
     //     qry: "SELECT ...",
@@ -58,32 +55,30 @@ class MysqlService {
     //   }
     // ];
     let conn;
-try{
-  conn = await this.pool.getConnection();
-  conn.beginTransaction();
-  for(let set of querySet){
-    await conn.execute(set.qry, set.params);
-  }
-  conn.commit();
-
-}catch(error){
-  logger.error(`MysqlServer.transaction. : ${error}`);
-  if(conn){
-    conn.rollback();
-  }
-  throw error;
-}finally{
-  if(conn){
-    conn.release();
-  }
-
-}
+    try {
+      conn = await this.pool.getConnection();
+      conn.beginTransaction();
+      for (let set of querySet) {
+        await conn.execute(set.qry, set.params);
+      }
+      conn.commit();
+    } catch (error) {
+      logger.error(`MysqlServer.transaction. : ${error}`);
+      if (conn) {
+        conn.rollback();
+      }
+      throw error;
+    } finally {
+      if (conn) {
+        conn.release();
+      }
+    }
   }
 }
 
- async function create() {
+async function create() {
   const service = new MysqlService();
-   await service.init();
+  await service.init();
   return service;
 }
 

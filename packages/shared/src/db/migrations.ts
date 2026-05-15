@@ -131,9 +131,7 @@ export class MigrationManager {
         name: string;
         executed_at: Date;
         execution_time: number;
-      }>(
-        'SELECT version, name, executed_at, execution_time FROM migrations ORDER BY version',
-      );
+      }>('SELECT version, name, executed_at, execution_time FROM migrations ORDER BY version');
       return rows.map((r) => ({
         version: r.version,
         name: r.name,
@@ -154,7 +152,11 @@ export class MigrationManager {
         'INSERT INTO migrations (version, name, execution_time) VALUES ($1, $2, $3)',
         [migration.version, migration.name, executionTime],
       );
-      logger.info('Migration recorded', { version: migration.version, name: migration.name, executionTime });
+      logger.info('Migration recorded', {
+        version: migration.version,
+        name: migration.name,
+        executionTime,
+      });
     } catch (error) {
       logger.error('Failed to record migration', {
         version: migration.version,

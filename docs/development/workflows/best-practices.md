@@ -32,16 +32,18 @@ grep -r "관련_키워드" . --exclude-dir=node_modules
 
 ```markdown
 # 환경변수 설정
-환경변수 설정은 [.env.example](../.env.example) 파일을 참조하세요.
-상세 설정 가이드는 [설정 가이드](../configuration.md#environment-variables)를 참조하세요.
+
+환경변수 설정은 [.env.example](../.env.example) 파일을 참조하세요. 상세 설정
+가이드는 [설정 가이드](../configuration.md#environment-variables)를 참조하세요.
 ```
 
 #### ❌ 나쁜 예시
 
 ```markdown
 # 환경변수 설정
-NODE_ENV=development
-LOSTARK_API_KEY=your_key_here
+
+NODE_ENV=development LOSTARK_API_KEY=your_key_here
+
 # → 중복 내용 생성
 ```
 
@@ -217,10 +219,10 @@ it('test 2', () => {
 ```typescript
 /**
  * 캐릭터 데이터를 정규화합니다.
- * 
+ *
  * @param rawData - Lost Ark API에서 받은 원본 데이터
  * @returns 정규화된 캐릭터 데이터
- * 
+ *
  * @example
  * const normalized = normalizeCharacterData(rawApiResponse);
  */
@@ -242,13 +244,15 @@ function normalizeCharacterData(rawData) {
 
 #### ✅ 좋은 예시
 
-```markdown
+````markdown
 # 프로젝트명
 
 ## 개요
+
 프로젝트의 목적과 주요 기능을 간결하게 설명
 
 ## 빠른 시작
+
 ```bash
 # 설치
 yarn install
@@ -259,11 +263,14 @@ cp .env.example .env
 # 실행
 yarn dev
 ```
+````
 
 ## 문서
+
 - [개발 가이드](./Docs/development-guide.md)
 - [API 문서](./Docs/api.md)
-```
+
+````
 
 #### ❌ 나쁜 예시
 
@@ -272,7 +279,7 @@ yarn dev
 
 이 프로젝트는 Lost Ark API를 사용해서...
 (너무 긴 설명)
-```
+````
 
 ## 🔗 관련 문서
 

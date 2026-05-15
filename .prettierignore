@@ -1,0 +1,26 @@
+# Vendored / package manager
+.yarn/
+.pnp.*
+node_modules/
+
+# Build artifacts
+dist/
+coverage/
+**/*.tsbuildinfo
+packages/*/dist/
+
+# Runtime / test outputs
+cache/
+logs/
+.cache/
+
+# Generated / large sample fixtures
+docs/contracts/upstream-lostark-api/**/sample-data/
+docs/graph/
+
+# Session ephemera
+.claude/work-session/
+
+# Lockfiles
+yarn.lock
+package-lock.json

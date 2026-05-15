@@ -1,14 +1,14 @@
-const logger = require("../../../libs/logger");
-const api = require("../../../libs/API");
-const cUtils = require("./commandUtils");
-const utils = require("../../../libs/utils");
+const logger = require('../../../libs/logger');
+const api = require('../../../libs/API');
+const cUtils = require('./commandUtils');
+const utils = require('../../../libs/utils');
 
 async function search_gems(args, msg) {
-  let itemName = args.join(" ");
+  let itemName = args.join(' ');
   const info = {
     CategoryCode: 210000,
-    Sort: "BUY_PRICE",
-    SortCondition: "ASC",
+    Sort: 'BUY_PRICE',
+    SortCondition: 'ASC',
     ItemName: itemName,
     PageNo: 0,
   };
@@ -33,17 +33,15 @@ async function search_gems(args, msg) {
     for (let i = 0; i < count; i++) {
       item = data.Items[i];
       sum += item.AuctionInfo.BuyPrice;
-      searchedList.push(
-        ` ${item.AuctionInfo.BuyPrice} (${item.Options[0].ClassName})`
-      );
+      searchedList.push(` ${item.AuctionInfo.BuyPrice} (${item.Options[0].ClassName})`);
     }
 
     avg = sum / count;
     result.push(`[평균가] : ${avg}`);
 
-    result.push(`\n\n최저가 ${count}개 목록\n${searchedList.join("\n")}`);
+    result.push(`\n\n최저가 ${count}개 목록\n${searchedList.join('\n')}`);
   }
-  return result.join("\n");
+  return result.join('\n');
 }
 
 // async function test() {

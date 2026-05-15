@@ -181,7 +181,7 @@ export interface ArmoryProfileV9 extends ApiVersion {
   CharacterName: string;
   ServerName: string;
   CharacterClassName: string;
-  ItemAvgLevel: string;  // 예: "1,620.00" — 공식 API 원본 문자열 형식
+  ItemAvgLevel: string; // 예: "1,620.00" — 공식 API 원본 문자열 형식
   CharacterImage: string;
   ExpeditionLevel: number;
   PvpGradeName: string;

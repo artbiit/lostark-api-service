@@ -1,22 +1,22 @@
-const logger = require("../../../libs/logger");
-const api = require("../../../libs/API");
-const cUtils = require("./commandUtils");
-const utils = require("../../../libs/utils");
-const fs = require("fs");
-const moment = require("moment-timezone");
+const logger = require('../../../libs/logger');
+const api = require('../../../libs/API');
+const cUtils = require('./commandUtils');
+const utils = require('../../../libs/utils');
+const fs = require('fs');
+const moment = require('moment-timezone');
 const mysql = global.mysql;
 
 const procyonCategories = {
-  "모험 섬": 0,
+  '모험 섬': 0,
   유령선: 1,
   필드보스: 2,
-  "태초의 섬": 3,
+  '태초의 섬': 3,
   카오스게이트: 4,
 };
-const procyonRewardList = ["실링", "골드", "주화", "카드"];
+const procyonRewardList = ['실링', '골드', '주화', '카드'];
 async function procyon() {
   let data = {};
-  let now = new Date(moment.tz("Asia/Seoul"));
+  let now = new Date(moment.tz('Asia/Seoul'));
   let contents = await cUtils.selectTodaysRemainingContents();
   if (!contents) {
     const api_result = await api.gamecontents(api.gamecontents_types.calendar);
@@ -35,7 +35,7 @@ async function procyon() {
     if (!Array.isArray(d.StartTimes)) {
       continue;
     }
-    let start = new Date(moment.tz(d.StartTimes[0], "Asia/Seoul"));
+    let start = new Date(moment.tz(d.StartTimes[0], 'Asia/Seoul'));
 
     if (!data[category]) {
       data[category] = [];
@@ -50,7 +50,7 @@ async function procyon() {
   }
 
   if (Object.keys(data).length === 0) {
-    return "금일 주요 콘텐츠는 더이상 없습니다.";
+    return '금일 주요 콘텐츠는 더이상 없습니다.';
   }
 
   let result = [`${utils.dayToString(now)}의 프로키온의 나침반`];
@@ -60,20 +60,18 @@ async function procyon() {
       for (let d of data[key]) {
         let rewards = [];
         for (let r of d.rewardItems) {
-          let reward = procyonRewardList.find(
-            (value) => r.Name.indexOf(value) !== -1
-          );
+          let reward = procyonRewardList.find((value) => r.Name.indexOf(value) !== -1);
           if (reward && !rewards.includes(reward)) {
             rewards.push(reward);
           }
         }
-        let txt = `${d.name} : ${rewards.join(",")}`;
+        let txt = `${d.name} : ${rewards.join(',')}`;
         result.push(txt);
       }
     }
   }
 
-  return result.join("\n");
+  return result.join('\n');
 }
 async function notice(args) {
   const api_result = await api.news_notices();
@@ -90,7 +88,7 @@ async function event(args) {
     return api_result.comment;
   }
 
-  let result = ["이벤트 정보"];
+  let result = ['이벤트 정보'];
   let now = new Date();
   let index = 0;
   for (let event of api_result.data) {
@@ -116,13 +114,11 @@ async function event(args) {
     }
   }
 
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function challenge_abyss(args) {
-  const api_result = await api.gamecontents(
-    api.gamecontents_types.challengeAbyssDungeons
-  );
+  const api_result = await api.gamecontents(api.gamecontents_types.challengeAbyssDungeons);
   if (api_result.status !== 200) {
     return api_result.comment;
   }
@@ -130,19 +126,17 @@ async function challenge_abyss(args) {
   const data = api_result.data;
   let result = [];
   if (!data || data.length === 0) {
-    result.push("읭");
+    result.push('읭');
   } else {
     result.push(`[금주의 도비스]`);
     result.push(`${data[0].AreaName}`);
   }
 
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function challenge_guardian(args) {
-  const api_result = await api.gamecontents(
-    api.gamecontents_types.challengeGuardianRaids
-  );
+  const api_result = await api.gamecontents(api.gamecontents_types.challengeGuardianRaids);
   if (api_result.status !== 200) {
     return api_result.comment;
   }
@@ -150,7 +144,7 @@ async function challenge_guardian(args) {
   const data = api_result.data;
   let result = [];
   if (!data || data.Raids.length === 0) {
-    result.push("읭");
+    result.push('읭');
   } else {
     result.push(`[금주의 도가토]`);
     for (let raid of data.Raids) {
@@ -158,17 +152,11 @@ async function challenge_guardian(args) {
     }
   }
 
-  return result.join("\n");
+  return result.join('\n');
 }
 
 async function checkDataExistence() {
-  const tables = [
-    "Categories",
-    "Contents",
-    "RewardItems",
-    "ContentStartTimes",
-    "RewardStartTimes",
-  ];
+  const tables = ['Categories', 'Contents', 'RewardItems', 'ContentStartTimes', 'RewardStartTimes'];
   let result = 0;
 
   for (const table of tables) {

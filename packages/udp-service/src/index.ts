@@ -23,7 +23,7 @@ const env = parseEnv();
  */
 async function gracefulShutdown(signal: string): Promise<void> {
   logger.info(`Received ${signal}, starting graceful shutdown`);
-  
+
   try {
     await udpServer.stop();
     logger.info('UDP service stopped successfully');
@@ -44,14 +44,14 @@ function handleUncaughtError(error: Error): void {
     error: error.message,
     stack: error.stack,
   });
-  
+
   // 서버 중지 시도
   udpServer.stop().catch((stopError) => {
     logger.error('Failed to stop server during error handling', {
       error: stopError instanceof Error ? stopError.message : String(stopError),
     });
   });
-  
+
   process.exit(1);
 }
 
@@ -63,14 +63,14 @@ function handleUnhandledRejection(reason: unknown, promise: Promise<unknown>): v
     reason: reason instanceof Error ? reason.message : String(reason),
     promise: promise.toString(),
   });
-  
+
   // 서버 중지 시도
   udpServer.stop().catch((stopError) => {
     logger.error('Failed to stop server during unhandled rejection', {
       error: stopError instanceof Error ? stopError.message : String(stopError),
     });
   });
-  
+
   process.exit(1);
 }
 
@@ -82,13 +82,13 @@ function handleUnhandledRejection(reason: unknown, promise: Promise<unknown>): v
 async function startUdpService(): Promise<void> {
   try {
     logger.info('Starting UDP service');
-    
+
     // 서버 초기화
     await udpServer.initialize();
-    
+
     // 서버 시작
     await udpServer.start();
-    
+
     logger.info('UDP service started successfully');
   } catch (error) {
     logger.error('Failed to start UDP service', {

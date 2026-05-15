@@ -1,9 +1,7 @@
-
 async function ping(args) {
-  return `pong! ${args.join(" ")}`;
+  return `pong! ${args.join(' ')}`;
 }
 
 module.exports = {
   ping,
 };
-

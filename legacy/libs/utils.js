@@ -15,7 +15,7 @@ String.prototype.IsNullOrWhiteSpace = function () {
     return true;
   } else {
     var isWhiteSpace = /^\s*$/;
-    if (typeof arg != "string") {
+    if (typeof arg != 'string') {
       throw "Property or Arguments was not 'String' Types";
     }
     return isWhiteSpace.test(arg.trim());
@@ -25,9 +25,9 @@ String.prototype.IsNullOrWhiteSpace = function () {
 /* Boolean ::: String.IsNullOrWhiteSpace (String arg) */
 String.IsNullOrWhiteSpace = function (arg) {
   if (arg === undefined || arg === null) {
-    throw "Property or Arguments was Never Null";
+    throw 'Property or Arguments was Never Null';
   } else {
-    if (typeof arg != "string") {
+    if (typeof arg != 'string') {
       throw "Property or Arguments was not 'String' Types";
     }
     return arg.IsNullOrWhiteSpace();
@@ -36,9 +36,9 @@ String.IsNullOrWhiteSpace = function (arg) {
 
 function IsNullOrWhiteSpace(arg) {
   if (arg === undefined || arg === null) {
-    throw "Property or Arguments was Never Null";
+    throw 'Property or Arguments was Never Null';
   } else {
-    if (typeof arg != "string") {
+    if (typeof arg != 'string') {
       throw "Property or Arguments was not 'String' Types";
     }
     return arg.IsNullOrWhiteSpace();
@@ -46,15 +46,15 @@ function IsNullOrWhiteSpace(arg) {
 }
 
 function removeHtmlTag(html) {
-  return html.replace(/<[^>]*>?/g, "");
+  return html.replace(/<[^>]*>?/g, '');
 }
 
 const times = [
-  { name: "년", milliSeconds: 60 * 60 * 24 * 365 },
-  { name: "개월", milliSeconds: 60 * 60 * 24 * 30 },
-  { name: "일", milliSeconds: 60 * 60 * 24 },
-  { name: "시간", milliSeconds: 60 * 60 },
-  { name: "분", milliSeconds: 60 },
+  { name: '년', milliSeconds: 60 * 60 * 24 * 365 },
+  { name: '개월', milliSeconds: 60 * 60 * 24 * 30 },
+  { name: '일', milliSeconds: 60 * 60 * 24 },
+  { name: '시간', milliSeconds: 60 * 60 },
+  { name: '분', milliSeconds: 60 },
 ];
 
 function elapsedTime(date) {
@@ -70,7 +70,7 @@ function elapsedTime(date) {
       return `${betweenTime}${value.name} 전`;
     }
   }
-  return "방금 전";
+  return '방금 전';
 }
 
 function remainingTime(date, start) {
@@ -91,13 +91,13 @@ function remainingTime(date, start) {
 
 function dayToString(date) {
   const days = {
-    0: "일요일",
-    1: "월요일",
-    2: "화요일",
-    3: "수요일",
-    4: "목요일",
-    5: "금요일",
-    6: "토요일",
+    0: '일요일',
+    1: '월요일',
+    2: '화요일',
+    3: '수요일',
+    4: '목요일',
+    5: '금요일',
+    6: '토요일',
   };
   return days[date.getDay()];
 }
