@@ -15,14 +15,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
+    - name: Enable corepack
+      run: corepack enable
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: 'yarn'
-        
+
     - name: Install dependencies
-      run: yarn install --frozen-lockfile
+      run: yarn install --immutable
       
     - name: Validate dependencies
       run: yarn validate:deps
@@ -48,14 +51,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
+    - name: Enable corepack
+      run: corepack enable
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: 'yarn'
-        
+
     - name: Install dependencies
-      run: yarn install --frozen-lockfile
+      run: yarn install --immutable
       
     - name: Run unit tests
       run: yarn test:unit
@@ -74,14 +80,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
+    - name: Enable corepack
+      run: corepack enable
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: 'yarn'
-        
+
     - name: Install dependencies
-      run: yarn install --frozen-lockfile
+      run: yarn install --immutable
       
     - name: Build all packages
       run: yarn build
