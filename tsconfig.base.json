@@ -29,5 +29,5 @@
       "@lostark/udp-gateway/*": ["packages/udp-service/src/*"]
     }
   },
-  "exclude": ["node_modules", "dist", "coverage", "logs", "cache", "**/node_modules"]
+  "exclude": ["node_modules", "dist", "coverage", "logs", "**/node_modules"]
 }
