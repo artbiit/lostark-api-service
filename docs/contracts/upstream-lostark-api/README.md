@@ -12,6 +12,17 @@
 이 디렉토리에는 로스트아크 공식 API의 버전별 문서와 타입 정의가 포함되어
 있습니다.
 
+## 📁 공식 포털 문서 (버전 독립)
+
+공식 개발자 포털(https://developer-lostark.game.onstove.com)에서 직접 수집한
+문서. 버전 무관 참조 자료.
+
+- **API 엔드포인트 목록**: [official-portal/api-documents.md](./official-portal/api-documents.md) — V1.0.0 ~ V10.0.0 전체 24개 엔드포인트 + 인증/Rate Limit
+- **CHANGELOG**: [official-portal/changelog.md](./official-portal/changelog.md) — V1.0.0 ~ V10.0.0 버전별 추가·삭제 이력
+- **FAQ**: [official-portal/faq.md](./official-portal/faq.md) — 13개 Q&A (인증 오류·Rate Limit·버그 신고 등)
+
+> 최종 수집: 2026-05-15. 내용 갱신 필요 시 research-advisor 로 재fetch 후 교체.
+
 ## 📁 버전별 문서
 
 ### V9.0.0 (현재 최신)

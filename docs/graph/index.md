@@ -1,6 +1,6 @@
 ---
 kind: graphify-meta
-last_generated_at: 2026-05-15T22:18:00+09:00
+last_generated_at: 2026-05-15T23:01:00+09:00
 source_commit: acd006a3ad5aa10ddac50054ca20e7d340d5747a
 scopes:
   - full
@@ -47,7 +47,7 @@ docs/graph/
 
 | scope | 마지막 생성 | 소스 커밋 | 대상 경로                                           | 요약                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | ----- | ----------- | --------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| full  | 2026-05-15  | `acd006a` | 레포 전체 (packages/\*/src + docs + tests + legacy) | 2040 nodes · 2740 edges · 183 communities. 풀 재빌드 (235 파일, AST 1783+semantic 260 nodes). God nodes: ArmoriesService, ArmoriesCache, ArmoriesClient, ArmoriesNormalizer, ApiClient. 핵심 커뮤니티: Armories Component Hub / HTTP API Client Base / REST Server Core / Cache Lifecycle Management / V9 API Type Definitions. |
+| full  | 2026-05-15  | `acd006a` | 레포 전체 (packages/\*/src + docs + tests + legacy) + official-portal docs | 2061 nodes · 2766 edges · 181 communities. 최초 풀 재빌드 (235 파일) + --update (official-portal 3 파일: api-documents/changelog/faq). God nodes: ArmoriesService, ArmoriesCache, ArmoriesClient, ArmoriesNormalizer, ApiClient. 핵심 커뮤니티: Armories Component Hub / HTTP API Client Base / REST Server Core / Official Portal API Documentation (신규). |
 
 ## 갱신 시 체크리스트
 
