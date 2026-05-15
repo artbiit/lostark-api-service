@@ -29,9 +29,9 @@
 
 ## DB
 
-- MySQL 은 `mysql2` 의 prepared statement / 파라미터 바인딩(`?`) 을 사용. 문자열
+- PostgreSQL 은 `pg` 의 parameterized query (`$1, $2, …`) 를 사용. 문자열
   보간으로 raw SQL 만들지 말 것 — 사용 시 근거 명시.
-- MySQL 스키마 변경은 마이그레이션으로 처리
+- PostgreSQL 스키마 변경은 마이그레이션으로 처리
   (`packages/shared/src/db/migrations.ts` 기반). 자동 반영 금지. 적용은
   [agent-team-protocol](./agent-team-protocol.md) §6 파괴적 조작 게이트 대상.
 

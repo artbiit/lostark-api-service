@@ -63,7 +63,7 @@ yarn workspace @lostark/rest-api dump:openapi
 
 본 서비스 운영 기동 전제:
 
-- MySQL / Redis 가 외부에서 이미 구동 중이라고 가정 (loa-platform 의
+- PostgreSQL / Redis 가 외부에서 이미 구동 중이라고 가정 (loa-platform 의
   `docker-compose.yml`).
 - 의존 서비스가 **사전 기동되었는지 확인** 후에만 본 서비스 컨테이너를 기동한다.
   실패 시 회로가 빨라야 알람이 의미 있음.
@@ -74,7 +74,9 @@ yarn workspace @lostark/rest-api dump:openapi
 
 ```bash
 # 1. loa-platform 측에서 공유 인프라 기동 (별도 레포)
-#    cd ../loa-platform && docker compose up -d mysql redis
+#    PostgreSQL/Redis 는 shared-db external 네트워크에 별도 기동되어 있어야 한다.
+#    loa-platform/docker-compose.yml 자체에는 postgres/redis 서비스가 정의돼 있지 않으므로
+#    환경(개발/운영) 에 맞는 인프라 stack 을 사전에 기동.
 
 # 2. 본 레포 빌드 + 컨테이너 기동
 yarn build

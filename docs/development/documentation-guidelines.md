@@ -68,8 +68,8 @@
     `params` validator 적용 여부.
   - **권한 검증**: API 키 검증 미들웨어, `@fastify/rate-limit` 정책, caller 분리
     (이 서비스는 길드/유저 단위 tenant 가 아니라 API 키 기반 caller 구분).
-  - **DB 보안**: `mysql2` 의 prepared statement / 파라미터 바인딩(`?`) 사용
-    여부. 문자열 보간으로 raw SQL 을 만들지 말 것 — 사용 시 근거 명시.
+  - **DB 보안**: `pg` 의 parameterized query (`$1, $2, …`) 사용 여부. 문자열
+    보간으로 raw SQL 을 만들지 말 것 — 사용 시 근거 명시.
   - **비밀 값 취급**: `.env` 이외 경로에 토큰/키 노출 여부, 로그 마스킹
     (`packages/shared/src/config/logger.ts` 의 redaction 설정).
   - **외부 노출**: `@fastify/helmet` / `@fastify/cors` 정책 변경 시 영향 범위,
@@ -125,7 +125,7 @@
 - [ ] 해당 카테고리의 `index.md` 에 링크를 추가했는가?
 - [ ] 변경 또는 분석 결과를 재현 가능한 수준(명령어/커밋 SHA/테스트 파일) 으로
       적었는가?
-- [ ] 검증 내용과 영향 범위(어떤 라우트/캐시 계층/MySQL 테이블) 를 적었는가?
+- [ ] 검증 내용과 영향 범위(어떤 라우트/캐시 계층/PostgreSQL 테이블) 를 적었는가?
 - [ ] (해당 시) 입력 검증, 권한, DB 보안, 비밀 값, 외부 노출 관점을 점검했는가?
 - [ ] (REST 계약 변경 시) `yarn workspace @lostark/rest-api dump:openapi` 결과를
       갱신·커밋했고 LoA-Bot 측 `openapi-typescript` 재생성 필요성을 명시했는가?

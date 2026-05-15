@@ -124,6 +124,12 @@ Orchestrator
    URL/라이브러리/도구를 언급했다면 그 선택지를 옵션에서 빼지 말고 동등 비교
    포함 또는 옵션 본문에 배제 근거 한 줄 기술 (MEMORY:
    feedback-user-mentioned-lib-must-appear-in-options).
+5. **인용 사실 신선도 확인**: 옵션 본문이 현행 코드/문서/설정 상태(deps,
+   환경변수 zod 스키마, 아키텍처 경계 기술, 자동 로드 게이트 문구 등) 를
+   인용한다면, 옵션 제시 **직전에** Read 또는 grep 으로 실제 파일 상태와
+   대조한다. 비교형 옵션("현재 → 변경 후") 의 "현재" 부분이 stale 일 때
+   사용자가 옵션 비교 모드 대신 정정 지시 모드로 전환되어 라운드가 추가됨
+   (MEMORY: feedback-ask-user-question-citation-freshness-check).
 
 ### 4.2 clarify 요청 응대 분기
 
@@ -169,7 +175,7 @@ model_choice:
 후에만 실행한다.
 
 - `git push --force`, `git reset --hard`, 브랜치/태그 삭제
-- DB drop, TRUNCATE, MySQL 스키마 마이그레이션 적용 (작성은 허용, 적용은 금지)
+- DB drop, TRUNCATE, PostgreSQL 스키마 마이그레이션 적용 (작성은 허용, 적용은 금지)
 - 파일 대량 삭제 (≥5 파일 또는 디렉토리 통째)
 - 외부로의 메시지 발송 / 외부 API 쓰기 계열 호출 (공식 로스트아크 API 는 읽기
   전용이라 해당 없음 — 그 외 third-party 쓰기 / 게시 행위가 게이트 대상)

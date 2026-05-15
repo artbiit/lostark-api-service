@@ -17,8 +17,8 @@
 | ------ | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | **L1** | 단위·회귀 + 워크스페이스 정합       | `yarn typecheck` + `yarn test:unit` + `yarn validate:monorepo`                                                                                     | "내가 고친 라인이 깨지지 않음" + "과거 버그가 재발하지 않음" + "패키지 의존/refs 가 일관"         |
 | **L2** | 공식 로스트아크 API envelope 계약   | `yarn test:integration` (현재 `tests/integration/api/armories.test.ts`) — `developer-lostark.game.onstove.com` live 호출                           | "공식 API 의 응답 envelope·필드·V9 스키마가 우리 normalizer/타입과 정합"                          |
-| **L3** | 3-tier 캐시 동선 + API key 인증 e2e | `yarn test:cache-flow` (정상 동작 — `tests/integration/api/simple-cache-flow-test.mjs` 실행) + `tests/integration/api/*-cache-flow-test.mjs`        | "메모리 → Redis → MySQL 데이터 이동, TTL 만료, MySQL 복원" 까지 실제로 돈다                       |
-| **L4** | 배포 준비성                         | `deploy-advisor` (Phase 6 도입 후) 산출 — `yarn build` + `yarn workspace @lostark/rest-api dump:openapi` + `loa-platform` compose 의존 서비스 검증 | "멀티 패키지 docker 이미지 빌드 가능, OpenAPI dump 갱신, 의존 인프라(MySQL/Redis) 사전 기동 확인" |
+| **L3** | 3-tier 캐시 동선 + API key 인증 e2e | `yarn test:cache-flow` (정상 동작 — `tests/integration/api/simple-cache-flow-test.mjs` 실행) + `tests/integration/api/*-cache-flow-test.mjs`        | "메모리 → Redis → PostgreSQL 데이터 이동, TTL 만료, PostgreSQL 복원" 까지 실제로 돈다             |
+| **L4** | 배포 준비성                         | `deploy-advisor` (Phase 6 도입 후) 산출 — `yarn build` + `yarn workspace @lostark/rest-api dump:openapi` + `loa-platform` compose 의존 서비스 검증 | "멀티 패키지 docker 이미지 빌드 가능, OpenAPI dump 갱신, 의존 인프라(PostgreSQL/Redis) 사전 기동 확인" |
 
 **시점 주의**: 본 서비스는 공식 로스트아크 API 의 wrapper 본체다. 따라서 L2 의
 "원격 계약" 은 _우리가 호출하는 업스트림(공식 API)_ 의 envelope 검증이다.
@@ -146,10 +146,10 @@ strategies:
     failure_severity: blocker
     preconditions:
       - 'Redis 기동 (CACHE_REDIS_URL)'
-      - 'MySQL 기동 + 마이그레이션 완료'
+      - 'PostgreSQL 기동 + 마이그레이션 완료'
       - 'LOSTARK_API_KEY 환경변수 set'
     note: |
-      메모리 → Redis → MySQL 캐시 계층 이동, TTL 만료, MySQL 복원까지 검증.
+      메모리 → Redis → PostgreSQL 캐시 계층 이동, TTL 만료, PostgreSQL 복원까지 검증.
       현재 standalone .mjs 스크립트로 분리되어 있으며 node:test 통합은 후속 과제.
       `package.json` 의 `test:cache-flow` 스크립트는 `node tests/integration/api/simple-cache-flow-test.mjs` 로 정정 완료 (2026-05-15).
 
