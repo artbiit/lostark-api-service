@@ -80,6 +80,12 @@ test('normalizeCharacterDetail — ArkPassive 활성', async (t) => {
     assert.strictEqual(characterDetail.characterLevel, 70);
   });
 
+  await t.test('N-5b: combatPower 매핑 (콤마 제거 후 number)', async () => {
+    const norm = new ArmoriesNormalizer();
+    const { characterDetail } = await norm.normalizeCharacterDetail('테스트캐릭', fixture);
+    assert.strictEqual(characterDetail.combatPower, 4351.68);
+  });
+
   await t.test('N-6: Rune.Grade/Tooltip 매핑', async () => {
     const norm = new ArmoriesNormalizer();
     const { characterDetail } = await norm.normalizeCharacterDetail('테스트캐릭', fixture);

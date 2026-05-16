@@ -52,7 +52,8 @@ test('formatProfile', async (t) => {
     const out = formatProfile('아트네', detail);
     assert.match(out, /심판자 아트네/);
     assert.match(out, /디스트로이어/);
-    assert.match(out, /템\/전\/원\t1700/);
+    assert.match(out, /템\/전\t1700/);
+    assert.match(out, /원정대\t/);
     assert.match(out, /서버\/길드\t루페온\/아트네/);
     assert.match(out, /전투특성\t/);
     assert.match(out, /스킬포인트\t400\/420/);
@@ -64,7 +65,8 @@ test('formatProfile', async (t) => {
     const detail = { serverName: '루페온' } as Record<string, unknown>;
     const out = formatProfile('빈캐', detail);
     assert.match(out, /빈캐/);
-    assert.match(out, /템\/전\/원\t0/);
+    assert.match(out, /템\/전\t0/);
+    assert.match(out, /원정대\t0/);
     assert.match(out, /서버\/길드\t루페온\/없음/);
   });
 
@@ -207,15 +209,18 @@ test('formatProfile', async (t) => {
     assert.doesNotMatch(out, /undefined/);
   });
 
-  // F-9: characterLevel 직접 매핑
-  await t.test('F-9: renders 템/전/원 with characterLevel directly', () => {
+  // F-9: 템/전 + 원정대 별행. characterLevel 사용 안 함 (제거됨).
+  await t.test('F-9: renders 템/전 with combatPower and 원정대 as a separate line', () => {
     const detail = {
       itemLevel: 1700,
-      characterLevel: 70,
+      combatPower: 4351.68,
       expeditionLevel: 80,
     };
     const out = formatProfile('아트네', detail);
-    assert.match(out, /템\/전\/원\t1700\/70\/80/);
+    assert.match(out, /템\/전\t1700\/4351\.68/);
+    assert.match(out, /원정대\t80/);
+    // 옛 "템/전/원" 양식 더 이상 사용 안 함
+    assert.doesNotMatch(out, /템\/전\/원/);
   });
 });
 

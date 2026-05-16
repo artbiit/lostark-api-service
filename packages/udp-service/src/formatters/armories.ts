@@ -63,10 +63,12 @@ export function formatProfile(name: string, detail: AnyDetail): string {
   // 5. (빈 줄)
   lines.push('');
 
-  // 6. 템/전/원 — characterLevel 직접
+  // 6. 템/전 — itemLevel / combatPower
   const itemLevel = detail.itemLevel ?? 0;
-  const characterLevel = detail.characterLevel ?? '';
-  lines.push(`템/전/원\t${itemLevel}/${characterLevel}/${detail.expeditionLevel ?? 0}`);
+  const combatPower = detail.combatPower ?? 0;
+  lines.push(`템/전\t${itemLevel}/${combatPower}`);
+  // 6-1. 원정대 (별행)
+  lines.push(`원정대\t${detail.expeditionLevel ?? 0}`);
 
   // 7. 서버/길드 + 길드 등급
   const serverLabel = detail.serverName || '알 수 없음';

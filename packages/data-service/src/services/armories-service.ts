@@ -722,6 +722,7 @@ function pickCoreFields(
     className: detail.className,
     itemLevel: detail.itemLevel,
     characterLevel: detail.characterLevel,
+    combatPower: detail.combatPower,
     expeditionLevel: detail.expeditionLevel,
     ...(detail.guildName !== undefined && { guildName: detail.guildName }),
     ...(detail.guildMemberGrade !== undefined && {

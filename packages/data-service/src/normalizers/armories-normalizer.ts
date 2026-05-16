@@ -36,6 +36,8 @@ export interface NormalizedCharacterDetail {
   itemLevel: number;
   /** ArmoryProfile.CharacterLevel 직접. Stats 우회 제거. */
   characterLevel: number;
+  /** ArmoryProfile.CombatPower 의 콤마 제거 후 number. 예: "4,351.68" → 4351.68 */
+  combatPower: number;
   expeditionLevel: number;
   guildName?: string;
   /** ArmoryProfile.GuildMemberGrade — 예: '길드장', '부길드장', '길드원'. */
@@ -231,6 +233,7 @@ export class ArmoriesNormalizer {
       // 3. 정규화된 데이터 생성
       const characterLevel =
         typeof (profile as any).CharacterLevel === 'number' ? (profile as any).CharacterLevel : 0;
+      const combatPower = this.parseCombatPower((profile as any).CombatPower);
 
       const characterDetail: NormalizedCharacterDetail = {
         characterName: characterNameFromProfile,
@@ -238,6 +241,7 @@ export class ArmoriesNormalizer {
         className,
         itemLevel,
         characterLevel,
+        combatPower,
         expeditionLevel: profile.ExpeditionLevel,
         ...(profile.GuildName && { guildName: profile.GuildName }),
         ...(profile.GuildMemberGrade && { guildMemberGrade: profile.GuildMemberGrade }),
@@ -667,6 +671,14 @@ export class ArmoriesNormalizer {
     // ItemAvgLevel 은 "1,620.00" 형식의 문자열
     const raw = profile.ItemAvgLevel as string | undefined;
     if (!raw) return 0;
+    return parseFloat(raw.replace(/,/g, '')) || 0;
+  }
+
+  /**
+   * 전투력 파싱. CombatPower 는 "4,351.68" 형식 문자열.
+   */
+  private parseCombatPower(raw: unknown): number {
+    if (typeof raw !== 'string' || raw.length === 0) return 0;
     return parseFloat(raw.replace(/,/g, '')) || 0;
   }
 
