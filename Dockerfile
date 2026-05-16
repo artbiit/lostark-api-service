@@ -22,8 +22,11 @@ RUN yarn build
 EXPOSE 3000 3001
 
 # 헬스 체크
+# alpine 기본 BusyBox wget 사용 (curl 미설치). UDP 워크스페이스로 기동된 컨테이너는
+# 3000 포트가 없어 healthcheck 가 실패하므로 compose 측에서 `disable: true` 로 끈다.
+# 127.0.0.1 명시: BusyBox wget 의 localhost 가 IPv6(::1) 우선이라 fastify(IPv4 0.0.0.0) 와 어긋남.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
+  CMD wget -qO- http://127.0.0.1:3000/health > /dev/null 2>&1 || exit 1
 
 # 실행
 CMD ["yarn", "workspace", "@lostark/rest-api", "start"]
