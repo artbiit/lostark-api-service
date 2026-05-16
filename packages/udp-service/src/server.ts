@@ -14,7 +14,7 @@ import { createSocket, Socket, RemoteInfo } from 'dgram';
 import { EventEmitter } from 'events';
 
 import { logger } from '@lostark/shared';
-import { parseEnv } from '@lostark/shared/config/env.js';
+import { parseEnv } from '@lostark/shared/config/env';
 import {
   cacheManager,
   disconnectPostgres,
@@ -220,23 +220,39 @@ export class UdpServer extends EventEmitter {
 
   /**
    * 서버 초기화 (DB/캐시 연결, 워커 풀 시작).
+   *
+   * Redis/Postgres 연결 실패는 무한 reconnect 사이클로 hang 될 수 있으므로
+   * timeout 으로 감싸고 실패해도 UDP listen 은 진행한다 (graceful degradation).
+   * REST 서비스와 동일한 패턴.
    */
   async initialize(): Promise<void> {
+    const timeout = 5000;
+    await this.connectWithTimeout(initializeRedis(), timeout, 'Redis');
+    await this.connectWithTimeout(initializePostgres(), timeout, 'PostgreSQL');
+
+    this.workerPool.start();
+    this.setupSocketEventHandlers();
+
+    logger.info('UDP server initialized successfully', {
+      registeredCommands: this.router.listing.length,
+    });
+  }
+
+  private async connectWithTimeout(
+    connectPromise: Promise<unknown>,
+    timeoutMs: number,
+    label: string,
+  ): Promise<void> {
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} connection timeout`)), timeoutMs),
+    );
     try {
-      await initializeRedis();
-      await initializePostgres();
-
-      this.workerPool.start();
-      this.setupSocketEventHandlers();
-
-      logger.info('UDP server initialized successfully', {
-        registeredCommands: this.router.listing.length,
-      });
+      await Promise.race([connectPromise, timeout]);
+      logger.info(`${label} connected for UDP service`);
     } catch (error) {
-      logger.error('Failed to initialize UDP server', {
+      logger.warn(`${label} unavailable, continuing without it`, {
         error: error instanceof Error ? error.message : String(error),
       });
-      throw error;
     }
   }
 

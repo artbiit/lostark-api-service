@@ -9,7 +9,7 @@
  */
 
 import { logger } from '@lostark/shared';
-import { parseEnv } from '@lostark/shared/config/env.js';
+import { parseEnv } from '@lostark/shared/config/env';
 import { udpServer } from './server.js';
 
 // === 환경변수 로딩 ===

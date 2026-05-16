@@ -10,6 +10,10 @@ graphify-out/
 .claude/work-session/
 .claude/settings.local.json
 
+# ---> 메신저봇R 클라이언트 로컬 사본 (내부 LAN IP/포트 포함, public 레포 보호)
+# 템플릿은 *.template.js 로 커밋되며, 실값 치환본은 커밋 금지.
+scripts/messenger-bot/remote-kakao.js
+
 # ---> Node
 # Logs
 logs

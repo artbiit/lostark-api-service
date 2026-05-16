@@ -10,7 +10,7 @@
     "dev": "tsc --watch",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
-    "start": "node dist/server.js",
+    "start": "node dist/index.js",
     "test": "tsx --test ../../tests/unit/udp-service/**/*.test.ts",
     "test:watch": "tsx --test --watch ../../tests/unit/udp-service/**/*.test.ts",
     "test:integration": "tsx --test ../../tests/integration/services/**/*.test.ts"
