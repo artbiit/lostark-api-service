@@ -5,11 +5,15 @@
  * - 실제 API 호출
  * - 캐시 동작
  * - 정규화 처리
+ *
+ * Phase 3 추가 (verification-strategies.md L2 의무):
+ *   - 어빌리티 스톤 normalize live 호출 1 case (SKIP_LIVE_API=1 환경에서 skip)
  */
 
 import assert from 'node:assert';
 import { test } from 'node:test';
 import { getTestCharacters, setupTestEnvironment, withTimeout } from '../../common/test-utils';
+import { armoriesService } from '@lostark/data-service';
 
 test('ARMORIES API Integration', async (t) => {
   await t.test('should fetch character armory data', async () => {
@@ -90,4 +94,62 @@ test('ARMORIES API Integration', async (t) => {
       throw error;
     }
   });
+});
+
+// === L2 의무: 어빌리티 스톤 normalize live 호출 검증 ===
+// verification-strategies.md §L2 의무 — normalizer 수정 범주
+// SKIP_LIVE_API=1 환경에서 skip 처리.
+
+test('어빌리티 스톤 — live 호출 normalize 정상 (L2)', async () => {
+  if (process.env['SKIP_LIVE_API'] === '1') {
+    console.log('⚠️  SKIP_LIVE_API=1, L2 어빌리티 스톤 테스트 건너뜁니다');
+    return;
+  }
+
+  const testCharacters = getTestCharacters();
+  if (testCharacters.length === 0) {
+    console.log('⚠️  테스트 캐릭터가 없어 L2 어빌리티 스톤 테스트를 건너뜁니다');
+    return;
+  }
+
+  const liveCharacter = testCharacters[0]!;
+
+  try {
+    const detail = await withTimeout(
+      armoriesService.getCharacterDetailPartial(liveCharacter, ['equipment']),
+      15000,
+    );
+
+    if (!detail) {
+      console.log(`⚠️  ${liveCharacter} 캐릭터를 찾을 수 없어 건너뜁니다`);
+      return;
+    }
+
+    // L2 의무: abilityStone 필드가 항상 존재 (null 포함)
+    assert('abilityStone' in detail, 'detail should have abilityStone field (may be null)');
+
+    if (detail.abilityStone !== null && detail.abilityStone !== undefined) {
+      // 어빌리티 스톤이 장착된 경우 normalize 결과 구조 검증
+      assert(typeof detail.abilityStone.name === 'string', 'abilityStone.name should be string');
+      assert(detail.abilityStone.name.length > 0, 'abilityStone.name should not be empty');
+      assert(typeof detail.abilityStone.grade === 'string', 'abilityStone.grade should be string');
+      assert(detail.abilityStone.grade.length > 0, 'abilityStone.grade should not be empty');
+      assert(
+        Array.isArray(detail.abilityStone.engravingEffects),
+        'abilityStone.engravingEffects should be array',
+      );
+      console.log(
+        `✅ L2 어빌리티 스톤 normalize 성공: ${liveCharacter} — ${detail.abilityStone.grade} ${detail.abilityStone.name} (effects: ${detail.abilityStone.engravingEffects.length})`,
+      );
+    } else {
+      // null 도 유효한 응답 (미장착)
+      console.log(`✅ L2 어빌리티 스톤 테스트 성공: ${liveCharacter} — 스톤 미장착 (null)`);
+    }
+  } catch (error) {
+    if (error instanceof Error && (error.message.includes('timeout') || error.message.includes('401') || error.message.includes('403'))) {
+      console.log(`⚠️  API 접근 불가 (${error.message}), L2 테스트 건너뜁니다`);
+      return;
+    }
+    throw error;
+  }
 });

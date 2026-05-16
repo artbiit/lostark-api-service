@@ -9,7 +9,7 @@ export const engravingsCommand: CommandSpec = {
     const name = args[0]!;
     try {
       const detail = await ctx.armoriesService.getCharacterDetailPartial(name, ['engravings']);
-      if (!detail?.engravings) return `${name} 을(를) 찾을 수 없습니다.`;
+      if (!detail?.engravings) return `${name} 은(는) 장착중인 각인이 없는 것 같숨미당.`;
       return formatEngravings(name, detail);
     } catch (err) {
       ctx.logger.warn({ name, err: String(err) }, 'engravings command failed');

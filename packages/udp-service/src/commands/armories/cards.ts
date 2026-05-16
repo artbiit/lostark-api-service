@@ -9,7 +9,7 @@ export const cardsCommand: CommandSpec = {
     const name = args[0]!;
     try {
       const detail = await ctx.armoriesService.getCharacterDetailPartial(name, ['cards']);
-      if (!detail?.cards) return `${name} 을(를) 찾을 수 없습니다.`;
+      if (!detail?.cards) return `${name} 은(는) 장착중인 카드가 없는 것 같숨미당.`;
       return formatCards(name, detail);
     } catch (err) {
       ctx.logger.warn({ name, err: String(err) }, 'cards command failed');

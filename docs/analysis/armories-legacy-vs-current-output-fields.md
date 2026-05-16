@@ -7,9 +7,21 @@ concerns:
   - 'ArmoryCharacterV9 타입에 ArkPassive 미정의 — F7 에서 타입 작업 선행 필요 [해소: session 20260516-230225 Phase 1]'
   - 'profile 명령 sections 미스매치 (equipment 미수신) — F7 에서 profile.ts 수정 필요 [해소: session 20260516-230225 Phase 4]'
 resolved_by: 20260516-230225
+superseded_note: |
+  본 분석은 "legacy 수준 보강" 관점으로 작성된 자료다. 후속 세션(20260517-010704)에서
+  이 방향 자체가 아크패시브 시즌 기준으로 잘못된 전제임을 인지하고 재기획이 완료됐다.
+  응답 재기획 결과는 다음을 참조:
+  - changes: docs/changes/2026-05-17-armories-arkpassive-rewrite.md
+  - work-log: docs/work-log/2026-05-17-armories-arkpassive-rewrite/index.md
 ---
 
 # legacy 정보 명령 vs 현재 udp-service formatter — 차이 분석
+
+> **[2026-05-17 후속 안내]** 본 문서는 "legacy parity" 관점의 분석 자료다.
+> 후속 세션(20260517-010704)에서 이 방향 자체가 재기획됐다. 아크패시브 시즌 기준
+> 응답 재기획 결과는
+> [changes: 아크패시브 시즌 기준 재기획](../changes/2026-05-17-armories-arkpassive-rewrite.md) 및
+> [work-log](../work-log/2026-05-17-armories-arkpassive-rewrite/index.md) 참조.
 
 본 문서는 다음 세션 **F7 (!정보 출력 legacy 수준 보강)** 의 사전 자료다. 본 세션
 (sid: 20260516-224308) 은 조사·문서화만. 코드 변경 없음.

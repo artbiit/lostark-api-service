@@ -9,7 +9,51 @@
 import { logger } from '@lostark/shared';
 import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories';
 
+// === 어빌리티 스톤 분류 색상 코드 (V9 sample 기반) ===
+
+/** 레벨 보너스 라인 식별 색 (`#73DC04`). §5.2 분류 결정 트리. */
+const STONE_LEVEL_BONUS_COLOR = '#73DC04';
+/** 디버프 라인 식별 색 (`#FE2E2E`). 예: `[이동속도 감소]`. */
+const STONE_DEBUFF_COLOR = '#FE2E2E';
+/** 토큰 우선순위 매치 — `'레벨 보너스'` 도 level-bonus 트리거. */
+const STONE_LEVEL_BONUS_TOKEN = '레벨 보너스';
+
 // === 도메인 모델 ===
+
+/**
+ * 어빌리티 스톤 도메인 모델 (V9.0.0 시즌 기준).
+ *
+ * 입력: ArmoryEquipment[] 중 Type === '어빌리티 스톤' 한 건.
+ * Tooltip 파싱 (sample: equipment.json L80):
+ *   - Element_006 = ItemPartBox, value.Element_000 = '세공 단계 보너스' 헤더
+ *     → craftingBonus = value.Element_001 의 HTML 제거 텍스트
+ *   - Element_007 = IndentStringGroup, topStr 포함 '무작위 각인 효과'
+ *     → engravingEffects[] = value.Element_000.contentStr.Element_* 각각 분류
+ */
+export interface NormalizedAbilityStone {
+  /** 예: "위대한 비상의 돌" */
+  name: string;
+  /** 예: "고대" */
+  grade: string;
+  /** Element_006 의 ItemPartBox.Element_001 텍스트. 없으면 null (legacy 잔존 데이터 호환). */
+  craftingBonus: string | null;
+  /** Element_007 의 무작위 각인 효과 (이다 샘플 = 4개). 순서 보존. */
+  engravingEffects: NormalizedAbilityStoneEffect[];
+}
+
+/** 어빌리티 스톤 효과 분류 — 결정 트리는 §5.2. */
+export type AbilityStoneEffectKind = 'engraving' | 'debuff' | 'level-bonus';
+
+export interface NormalizedAbilityStoneEffect {
+  /** 대괄호 안 첫 토큰. 예: "아드레날린", "이동속도 감소", "레벨 보너스" */
+  name: string;
+  /** kind ∈ {engraving, debuff} 에서만 의미 있음. level-bonus 는 0. */
+  level: number;
+  /** §5.2 결정 트리 결과. */
+  kind: AbilityStoneEffectKind;
+  /** kind === 'level-bonus' 일 때만 채움. 예: "기본 공격력 +1.50%" */
+  bonusText: string | null;
+}
 
 /**
  * 아크 패시브 도메인 모델 (정규화 후).
@@ -72,6 +116,12 @@ export interface NormalizedCharacterDetail {
     grade: string;
     tooltip: string;
   }>;
+  /**
+   * 어빌리티 스톤 (장착 0개면 null).
+   * equipment[] 의 Type === '어빌리티 스톤' 1건을 normalize 한 결과.
+   * formatAbilityStone 이 직접 읽는 권위 소스 — equipment[].tooltip 재파싱 금지 (Phase 2 에서 적용).
+   */
+  abilityStone: NormalizedAbilityStone | null;
   engravings: Array<{
     slot: number;
     name: string;
@@ -224,6 +274,8 @@ export class ArmoriesNormalizer {
       // 2. ArkPassive + 각인 사전 정규화 (engravings 가 arkPassive.engravingEffects 의 소스)
       const arkPassive = this.normalizeArkPassive(armoryData.ArkPassive);
       const normalizedEngravings = this.normalizeEngravings(engravings);
+      const normalizedEquipment = this.normalizeEquipment(equipment);
+      const abilityStone = this.normalizeAbilityStone(equipment);
       if (arkPassive) {
         arkPassive.engravingEffects = normalizedEngravings
           .filter((e) => typeof e.level === 'number' && typeof e.grade === 'string')
@@ -259,7 +311,8 @@ export class ArmoriesNormalizer {
           stats: this.normalizeStats(stats),
           tendencies: this.normalizeTendencies(tendencies),
         },
-        equipment: this.normalizeEquipment(equipment),
+        equipment: normalizedEquipment,
+        abilityStone,
         engravings: normalizedEngravings,
         cards: this.normalizeCards(cards),
         gems: this.normalizeGems(gems),
@@ -341,6 +394,131 @@ export class ArmoriesNormalizer {
       grade: item.Grade,
       tooltip: item.Tooltip,
     }));
+  }
+
+  /**
+   * 어빌리티 스톤 정규화 (V9.0.0 신 응답 구조 대응).
+   *
+   * 처리 단계 (설계 §5.1):
+   * 1. equipment 에서 Type === '어빌리티 스톤' 필터. 0건 → null.
+   * 2. 복수 보유 가정 안 함 — 첫 건 채택.
+   * 3. Tooltip raw JSON 파싱. 실패 시 graceful fallback (craftingBonus=null, engravingEffects=[]).
+   * 4. Element_006 (ItemPartBox + '세공 단계 보너스') → craftingBonus.
+   * 5. Element_007 (IndentStringGroup + '무작위 각인 효과') → engravingEffects[] (분류는 §5.2).
+   * 6. return.
+   */
+  normalizeAbilityStone(equipment: any[] | undefined): NormalizedAbilityStone | null {
+    const stones = (equipment ?? []).filter((e) => e?.Type === '어빌리티 스톤');
+    if (stones.length === 0) return null;
+    const stone = stones[0]!;
+    const name = typeof stone.Name === 'string' ? stone.Name : '';
+    const grade = typeof stone.Grade === 'string' ? stone.Grade : '';
+    const fallback: NormalizedAbilityStone = {
+      name,
+      grade,
+      craftingBonus: null,
+      engravingEffects: [],
+    };
+
+    if (typeof stone.Tooltip !== 'string' || stone.Tooltip.length === 0) {
+      return fallback;
+    }
+
+    let tooltipObj: Record<string, any>;
+    try {
+      tooltipObj = JSON.parse(stone.Tooltip);
+    } catch {
+      return fallback;
+    }
+
+    // 4. craftingBonus 추출 — ItemPartBox + '세공 단계 보너스'
+    let craftingBonus: string | null = null;
+    for (const el of Object.values(tooltipObj)) {
+      if (
+        el &&
+        typeof el === 'object' &&
+        (el as any).type === 'ItemPartBox' &&
+        typeof (el as any).value?.Element_000 === 'string' &&
+        ((el as any).value.Element_000 as string).includes('세공 단계 보너스')
+      ) {
+        const e1 = (el as any).value.Element_001;
+        if (typeof e1 === 'string') {
+          craftingBonus = stripHtmlTags(e1).trim();
+        }
+        break;
+      }
+    }
+
+    // 5. engravingEffects 추출 — IndentStringGroup + topStr 에 '무작위 각인 효과'
+    const engravingEffects: NormalizedAbilityStoneEffect[] = [];
+    for (const el of Object.values(tooltipObj)) {
+      if (
+        !el ||
+        typeof el !== 'object' ||
+        (el as any).type !== 'IndentStringGroup' ||
+        !(el as any).value
+      ) {
+        continue;
+      }
+      const group = (el as any).value;
+      // group.Element_000 = { contentStr: {...}, topStr: '...' }
+      const inner = group?.Element_000;
+      if (!inner || typeof inner.topStr !== 'string') continue;
+      if (!inner.topStr.includes('무작위 각인 효과')) continue;
+      const contentStr = inner.contentStr;
+      if (!contentStr || typeof contentStr !== 'object') continue;
+
+      for (const entry of Object.values(contentStr)) {
+        if (!entry || typeof entry !== 'object') continue;
+        const raw = (entry as any).contentStr;
+        if (typeof raw !== 'string') continue;
+        engravingEffects.push(this.classifyAbilityStoneEffect(raw));
+      }
+      break;
+    }
+
+    return { name, grade, craftingBonus, engravingEffects };
+  }
+
+  /**
+   * 어빌리티 스톤 raw contentStr 1건을 분류한다 (설계 §5.2).
+   *
+   * 결정 트리 (우선순위 순):
+   *   1. raw 가 '레벨 보너스' 토큰 OR `#73DC04` 포함 → level-bonus.
+   *      name='레벨 보너스', level=0, bonusText=닫는 `]` 이후 텍스트 (HTML 제거 + trim).
+   *   2. raw 가 `#FE2E2E` 포함 → debuff.
+   *   3. else → engraving.
+   * name/level 은 공통 헬퍼로 추출.
+   */
+  private classifyAbilityStoneEffect(rawContent: string): NormalizedAbilityStoneEffect {
+    const lvMatch = rawContent.match(/Lv\.(\d+)/);
+    const level = lvMatch ? Number(lvMatch[1]) : 0;
+    const bracketName = extractBracketName(rawContent);
+
+    // 1. 레벨 보너스
+    if (
+      rawContent.includes(STONE_LEVEL_BONUS_TOKEN) ||
+      rawContent.includes(STONE_LEVEL_BONUS_COLOR)
+    ) {
+      // 닫는 ']' 이후 텍스트의 HTML 제거 + trim. <BR> 류는 제거 후 잔여 공백 정돈.
+      const closeIdx = rawContent.indexOf(']');
+      const afterBracket = closeIdx >= 0 ? rawContent.slice(closeIdx + 1) : rawContent;
+      const bonusText = stripHtmlTags(afterBracket).trim();
+      return {
+        name: bracketName || '레벨 보너스',
+        level: 0,
+        kind: 'level-bonus',
+        bonusText: bonusText.length > 0 ? bonusText : null,
+      };
+    }
+
+    // 2. 디버프
+    if (rawContent.includes(STONE_DEBUFF_COLOR)) {
+      return { name: bracketName, level, kind: 'debuff', bonusText: null };
+    }
+
+    // 3. 각인 효과
+    return { name: bracketName, level, kind: 'engraving', bonusText: null };
   }
 
   /**
@@ -748,6 +926,23 @@ export class ArmoriesNormalizer {
   private generateRequestId(): string {
     return `armory-norm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
+}
+
+// === 모듈 헬퍼 — 어빌리티 스톤 raw HTML 파싱 ===
+
+/** HTML 태그 (`<...>`) 전부 제거. content 외 문자는 보존. */
+function stripHtmlTags(raw: string): string {
+  return raw.replace(/<[^>]*>/g, '');
+}
+
+/**
+ * `[...]` 안 첫 토큰을 trim 하여 반환.
+ * 내부 `<FONT>` 류 태그를 먼저 제거한 후 매치. 매치 실패 시 빈 문자열.
+ */
+function extractBracketName(raw: string): string {
+  const stripped = stripHtmlTags(raw);
+  const m = stripped.match(/\[([^\]]+)\]/);
+  return m && m[1] ? m[1].trim() : '';
 }
 
 // === 싱글톤 인스턴스 ===

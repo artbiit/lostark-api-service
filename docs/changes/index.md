@@ -4,6 +4,10 @@
 
 ## 2026-05
 
+- feat+refactor(data-service,udp-service):
+  [아크패시브 시즌 기준 armories 응답 재기획](./2026-05-17-armories-arkpassive-rewrite.md)
+  — NormalizedAbilityStone 신설, formatAbilityStone/Engravings 재작성, 11개 핸들러 톤 통일,
+  formatSkills 30라인/formatColosseums 3시즌 절단, 골든 테스트 11개. (session 20260517-010704)
 - feat+fix(shared,data-service,udp-service):
   [F7 armories !정보 legacy parity](./2026-05-16-armories-info-legacy-parity.md)
   — V9 타입 7건 정정(ArkPassive/ColosseumV9/ArmoryCardsV9.Effects/CombatSkillV9.Rune),

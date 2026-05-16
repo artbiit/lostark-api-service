@@ -325,6 +325,9 @@ export class ArmoriesService {
             break;
           case 'equipment':
             result.equipment = cachedDetail.equipment;
+            // §7.1: !돌 명령이 sections=['equipment'] 만 요청하므로 abilityStone 도 동봉.
+            // 기존 캐시 entry 가 abilityStone 부재 시 undefined → formatter 가드 책임 (Phase 2).
+            result.abilityStone = cachedDetail.abilityStone ?? null;
             break;
           case 'avatars':
             result.avatars = cachedDetail.avatars;
@@ -378,6 +381,8 @@ export class ArmoriesService {
             break;
           case 'equipment':
             result.equipment = normalizedDetail.characterDetail.equipment;
+            // §7.1: equipment 와 함께 abilityStone 도 동봉.
+            result.abilityStone = normalizedDetail.characterDetail.abilityStone ?? null;
             break;
           case 'avatars':
             result.avatars = normalizedDetail.characterDetail.avatars;

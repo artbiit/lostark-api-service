@@ -4,6 +4,13 @@
  *
  * legacy/src/Service/Commands/armories.js 의 텍스트 컨벤션을 의미적으로 모방한다.
  * 단, 데이터 소스는 ArmoriesService.getCharacterDetailPartial 의 normalized 응답.
+ *
+ * V9 / 아크패시브 시즌 기준 재기획 (.claude/work-session/20260517-010704/design.md):
+ *  - `!정보` 의 각인 3줄/돌 오우너 라인 폐기. 진/깨/도·엘초상·전투특성 등은 유지.
+ *  - `!돌` 은 detail.abilityStone (NormalizedAbilityStone) 만 읽고 raw tooltip 재파싱 폐기.
+ *  - `!각인` 은 ArkPassive 활성 일관 형식 (level desc, name asc), 비활성 fallback 잔존.
+ *  - 모든 빈 응답을 `~ 없는 것 같숨미당` 톤으로 통일.
+ *  - `!스킬` ≤30 라인 / `!전장` ≤3 시즌 절단 가드.
  */
 
 import {
@@ -14,16 +21,22 @@ import {
   padQuality,
   padTwoDigit,
   sectionHeader,
+  truncateLines,
 } from './kakao.js';
 
 // 응답 타입은 NormalizedCharacterDetail 의 Partial 이라 any-ish. 안전하게 narrow.
 type AnyDetail = Record<string, any>;
 
+/**
+ * 카카오톡 단일 메시지 라인 가드 (design §1.4).
+ * `!스킬` 본문이 30 라인을 넘기면 마지막 라인을 `... 외 N개 생략` 으로 치환.
+ */
+const KAKAO_MAX_LINES = 30;
+
 // === 정보 ===
 
 export function formatProfile(name: string, detail: AnyDetail): string {
   const profile = detail.profile ?? {};
-  const engravings: any[] = Array.isArray(detail.engravings) ? detail.engravings : [];
   const ark = detail.arkPassive ?? null;
 
   const lines: string[] = [];
@@ -41,36 +54,17 @@ export function formatProfile(name: string, detail: AnyDetail): string {
     lines.push(className);
   }
 
-  // 3. 각인 3줄: 이름 첫글자 / 등급 첫글자 / 레벨
-  if (engravings.length > 0) {
-    const row1 = engravings.map((e: any) => (e.name?.[0] ?? '?')).join(' ');
-    const row2 = engravings.map((e: any) => (e.grade?.[0] ?? '?')).join(' ');
-    const row3 = engravings.map((e: any) => (e.level ?? '?')).join(' ');
-    lines.push('');
-    lines.push(row1);
-    lines.push(row2);
-    lines.push(row3);
-  }
-
-  // 4. 돌 오우너 라인 (positive 합계 ≥ 16 + positive.length ≥ 2)
-  const stoneSummary = summarizeStoneActivity(Array.isArray(detail.equipment) ? detail.equipment : []);
-  if (stoneSummary && stoneSummary.total >= 16 && stoneSummary.positive.length >= 2) {
-    const a = stoneSummary.positive[0];
-    const b = stoneSummary.positive[1];
-    lines.push(`"${a}${b}돌 오우너"`);
-  }
-
-  // 5. (빈 줄)
+  // (빈 줄)
   lines.push('');
 
-  // 6. 템/전 — itemLevel / combatPower
+  // 3. 템/전 — itemLevel / combatPower
   const itemLevel = detail.itemLevel ?? 0;
   const combatPower = detail.combatPower ?? 0;
   lines.push(`템/전\t${itemLevel}/${combatPower}`);
-  // 6-1. 원정대 (별행)
+  // 3-1. 원정대 (별행)
   lines.push(`원정대\t${detail.expeditionLevel ?? 0}`);
 
-  // 7. 서버/길드 + 길드 등급
+  // 4. 서버/길드 + 길드 등급
   const serverLabel = detail.serverName || '알 수 없음';
   if (detail.guildName) {
     const grade = detail.guildMemberGrade ? `의 ${detail.guildMemberGrade}` : '';
@@ -80,7 +74,7 @@ export function formatProfile(name: string, detail: AnyDetail): string {
   }
 
   const stats: any[] = profile.stats ?? [];
-  // 8. 전투특성
+  // 5. 전투특성
   if (stats.length >= 4) {
     const combat = stats.filter((s: any) => /치명|특화|제압|신속|인내|숙련/.test(s.type));
     combat.sort((a: any, b: any) => (b.value ?? 0) - (a.value ?? 0));
@@ -90,24 +84,24 @@ export function formatProfile(name: string, detail: AnyDetail): string {
     }
   }
 
-  // 9. 스킬포인트
+  // 6. 스킬포인트
   if (profile.skillPoints) {
     lines.push(`스킬포인트\t${profile.skillPoints.used}/${profile.skillPoints.total}`);
   }
 
-  // 10. pvp
+  // 7. pvp
   if (profile.pvpGrade) {
     lines.push(`pvp\t${profile.pvpGrade}`);
   }
 
-  // 11. 공격력/체력
+  // 8. 공격력/체력
   const attack = stats.find?.((s: any) => s.type === '공격력');
   const hp = stats.find?.((s: any) => s.type === '최대 생명력');
   if (attack && hp) {
     lines.push(`공격력/체력\t${attack.value}/${hp.value}`);
   }
 
-  // 12. 엘/초/상 (equipment 가 partial 응답에 포함됐을 때만 의미 있음)
+  // 9. 엘/초/상 (equipment 가 partial 응답에 포함됐을 때만 의미 있음)
   const equipment = Array.isArray(detail.equipment) ? detail.equipment : [];
   if (equipment.length > 0) {
     const eq = summarizeEquipmentForProfile(equipment);
@@ -116,12 +110,12 @@ export function formatProfile(name: string, detail: AnyDetail): string {
     );
   }
 
-  // 13. 진/깨/도 (ArkPassive 활성 시)
+  // 10. 진/깨/도 (ArkPassive 활성 시)
   if (ark) {
     lines.push(`진/깨/도\t${ark.points.evolution}/${ark.points.realization}/${ark.points.leap}`);
   }
 
-  // 14. 성향
+  // 11. 성향
   const tendencies: any[] = profile.tendencies ?? [];
   for (let i = 0; i + 1 < tendencies.length; i += 2) {
     const t1 = tendencies[i];
@@ -129,7 +123,7 @@ export function formatProfile(name: string, detail: AnyDetail): string {
     lines.push(`${t1.type}/${t2.type}\t${t1.point}/${t2.point}`);
   }
 
-  // 15-16. 갱신 시간
+  // 12-13. 갱신 시간
   const updatedAt = detail.metadata?.normalizedAt;
   if (updatedAt) {
     lines.push('');
@@ -138,61 +132,6 @@ export function formatProfile(name: string, detail: AnyDetail): string {
   }
 
   return joinLines(...lines);
-}
-
-/**
- * 어빌리티 스톤 tooltip 의 IndentStringGroup 에서 활성/감소 슬롯의 Lv 를 추출.
- * legacy `commandUtils.js` 의 stones 처리 모방.
- * - `[감소]` 키워드 포함 → negative
- * - 그 외 → positive
- * 반환은 desc 정렬된 value 배열 + positive 합계.
- */
-function summarizeStoneActivity(equipment: any[]): {
-  positive: number[];
-  negative: number[];
-  total: number;
-} | null {
-  const stones = equipment.filter((e: any) => e?.type === '어빌리티 스톤');
-  if (stones.length === 0) return null;
-
-  const positive: number[] = [];
-  const negative: number[] = [];
-  for (const stone of stones) {
-    const tooltipRaw = typeof stone.tooltip === 'string' ? stone.tooltip : '';
-    if (!tooltipRaw) continue;
-
-    let tooltip: Record<string, any>;
-    try {
-      tooltip = JSON.parse(removeHtmlTags(tooltipRaw));
-    } catch {
-      continue;
-    }
-
-    for (const key of Object.keys(tooltip)) {
-      const el = tooltip[key];
-      if (el?.type !== 'IndentStringGroup') continue;
-      const inner = el.value?.Element_000?.contentStr;
-      if (!inner || typeof inner !== 'object') continue;
-      for (const k of Object.keys(inner)) {
-        const d = inner[k];
-        const c: string = typeof d?.contentStr === 'string' ? d.contentStr : '';
-        if (!c) continue;
-        const isNegative = c.includes('[감소]');
-        const plus = c.indexOf('+');
-        if (plus < 0) continue;
-        const rest = c.substring(plus + 1).match(/^\d+/);
-        const val = rest ? Number(rest[0]) : 0;
-        if (!Number.isFinite(val) || val <= 0) continue;
-        if (isNegative) negative.push(val);
-        else positive.push(val);
-      }
-    }
-  }
-
-  positive.sort((a, b) => b - a);
-  negative.sort((a, b) => b - a);
-  const total = positive.reduce((s, v) => s + v, 0);
-  return { positive, negative, total };
 }
 
 /**
@@ -226,7 +165,7 @@ export function formatEquipment(name: string, detail: AnyDetail): string {
 
   const items = equipment.filter((e: any) => equipSlots.has(e.type));
   if (items.length === 0) {
-    return `${name}의 장비를 찾을 수 없습니다.`;
+    return `${name} 은(는) 장착중인 장비가 없는 것 같숨미당.`;
   }
 
   const lines: string[] = [sectionHeader(`${name}의 장비`)];
@@ -437,7 +376,7 @@ export function formatSkills(name: string, detail: AnyDetail): string {
   const skills: any[] = Array.isArray(detail.combatSkills) ? detail.combatSkills : [];
   const filtered = skills.filter((s) => (s.level ?? 0) >= 2);
   if (filtered.length === 0) {
-    return `${name}의 스킬 정보를 찾을 수 없습니다.`;
+    return `${name} 은(는) Lv.2 이상 스킬이 없는 것 같숨미당.`;
   }
 
   const lines: string[] = [sectionHeader(`${name}의 스킬`)];
@@ -471,7 +410,7 @@ export function formatSkills(name: string, detail: AnyDetail): string {
     }
   }
 
-  return joinLines(...lines);
+  return joinLines(...truncateLines(lines, KAKAO_MAX_LINES));
 }
 
 // === 보석 ===
@@ -479,7 +418,7 @@ export function formatSkills(name: string, detail: AnyDetail): string {
 export function formatGems(name: string, detail: AnyDetail): string {
   const gems: any[] = Array.isArray(detail.gems) ? detail.gems : [];
   if (gems.length === 0) {
-    return `${name}의 보석을 찾을 수 없습니다.`;
+    return `${name} 은(는) 장착중인 보석이 없는 것 같숨미당.`;
   }
 
   const lines: string[] = [sectionHeader(`${name}의 보석`)];
@@ -560,13 +499,21 @@ export function formatGems(name: string, detail: AnyDetail): string {
 export function formatEngravings(name: string, detail: AnyDetail): string {
   const list: any[] = Array.isArray(detail.engravings) ? detail.engravings : [];
   if (list.length === 0) {
-    return `${name}은(는) 장착중인 각인이 없는 것 같숨미당.`;
+    return `${name} 은(는) 장착중인 각인이 없는 것 같숨미당.`;
   }
 
+  // ArkPassive 활성: normalizer 가 level/grade 를 채워줌 → 정렬 후 [등급] 이름 Lv.N
+  //   정렬 기준: level desc, name asc.
+  // 비활성 (legacy 잔존 분기): level/grade 부재 → 이름만 fallback (`[name]`).
+  const sorted = [...list].sort((a: any, b: any) => {
+    const la = typeof a.level === 'number' ? a.level : -1;
+    const lb = typeof b.level === 'number' ? b.level : -1;
+    if (la !== lb) return lb - la;
+    return String(a.name ?? '').localeCompare(String(b.name ?? ''));
+  });
+
   const lines: string[] = [`${name}의 각인`];
-  for (const e of list) {
-    // ArkPassive 활성 캐릭은 normalizer 가 level/grade 를 채워준다.
-    // 비활성 캐릭은 둘 다 undefined 이므로 이름만 표기 (legacy 동작 유지).
+  for (const e of sorted) {
     if (typeof e.level === 'number' && typeof e.grade === 'string' && e.grade.length > 0) {
       lines.push(` [${e.grade}] ${e.name} Lv.${e.level}`);
     } else {
@@ -578,46 +525,45 @@ export function formatEngravings(name: string, detail: AnyDetail): string {
 
 // === 어빌리티 스톤 ===
 
+/**
+ * 신 사양 (design §6.6):
+ *  - 입력: detail.abilityStone (NormalizedAbilityStone | null). raw tooltip 재파싱 폐기.
+ *  - 분류: kind ∈ {engraving, debuff, level-bonus}.
+ *  - 정렬: engravings 는 level desc. debuffs/level-bonus 는 발견 순서.
+ *  - 빈 가드: stone == null → `~ 장착중인 스톤이 없는 것 같숨미당`.
+ */
 export function formatAbilityStone(name: string, detail: AnyDetail): string {
-  const equipment: any[] = Array.isArray(detail.equipment) ? detail.equipment : [];
-  const stones = equipment.filter((e: any) => e.type === '어빌리티 스톤');
-  if (stones.length === 0) {
-    return `${name}은(는) 장착중인 스톤이 없는 것 같숨미당.`;
+  const stone = detail.abilityStone ?? null;
+  if (!stone) {
+    return `${name} 은(는) 장착중인 스톤이 없는 것 같숨미당.`;
   }
 
-  const lines: string[] = [`${name}의 어빌리티 스톤`];
+  const effects: any[] = Array.isArray(stone.engravingEffects) ? stone.engravingEffects : [];
 
-  for (const stone of stones) {
-    const tooltipRaw = typeof stone.tooltip === 'string' ? stone.tooltip : '';
-    if (!tooltipRaw) continue;
+  const engravings = effects
+    .filter((e: any) => e.kind === 'engraving')
+    .sort((a: any, b: any) => (b.level ?? 0) - (a.level ?? 0));
+  const debuffs = effects.filter((e: any) => e.kind === 'debuff');
+  const levelBonus = effects.find((e: any) => e.kind === 'level-bonus');
 
-    let tooltip: Record<string, any>;
-    try {
-      tooltip = JSON.parse(removeHtmlTags(tooltipRaw));
-    } catch {
-      continue;
-    }
+  const lines: string[] = [
+    `${name}의 어빌리티 스톤`,
+    `[${stone.grade ?? ''}] ${stone.name ?? ''}`,
+  ];
 
-    for (const key of Object.keys(tooltip)) {
-      const el = tooltip[key];
-      if (el?.type !== 'IndentStringGroup') continue;
-      const inner = el.value?.Element_000?.contentStr;
-      if (!inner) continue;
-      for (const k of Object.keys(inner)) {
-        const d = inner[k];
-        if (!d?.contentStr) continue;
-        const content: string = d.contentStr;
-        const nameStart = content.indexOf('[') + 1;
-        const nameEnd = content.indexOf(']');
-        if (nameStart <= 0 || nameEnd <= nameStart) continue;
-        const stoneName = content.substring(nameStart, nameEnd);
-        const plus = content.indexOf('+');
-        const value = plus >= 0 ? Number(content.substring(plus)) : 0;
-        if (Number.isFinite(value)) {
-          lines.push(`${stoneName} Lv.${value}`);
-        }
-      }
-    }
+  if (engravings.length > 0) {
+    lines.push('', '[각인]');
+    for (const e of engravings) lines.push(` [${e.name}] Lv.${e.level}`);
+  }
+  if (debuffs.length > 0) {
+    lines.push('', '[디버프]');
+    for (const e of debuffs) lines.push(` [${e.name}] Lv.${e.level}`);
+  }
+  if (levelBonus?.bonusText) {
+    lines.push('', '[레벨 보너스]', ` ${levelBonus.bonusText}`);
+  }
+  if (stone.craftingBonus) {
+    lines.push('', '[세공]', ` ${stone.craftingBonus}`);
   }
 
   return joinLines(...lines);
@@ -628,7 +574,7 @@ export function formatAbilityStone(name: string, detail: AnyDetail): string {
 export function formatCollectibles(name: string, detail: AnyDetail): string {
   const list: any[] = Array.isArray(detail.collectibles) ? detail.collectibles : [];
   if (list.length === 0) {
-    return `${name}은(는) 수집 포인트가 없는 것 같숨미당.`;
+    return `${name} 은(는) 수집 포인트가 없는 것 같숨미당.`;
   }
 
   const lines: string[] = [`${name}의 수집 포인트`];
@@ -652,7 +598,7 @@ export function formatCollectibles(name: string, detail: AnyDetail): string {
 export function formatAvatars(name: string, detail: AnyDetail): string {
   const avatars: any[] = Array.isArray(detail.avatars) ? detail.avatars : [];
   if (avatars.length === 0) {
-    return `${name}의 아바타를 불러올 수 없습니다.`;
+    return `${name} 은(는) 착용 아바타가 없는 것 같숨미당.`;
   }
 
   const inner: any[] = [];
@@ -681,7 +627,7 @@ export function formatAvatars(name: string, detail: AnyDetail): string {
 
 export function formatAvatarUrl(name: string, detail: AnyDetail): string {
   const url: string | undefined = detail.profile?.characterImage;
-  if (!url) return `${name}의 아바타를 찾지 못했습니다.`;
+  if (!url) return `${name} 의 아바타가 없는 것 같숨미당.`;
   return `${name}의 아바타\n${url}`;
 }
 
@@ -690,7 +636,7 @@ export function formatAvatarUrl(name: string, detail: AnyDetail): string {
 export function formatCards(name: string, detail: AnyDetail): string {
   const cardsResult = detail.cards;
   if (!cardsResult || (Array.isArray(cardsResult.cards) && cardsResult.cards.length === 0)) {
-    return `${name}의 카드 정보를 찾을 수 없습니다.`;
+    return `${name} 은(는) 장착중인 카드가 없는 것 같숨미당.`;
   }
 
   const cards: any[] = cardsResult.cards ?? [];
@@ -718,23 +664,31 @@ export function formatCards(name: string, detail: AnyDetail): string {
 // === 전장 (신규) ===
 
 export function formatColosseums(name: string, detail: AnyDetail): string {
-  const seasons: any[] = Array.isArray(detail.colosseums) ? detail.colosseums : [];
-  if (seasons.length === 0) {
-    return `${name}의 증명의 전장 정보를 찾을 수 없습니다.`;
+  const allSeasons: any[] = Array.isArray(detail.colosseums) ? detail.colosseums : [];
+  if (allSeasons.length === 0) {
+    return `${name} 은(는) 증명의 전장 기록이 없는 것 같숨미당.`;
   }
+
+  // active 모드 보유 시즌만 추리고, 5 시즌 이상이면 최근 3 시즌만 (design §1.4 라인 가드).
+  const modes: Array<{ key: string; label: string }> = [
+    { key: 'competitive', label: '경쟁전' },
+    { key: 'teamDeathmatch', label: '팀 데스매치' },
+    { key: 'teamElimination', label: '팀 섬멸전' },
+    { key: 'coOpBattle', label: '협동전' },
+    { key: 'oneDeathmatch', label: '개인 데스매치' },
+    { key: 'oneDeathmatchRank', label: '개인 데스매치(랭크)' },
+  ];
+
+  const activeSeasons = allSeasons.filter((s: any) => modes.some((m) => s[m.key] != null));
+  if (activeSeasons.length === 0) {
+    return `${name} 은(는) 증명의 전장 기록이 없는 것 같숨미당.`;
+  }
+  // 5 시즌 이상이면 최근 3 시즌만. 입력 순서를 시간순 (오래된 → 최신) 으로 가정하고 끝 3개를 취함.
+  const seasons = activeSeasons.length >= 5 ? activeSeasons.slice(-3) : activeSeasons;
 
   const lines: string[] = [sectionHeader(`${name}의 증명의 전장`)];
 
   for (const s of seasons) {
-    const modes: Array<{ key: string; label: string }> = [
-      { key: 'competitive', label: '경쟁전' },
-      { key: 'teamDeathmatch', label: '팀 데스매치' },
-      { key: 'teamElimination', label: '팀 섬멸전' },
-      { key: 'coOpBattle', label: '협동전' },
-      { key: 'oneDeathmatch', label: '개인 데스매치' },
-      { key: 'oneDeathmatchRank', label: '개인 데스매치(랭크)' },
-    ];
-
     const active = modes.filter((m) => s[m.key] != null);
     if (active.length === 0) continue;
 
@@ -745,10 +699,6 @@ export function formatColosseums(name: string, detail: AnyDetail): string {
       const rank = raw?.RankName ?? raw?.rankName ?? raw?.Rank ?? '';
       lines.push(` ${mode.label} : ${rank || '기록 있음'}`);
     }
-  }
-
-  if (lines.length === 1) {
-    return `${name}의 증명의 전장 기록이 없습니다.`;
   }
 
   return joinLines(...lines);

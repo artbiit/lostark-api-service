@@ -9,7 +9,7 @@ export const avatarsCommand: CommandSpec = {
     const name = args[0]!;
     try {
       const detail = await ctx.armoriesService.getCharacterDetailPartial(name, ['avatars']);
-      if (!detail?.avatars) return `${name} 을(를) 찾을 수 없습니다.`;
+      if (!detail?.avatars) return `${name} 은(는) 착용 아바타가 없는 것 같숨미당.`;
       return formatAvatars(name, detail);
     } catch (err) {
       ctx.logger.warn({ name, err: String(err) }, 'avatars command failed');

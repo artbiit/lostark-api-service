@@ -13,7 +13,7 @@ export const profileCommand: CommandSpec = {
         'engravings',
         'equipment',
       ]);
-      if (!detail?.profile) return `${name} 을(를) 찾을 수 없습니다.`;
+      if (!detail?.profile) return `${name} 은(는) 없는 것 같숨미당.`;
       return formatProfile(name, detail);
     } catch (err) {
       ctx.logger.warn({ name, err: String(err) }, 'profile command failed');

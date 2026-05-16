@@ -9,7 +9,7 @@ export const collectiblesCommand: CommandSpec = {
     const name = args[0]!;
     try {
       const detail = await ctx.armoriesService.getCharacterDetailPartial(name, ['collectibles']);
-      if (!detail?.collectibles) return `${name} 을(를) 찾을 수 없습니다.`;
+      if (!detail?.collectibles) return `${name} 은(는) 수집 포인트가 없는 것 같숨미당.`;
       return formatCollectibles(name, detail);
     } catch (err) {
       ctx.logger.warn({ name, err: String(err) }, 'collectibles command failed');

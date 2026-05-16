@@ -4,6 +4,13 @@
  * - 각 formatter 에 대해 정상 케이스 1개 + empty/fallback 케이스 1개 (≥ 22 케이스).
  * - input 은 NormalizedCharacterDetail 의 최소 필드만 inline 으로 선언.
  * - assert.match 로 부분 검증, assert.strictEqual 로 fallback 정확 일치 검증.
+ *
+ * V9 / 아크패시브 시즌 재기획 (.claude/work-session/20260517-010704/design.md):
+ *  - formatProfile 의 각인 3줄 / 돌 오우너 라인 폐기 → 관련 케이스 제거.
+ *  - formatAbilityStone 입력이 detail.equipment → detail.abilityStone (NormalizedAbilityStone) 로 변경.
+ *  - 빈 응답 메시지 톤 통일 (`찾을 수 없습니다.` → `~ 없는 것 같숨미당.`).
+ *  - formatEngravings 정렬 (level desc, name asc) 검증 추가.
+ *  - formatSkills 30 라인 절단 가드 검증 추가.
  */
 
 import assert from 'node:assert';
@@ -80,8 +87,8 @@ test('formatProfile', async (t) => {
     assert.match(out, /서버\/길드\t알 수 없음\/없음/);
   });
 
-  // F-1: 각인 3줄 (이름 첫글자 / 등급 첫글자 / 레벨)
-  await t.test('F-1: renders engraving 3-row block (name/grade/level)', () => {
+  // F-1 (폐기): 각인 3줄 (이름 첫글자 / 등급 첫글자 / 레벨) — design §3.1 에 따라 라인 자체 제거.
+  await t.test('F-1 (deprecated): does NOT render engraving 3-row block', () => {
     const detail = {
       className: '브레이커',
       engravings: [
@@ -93,9 +100,10 @@ test('formatProfile', async (t) => {
       ],
     };
     const out = formatProfile('아트네', detail);
-    assert.match(out, /아 원 돌 결 예/);
-    assert.match(out, /유 유 유 유 유/);
-    assert.match(out, /4 4 4 4 4/);
+    // V9 아크패시브 시즌에 의미 없음 → 라인 미출력
+    assert.doesNotMatch(out, /아 원 돌 결 예/);
+    assert.doesNotMatch(out, /유 유 유 유 유/);
+    assert.doesNotMatch(out, /^4 4 4 4 4$/m);
   });
 
   // F-2: 진/깨/도
@@ -147,9 +155,8 @@ test('formatProfile', async (t) => {
     assert.match(out, /갱신된 시간 /);
   });
 
-  // F-6: 돌 오우너 ≥ 16
-  await t.test('F-6: renders 돌 오우너 when positive total >= 16', () => {
-    // tooltip: IndentStringGroup with positive entries +9 and +9 (sum 18)
+  // F-6 / F-7 (폐기): 돌 오우너 라인 — design §3.1 에 따라 라인 자체 제거.
+  await t.test('F-6 (deprecated): does NOT render 돌 오우너 line even with positive total >= 16', () => {
     const tooltip = JSON.stringify({
       e0: {
         type: 'IndentStringGroup',
@@ -158,29 +165,6 @@ test('formatProfile', async (t) => {
             contentStr: {
               k0: { contentStr: '[원한] 효과 +9' },
               k1: { contentStr: '[돌격대장] 효과 +9' },
-              k2: { contentStr: '[감소] +7' },
-            },
-          },
-        },
-      },
-    });
-    const detail = {
-      equipment: [{ type: '어빌리티 스톤', name: '돌', tooltip }],
-    };
-    const out = formatProfile('아트네', detail);
-    assert.match(out, /"99돌 오우너"/);
-  });
-
-  // F-7: 돌 오우너 임계 미만
-  await t.test('F-7: omits 돌 오우너 line when total < 16', () => {
-    const tooltip = JSON.stringify({
-      e0: {
-        type: 'IndentStringGroup',
-        value: {
-          Element_000: {
-            contentStr: {
-              k0: { contentStr: '[원한] 효과 +7' },
-              k1: { contentStr: '[돌격대장] 효과 +5' },
             },
           },
         },
@@ -250,7 +234,7 @@ test('formatEquipment', async (t) => {
   await t.test('returns fallback when no equipment slots match', () => {
     const detail = { equipment: [{ type: '어빌리티 스톤', name: '돌' }] };
     const out = formatEquipment('아트네', detail);
-    assert.strictEqual(out, '아트네의 장비를 찾을 수 없습니다.');
+    assert.strictEqual(out, '아트네 은(는) 장착중인 장비가 없는 것 같숨미당.');
   });
 
   // F-12: 마지막 줄에 갱신된 시간
@@ -297,7 +281,7 @@ test('formatSkills', async (t) => {
   await t.test('returns fallback when no skill is at level 2+', () => {
     const detail = { combatSkills: [{ name: '약스킬', level: 1, tripods: [] }] };
     const out = formatSkills('아트네', detail);
-    assert.strictEqual(out, '아트네의 스킬 정보를 찾을 수 없습니다.');
+    assert.strictEqual(out, '아트네 은(는) Lv.2 이상 스킬이 없는 것 같숨미당.');
   });
 
   // F-13: rune.grade 첫글자가 룬 표기에 포함
@@ -314,6 +298,20 @@ test('formatSkills', async (t) => {
     };
     const out = formatSkills('아트네', detail);
     assert.match(out, /\[전 속행\]/);
+  });
+
+  // F-14 (신규): 30 라인 초과 시 마지막 라인이 `... 외 N개 생략` 으로 절단 (design §1.4).
+  await t.test('F-14: truncates output to 30 lines with omission footer', () => {
+    // 40 개 스킬 → 헤더 1 + 본문 40 = 41 라인 → 30 라인으로 절단
+    const skills = Array.from({ length: 40 }, (_, i) => ({
+      name: `스킬${i + 1}`,
+      level: 5,
+      tripods: [],
+    }));
+    const out = formatSkills('아트네', { combatSkills: skills });
+    const lineCount = out.split('\n').length;
+    assert.strictEqual(lineCount, 30);
+    assert.match(out, /\.\.\. 외 \d+개 생략$/);
   });
 });
 
@@ -339,7 +337,7 @@ test('formatGems', async (t) => {
 
   await t.test('returns fallback when gems array empty', () => {
     const out = formatGems('아트네', { gems: [] });
-    assert.strictEqual(out, '아트네의 보석을 찾을 수 없습니다.');
+    assert.strictEqual(out, '아트네 은(는) 장착중인 보석이 없는 것 같숨미당.');
   });
 });
 
@@ -356,7 +354,7 @@ test('formatEngravings', async (t) => {
 
   await t.test('returns fallback when no engravings', () => {
     const out = formatEngravings('아트네', { engravings: [] });
-    assert.strictEqual(out, '아트네은(는) 장착중인 각인이 없는 것 같숨미당.');
+    assert.strictEqual(out, '아트네 은(는) 장착중인 각인이 없는 것 같숨미당.');
   });
 
   // F-10: ArkPassive 활성 — [등급] 이름 Lv.N
@@ -375,35 +373,123 @@ test('formatEngravings', async (t) => {
     assert.match(out, /\[아드레날린\]/);
     assert.doesNotMatch(out, /Lv\./);
   });
+
+  // F-15 (신규): 정렬 — level desc, name asc.
+  await t.test('F-15: sorts by level desc, then name asc', () => {
+    const detail = {
+      engravings: [
+        { name: '원한', grade: '유물', level: 4 },
+        { name: '돌격대장', grade: '유물', level: 4 },
+        { name: '아드레날린', grade: '유물', level: 4 },
+        { name: '결투의 대가', grade: '유물', level: 4 },
+        { name: '예리한 둔기', grade: '유물', level: 4 },
+      ],
+    };
+    const out = formatEngravings('아트네', detail);
+    const lines = out.split('\n');
+    // 첫 줄 = 헤더, 그 뒤 5줄이 이름순 (모두 동일 level)
+    // 한글 가나다 (localeCompare ko-KR or default) — 결과 순서 검증.
+    assert.strictEqual(lines[0], '아트네의 각인');
+    // 동일 level 일 때 name asc 정렬 → 한글 사전순 (결투의 대가 < 돌격대장 < 아드레날린 < 예리한 둔기 < 원한)
+    // localeCompare 기본 (en-US locale) 결과를 그대로 사용 (한글은 unicode codepoint 순과 유사).
+    // 출력 순서를 명시적으로 검증.
+    const namesInOrder = lines.slice(1).map((ln) => {
+      const m = ln.match(/\] (.+?) Lv\./);
+      return m?.[1] ?? '';
+    });
+    // assertion: 동일 level → 이름 사전순
+    const sorted = [...namesInOrder].sort((a, b) => a.localeCompare(b));
+    assert.deepStrictEqual(namesInOrder, sorted);
+  });
+
+  // F-16 (신규): level desc 우선.
+  await t.test('F-16: higher level first', () => {
+    const detail = {
+      engravings: [
+        { name: 'A', grade: '유물', level: 1 },
+        { name: 'B', grade: '유물', level: 4 },
+        { name: 'C', grade: '유물', level: 2 },
+      ],
+    };
+    const out = formatEngravings('아트네', detail);
+    const lines = out.split('\n').slice(1);
+    assert.match(lines[0] ?? '', /B Lv\.4/);
+    assert.match(lines[1] ?? '', /C Lv\.2/);
+    assert.match(lines[2] ?? '', /A Lv\.1/);
+  });
 });
 
 // === formatAbilityStone ===
 
 test('formatAbilityStone', async (t) => {
-  await t.test('renders stone effects from tooltip', () => {
-    const tooltip = JSON.stringify({
-      e0: {
-        type: 'IndentStringGroup',
-        value: {
-          Element_000: {
-            contentStr: {
-              k0: { contentStr: '[원한] 효과 +9' },
-              k1: { contentStr: '[돌격대장] 효과 +7' },
-            },
-          },
-        },
+  await t.test('renders stone with engravings, debuff, level-bonus, crafting bonus', () => {
+    const detail = {
+      abilityStone: {
+        name: '위대한 비상의 돌',
+        grade: '고대',
+        craftingBonus: '체력 +3525',
+        engravingEffects: [
+          { name: '아드레날린', level: 4, kind: 'engraving', bonusText: null },
+          { name: '원한', level: 1, kind: 'engraving', bonusText: null },
+          { name: '이동속도 감소', level: 0, kind: 'debuff', bonusText: null },
+          { name: '레벨 보너스', level: 0, kind: 'level-bonus', bonusText: '기본 공격력 +1.50%' },
+        ],
       },
-    });
-    const detail = { equipment: [{ type: '어빌리티 스톤', name: '돌', tooltip }] };
-    const out = formatAbilityStone('아트네', detail);
-    assert.match(out, /아트네의 어빌리티 스톤/);
-    assert.match(out, /원한 Lv\.9/);
-    assert.match(out, /돌격대장 Lv\.7/);
+    };
+    const out = formatAbilityStone('이다', detail);
+    // design §3.6 예시 byte-equal 검증
+    const expected = [
+      '이다의 어빌리티 스톤',
+      '[고대] 위대한 비상의 돌',
+      '',
+      '[각인]',
+      ' [아드레날린] Lv.4',
+      ' [원한] Lv.1',
+      '',
+      '[디버프]',
+      ' [이동속도 감소] Lv.0',
+      '',
+      '[레벨 보너스]',
+      ' 기본 공격력 +1.50%',
+      '',
+      '[세공]',
+      ' 체력 +3525',
+    ].join('\n');
+    assert.strictEqual(out, expected);
   });
 
-  await t.test('returns fallback when no stone equipped', () => {
-    const out = formatAbilityStone('아트네', { equipment: [] });
-    assert.strictEqual(out, '아트네은(는) 장착중인 스톤이 없는 것 같숨미당.');
+  await t.test('returns fallback when no stone equipped (abilityStone null)', () => {
+    const out = formatAbilityStone('아트네', { abilityStone: null });
+    assert.strictEqual(out, '아트네 은(는) 장착중인 스톤이 없는 것 같숨미당.');
+  });
+
+  await t.test('returns fallback when abilityStone field absent', () => {
+    const out = formatAbilityStone('아트네', {});
+    assert.strictEqual(out, '아트네 은(는) 장착중인 스톤이 없는 것 같숨미당.');
+  });
+
+  // 신규: engraving 만 있는 경우 (디버프/레벨보너스/세공 섹션 미출력)
+  await t.test('renders only engraving section when only engravings present', () => {
+    const detail = {
+      abilityStone: {
+        name: '돌',
+        grade: '고대',
+        craftingBonus: null,
+        engravingEffects: [
+          { name: '원한', level: 7, kind: 'engraving', bonusText: null },
+          { name: '돌격대장', level: 5, kind: 'engraving', bonusText: null },
+        ],
+      },
+    };
+    const out = formatAbilityStone('아트네', detail);
+    assert.match(out, /\[각인\]/);
+    assert.doesNotMatch(out, /\[디버프\]/);
+    assert.doesNotMatch(out, /\[레벨 보너스\]/);
+    assert.doesNotMatch(out, /\[세공\]/);
+    // level desc 정렬 검증
+    const idx원한 = out.indexOf('원한');
+    const idx돌격대장 = out.indexOf('돌격대장');
+    assert.ok(idx원한 < idx돌격대장, 'level desc → 원한(7) 이 돌격대장(5) 보다 앞');
   });
 });
 
@@ -426,7 +512,7 @@ test('formatCollectibles', async (t) => {
 
   await t.test('returns fallback when collectibles empty', () => {
     const out = formatCollectibles('아트네', { collectibles: [] });
-    assert.strictEqual(out, '아트네은(는) 수집 포인트가 없는 것 같숨미당.');
+    assert.strictEqual(out, '아트네 은(는) 수집 포인트가 없는 것 같숨미당.');
   });
 });
 
@@ -452,7 +538,7 @@ test('formatAvatars', async (t) => {
 
   await t.test('returns fallback when avatars empty', () => {
     const out = formatAvatars('아트네', { avatars: [] });
-    assert.strictEqual(out, '아트네의 아바타를 불러올 수 없습니다.');
+    assert.strictEqual(out, '아트네 은(는) 착용 아바타가 없는 것 같숨미당.');
   });
 });
 
@@ -468,7 +554,7 @@ test('formatAvatarUrl', async (t) => {
 
   await t.test('returns fallback when image missing', () => {
     const out = formatAvatarUrl('아트네', {});
-    assert.strictEqual(out, '아트네의 아바타를 찾지 못했습니다.');
+    assert.strictEqual(out, '아트네 의 아바타가 없는 것 같숨미당.');
   });
 });
 
@@ -501,7 +587,7 @@ test('formatCards', async (t) => {
 
   await t.test('returns fallback when cards empty', () => {
     const out = formatCards('아트네', { cards: { cards: [], effects: [] } });
-    assert.strictEqual(out, '아트네의 카드 정보를 찾을 수 없습니다.');
+    assert.strictEqual(out, '아트네 은(는) 장착중인 카드가 없는 것 같숨미당.');
   });
 });
 
@@ -527,6 +613,27 @@ test('formatColosseums', async (t) => {
 
   await t.test('returns fallback when seasons empty', () => {
     const out = formatColosseums('아트네', { colosseums: [] });
-    assert.strictEqual(out, '아트네의 증명의 전장 정보를 찾을 수 없습니다.');
+    assert.strictEqual(out, '아트네 은(는) 증명의 전장 기록이 없는 것 같숨미당.');
+  });
+
+  await t.test('returns fallback when seasons exist but no active modes', () => {
+    const out = formatColosseums('아트네', { colosseums: [{ seasonName: '시즌X' }] });
+    assert.strictEqual(out, '아트네 은(는) 증명의 전장 기록이 없는 것 같숨미당.');
+  });
+
+  // F-17 (신규): 5 시즌 이상이면 최근 3 시즌만 (design §1.4).
+  await t.test('F-17: keeps only last 3 seasons when total >= 5', () => {
+    const seasons = Array.from({ length: 6 }, (_, i) => ({
+      seasonName: `시즌${i + 1}`,
+      competitive: { rankName: `등급${i + 1}` },
+    }));
+    const out = formatColosseums('아트네', { colosseums: seasons });
+    // 마지막 3개 (시즌4, 시즌5, 시즌6) 만 표기
+    assert.match(out, /\[시즌4\]/);
+    assert.match(out, /\[시즌5\]/);
+    assert.match(out, /\[시즌6\]/);
+    assert.doesNotMatch(out, /\[시즌1\]/);
+    assert.doesNotMatch(out, /\[시즌2\]/);
+    assert.doesNotMatch(out, /\[시즌3\]/);
   });
 });

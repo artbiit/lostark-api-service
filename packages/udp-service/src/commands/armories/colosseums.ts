@@ -9,7 +9,7 @@ export const colosseumsCommand: CommandSpec = {
     const name = args[0]!;
     try {
       const detail = await ctx.armoriesService.getCharacterDetailPartial(name, ['colosseums']);
-      if (!detail?.colosseums) return `${name} 을(를) 찾을 수 없습니다.`;
+      if (!detail?.colosseums) return `${name} 은(는) 증명의 전장 기록이 없는 것 같숨미당.`;
       return formatColosseums(name, detail);
     } catch (err) {
       ctx.logger.warn({ name, err: String(err) }, 'colosseums command failed');

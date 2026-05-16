@@ -9,7 +9,7 @@ export const skillsCommand: CommandSpec = {
     const name = args[0]!;
     try {
       const detail = await ctx.armoriesService.getCharacterDetailPartial(name, ['combat-skills']);
-      if (!detail?.combatSkills) return `${name} 을(를) 찾을 수 없습니다.`;
+      if (!detail?.combatSkills) return `${name} 은(는) Lv.2 이상 스킬이 없는 것 같숨미당.`;
       return formatSkills(name, detail);
     } catch (err) {
       ctx.logger.warn({ name, err: String(err) }, 'skills command failed');

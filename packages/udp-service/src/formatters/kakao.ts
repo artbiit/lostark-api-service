@@ -125,6 +125,24 @@ export function kstDateKey(now: Date = new Date()): string {
 // === 라인 빌더 ===
 
 /**
+ * 라인 배열을 max 줄로 자른다. 절단 시 마지막에 footer 라인을 붙인다.
+ * footer 의 `{n}` 자리에 잘린 라인 수가 들어간다.
+ *
+ * 카카오톡 단일 메시지 가독성 한도 (≈ 30 라인) 가드 용도.
+ * 입력 라인 수 ≤ max 이면 입력을 그대로 반환 (immutable 의미).
+ */
+export function truncateLines(
+  lines: string[],
+  max: number,
+  footerTemplate = '... 외 {n}개 생략',
+): string[] {
+  if (lines.length <= max) return lines;
+  const kept = lines.slice(0, max - 1);
+  const omitted = lines.length - kept.length;
+  return [...kept, footerTemplate.replace('{n}', String(omitted))];
+}
+
+/**
  * 여러 줄을 LF 로 합친다. 배열 원소는 평탄화. null/undefined 는 무시.
  */
 export function joinLines(...lines: Array<string | string[] | null | undefined>): string {

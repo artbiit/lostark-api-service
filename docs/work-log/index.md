@@ -15,8 +15,20 @@
 - [2026-05-16 F7 — !정보 출력 legacy 수준 보강](./2026-05-16-armories-info-legacy-parity/index.md)
   — V9 타입 7건 정정, NormalizedCharacterDetail 확장(ArkPassive/characterLevel/guildMemberGrade),
   formatter 9 라인 보강, 테스트 N-1~N-7 + F-1~F-13 (session 20260516-230225)
+- [2026-05-17 아크패시브 시즌 기준 armories 응답 재기획](./2026-05-17-armories-arkpassive-rewrite/index.md)
+  — NormalizedAbilityStone 신설, formatter 7개 재작성, 11개 핸들러 톤 통일,
+  이다 fixture + 11 골든 테스트, unit 203/203 pass (session 20260517-010704)
 
 ## 최근 세션
+
+### 2026-05-17 — 아크패시브 시즌 기준 armories 응답 재기획 (session 20260517-010704)
+
+- F7 "legacy parity" 방향이 아크패시브 시즌 기준으로 잘못된 전제임을 인지, 재기획.
+- `NormalizedAbilityStone` 신설. `NormalizedCharacterDetail.abilityStone` 추가.
+- formatter 재작성: `formatProfile` 각인3줄·돌오우너 삭제, `formatAbilityStone` 각인/디버프/레벨보너스/세공 4섹션, `formatEngravings` 정렬, `formatSkills` 30라인 절단, `formatColosseums` 최근 3시즌.
+- 11개 핸들러 빈 응답 `~ 없는 것 같숨미당` 톤 통일. `truncateLines` 헬퍼 신설.
+- 이다 fixture + 11개 골든 테스트 + L2 통합 1케이스. unit 203/203 + validate:monorepo pass.
+- Carry-over: 카톡 "찾을 수 없음" 5종 디버깅 (별도 세션), dump:openapi 실행 권고.
 
 ### 2026-05-16 — F7 !정보 출력 legacy 수준 보강 (session 20260516-230225)
 

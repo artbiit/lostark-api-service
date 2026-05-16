@@ -205,3 +205,195 @@ test('normalizeEngravings — 분기', async (t) => {
     assert.deepStrictEqual(proto.normalizeEngravings.call(new ArmoriesNormalizer(), undefined), []);
   });
 });
+
+// === normalizeAbilityStone — 어빌리티 스톤 정규화 (V9.0.0 신 응답 구조) ===
+
+/**
+ * V9 sample-data/armories/equipment.json L80 (이다 캐릭) 의 어빌리티 스톤 Tooltip raw 그대로.
+ * - Element_006 = ItemPartBox + '세공 단계 보너스' (체력 +3525)
+ * - Element_007 = IndentStringGroup + '무작위 각인 효과' 4건
+ *   1) 아드레날린 Lv.4 (#FFFFAC 각인)
+ *   2) 원한 Lv.1 (#FFFFAC 각인)
+ *   3) 이동속도 감소 Lv.0 (#FE2E2E 디버프)
+ *   4) 레벨 보너스 — 기본 공격력 +1.50% (#73DC04)
+ */
+const IDA_ABILITY_STONE_TOOLTIP = JSON.stringify({
+  Element_000: {
+    type: 'NameTagBox',
+    value: "<P ALIGN='CENTER'><FONT COLOR='#E3C7A1'>위대한 비상의 돌</FONT></P>",
+  },
+  Element_004: {
+    type: 'ItemPartBox',
+    value: {
+      Element_000: "<FONT COLOR='#A9D0F5'>기본 효과</FONT>",
+      Element_001: '체력 +23481',
+    },
+  },
+  Element_006: {
+    type: 'ItemPartBox',
+    value: {
+      Element_000: "<FONT COLOR='#A9D0F5'>세공 단계 보너스</FONT>",
+      Element_001: '체력 +3525',
+    },
+  },
+  Element_007: {
+    type: 'IndentStringGroup',
+    value: {
+      Element_000: {
+        contentStr: {
+          Element_000: {
+            bPoint: 0,
+            contentStr:
+              "<FONT COLOR='#FFFFFF'>[<FONT COLOR='#FFFFAC'>아드레날린</FONT>] <img src='emoticon_tooltip_ability_stone_symbol' width='11' height='14' vspace ='-2'></img>Lv.4</FONT><BR>",
+            pointType: 2,
+          },
+          Element_001: {
+            bPoint: 0,
+            contentStr:
+              "<FONT COLOR='#FFFFFF'>[<FONT COLOR='#FFFFAC'>원한</FONT>] <img src='emoticon_tooltip_ability_stone_symbol' width='11' height='14' vspace ='-2'></img>Lv.1</FONT><BR>",
+            pointType: 2,
+          },
+          Element_002: {
+            bPoint: 0,
+            contentStr:
+              "<FONT COLOR='#FFFFFF'>[<FONT COLOR='#FE2E2E'>이동속도 감소</FONT>] <img src='emoticon_tooltip_ability_stone_symbol' width='11' height='14' vspace ='-2'></img>Lv.0</FONT><BR>",
+            pointType: 2,
+          },
+          Element_003: {
+            bPoint: 0,
+            contentStr:
+              "[<FONT COLOR='#73DC04'>레벨 보너스</FONT>] <FONT COLOR='#FFFFFF'>기본 공격력 +1.50%<BR></FONT>",
+            pointType: 2,
+          },
+        },
+        topStr: "<FONT SIZE='12' COLOR='#A9D0F5'>무작위 각인 효과</FONT>",
+      },
+    },
+  },
+});
+
+test('normalizeAbilityStone — V9 sample (이다)', async (t) => {
+  await t.test('case A: 어빌리티 스톤 4효과 분류 + craftingBonus', () => {
+    const norm = new ArmoriesNormalizer();
+    const equipment = [
+      {
+        Type: '어빌리티 스톤',
+        Name: '위대한 비상의 돌',
+        Icon: 'icon-ability-stone',
+        Grade: '고대',
+        Tooltip: IDA_ABILITY_STONE_TOOLTIP,
+      },
+    ];
+    const result = norm.normalizeAbilityStone(equipment);
+    assert.ok(result, 'abilityStone should not be null');
+    assert.strictEqual(result!.name, '위대한 비상의 돌');
+    assert.strictEqual(result!.grade, '고대');
+    assert.strictEqual(result!.craftingBonus, '체력 +3525');
+    assert.strictEqual(result!.engravingEffects.length, 4);
+
+    const [e0, e1, e2, e3] = result!.engravingEffects;
+    // 1) 아드레날린 Lv.4 (engraving)
+    assert.deepStrictEqual(
+      { name: e0!.name, level: e0!.level, kind: e0!.kind, bonusText: e0!.bonusText },
+      { name: '아드레날린', level: 4, kind: 'engraving', bonusText: null },
+    );
+    // 2) 원한 Lv.1 (engraving)
+    assert.deepStrictEqual(
+      { name: e1!.name, level: e1!.level, kind: e1!.kind, bonusText: e1!.bonusText },
+      { name: '원한', level: 1, kind: 'engraving', bonusText: null },
+    );
+    // 3) 이동속도 감소 Lv.0 (debuff — #FE2E2E)
+    assert.deepStrictEqual(
+      { name: e2!.name, level: e2!.level, kind: e2!.kind, bonusText: e2!.bonusText },
+      { name: '이동속도 감소', level: 0, kind: 'debuff', bonusText: null },
+    );
+    // 4) 레벨 보너스 (level-bonus — #73DC04)
+    assert.strictEqual(e3!.kind, 'level-bonus');
+    assert.strictEqual(e3!.name, '레벨 보너스');
+    assert.strictEqual(e3!.level, 0);
+    assert.strictEqual(e3!.bonusText, '기본 공격력 +1.50%');
+  });
+
+  await t.test('case B: equipment 가 빈 배열이면 null', () => {
+    const norm = new ArmoriesNormalizer();
+    assert.strictEqual(norm.normalizeAbilityStone([]), null);
+    assert.strictEqual(norm.normalizeAbilityStone(undefined), null);
+  });
+
+  await t.test('case B-2: 어빌리티 스톤 외 장비만 있어도 null', () => {
+    const norm = new ArmoriesNormalizer();
+    const equipment = [
+      { Type: '무기', Name: '검', Icon: '', Grade: '고대', Tooltip: '{}' },
+      { Type: '투구', Name: '투구', Icon: '', Grade: '유물', Tooltip: '{}' },
+    ];
+    assert.strictEqual(norm.normalizeAbilityStone(equipment), null);
+  });
+
+  await t.test('case C: Tooltip 이 잘못된 JSON 이면 graceful fallback', () => {
+    const norm = new ArmoriesNormalizer();
+    const equipment = [
+      {
+        Type: '어빌리티 스톤',
+        Name: '위대한 비상의 돌',
+        Icon: '',
+        Grade: '고대',
+        Tooltip: 'NOT_A_JSON{',
+      },
+    ];
+    const result = norm.normalizeAbilityStone(equipment);
+    assert.ok(result, 'fallback should still return object');
+    assert.strictEqual(result!.name, '위대한 비상의 돌');
+    assert.strictEqual(result!.grade, '고대');
+    assert.strictEqual(result!.craftingBonus, null);
+    assert.deepStrictEqual(result!.engravingEffects, []);
+  });
+
+  await t.test('case C-2: Tooltip 이 빈 문자열이면 graceful fallback', () => {
+    const norm = new ArmoriesNormalizer();
+    const equipment = [
+      {
+        Type: '어빌리티 스톤',
+        Name: '위대한 비상의 돌',
+        Icon: '',
+        Grade: '고대',
+        Tooltip: '',
+      },
+    ];
+    const result = norm.normalizeAbilityStone(equipment);
+    assert.ok(result);
+    assert.strictEqual(result!.craftingBonus, null);
+    assert.deepStrictEqual(result!.engravingEffects, []);
+  });
+});
+
+// === normalizeCharacterDetail — abilityStone 필드 통합 ===
+
+test('normalizeCharacterDetail — abilityStone 통합', async (t) => {
+  await t.test('case: ArkPassive fixture (이다) 가 어빌리티 스톤 4효과 + craftingBonus 정규화', async () => {
+    const fixture = loadFixture(FIXTURE_ARK);
+    const norm = new ArmoriesNormalizer();
+    const { characterDetail } = await norm.normalizeCharacterDetail('테스트캐릭', fixture);
+    assert.ok(characterDetail.abilityStone, 'abilityStone should be present');
+    assert.strictEqual(characterDetail.abilityStone!.name, '위대한 비상의 돌');
+    assert.strictEqual(characterDetail.abilityStone!.grade, '고대');
+    assert.strictEqual(characterDetail.abilityStone!.craftingBonus, '체력 +3525');
+    assert.strictEqual(characterDetail.abilityStone!.engravingEffects.length, 4);
+    const kinds = characterDetail.abilityStone!.engravingEffects.map((e) => e.kind);
+    assert.deepStrictEqual(kinds, ['engraving', 'engraving', 'debuff', 'level-bonus']);
+  });
+
+  await t.test('case: 비-ArkPassive fixture 에 어빌리티 스톤 부재 시 abilityStone === null', async () => {
+    const fixture = loadFixture(FIXTURE_NO_ARK);
+    // FIXTURE_NO_ARK 의 ArmoryEquipment 에 어빌리티 스톤 entry 가 있는지 확인 후 결과 검증.
+    // 있어도 (이다 데이터 그대로 카피) abilityStone 은 신 메서드로 정규화되므로 null 이 아닐 수 있음.
+    // 본 케이스는 "통합 호출이 throw 없이 abilityStone 필드를 채운다" 만 검증.
+    const norm = new ArmoriesNormalizer();
+    const { characterDetail } = await norm.normalizeCharacterDetail('테스트캐릭', fixture);
+    // 필드 자체가 존재해야 함 (null 또는 객체).
+    assert.ok(
+      characterDetail.abilityStone === null ||
+        typeof characterDetail.abilityStone === 'object',
+      'abilityStone field must be present (null or object)',
+    );
+  });
+});

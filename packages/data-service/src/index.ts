@@ -40,6 +40,14 @@ export { CharactersService, charactersService } from './services/characters-serv
 export { armoriesCache } from './cache/armories-cache.js';
 export { ArmoriesClient } from './clients/armories-client.js';
 export { ArmoriesNormalizer } from './normalizers/armories-normalizer.js';
+export type {
+  NormalizedCharacterDetail,
+  NormalizedArkPassive,
+  NormalizedAbilityStone,
+  NormalizedAbilityStoneEffect,
+  AbilityStoneEffectKind,
+  NormalizationResult,
+} from './normalizers/armories-normalizer.js';
 export { ArmoriesService, armoriesService } from './services/armories-service.js';
 
 // === AUCTIONS API ===
