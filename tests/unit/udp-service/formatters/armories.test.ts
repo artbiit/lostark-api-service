@@ -31,13 +31,13 @@ test('formatProfile', async (t) => {
       title: '심판자',
       className: '디스트로이어',
       itemLevel: 1700,
+      characterLevel: 70,
       expeditionLevel: 80,
       serverName: '루페온',
       guildName: '아트네',
       engravings: [{ name: '돌격대장' }, { name: '원한' }],
       profile: {
         stats: [
-          { type: '캐릭터 레벨', value: '70' },
           { type: '치명', value: 1000 },
           { type: '특화', value: 1200 },
           { type: '신속', value: 800 },
@@ -77,6 +77,146 @@ test('formatProfile', async (t) => {
     assert.doesNotMatch(out, /undefined/);
     assert.match(out, /서버\/길드\t알 수 없음\/없음/);
   });
+
+  // F-1: 각인 3줄 (이름 첫글자 / 등급 첫글자 / 레벨)
+  await t.test('F-1: renders engraving 3-row block (name/grade/level)', () => {
+    const detail = {
+      className: '브레이커',
+      engravings: [
+        { name: '아드레날린', grade: '유물', level: 4 },
+        { name: '원한', grade: '유물', level: 4 },
+        { name: '돌격대장', grade: '유물', level: 4 },
+        { name: '결투의 대가', grade: '유물', level: 4 },
+        { name: '예리한 둔기', grade: '유물', level: 4 },
+      ],
+    };
+    const out = formatProfile('아트네', detail);
+    assert.match(out, /아 원 돌 결 예/);
+    assert.match(out, /유 유 유 유 유/);
+    assert.match(out, /4 4 4 4 4/);
+  });
+
+  // F-2: 진/깨/도
+  await t.test('F-2: renders 진/깨/도 line from arkPassive.points', () => {
+    const detail = {
+      className: '브레이커',
+      arkPassive: {
+        isArkPassive: true,
+        title: '수라의 길',
+        realizationName: '수라의 길',
+        points: { evolution: 120, realization: 101, leap: 70 },
+        engravingEffects: [],
+      },
+    };
+    const out = formatProfile('아트네', detail);
+    assert.match(out, /진\/깨\/도\t120\/101\/70/);
+  });
+
+  // F-3: 엘/초/상 — 빈 tooltip 이라도 라인은 출력
+  await t.test('F-3: renders 엘/초/상 line when equipment present', () => {
+    const detail = {
+      itemLevel: 1700,
+      equipment: [
+        { type: '무기', name: '+25 무기', tooltip: '' },
+        { type: '투구', name: '+25 투구', tooltip: '' },
+      ],
+    };
+    const out = formatProfile('아트네', detail);
+    assert.match(out, /엘\/초\/상\t0\/0\/0/);
+  });
+
+  // F-4: 길드 등급 표기
+  await t.test('F-4: renders guild grade after guildName', () => {
+    const detail = {
+      serverName: '루페온',
+      guildName: '모코코',
+      guildMemberGrade: '길드장',
+    };
+    const out = formatProfile('아트네', detail);
+    assert.match(out, /서버\/길드\t루페온\/모코코의 길드장/);
+  });
+
+  // F-5: 갱신 시간
+  await t.test('F-5: renders 갱신된 시간 line when metadata.normalizedAt present', () => {
+    const detail = {
+      metadata: { normalizedAt: new Date(Date.now() - 1000 * 60 * 5) },
+    };
+    const out = formatProfile('아트네', detail);
+    assert.match(out, /갱신된 시간 /);
+  });
+
+  // F-6: 돌 오우너 ≥ 16
+  await t.test('F-6: renders 돌 오우너 when positive total >= 16', () => {
+    // tooltip: IndentStringGroup with positive entries +9 and +9 (sum 18)
+    const tooltip = JSON.stringify({
+      e0: {
+        type: 'IndentStringGroup',
+        value: {
+          Element_000: {
+            contentStr: {
+              k0: { contentStr: '[원한] 효과 +9' },
+              k1: { contentStr: '[돌격대장] 효과 +9' },
+              k2: { contentStr: '[감소] +7' },
+            },
+          },
+        },
+      },
+    });
+    const detail = {
+      equipment: [{ type: '어빌리티 스톤', name: '돌', tooltip }],
+    };
+    const out = formatProfile('아트네', detail);
+    assert.match(out, /"99돌 오우너"/);
+  });
+
+  // F-7: 돌 오우너 임계 미만
+  await t.test('F-7: omits 돌 오우너 line when total < 16', () => {
+    const tooltip = JSON.stringify({
+      e0: {
+        type: 'IndentStringGroup',
+        value: {
+          Element_000: {
+            contentStr: {
+              k0: { contentStr: '[원한] 효과 +7' },
+              k1: { contentStr: '[돌격대장] 효과 +5' },
+            },
+          },
+        },
+      },
+    });
+    const detail = {
+      equipment: [{ type: '어빌리티 스톤', name: '돌', tooltip }],
+    };
+    const out = formatProfile('아트네', detail);
+    assert.doesNotMatch(out, /돌 오우너/);
+  });
+
+  // F-8: ArkPassive null fallback (throw 없음)
+  await t.test('F-8: formatProfile does not throw when arkPassive is null', () => {
+    const detail = {
+      className: '브레이커',
+      arkPassive: null,
+      engravings: [{ name: '아드레날린' }],
+      itemLevel: 1700,
+      characterLevel: 70,
+      expeditionLevel: 80,
+      serverName: '루페온',
+    };
+    const out = formatProfile('아트네', detail);
+    assert.doesNotMatch(out, /진\/깨\/도/);
+    assert.doesNotMatch(out, /undefined/);
+  });
+
+  // F-9: characterLevel 직접 매핑
+  await t.test('F-9: renders 템/전/원 with characterLevel directly', () => {
+    const detail = {
+      itemLevel: 1700,
+      characterLevel: 70,
+      expeditionLevel: 80,
+    };
+    const out = formatProfile('아트네', detail);
+    assert.match(out, /템\/전\/원\t1700\/70\/80/);
+  });
 });
 
 // === formatEquipment ===
@@ -106,6 +246,17 @@ test('formatEquipment', async (t) => {
     const detail = { equipment: [{ type: '어빌리티 스톤', name: '돌' }] };
     const out = formatEquipment('아트네', detail);
     assert.strictEqual(out, '아트네의 장비를 찾을 수 없습니다.');
+  });
+
+  // F-12: 마지막 줄에 갱신된 시간
+  await t.test('F-12: appends 갱신된 시간 line when metadata.normalizedAt present', () => {
+    const detail = {
+      itemLevel: 1700,
+      equipment: [{ type: '무기', name: '+25 무기', tooltip: '' }],
+      metadata: { normalizedAt: new Date(Date.now() - 1000 * 60 * 3) },
+    };
+    const out = formatEquipment('아트네', detail);
+    assert.match(out, /갱신된 시간 /);
   });
 });
 
@@ -142,6 +293,22 @@ test('formatSkills', async (t) => {
     const detail = { combatSkills: [{ name: '약스킬', level: 1, tripods: [] }] };
     const out = formatSkills('아트네', detail);
     assert.strictEqual(out, '아트네의 스킬 정보를 찾을 수 없습니다.');
+  });
+
+  // F-13: rune.grade 첫글자가 룬 표기에 포함
+  await t.test('F-13: includes rune.grade first char in rune label', () => {
+    const detail = {
+      combatSkills: [
+        {
+          name: '파천섬광',
+          level: 10,
+          tripods: [],
+          rune: { name: '속행', grade: '전설' },
+        },
+      ],
+    };
+    const out = formatSkills('아트네', detail);
+    assert.match(out, /\[전 속행\]/);
   });
 });
 
@@ -185,6 +352,23 @@ test('formatEngravings', async (t) => {
   await t.test('returns fallback when no engravings', () => {
     const out = formatEngravings('아트네', { engravings: [] });
     assert.strictEqual(out, '아트네은(는) 장착중인 각인이 없는 것 같숨미당.');
+  });
+
+  // F-10: ArkPassive 활성 — [등급] 이름 Lv.N
+  await t.test('F-10: ArkPassive 활성 시 [등급] 이름 Lv.N 표기', () => {
+    const detail = {
+      engravings: [{ name: '아드레날린', grade: '유물', level: 4 }],
+    };
+    const out = formatEngravings('아트네', detail);
+    assert.match(out, /\[유물\] 아드레날린 Lv\.4/);
+  });
+
+  // F-11: ArkPassive 비활성 — 이름만
+  await t.test('F-11: ArkPassive 비활성 (level/grade 부재) 시 이름만', () => {
+    const detail = { engravings: [{ name: '아드레날린' }] };
+    const out = formatEngravings('아트네', detail);
+    assert.match(out, /\[아드레날린\]/);
+    assert.doesNotMatch(out, /Lv\./);
   });
 });
 

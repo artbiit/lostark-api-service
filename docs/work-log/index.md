@@ -12,8 +12,20 @@
 - [2026-05-16 carry-over 처리 + abyss/guardian 제거](./2026-05-16-carry-over-resolution/index.md)
   — formatter 단위 테스트 9파일 + abyss/guardian 완전 제거(ADR-0003) + cache-flow
   Windows 경로 수정 + UDP smoke 검증 (session 20260516-040536)
+- [2026-05-16 F7 — !정보 출력 legacy 수준 보강](./2026-05-16-armories-info-legacy-parity/index.md)
+  — V9 타입 7건 정정, NormalizedCharacterDetail 확장(ArkPassive/characterLevel/guildMemberGrade),
+  formatter 9 라인 보강, 테스트 N-1~N-7 + F-1~F-13 (session 20260516-230225)
 
 ## 최근 세션
+
+### 2026-05-16 — F7 !정보 출력 legacy 수준 보강 (session 20260516-230225)
+
+- V9 타입 7건 현행화 (ArkPassive 신설, ColosseumV9/ArmoryCardsV9.Effects/CombatSkillV9.Rune 정정).
+- `NormalizedCharacterDetail` 확장: `arkPassive`, `characterLevel`, `guildMemberGrade` 신규 필드.
+- formatter 보강: realization+직업, 각인 3줄, 돌 오우너, 엘/초/상, 진/깨/도, 갱신 시간 등 9 라인.
+- `profile.ts` sections 에 `'equipment'` 추가.
+- 신규 테스트: N-1~N-7 (normalizer) + F-1~F-13 (formatter). L1 178/178 + L2 3/3 pass.
+- Carry-over: 없음.
 
 ### 2026-05-16 — carry-over 처리 + abyss/guardian 제거 (session 20260516-040536)
 

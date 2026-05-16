@@ -4,6 +4,12 @@
 
 ## 2026-05
 
+- feat+fix(shared,data-service,udp-service):
+  [F7 armories !정보 legacy parity](./2026-05-16-armories-info-legacy-parity.md)
+  — V9 타입 7건 정정(ArkPassive/ColosseumV9/ArmoryCardsV9.Effects/CombatSkillV9.Rune),
+  NormalizedCharacterDetail 확장(arkPassive/characterLevel/guildMemberGrade),
+  formatter 9 라인 보강, profile sections +equipment.
+  **LoA-Bot generated.ts 재생성 필요.** (session 20260516-230225)
 - feat+fix+chore(udp-service,tests):
   [formatter 단위 테스트 신규 + abyss/guardian 제거 + cache-flow 경로 수정](./2026-05-16-formatter-tests-and-abyss-guardian-removal.md)
   — 단위 테스트 9파일, UDP smoke, abyss/guardian 완전 제거(ADR-0003),

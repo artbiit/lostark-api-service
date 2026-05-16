@@ -12,6 +12,21 @@ import { ArmoryCharacterV9 } from '@lostark/shared/types/V9/armories';
 // === 도메인 모델 ===
 
 /**
+ * 아크 패시브 도메인 모델 (정규화 후).
+ * ArkPassive 활성 캐릭에서만 채워짐. 비활성 캐릭은 NormalizedCharacterDetail.arkPassive === null.
+ */
+export interface NormalizedArkPassive {
+  isArkPassive: boolean;
+  title: string;
+  /** Points 3종 — 없으면 0 */
+  points: { evolution: number; realization: number; leap: number };
+  /** Effects[0].Description 의 '>{name} Lv.{n}<' 첫 매치. 추출 실패 시 null */
+  realizationName: string | null;
+  /** ArmoryEngraving.ArkPassiveEffects 기반 (활성 시), 비활성 시 빈 배열 */
+  engravingEffects: Array<{ name: string; level: number; grade: string }>;
+}
+
+/**
  * 정규화된 캐릭터 상세 정보
  */
 export interface NormalizedCharacterDetail {
@@ -19,9 +34,15 @@ export interface NormalizedCharacterDetail {
   serverName: string;
   className: string;
   itemLevel: number;
+  /** ArmoryProfile.CharacterLevel 직접. Stats 우회 제거. */
+  characterLevel: number;
   expeditionLevel: number;
   guildName?: string;
+  /** ArmoryProfile.GuildMemberGrade — 예: '길드장', '부길드장', '길드원'. */
+  guildMemberGrade?: string;
   title?: string;
+  /** ArkPassive 활성 시. 비활성/응답 부재 시 null. */
+  arkPassive: NormalizedArkPassive | null;
   profile: {
     characterImage: string;
     pvpGrade: string;
@@ -54,6 +75,9 @@ export interface NormalizedCharacterDetail {
     name: string;
     icon: string;
     tooltip: string;
+    /** ArkPassiveEffects 기반 보강 (활성 시). 비활성 캐릭은 undefined. */
+    level?: number;
+    grade?: string;
   }>;
   cards: {
     cards: Array<{
@@ -96,6 +120,8 @@ export interface NormalizedCharacterDetail {
     rune?: {
       name: string;
       icon: string;
+      grade?: string;
+      tooltip?: string;
     };
   }>;
   avatars: Array<{
@@ -193,15 +219,30 @@ export class ArmoriesNormalizer {
       const className = this.extractClassName(profile);
       const itemLevel = this.calculateItemLevel(profile);
 
-      // 2. 정규화된 데이터 생성
+      // 2. ArkPassive + 각인 사전 정규화 (engravings 가 arkPassive.engravingEffects 의 소스)
+      const arkPassive = this.normalizeArkPassive(armoryData.ArkPassive);
+      const normalizedEngravings = this.normalizeEngravings(engravings);
+      if (arkPassive) {
+        arkPassive.engravingEffects = normalizedEngravings
+          .filter((e) => typeof e.level === 'number' && typeof e.grade === 'string')
+          .map((e) => ({ name: e.name, level: e.level as number, grade: e.grade as string }));
+      }
+
+      // 3. 정규화된 데이터 생성
+      const characterLevel =
+        typeof (profile as any).CharacterLevel === 'number' ? (profile as any).CharacterLevel : 0;
+
       const characterDetail: NormalizedCharacterDetail = {
         characterName: characterNameFromProfile,
         serverName,
         className,
         itemLevel,
+        characterLevel,
         expeditionLevel: profile.ExpeditionLevel,
         ...(profile.GuildName && { guildName: profile.GuildName }),
+        ...(profile.GuildMemberGrade && { guildMemberGrade: profile.GuildMemberGrade }),
         ...(profile.Title && { title: profile.Title }),
+        arkPassive,
         profile: {
           characterImage: profile.CharacterImage,
           pvpGrade: profile.PvpGradeName,
@@ -215,7 +256,7 @@ export class ArmoriesNormalizer {
           tendencies: this.normalizeTendencies(tendencies),
         },
         equipment: this.normalizeEquipment(equipment),
-        engravings: this.normalizeEngravings(engravings),
+        engravings: normalizedEngravings,
         cards: this.normalizeCards(cards),
         gems: this.normalizeGems(gems),
         combatSkills: this.normalizeCombatSkills(combatSkills),
@@ -299,19 +340,80 @@ export class ArmoriesNormalizer {
   }
 
   /**
-   * 각인 정보 정규화
+   * 각인 정보 정규화.
+   *
+   * 분기:
+   * 1. ArkPassive 활성 — `ArmoryEngraving.ArkPassiveEffects[]` 우선.
+   *    각 entry 의 `{Name, Description, Level, Grade}` 를 매핑.
+   * 2. ArkPassive 비활성 — 기존 `Engravings[]` 사용 (level/grade 없음).
    */
   private normalizeEngravings(
     engravingData: any,
-  ): Array<{ slot: number; name: string; icon: string; tooltip: string }> {
-    const engravings = engravingData?.Engravings ?? [];
+  ): Array<{
+    slot: number;
+    name: string;
+    icon: string;
+    tooltip: string;
+    level?: number;
+    grade?: string;
+  }> {
+    if (!engravingData) return [];
 
+    // 분기 1: ArkPassive 활성
+    if (Array.isArray(engravingData.ArkPassiveEffects)) {
+      return engravingData.ArkPassiveEffects.map((eff: any, idx: number) => ({
+        slot: idx,
+        name: typeof eff?.Name === 'string' ? eff.Name : '',
+        icon: '', // ArkPassiveEffects 에는 Icon 없음
+        tooltip: typeof eff?.Description === 'string' ? eff.Description : '',
+        ...(typeof eff?.Level === 'number' && { level: eff.Level }),
+        ...(typeof eff?.Grade === 'string' && { grade: eff.Grade }),
+      }));
+    }
+
+    // 분기 2: 비-ArkPassive
+    const engravings = Array.isArray(engravingData.Engravings) ? engravingData.Engravings : [];
     return engravings.map((engraving: any) => ({
-      slot: engraving.Slot,
-      name: engraving.Name,
-      icon: engraving.Icon,
-      tooltip: engraving.Tooltip,
+      slot: typeof engraving?.Slot === 'number' ? engraving.Slot : 0,
+      name: typeof engraving?.Name === 'string' ? engraving.Name : '',
+      icon: typeof engraving?.Icon === 'string' ? engraving.Icon : '',
+      tooltip: typeof engraving?.Tooltip === 'string' ? engraving.Tooltip : '',
     }));
+  }
+
+  /**
+   * 아크 패시브 정규화. arkPassiveData 가 null/undefined 면 null 반환.
+   * engravingEffects 는 본 메서드 시점에서 [] 로 두고, normalizeCharacterDetail 이
+   * normalizeEngravings 결과로 채워 넣는다.
+   */
+  private normalizeArkPassive(arkPassiveData: any): NormalizedArkPassive | null {
+    if (!arkPassiveData) return null;
+
+    const points = { evolution: 0, realization: 0, leap: 0 };
+    if (Array.isArray(arkPassiveData.Points)) {
+      for (const p of arkPassiveData.Points) {
+        const v = typeof p?.Value === 'number' ? p.Value : 0;
+        if (p?.Name === '진화') points.evolution = v;
+        else if (p?.Name === '깨달음') points.realization = v;
+        else if (p?.Name === '도약') points.leap = v;
+      }
+    }
+
+    // legacy commandUtils.js:47 동일 패턴. Effects[0] 은 항상 깨달음 1티어.
+    let realizationName: string | null = null;
+    const firstEffect = Array.isArray(arkPassiveData.Effects) ? arkPassiveData.Effects[0] : null;
+    if (firstEffect && typeof firstEffect.Description === 'string') {
+      const m = firstEffect.Description.match(/>([^<]+)\s+Lv\./);
+      if (m && m[1]) realizationName = m[1].trim();
+    }
+
+    return {
+      isArkPassive: !!arkPassiveData.IsArkPassive,
+      title: typeof arkPassiveData.Title === 'string' ? arkPassiveData.Title : '',
+      points,
+      realizationName,
+      engravingEffects: [],
+    };
   }
 
   /**
@@ -398,6 +500,8 @@ export class ArmoriesNormalizer {
     rune?: {
       name: string;
       icon: string;
+      grade?: string;
+      tooltip?: string;
     };
   }> {
     const skills = skillData?.CombatSkills ?? [];
@@ -420,6 +524,8 @@ export class ArmoriesNormalizer {
         ? {
             name: skill.Rune.Name,
             icon: skill.Rune.Icon,
+            ...(typeof skill.Rune.Grade === 'string' && { grade: skill.Rune.Grade }),
+            ...(typeof skill.Rune.Tooltip === 'string' && { tooltip: skill.Rune.Tooltip }),
           }
         : undefined,
     }));

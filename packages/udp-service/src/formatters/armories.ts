@@ -7,6 +7,7 @@
  */
 
 import {
+  elapsedTime,
   EMOJI,
   joinLines,
   padItemLevel,
@@ -23,42 +24,62 @@ type AnyDetail = Record<string, any>;
 export function formatProfile(name: string, detail: AnyDetail): string {
   const profile = detail.profile ?? {};
   const engravings: any[] = Array.isArray(detail.engravings) ? detail.engravings : [];
+  const ark = detail.arkPassive ?? null;
 
   const lines: string[] = [];
+
+  // 1. [칭호] 이름
   const title = detail.title;
   lines.push(title ? `${title} ${name}` : name);
 
-  // 직업 표기 (각인 있을 때 깨달음 효과명 + 직업명, 없으면 직업명만 — legacy 와 동일 정신)
+  // 2. realization + 직업명 (realization 없으면 직업명만)
   const className = detail.className ?? '';
-  if (engravings.length > 0 && className) {
-    lines.push(className);
+  const realizationName: string | null = ark?.realizationName ?? null;
+  if (realizationName && className) {
+    lines.push(`${realizationName} ${className}`);
   } else if (className) {
     lines.push(className);
   }
 
-  // 각인 3줄: 이름 첫글자 / 등급 첫글자 / 레벨
+  // 3. 각인 3줄: 이름 첫글자 / 등급 첫글자 / 레벨
   if (engravings.length > 0) {
-    let abbreviation = '';
-    for (const e of engravings) {
-      const eName: string = e.name ?? '';
-      abbreviation += (eName[0] ?? '?') + ' ';
-    }
+    const row1 = engravings.map((e: any) => (e.name?.[0] ?? '?')).join(' ');
+    const row2 = engravings.map((e: any) => (e.grade?.[0] ?? '?')).join(' ');
+    const row3 = engravings.map((e: any) => (e.level ?? '?')).join(' ');
     lines.push('');
-    lines.push(abbreviation.trimEnd());
+    lines.push(row1);
+    lines.push(row2);
+    lines.push(row3);
   }
 
-  lines.push('');
-  lines.push(
-    `템/전/원\t${detail.itemLevel ?? 0}/${profile.stats?.find?.((s: any) => s.type === '캐릭터 레벨')?.value ?? ''}/${detail.expeditionLevel ?? 0}`,
-  );
+  // 4. 돌 오우너 라인 (positive 합계 ≥ 16 + positive.length ≥ 2)
+  const stoneSummary = summarizeStoneActivity(Array.isArray(detail.equipment) ? detail.equipment : []);
+  if (stoneSummary && stoneSummary.total >= 16 && stoneSummary.positive.length >= 2) {
+    const a = stoneSummary.positive[0];
+    const b = stoneSummary.positive[1];
+    lines.push(`"${a}${b}돌 오우너"`);
+  }
 
+  // 5. (빈 줄)
+  lines.push('');
+
+  // 6. 템/전/원 — characterLevel 직접
+  const itemLevel = detail.itemLevel ?? 0;
+  const characterLevel = detail.characterLevel ?? '';
+  lines.push(`템/전/원\t${itemLevel}/${characterLevel}/${detail.expeditionLevel ?? 0}`);
+
+  // 7. 서버/길드 + 길드 등급
   const serverLabel = detail.serverName || '알 수 없음';
-  const guildLabel = detail.guildName || '없음';
-  lines.push(`서버/길드\t${serverLabel}/${guildLabel}`);
+  if (detail.guildName) {
+    const grade = detail.guildMemberGrade ? `의 ${detail.guildMemberGrade}` : '';
+    lines.push(`서버/길드\t${serverLabel}/${detail.guildName}${grade}`);
+  } else {
+    lines.push(`서버/길드\t${serverLabel}/없음`);
+  }
 
   const stats: any[] = profile.stats ?? [];
+  // 8. 전투특성
   if (stats.length >= 4) {
-    // 전투특성 추정: 치명/특화/제압/신속/인내/숙련 중 상위 2개의 type 첫글자
     const combat = stats.filter((s: any) => /치명|특화|제압|신속|인내|숙련/.test(s.type));
     combat.sort((a: any, b: any) => (b.value ?? 0) - (a.value ?? 0));
     const top2 = combat.slice(0, 2);
@@ -67,21 +88,38 @@ export function formatProfile(name: string, detail: AnyDetail): string {
     }
   }
 
+  // 9. 스킬포인트
   if (profile.skillPoints) {
     lines.push(`스킬포인트\t${profile.skillPoints.used}/${profile.skillPoints.total}`);
   }
 
+  // 10. pvp
   if (profile.pvpGrade) {
     lines.push(`pvp\t${profile.pvpGrade}`);
   }
 
+  // 11. 공격력/체력
   const attack = stats.find?.((s: any) => s.type === '공격력');
   const hp = stats.find?.((s: any) => s.type === '최대 생명력');
   if (attack && hp) {
     lines.push(`공격력/체력\t${attack.value}/${hp.value}`);
   }
 
-  // 성향
+  // 12. 엘/초/상 (equipment 가 partial 응답에 포함됐을 때만 의미 있음)
+  const equipment = Array.isArray(detail.equipment) ? detail.equipment : [];
+  if (equipment.length > 0) {
+    const eq = summarizeEquipmentForProfile(equipment);
+    lines.push(
+      `엘/초/상\t${eq.elixirTotal}/${eq.transcendenceTotal}/${eq.advancedReforgeTotal}`,
+    );
+  }
+
+  // 13. 진/깨/도 (ArkPassive 활성 시)
+  if (ark) {
+    lines.push(`진/깨/도\t${ark.points.evolution}/${ark.points.realization}/${ark.points.leap}`);
+  }
+
+  // 14. 성향
   const tendencies: any[] = profile.tendencies ?? [];
   for (let i = 0; i + 1 < tendencies.length; i += 2) {
     const t1 = tendencies[i];
@@ -89,7 +127,93 @@ export function formatProfile(name: string, detail: AnyDetail): string {
     lines.push(`${t1.type}/${t2.type}\t${t1.point}/${t2.point}`);
   }
 
+  // 15-16. 갱신 시간
+  const updatedAt = detail.metadata?.normalizedAt;
+  if (updatedAt) {
+    lines.push('');
+    lines.push('');
+    lines.push(`갱신된 시간 ${elapsedTime(updatedAt)}`);
+  }
+
   return joinLines(...lines);
+}
+
+/**
+ * 어빌리티 스톤 tooltip 의 IndentStringGroup 에서 활성/감소 슬롯의 Lv 를 추출.
+ * legacy `commandUtils.js` 의 stones 처리 모방.
+ * - `[감소]` 키워드 포함 → negative
+ * - 그 외 → positive
+ * 반환은 desc 정렬된 value 배열 + positive 합계.
+ */
+function summarizeStoneActivity(equipment: any[]): {
+  positive: number[];
+  negative: number[];
+  total: number;
+} | null {
+  const stones = equipment.filter((e: any) => e?.type === '어빌리티 스톤');
+  if (stones.length === 0) return null;
+
+  const positive: number[] = [];
+  const negative: number[] = [];
+  for (const stone of stones) {
+    const tooltipRaw = typeof stone.tooltip === 'string' ? stone.tooltip : '';
+    if (!tooltipRaw) continue;
+
+    let tooltip: Record<string, any>;
+    try {
+      tooltip = JSON.parse(removeHtmlTags(tooltipRaw));
+    } catch {
+      continue;
+    }
+
+    for (const key of Object.keys(tooltip)) {
+      const el = tooltip[key];
+      if (el?.type !== 'IndentStringGroup') continue;
+      const inner = el.value?.Element_000?.contentStr;
+      if (!inner || typeof inner !== 'object') continue;
+      for (const k of Object.keys(inner)) {
+        const d = inner[k];
+        const c: string = typeof d?.contentStr === 'string' ? d.contentStr : '';
+        if (!c) continue;
+        const isNegative = c.includes('[감소]');
+        const plus = c.indexOf('+');
+        if (plus < 0) continue;
+        const rest = c.substring(plus + 1).match(/^\d+/);
+        const val = rest ? Number(rest[0]) : 0;
+        if (!Number.isFinite(val) || val <= 0) continue;
+        if (isNegative) negative.push(val);
+        else positive.push(val);
+      }
+    }
+  }
+
+  positive.sort((a, b) => b - a);
+  negative.sort((a, b) => b - a);
+  const total = positive.reduce((s, v) => s + v, 0);
+  return { positive, negative, total };
+}
+
+/**
+ * 6장비(무기/투구/상의/하의/어깨/장갑) 의 엘릭서/초월/상재 합계.
+ * formatEquipment 와 동일하게 parseEquipmentTooltip 을 재사용.
+ */
+function summarizeEquipmentForProfile(equipment: any[]): {
+  elixirTotal: number;
+  transcendenceTotal: number;
+  advancedReforgeTotal: number;
+} {
+  const slots = new Set(['무기', '투구', '상의', '하의', '어깨', '장갑']);
+  let elixirTotal = 0;
+  let transcendenceTotal = 0;
+  let advancedReforgeTotal = 0;
+  for (const eq of equipment) {
+    if (!slots.has(eq?.type)) continue;
+    const parsed = parseEquipmentTooltip(eq);
+    elixirTotal += parsed.elixirs.reduce((s, e) => s + e.level, 0);
+    transcendenceTotal += parsed.transcendenceCount;
+    advancedReforgeTotal += parsed.advancedReforge;
+  }
+  return { elixirTotal, transcendenceTotal, advancedReforgeTotal };
 }
 
 // === 장비 ===
@@ -173,6 +297,11 @@ export function formatEquipment(name: string, detail: AnyDetail): string {
       lines.push(`- ${item.slot}) ${parts.join(' ')}`);
     }
     lines.splice(4, 0, `엘릭서 합계 : ${elixirSum}`);
+  }
+
+  if (detail.metadata?.normalizedAt) {
+    lines.push('');
+    lines.push(`갱신된 시간 ${elapsedTime(detail.metadata.normalizedAt)}`);
   }
 
   return joinLines(...lines);
@@ -434,10 +563,13 @@ export function formatEngravings(name: string, detail: AnyDetail): string {
 
   const lines: string[] = [`${name}의 각인`];
   for (const e of list) {
-    // tooltip 에서 등급/레벨을 뽑는 대신 normalized name 기준으로 단순 출력.
-    // (legacy 는 ArkPassiveEffects 의 level 을 별도 저장했지만 V9 normalized
-    //  결과에는 level 이 없으므로 이름만 표기.)
-    lines.push(` [${e.name}]`);
+    // ArkPassive 활성 캐릭은 normalizer 가 level/grade 를 채워준다.
+    // 비활성 캐릭은 둘 다 undefined 이므로 이름만 표기 (legacy 동작 유지).
+    if (typeof e.level === 'number' && typeof e.grade === 'string' && e.grade.length > 0) {
+      lines.push(` [${e.grade}] ${e.name} Lv.${e.level}`);
+    } else {
+      lines.push(` [${e.name}]`);
+    }
   }
   return joinLines(...lines);
 }

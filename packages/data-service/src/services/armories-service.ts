@@ -721,9 +721,15 @@ function pickCoreFields(
     serverName: detail.serverName,
     className: detail.className,
     itemLevel: detail.itemLevel,
+    characterLevel: detail.characterLevel,
     expeditionLevel: detail.expeditionLevel,
     ...(detail.guildName !== undefined && { guildName: detail.guildName }),
+    ...(detail.guildMemberGrade !== undefined && {
+      guildMemberGrade: detail.guildMemberGrade,
+    }),
     ...(detail.title !== undefined && { title: detail.title }),
+    arkPassive: detail.arkPassive,
+    metadata: detail.metadata,
   };
 }
 

@@ -11,6 +11,7 @@ export const profileCommand: CommandSpec = {
       const detail = await ctx.armoriesService.getCharacterDetailPartial(name, [
         'profile',
         'engravings',
+        'equipment',
       ]);
       if (!detail?.profile) return `${name} 을(를) 찾을 수 없습니다.`;
       return formatProfile(name, detail);

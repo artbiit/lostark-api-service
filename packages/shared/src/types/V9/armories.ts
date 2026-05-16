@@ -94,6 +94,8 @@ export interface CombatSkillV9 {
   Rune: {
     Name: string;
     Icon: string;
+    Grade: string;
+    Tooltip: string;
   } | null;
 }
 
@@ -111,50 +113,73 @@ export interface AvatarV9 {
 }
 
 /**
- * 증명의 전장 정보
+ * 증명의 전장 시즌 단일 모드 기록.
+ * 실응답 7 키 ({Rank,RankName,RankIcon,RankLastMmr,PlayCount,
+ * VictoryCount,LoseCount,TieCount,KillCount,AceCount,DeathCount}) 매핑.
+ * 모드별로 미참여 시 null.
+ */
+export interface ColosseumModeStatV9 {
+  Rank: number;
+  RankName: string;
+  RankIcon: string;
+  RankLastMmr: number;
+  PlayCount: number;
+  VictoryCount: number;
+  LoseCount: number;
+  TieCount: number;
+  KillCount: number;
+  AceCount: number;
+  DeathCount: number;
+}
+
+/**
+ * 증명의 전장 시즌별 기록.
+ * - legacy 의 `Deathmatch` 키는 V9 응답에 없음.
+ * - V9 응답에 추가된 키: `CoOpBattle`, `OneDeathmatch`, `OneDeathmatchRank`.
  */
 export interface ColosseumV9 {
   SeasonName: string;
-  Competitive: {
-    Rank: number;
-    RankName: string;
-    RankIcon: string;
-    ClassRank: number;
-    ClassRankName: string;
-    ClassRankIcon: string;
-    Score: number;
-    MaxScore: number;
-  };
-  TeamDeathmatch: {
-    Rank: number;
-    RankName: string;
-    RankIcon: string;
-    ClassRank: number;
-    ClassRankName: string;
-    ClassRankIcon: string;
-    Score: number;
-    MaxScore: number;
-  };
-  Deathmatch: {
-    Rank: number;
-    RankName: string;
-    RankIcon: string;
-    ClassRank: number;
-    ClassRankName: string;
-    ClassRankIcon: string;
-    Score: number;
-    MaxScore: number;
-  };
-  TeamElimination: {
-    Rank: number;
-    RankName: string;
-    RankIcon: string;
-    ClassRank: number;
-    ClassRankName: string;
-    ClassRankIcon: string;
-    Score: number;
-    MaxScore: number;
-  };
+  Competitive: ColosseumModeStatV9 | null;
+  TeamDeathmatch: ColosseumModeStatV9 | null;
+  TeamElimination: ColosseumModeStatV9 | null;
+  CoOpBattle: ColosseumModeStatV9 | null;
+  OneDeathmatch: ColosseumModeStatV9 | null;
+  OneDeathmatchRank: ColosseumModeStatV9 | null;
+}
+
+/**
+ * 아크 패시브 포인트 (3종: 진화/깨달음/도약)
+ * 실응답: docs/contracts/upstream-lostark-api/V9.0.0/sample-data/armories/characters.json L2169
+ */
+export interface ArkPassivePointV9 {
+  Name: '진화' | '깨달음' | '도약';
+  Value: number;
+  Tooltip: string;
+  Description: string;
+}
+
+/**
+ * 아크 패시브 효과 노드 (티어별 각인 효과).
+ * 실응답 sample L2189. Effects[0] 가 항상 깨달음 1티어이며
+ * Description 의 `>([^<]+)\s+Lv\.` 정규식으로 realization_name 추출 (legacy commandUtils.js:47).
+ *
+ * 주의: 키 표기 `ToolTip` 은 sample 응답 원본 그대로 보존 (다른 도메인의 `Tooltip` 과 표기 다름).
+ */
+export interface ArkPassiveEffectV9 {
+  Name: '진화' | '깨달음' | '도약';
+  Description: string;
+  Icon: string;
+  ToolTip: string;
+}
+
+/**
+ * 아크 패시브 루트. 저티어 캐릭은 null 가능.
+ */
+export interface ArkPassiveV9 {
+  Title: string;
+  IsArkPassive: boolean;
+  Points: ArkPassivePointV9[];
+  Effects: ArkPassiveEffectV9[];
 }
 
 /**
@@ -179,6 +204,8 @@ export interface CollectibleV9 {
  */
 export interface ArmoryProfileV9 extends ApiVersion {
   CharacterName: string;
+  /** 캐릭터 전투 레벨. sample L132: ArmoryProfile 최상위 필드. */
+  CharacterLevel: number;
   ServerName: string;
   CharacterClassName: string;
   ItemAvgLevel: string; // 예: "1,620.00" — 공식 API 원본 문자열 형식
@@ -212,14 +239,30 @@ export interface ArmoryEquipmentV9 extends ApiVersion {
 // === ARMORY ENGRAVING ===
 
 /**
- * 각인 정보
+ * 아크 패시브 활성 캐릭터의 각인 항목.
+ * 실응답: ArmoryEngraving.ArkPassiveEffects (sample L1xxx).
+ * legacy commandUtils.js:566-577 동일 패턴 — 각 각인의 {Name, Level, Grade} 권위 소스.
+ */
+export interface ArkPassiveEngravingEntryV9 {
+  AbilityStoneLevel: number | null;
+  Grade: string;
+  Level: number;
+  Name: string;
+  Description: string;
+}
+
+/**
+ * 각인 정보.
+ * - ArkPassive 활성: Engravings/Effects 가 null, ArkPassiveEffects 가 채워짐.
+ * - ArkPassive 비활성: Engravings/Effects 가 채워짐, ArkPassiveEffects 부재 또는 null.
  */
 export interface ArmoryEngravingV9 extends ApiVersion {
-  Engravings: EngravingV9[];
+  Engravings: EngravingV9[] | null;
   Effects: Array<{
     Name: string;
     Description: string;
-  }>;
+  }> | null;
+  ArkPassiveEffects?: ArkPassiveEngravingEntryV9[] | null;
 }
 
 // === ARMORY CARDS ===
@@ -229,10 +272,15 @@ export interface ArmoryEngravingV9 extends ApiVersion {
  */
 export interface ArmoryCardsV9 extends ApiVersion {
   Cards: CardV9[];
+  /**
+   * 카드 세트 효과. 실응답:
+   * `[{Index, CardSlots:[number], Items:[{Name, Description}]}]`.
+   * legacy 의 `{SetName, SetCount, SetEffect}` 는 V9 에 존재하지 않음.
+   */
   Effects: Array<{
-    SetName: string;
-    SetCount: number;
-    SetEffect: string;
+    Index: number;
+    CardSlots: number[];
+    Items: Array<{ Name: string; Description: string }>;
   }>;
 }
 
@@ -296,6 +344,8 @@ export interface ArmoryCharacterV9 extends ApiVersion {
   ArmoryAvatar: ArmoryAvatarsV9;
   ArmoryColosseum: ArmoryColosseumsV9;
   Collectibles: ArmoryCollectiblesV9;
+  /** 아크 패시브 (저티어 캐릭은 null). */
+  ArkPassive: ArkPassiveV9 | null;
 }
 
 // === API 엔드포인트 타입 ===
