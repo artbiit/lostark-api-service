@@ -1,7 +1,7 @@
 ---
 kind: graphify-meta
-last_generated_at: 2026-05-16T03:50:00+09:00
-source_commit: 7d5fed0b67027449633fcf4b1a118190d507cac1
+last_generated_at: 2026-05-16T16:00:00+09:00
+source_commit: 44cc590adddab241c882963c3c9989266583c442
 scopes:
   - packages
   - docs
@@ -60,9 +60,9 @@ docs/graph/
 
 | scope    | 마지막 생성 | 소스 커밋 | 대상 경로                                             | 요약                                                                                                                                                                                                                            |
 | -------- | ----------- | --------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| packages | 2026-05-16  | `7d5fed0` | `packages/`                                           | 966 nodes · 1,548 edges · 69 communities. 100 파일 (전부 code). AST-only (semantic 스킵). God nodes: ArmoriesCache, ArmoriesNormalizer, ApiClient, RestServer. 핵심 커뮤니티: Armories Cache / API Client + Rate Limiter / UDP Command Handlers / REST Server. |
+| packages | 2026-05-16  | `44cc590` | `packages/`                                           | 960 nodes · 1,530 edges · 63 communities. 98 파일 (전부 code). AST-only (semantic 스킵, code-only update). abyss/guardian formatter 폐기 (ADR-0003) 반영. God nodes: ArmoriesCache, ArmoriesNormalizer, ApiClient, RestServer. |
 | docs     | 2026-05-16  | `7d5fed0` | `docs/` (자기 자신 graph 산출물 제외)                 | 421 nodes · 454 edges · 46 communities. 81 파일 (61 doc + 20 sample JSON). 145 AST + 276 semantic. 핵심 커뮤니티: UDP Envelope & Client Sample / Normalizer ADRs & Tests / Verification Strategies / Agent Team Protocol Roles. |
-| tests    | 2026-05-16  | `7d5fed0` | `tests/`                                              | 396 nodes · 610 edges · 29 communities. 39 파일 (35 code + 4 doc). 332 AST + 64 semantic. 핵심 커뮤니티: ArmoriesService Test Methods / Cache-Flow + Character Suites / Shared Env Test Suite / UDP Parser & Router Unit Tests. |
+| tests    | 2026-05-16  | `44cc590` | `tests/`                                              | 493 nodes · 685 edges · 35 communities. 49 파일 (45 code + 4 doc). AST-only (code-only update). minigame + formatter 테스트 9파일 신규 추가. 핵심 커뮤니티: ArmoriesService / Cache-Flow + Character Suites / Shared Env / UDP Parser & Router + Minigame.    |
 | legacy   | 2026-05-16  | `7d5fed0` | `legacy/`                                             | 239 nodes · 348 edges · 15 communities. 20 파일 (18 code + 2 doc + loa.sql). 192 AST + 47 semantic. 핵심 커뮤니티: Legacy commandUtils Helpers / Legacy Command Catalog / Legacy API Client / MySQL Schema Tables.              |
 
 ## 갱신 시 체크리스트
