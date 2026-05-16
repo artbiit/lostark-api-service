@@ -102,6 +102,25 @@ const MIGRATIONS: Migration[] = [
     `,
     createdAt: new Date('2025-01-27'),
   },
+  {
+    version: '2026-05-16-004',
+    name: 'Make cache_metadata.cache_key unique for ON CONFLICT upsert',
+    up: `
+      -- ON CONFLICT (cache_key) upsert 가 작동하려면 cache_key 단독에 UNIQUE
+      -- 제약/인덱스가 있어야 한다. 003 에서는 non-unique index 만 있어서
+      -- DatabaseCache.updateCacheMetadata 가 'no unique or exclusion constraint
+      -- matching the ON CONFLICT specification' 으로 매번 실패하던 버그를 수정.
+      DELETE FROM cache_metadata a USING cache_metadata b
+        WHERE a.id < b.id AND a.cache_key = b.cache_key;
+      DROP INDEX IF EXISTS idx_cache_metadata_cache_key;
+      CREATE UNIQUE INDEX idx_cache_metadata_cache_key ON cache_metadata (cache_key);
+    `,
+    down: `
+      DROP INDEX IF EXISTS idx_cache_metadata_cache_key;
+      CREATE INDEX idx_cache_metadata_cache_key ON cache_metadata (cache_key);
+    `,
+    createdAt: new Date('2026-05-16'),
+  },
 ];
 
 export class MigrationManager {
@@ -117,9 +136,9 @@ export class MigrationManager {
       `);
       logger.info('Migrations table initialized');
     } catch (error) {
-      logger.error('Failed to initialize migrations table', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to initialize migrations table');
       throw error;
     }
   }
@@ -139,9 +158,9 @@ export class MigrationManager {
         executionTime: r.execution_time,
       }));
     } catch (error) {
-      logger.error('Failed to get executed migrations', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get executed migrations');
       return [];
     }
   }
@@ -152,17 +171,17 @@ export class MigrationManager {
         'INSERT INTO migrations (version, name, execution_time) VALUES ($1, $2, $3)',
         [migration.version, migration.name, executionTime],
       );
-      logger.info('Migration recorded', {
+      logger.info({
         version: migration.version,
         name: migration.name,
         executionTime,
-      });
+      }, 'Migration recorded');
     } catch (error) {
-      logger.error('Failed to record migration', {
+      logger.error({
         version: migration.version,
         name: migration.name,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to record migration');
       throw error;
     }
   }
@@ -170,12 +189,12 @@ export class MigrationManager {
   private async removeMigrationRecord(version: string): Promise<void> {
     try {
       await pgClient.execute('DELETE FROM migrations WHERE version = $1', [version]);
-      logger.info('Migration record removed', { version });
+      logger.info({ version }, 'Migration record removed');
     } catch (error) {
-      logger.error('Failed to remove migration record', {
+      logger.error({
         version,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to remove migration record');
       throw error;
     }
   }
@@ -185,10 +204,10 @@ export class MigrationManager {
     const sql = direction === 'up' ? migration.up : migration.down;
 
     try {
-      logger.info(`Executing migration ${direction}`, {
+      logger.info({
         version: migration.version,
         name: migration.name,
-      });
+      }, `Executing migration ${direction}`);
 
       await pgClient.execute(sql);
 
@@ -200,17 +219,17 @@ export class MigrationManager {
         await this.removeMigrationRecord(migration.version);
       }
 
-      logger.info(`Migration ${direction} completed`, {
+      logger.info({
         version: migration.version,
         name: migration.name,
         executionTime,
-      });
+      }, `Migration ${direction} completed`);
     } catch (error) {
-      logger.error(`Migration ${direction} failed`, {
+      logger.error({
         version: migration.version,
         name: migration.name,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, `Migration ${direction} failed`);
       throw error;
     }
   }
@@ -237,9 +256,9 @@ export class MigrationManager {
         ...(lastMigration && { lastMigration }),
       };
     } catch (error) {
-      logger.error('Failed to get migration status', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get migration status');
       return {
         totalMigrations: MIGRATIONS.length,
         executedMigrations: 0,
@@ -260,15 +279,15 @@ export class MigrationManager {
         return;
       }
 
-      logger.info('Starting migrations', { pendingCount: pendingMigrations.length });
+      logger.info({ pendingCount: pendingMigrations.length }, 'Starting migrations');
       for (const migration of pendingMigrations) {
         await this.executeMigration(migration, 'up');
       }
       logger.info('All migrations completed successfully');
     } catch (error) {
-      logger.error('Migration failed', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Migration failed');
       throw error;
     }
   }
@@ -284,21 +303,21 @@ export class MigrationManager {
       }
 
       const migrationsToRollback = executedMigrations.slice(-steps).reverse();
-      logger.info('Starting rollback', { rollbackCount: migrationsToRollback.length });
+      logger.info({ rollbackCount: migrationsToRollback.length }, 'Starting rollback');
 
       for (const migrationRecord of migrationsToRollback) {
         const migration = MIGRATIONS.find((m) => m.version === migrationRecord.version);
         if (!migration) {
-          logger.warn('Migration not found for rollback', { version: migrationRecord.version });
+          logger.warn({ version: migrationRecord.version }, 'Migration not found for rollback');
           continue;
         }
         await this.executeMigration(migration, 'down');
       }
       logger.info('Rollback completed successfully');
     } catch (error) {
-      logger.error('Rollback failed', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Rollback failed');
       throw error;
     }
   }
