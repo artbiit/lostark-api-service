@@ -45,7 +45,7 @@ export function createTestClient() {
  * 테스트용 캐릭터 목록 가져오기
  */
 export function getTestCharacters() {
-  return ['테스트캐릭터1', '테스트캐릭터2'];
+  return ['아트네'];
 }
 
 /**

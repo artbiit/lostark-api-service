@@ -118,7 +118,7 @@ describe('CHARACTERS API Service', async () => {
   // === 캐시 테스트 ===
 
   test('should cache and retrieve account info', async () => {
-    const testCharacter = '테스트캐릭터1';
+    const testCharacter = '아트네';
 
     // 첫 번째 조회
     const result1 = await charactersService.processCharacterSiblings(testCharacter);
@@ -135,7 +135,7 @@ describe('CHARACTERS API Service', async () => {
   // === 변화 감지 테스트 ===
 
   test('should detect changes in character data', async () => {
-    const testCharacter = '테스트캐릭터1';
+    const testCharacter = '아트네';
 
     // 첫 번째 조회
     const result1 = await charactersService.processCharacterSiblings(testCharacter);

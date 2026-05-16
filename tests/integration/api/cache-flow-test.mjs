@@ -8,7 +8,7 @@
 
 import dotenv from 'dotenv';
 import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 // 환경변수 로드
 const __filename = fileURLToPath(import.meta.url);
@@ -18,12 +18,12 @@ const projectRoot = join(__dirname, '../../..');
 dotenv.config({ path: join(projectRoot, '.env') });
 
 // 공통 모듈 import
-import { createCacheFlowClient } from '../common/cache-flow-client.mjs';
-import { loadStreamerList } from '../common/streamer-list.mjs';
+import { createCacheFlowClient } from '../../common/cache-flow-client.mjs';
+import { loadStreamerList } from '../../common/streamer-list.mjs';
 
 // === 테스트 설정 ===
 
-const TEST_CHARACTERS = ['아이네', '우왁굳', '김도']; // 스트리머 리스트에서 선택
+const TEST_CHARACTERS = ['아트네']; // 사용자 보유 캐릭터
 const API_ENDPOINTS = [
   'characters',
   'armories', // 가장 큰 단위
@@ -369,6 +369,6 @@ async function runAllTests() {
 }
 
 // 스크립트 실행
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   runAllTests();
 }

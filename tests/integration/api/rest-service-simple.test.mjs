@@ -65,7 +65,7 @@ async function testCharacterAPI(baseUrl) {
   try {
     logger.info('📋 캐릭터 API 테스트 시작');
 
-    const characterName = '테스트캐릭터1';
+    const characterName = '아트네';
     const response = await fetch(`${baseUrl}/characters/${encodeURIComponent(characterName)}`);
 
     if (response.status === 200) {

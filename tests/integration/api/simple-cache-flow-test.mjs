@@ -48,7 +48,7 @@ import { createCacheFlowClient } from '../../common/cache-flow-client.mjs';
 
 // === 테스트 설정 ===
 
-const TEST_CHARACTERS = ['아이네', '우왁굳']; // 스트리머 리스트에서 선택
+const TEST_CHARACTERS = ['아트네']; // 사용자 보유 캐릭터
 
 // === 유틸리티 함수 ===
 
