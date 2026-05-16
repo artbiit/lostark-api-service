@@ -354,7 +354,7 @@ export class DatabaseCache {
 
 export function startDatabaseCacheCleanupScheduler(): NodeJS.Timeout {
   const interval = 60 * 60 * 1000;
-  return setInterval(async () => {
+  const timer = setInterval(async () => {
     try {
       await databaseCache.cleanup();
     } catch (error) {
@@ -363,6 +363,8 @@ export function startDatabaseCacheCleanupScheduler(): NodeJS.Timeout {
       });
     }
   }, interval);
+  timer.unref();
+  return timer;
 }
 
 export const databaseCache = new DatabaseCache();

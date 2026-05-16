@@ -289,7 +289,7 @@ export function startCacheCleanupScheduler(): NodeJS.Timeout {
   // 5분마다 만료된 항목 정리
   const interval = 5 * 60 * 1000;
 
-  return setInterval(async () => {
+  const timer = setInterval(async () => {
     try {
       await armoriesCache.cleanup();
     } catch (error) {
@@ -298,6 +298,9 @@ export function startCacheCleanupScheduler(): NodeJS.Timeout {
       });
     }
   }, interval);
+  // setInterval 이 process 종료를 막지 않도록 (테스트 환경에서 행 발생 방지)
+  timer.unref();
+  return timer;
 }
 
 // === 싱글톤 인스턴스 ===

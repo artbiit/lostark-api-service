@@ -447,7 +447,7 @@ export function startCacheManagerCleanupScheduler(): NodeJS.Timeout {
   // 15분마다 캐시 정리
   const interval = 15 * 60 * 1000;
 
-  return setInterval(async () => {
+  const timer = setInterval(async () => {
     try {
       await cacheManager.cleanup();
     } catch (error) {
@@ -456,6 +456,8 @@ export function startCacheManagerCleanupScheduler(): NodeJS.Timeout {
       });
     }
   }, interval);
+  timer.unref();
+  return timer;
 }
 
 // === 싱글톤 인스턴스 ===

@@ -316,7 +316,9 @@ export const charactersCache = new CharactersCache();
  * 캐시 정리 스케줄러
  */
 export function startCacheCleanupScheduler(): NodeJS.Timeout {
-  return setInterval(() => {
+  const timer = setInterval(() => {
     charactersCache.cleanup();
   }, 60000); // 1분마다 정리
+  timer.unref();
+  return timer;
 }

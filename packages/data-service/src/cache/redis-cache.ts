@@ -333,7 +333,7 @@ export function startRedisCacheCleanupScheduler(): NodeJS.Timeout {
   // 10분마다 캐시 정리 (Redis는 자동 만료이므로 통계만 업데이트)
   const interval = 10 * 60 * 1000;
 
-  return setInterval(async () => {
+  const timer = setInterval(async () => {
     try {
       await redisCache.cleanup();
     } catch (error) {
@@ -342,6 +342,8 @@ export function startRedisCacheCleanupScheduler(): NodeJS.Timeout {
       });
     }
   }, interval);
+  timer.unref();
+  return timer;
 }
 
 // === 싱글톤 인스턴스 ===

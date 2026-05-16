@@ -118,6 +118,7 @@ export class CacheOptimizer {
         });
       });
     }, this.config.optimizationInterval * 1000);
+    this.optimizationTimer.unref();
 
     logger.info('Cache optimization started', {
       interval: this.config.optimizationInterval,
