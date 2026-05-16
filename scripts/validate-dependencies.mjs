@@ -147,9 +147,16 @@ async function validateDependencies() {
     for (const pkg of packages) {
       const packagePath = path.join(PACKAGES_DIR, pkg);
       const stat = await fs.stat(packagePath);
-      if (stat.isDirectory()) {
-        validPackages.push(pkg);
+      if (!stat.isDirectory()) continue;
+
+      // package.json 부재 디렉토리는 graphify 캐시 등 산출물 폴더이므로 skip
+      try {
+        await fs.access(path.join(packagePath, 'package.json'));
+      } catch {
+        continue;
       }
+
+      validPackages.push(pkg);
     }
 
     console.log(`📦 발견된 패키지: ${validPackages.join(', ')}\n`);

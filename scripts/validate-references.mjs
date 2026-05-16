@@ -113,10 +113,17 @@ async function validateAllReferences() {
       const packagePath = path.join(PACKAGES_DIR, pkg);
       const stat = await fs.stat(packagePath);
 
-      if (stat.isDirectory()) {
-        const result = await validateTsConfig(packagePath, pkg);
-        results.push(result);
+      if (!stat.isDirectory()) continue;
+
+      // package.json 부재 디렉토리는 graphify 캐시 등 산출물 폴더이므로 skip
+      try {
+        await fs.access(path.join(packagePath, 'package.json'));
+      } catch {
+        continue;
       }
+
+      const result = await validateTsConfig(packagePath, pkg);
+      results.push(result);
     }
 
     // 결과 출력
