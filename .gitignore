@@ -14,6 +14,10 @@ graphify-out/
 # 템플릿은 *.template.js 로 커밋되며, 실값 치환본은 커밋 금지.
 scripts/messenger-bot/remote-kakao.js
 
+# ---> PII history rewrite 안전망 (2026-05-16 세션의 raw .git 사본).
+# 사용자가 며칠 확인 후 수동으로 rm -rf 예정. 절대 커밋 금지.
+.git.backup-pre-pii/
+
 # ---> Node
 # Logs
 logs
