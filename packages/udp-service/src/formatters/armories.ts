@@ -52,11 +52,9 @@ export function formatProfile(name: string, detail: AnyDetail): string {
     `템/전/원\t${detail.itemLevel ?? 0}/${profile.stats?.find?.((s: any) => s.type === '캐릭터 레벨')?.value ?? ''}/${detail.expeditionLevel ?? 0}`,
   );
 
-  if (detail.guildName) {
-    lines.push(`서버/길드\t${detail.serverName}/${detail.guildName}`);
-  } else {
-    lines.push(`서버/길드\t${detail.serverName}/없음`);
-  }
+  const serverLabel = detail.serverName || '알 수 없음';
+  const guildLabel = detail.guildName || '없음';
+  lines.push(`서버/길드\t${serverLabel}/${guildLabel}`);
 
   const stats: any[] = profile.stats ?? [];
   if (stats.length >= 4) {

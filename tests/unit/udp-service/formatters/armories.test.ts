@@ -67,6 +67,16 @@ test('formatProfile', async (t) => {
     assert.match(out, /템\/전\/원\t0/);
     assert.match(out, /서버\/길드\t루페온\/없음/);
   });
+
+  // 회귀: getCharacterDetailPartial 이 sections 만 채워서 top-level
+  // serverName/guildName 이 undefined 인 경우, '서버/길드 undefined/없음' 으로
+  // 박혀 노출되던 버그. (F2)
+  await t.test('renders 알 수 없음 when serverName missing', () => {
+    const detail = {} as Record<string, unknown>;
+    const out = formatProfile('미상캐', detail);
+    assert.doesNotMatch(out, /undefined/);
+    assert.match(out, /서버\/길드\t알 수 없음\/없음/);
+  });
 });
 
 // === formatEquipment ===
