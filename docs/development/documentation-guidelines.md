@@ -33,6 +33,40 @@
   [`document-category-classification.md`](./document-category-classification.md)
   를 따릅니다.
 
+## analysis 문서 — 분석 관점 명시 (필수)
+
+`docs/analysis/` 문서는 frontmatter 에 **분석 관점** 을 명시합니다.
+다음 작업의 출발점으로 채택될 때 잘못된 전제가 잡히는 것을 방지합니다.
+
+```yaml
+---
+kind: analysis
+perspective: legacy-compatible-enhancement | season-appropriate-redesign | neutral
+valid_starting_point_for: [legacy-compat, season-rewrite, ...]
+generated_at: <iso>
+---
+```
+
+값 의미:
+
+- `legacy-compatible-enhancement` — legacy 동작 호환을 유지하면서 보강·정합화하는
+  관점. legacy 가 전제 ("이 라인을 어떻게 복원/유지할까").
+- `season-appropriate-redesign` — 현재 시즌(아크패시브 등) 기준 재설계 관점.
+  legacy 가 폐기 후보.
+- `neutral` — 사실 비교만, 채택 방향 미결.
+
+기존 analysis 문서가 새 방향 세션의 출발점이 되어 관점 불일치가 생기면, 해당
+문서를 **삭제하지 않고** frontmatter 에 `superseded_note` + 본문 첫머리 안내를
+inline 으로 추가합니다 (정보 보존).
+
+orchestrator 가 이전 세션 analysis 문서를 참조할 때 `perspective` 가 현재 작업
+방향과 일치하는지 확인하고, 불일치하면 사용자에게 알립니다.
+
+배경 사례: 세션 `20260517-010704` 에서 직전 F7 세션이
+`armories-legacy-vs-current-output-fields.md` 를 보강 출발점으로 채택했지만 그
+문서는 legacy 호환 관점이라 ArkPassive 시즌에 의미 없는 라인을 그대로 유지하는
+결과가 나옴. 사후에 superseded_note 처리.
+
 ## 구조
 
 - 모든 프로젝트 문서는 `docs/` 아래에 둡니다 (소문자).

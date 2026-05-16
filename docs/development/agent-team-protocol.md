@@ -54,6 +54,26 @@ Orchestrator
 - 한 Advisor 호출당 Worker 는 **최대 6개** 까지 동시 spawn (초과 시 advisor 가
   배치 분할).
 
+### 2.1 Advisor 호출 실패 처리 (API 오류 / timeout / rate limit)
+
+Advisor 호출 (subagent thread 포함) 이 API Internal server error / timeout /
+rate limit 등으로 실패하면 orchestrator 는 **즉시** 다음을 수행한다.
+
+1. **사용자에게 보고**: 어느 advisor 호출이 어떤 오류로 끊겼는지 한 줄.
+2. **옵션 제시**:
+   - (a) 즉시 재시도 — 일시 오류로 추정될 때 Recommended
+   - (b) 잠시 후 재시도 — rate limit 의심 시
+   - (c) 해당 phase 생략 + 다음 단계 진행 — optional phase 인 경우
+3. 사용자 확인 후 재시도.
+
+**자동 재시도 금지** (사용자 인지 없는 재시도는 안 한다). 재시도가 성공한 경우도
+오류 발생 사실을 `report.md` 의 `concerns` 또는 `Invocations[*].notes` 에 기록.
+
+배경: 세션 `20260517-010704` 에서 documentation-advisor 호출이 API Internal
+server error 로 끊긴 사실을 orchestrator 가 사용자에게 즉시 보고하지 않아
+사용자가 직접 끊김을 인지·재지시한 사례. MEMORY:
+`feedback_advisor_api_error_immediate_user_report`.
+
 ## 3. 도메인 매핑
 
 | 도메인           | 에이전트                  | Tier | 호출 시점                                                                                                                                                                                                                                                                      |

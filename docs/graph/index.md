@@ -1,7 +1,7 @@
 ---
 kind: graphify-meta
-last_generated_at: 2026-05-17T00:30:00+09:00
-source_commit: 11dfbaad3c50934e46edf95e593009391a615a26
+last_generated_at: 2026-05-17T02:50:00+09:00
+source_commit: ce8b56f
 scopes:
   - packages
   - docs
@@ -60,7 +60,7 @@ docs/graph/
 
 | scope    | 마지막 생성 | 소스 커밋 | 대상 경로                                             | 요약                                                                                                                                                                                                                            |
 | -------- | ----------- | --------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| packages | 2026-05-17  | `11dfbaa` | `packages/`                                           | 971 nodes · 1,551 edges · 73 communities. AST-only (semantic 스킵). F7 armories ArkPassive 도메인 모델 확장 반영. 직전: 960 nodes · 1,530 edges · 63 communities (44cc590).                                                       |
+| packages | 2026-05-17  | `ce8b56f` | `packages/`                                           | 980 nodes · 1,569 edges · 71 communities. AST-only (semantic 스킵). 아크패시브 시즌 응답 재기획 반영 (NormalizedAbilityStone, formatAbilityStone/formatEngravings 재작성, truncateLines). 직전: 971 nodes · 1,551 edges · 73 communities (11dfbaa). |
 | docs     | 2026-05-17  | `11dfbaa` | `docs/` (자기 자신 graph 산출물 제외)                 | 4,246 nodes · 3,838 edges · 711 communities. 418 파일 (cache 부재로 처음부터 재빌드 — work-session 누적 + sample-data 확장 반영). 직전: 421 nodes · 454 edges · 46 communities (7d5fed0).                                       |
 | tests    | 2026-05-17  | `11dfbaa` | `tests/`                                              | 598 nodes · 787 edges · 39 communities. F7 회귀 테스트(N-1~N-7 normalizer + F-1~F-13 formatter) + fixture 2건 추가 반영. 직전: 493 nodes · 685 edges · 35 communities (44cc590).                                                |
 | legacy   | 2026-05-16  | `7d5fed0` | `legacy/`                                             | 239 nodes · 348 edges · 15 communities. 20 파일 (18 code + 2 doc + loa.sql). 192 AST + 47 semantic. 핵심 커뮤니티: Legacy commandUtils Helpers / Legacy Command Catalog / Legacy API Client / MySQL Schema Tables.              |
