@@ -143,3 +143,4 @@ ADR-0003 에서 정의된 삭제/수정 항목:
 - [changes: formatter 테스트 + abyss/guardian 제거](../../changes/2026-05-16-formatter-tests-and-abyss-guardian-removal.md)
 - [architecture: udp-service 카카오봇 모듈 구조](../../architecture/udp-service-kakao-bot.md)
 - [직전 세션 work-log](../2026-05-16-udp-service-kakao-bot-promotion/index.md)
+- [analysis: armories legacy vs 현재 formatter 출력 필드 비교](../../analysis/armories-legacy-vs-current-output-fields.md) — 본 세션 이후 조사한 F7 사전 자료 (session 20260516-224308)

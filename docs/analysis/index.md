@@ -6,7 +6,7 @@
 
 ## 목록
 
-_현재 문서 없음._
+- [armories legacy vs 현재 formatter 출력 필드 비교](./armories-legacy-vs-current-output-fields.md) — 11개 정보 명령의 legacy·현재 갭 전수 조사 + F7 작업 우선순위 표 (session 20260516-224308)
 
 ## 관련 문서
 
