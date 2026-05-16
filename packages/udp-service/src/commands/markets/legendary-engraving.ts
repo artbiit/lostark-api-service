@@ -18,7 +18,7 @@ export const legendaryEngravingCommand: CommandSpec = {
       });
       return formatEngravingSearch(result as any);
     } catch (err) {
-      ctx.logger.warn('legendaryEngraving command failed', { itemName, err: String(err) });
+      ctx.logger.warn({ itemName, err: String(err) }, 'legendaryEngraving command failed');
       return `${itemName} 검색에 실패했습니다.`;
     }
   },

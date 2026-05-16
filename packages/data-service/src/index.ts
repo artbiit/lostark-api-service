@@ -85,9 +85,9 @@ export async function initializeRedis(): Promise<void> {
     await redisClient.connect();
     logger.info('Redis connection initialized successfully');
   } catch (error) {
-    logger.error('Failed to initialize Redis connection', {
+    logger.error({
       error: error instanceof Error ? error.message : String(error),
-    });
+    }, 'Failed to initialize Redis connection');
     // Redis 연결 실패 시에도 서비스는 계속 동작 (Memory Cache만 사용)
   }
 }
@@ -100,9 +100,9 @@ export async function disconnectRedis(): Promise<void> {
     await redisClient.disconnect();
     logger.info('Redis connection disconnected successfully');
   } catch (error) {
-    logger.error('Failed to disconnect Redis connection', {
+    logger.error({
       error: error instanceof Error ? error.message : String(error),
-    });
+    }, 'Failed to disconnect Redis connection');
   }
 }
 
@@ -117,9 +117,9 @@ export async function initializePostgres(): Promise<void> {
     logger.info('PostgreSQL connection initialized successfully');
     await migrationManager.migrate();
   } catch (error) {
-    logger.error('Failed to initialize PostgreSQL connection', {
+    logger.error({
       error: error instanceof Error ? error.message : String(error),
-    });
+    }, 'Failed to initialize PostgreSQL connection');
     // PostgreSQL 연결 실패 시에도 서비스는 계속 동작 (Memory/Redis Cache만 사용)
   }
 }
@@ -132,8 +132,8 @@ export async function disconnectPostgres(): Promise<void> {
     await pgClient.disconnect();
     logger.info('PostgreSQL connection disconnected successfully');
   } catch (error) {
-    logger.error('Failed to disconnect PostgreSQL connection', {
+    logger.error({
       error: error instanceof Error ? error.message : String(error),
-    });
+    }, 'Failed to disconnect PostgreSQL connection');
   }
 }

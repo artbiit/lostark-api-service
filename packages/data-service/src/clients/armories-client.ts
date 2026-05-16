@@ -42,10 +42,10 @@ export class ArmoriesClient {
   async getCharacter(characterName: string): Promise<ArmoryCharacterV9> {
     const endpoint = ARMORIES_ENDPOINTS.CHARACTER(characterName);
 
-    logger.debug('Fetching character armory data', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character armory data');
 
     return await this.apiClient.get<ArmoryCharacterV9>(endpoint);
   }
@@ -56,10 +56,10 @@ export class ArmoriesClient {
   async getProfile(characterName: string): Promise<ArmoryProfileV9> {
     const endpoint = ARMORIES_ENDPOINTS.PROFILES(characterName);
 
-    logger.debug('Fetching character profile', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character profile');
 
     return await this.apiClient.get<ArmoryProfileV9>(endpoint);
   }
@@ -70,10 +70,10 @@ export class ArmoriesClient {
   async getEquipment(characterName: string): Promise<ArmoryEquipmentV9[]> {
     const endpoint = ARMORIES_ENDPOINTS.EQUIPMENT(characterName);
 
-    logger.debug('Fetching character equipment', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character equipment');
 
     return await this.apiClient.get<ArmoryEquipmentV9[]>(endpoint);
   }
@@ -84,10 +84,10 @@ export class ArmoriesClient {
   async getAvatars(characterName: string): Promise<ArmoryAvatarsV9> {
     const endpoint = ARMORIES_ENDPOINTS.AVATARS(characterName);
 
-    logger.debug('Fetching character avatars', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character avatars');
 
     return await this.apiClient.get<ArmoryAvatarsV9>(endpoint);
   }
@@ -98,10 +98,10 @@ export class ArmoriesClient {
   async getCombatSkills(characterName: string): Promise<ArmoryCombatSkillsV9> {
     const endpoint = ARMORIES_ENDPOINTS.COMBAT_SKILLS(characterName);
 
-    logger.debug('Fetching character combat skills', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character combat skills');
 
     return await this.apiClient.get<ArmoryCombatSkillsV9>(endpoint);
   }
@@ -112,10 +112,10 @@ export class ArmoriesClient {
   async getEngravings(characterName: string): Promise<ArmoryEngravingV9> {
     const endpoint = ARMORIES_ENDPOINTS.ENGRAVINGS(characterName);
 
-    logger.debug('Fetching character engravings', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character engravings');
 
     return await this.apiClient.get<ArmoryEngravingV9>(endpoint);
   }
@@ -126,10 +126,10 @@ export class ArmoriesClient {
   async getCards(characterName: string): Promise<ArmoryCardsV9> {
     const endpoint = ARMORIES_ENDPOINTS.CARDS(characterName);
 
-    logger.debug('Fetching character cards', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character cards');
 
     return await this.apiClient.get<ArmoryCardsV9>(endpoint);
   }
@@ -140,10 +140,10 @@ export class ArmoriesClient {
   async getGems(characterName: string): Promise<ArmoryGemsV9> {
     const endpoint = ARMORIES_ENDPOINTS.GEMS(characterName);
 
-    logger.debug('Fetching character gems', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character gems');
 
     return await this.apiClient.get<ArmoryGemsV9>(endpoint);
   }
@@ -154,10 +154,10 @@ export class ArmoriesClient {
   async getColosseums(characterName: string): Promise<ArmoryColosseumsV9> {
     const endpoint = ARMORIES_ENDPOINTS.COLOSSEUMS(characterName);
 
-    logger.debug('Fetching character colosseums', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character colosseums');
 
     return await this.apiClient.get<ArmoryColosseumsV9>(endpoint);
   }
@@ -168,10 +168,10 @@ export class ArmoriesClient {
   async getCollectibles(characterName: string): Promise<ArmoryCollectiblesV9> {
     const endpoint = ARMORIES_ENDPOINTS.COLLECTIBLES(characterName);
 
-    logger.debug('Fetching character collectibles', {
+    logger.debug({
       characterName,
       endpoint,
-    });
+    }, 'Fetching character collectibles');
 
     return await this.apiClient.get<ArmoryCollectiblesV9>(endpoint);
   }
@@ -181,9 +181,9 @@ export class ArmoriesClient {
    * 성능 최적화를 위해 전체 API 호출
    */
   async getCharacterFull(characterName: string): Promise<ArmoryCharacterV9> {
-    logger.info('Fetching full character armory data', {
+    logger.info({
       characterName,
-    });
+    }, 'Fetching full character armory data');
 
     return await this.getCharacter(characterName);
   }
@@ -206,10 +206,10 @@ export class ArmoriesClient {
       | 'collectibles'
     >,
   ): Promise<Partial<ArmoryCharacterV9>> {
-    logger.info('Fetching partial character armory data', {
+    logger.info({
       characterName,
       sections,
-    });
+    }, 'Fetching partial character armory data');
 
     const promises: Array<Promise<any>> = [];
     const result: Partial<ArmoryCharacterV9> = {};

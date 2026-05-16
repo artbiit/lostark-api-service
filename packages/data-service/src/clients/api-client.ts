@@ -41,7 +41,7 @@ class RateLimiter {
       const waitTime = this.windowMs - (now - oldestRequest);
 
       if (waitTime > 0) {
-        logger.debug('Rate limit reached, waiting', { waitTime });
+        logger.debug({ waitTime }, 'Rate limit reached, waiting');
         await new Promise((resolve) => setTimeout(resolve, waitTime));
       }
     }

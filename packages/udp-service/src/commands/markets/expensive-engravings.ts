@@ -16,7 +16,7 @@ export const expensiveEngravingsCommand: CommandSpec = {
       });
       return formatExpensiveEngravings(result as any);
     } catch (err) {
-      ctx.logger.warn('expensiveEngravings command failed', { err: String(err) });
+      ctx.logger.warn({ err: String(err) }, 'expensiveEngravings command failed');
       return '각인서 정보를 불러올 수 없습니다.';
     }
   },

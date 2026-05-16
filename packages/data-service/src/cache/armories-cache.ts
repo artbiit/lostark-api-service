@@ -68,11 +68,11 @@ export class ArmoriesCache {
 
     this.cache.set(key, cacheItem);
 
-    logger.debug('Character detail cached', {
+    logger.debug({
       characterName,
       ttlMinutes: Math.round(ttl / (60 * 1000)),
       cacheSize: this.cache.size,
-    });
+    }, 'Character detail cached');
   }
 
   /**
@@ -84,7 +84,7 @@ export class ArmoriesCache {
 
     if (!item) {
       this.stats.totalMisses++;
-      logger.debug('Character detail cache miss', { characterName });
+      logger.debug({ characterName }, 'Character detail cache miss');
       return null;
     }
 
@@ -95,7 +95,7 @@ export class ArmoriesCache {
     if (age > item.ttl) {
       this.cache.delete(key);
       this.stats.totalMisses++;
-      logger.debug('Character detail cache expired', { characterName });
+      logger.debug({ characterName }, 'Character detail cache expired');
       return null;
     }
 
@@ -104,7 +104,7 @@ export class ArmoriesCache {
     item.accessCount++;
 
     this.stats.totalHits++;
-    logger.debug('Character detail cache hit', { characterName });
+    logger.debug({ characterName }, 'Character detail cache hit');
 
     return item.data;
   }
@@ -117,7 +117,7 @@ export class ArmoriesCache {
     const deleted = this.cache.delete(key);
 
     if (deleted) {
-      logger.debug('Character detail cache deleted', { characterName });
+      logger.debug({ characterName }, 'Character detail cache deleted');
     }
   }
 
@@ -169,10 +169,10 @@ export class ArmoriesCache {
     }
 
     if (cleanedCount > 0) {
-      logger.info('Armories cache cleanup completed', {
+      logger.info({
         cleanedCount,
         remainingEntries: this.cache.size,
-      });
+      }, 'Armories cache cleanup completed');
     }
   }
 
@@ -185,7 +185,7 @@ export class ArmoriesCache {
     this.stats.totalHits = 0;
     this.stats.totalMisses = 0;
 
-    logger.info('Armories cache cleared', { clearedEntries: size });
+    logger.info({ clearedEntries: size }, 'Armories cache cleared');
   }
 
   /**
@@ -293,9 +293,9 @@ export function startCacheCleanupScheduler(): NodeJS.Timeout {
     try {
       await armoriesCache.cleanup();
     } catch (error) {
-      logger.error('Failed to cleanup armories cache', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to cleanup armories cache');
     }
   }, interval);
   // setInterval 이 process 종료를 막지 않도록 (테스트 환경에서 행 발생 방지)

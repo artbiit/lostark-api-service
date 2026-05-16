@@ -10,7 +10,7 @@ export const procyonCommand: CommandSpec = {
       const calendar = await ctx.gameContentsService.getCalendar();
       return formatProcyon(calendar as any);
     } catch (err) {
-      ctx.logger.warn('procyon command failed', { err: String(err) });
+      ctx.logger.warn({ err: String(err) }, 'procyon command failed');
       return '프로키온 정보를 불러올 수 없습니다.';
     }
   },

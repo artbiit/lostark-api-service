@@ -71,10 +71,10 @@ export class CharactersService {
   }> {
     const requestId = this.generateRequestId();
 
-    logger.info('Starting character siblings processing', {
+    logger.info({
       characterName,
       requestId,
-    });
+    }, 'Starting character siblings processing');
 
     try {
       // 1. 캐시에서 기존 계정 정보 확인
@@ -92,11 +92,11 @@ export class CharactersService {
         return await this.handleNewAccount(characterName, siblingsData, requestId);
       }
     } catch (error) {
-      logger.error('Failed to process character siblings', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
         requestId,
-      });
+      }, 'Failed to process character siblings');
       throw error;
     }
   }
@@ -113,11 +113,11 @@ export class CharactersService {
     changes: CharacterChangeDetection | null;
     queueItems: ArmoriesQueueItem[];
   }> {
-    logger.info('Processing existing account', {
+    logger.info({
       accountId: existingAccount.accountId,
       characterCount: existingAccount.characters.length,
       requestId,
-    });
+    }, 'Processing existing account');
 
     // 1. 변화 감지
     const changes = await charactersNormalizer.detectChanges(existingAccount, siblingsData);
@@ -146,11 +146,11 @@ export class CharactersService {
 
       await this.armoriesQueueManager.addToQueue(armoriesItems);
 
-      logger.info('Added items to ARMORIES queue', {
+      logger.info({
         accountId: existingAccount.accountId,
         queueItemCount: armoriesItems.length,
         requestId,
-      });
+      }, 'Added items to ARMORIES queue');
     }
 
     return {
@@ -176,11 +176,11 @@ export class CharactersService {
     changes: CharacterChangeDetection | null;
     queueItems: ArmoriesQueueItem[];
   }> {
-    logger.info('Processing new account', {
+    logger.info({
       characterName,
       characterCount: siblingsData.length,
       requestId,
-    });
+    }, 'Processing new account');
 
     // 1. 계정 정보 생성
     const accountInfo = await charactersNormalizer.normalizeSiblings(characterName, siblingsData);
@@ -203,11 +203,11 @@ export class CharactersService {
     if (this.armoriesQueueManager) {
       await this.armoriesQueueManager.addToQueue(queueItems);
 
-      logger.info('Added new account characters to ARMORIES queue', {
+      logger.info({
         accountId: accountInfo.accountId,
         queueItemCount: queueItems.length,
         requestId,
-      });
+      }, 'Added new account characters to ARMORIES queue');
     }
 
     return {
@@ -228,10 +228,10 @@ export class CharactersService {
    * 계정 정보 강제 갱신
    */
   async refreshAccountInfo(characterName: string): Promise<AccountInfo> {
-    logger.info('Force refreshing account info', {
+    logger.info({
       characterName,
       requestId: this.generateRequestId(),
-    });
+    }, 'Force refreshing account info');
 
     // 캐시에서 기존 정보 삭제
     const existingAccount = await charactersCache.getAccountByCharacter(characterName);

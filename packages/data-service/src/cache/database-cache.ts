@@ -56,18 +56,18 @@ export class DatabaseCache {
 
       await this.updateCacheMetadata(characterName, 'character', dataSize);
 
-      logger.debug('Character detail cached in database', {
+      logger.debug({
         characterName,
         serverName: characterDetail.serverName,
         itemLevel: characterDetail.itemLevel,
         ttlDays,
         dataSize,
-      });
+      }, 'Character detail cached in database');
     } catch (error) {
-      logger.error('Failed to cache character detail in database', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to cache character detail in database');
       throw error;
     }
   }
@@ -85,7 +85,7 @@ export class DatabaseCache {
 
       if (rows.length === 0) {
         this.stats.totalMisses++;
-        logger.debug('Character detail database cache miss', { characterName });
+        logger.debug({ characterName }, 'Character detail database cache miss');
         return null;
       }
 
@@ -97,15 +97,15 @@ export class DatabaseCache {
 
       await this.updateAccessStats(characterName, 'hit');
       this.stats.totalHits++;
-      logger.debug('Character detail database cache hit', { characterName });
+      logger.debug({ characterName }, 'Character detail database cache hit');
 
       return characterDetail;
     } catch (error) {
       this.stats.totalMisses++;
-      logger.error('Failed to get character detail from database', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get character detail from database');
       return null;
     }
   }
@@ -116,12 +116,12 @@ export class DatabaseCache {
         characterName,
       ]);
       await this.deleteCacheMetadata(characterName);
-      logger.debug('Character detail deleted from database', { characterName });
+      logger.debug({ characterName }, 'Character detail deleted from database');
     } catch (error) {
-      logger.error('Failed to delete character detail from database', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to delete character detail from database');
       throw error;
     }
   }
@@ -165,10 +165,10 @@ export class DatabaseCache {
         dataSize,
       };
     } catch (error) {
-      logger.error('Failed to get character meta from database', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get character meta from database');
       return null;
     }
   }
@@ -209,9 +209,9 @@ export class DatabaseCache {
         lastCleanup,
       };
     } catch (error) {
-      logger.error('Failed to get database cache stats', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get database cache stats');
       return {
         totalEntries: 0,
         expiredEntries: 0,
@@ -238,14 +238,14 @@ export class DatabaseCache {
       `);
 
       const cleanupTime = Date.now() - startTime;
-      logger.info('Database cache cleanup completed', {
+      logger.info({
         deletedEntries: result.rowCount,
         cleanupTime,
-      });
+      }, 'Database cache cleanup completed');
     } catch (error) {
-      logger.error('Failed to cleanup database cache', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to cleanup database cache');
     }
   }
 
@@ -256,9 +256,9 @@ export class DatabaseCache {
       await pgClient.execute(`DELETE FROM cache_metadata WHERE cache_type = 'character'`);
       logger.info('Database cache cleared');
     } catch (error) {
-      logger.error('Failed to clear database cache', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to clear database cache');
       throw error;
     }
   }
@@ -271,10 +271,10 @@ export class DatabaseCache {
       );
       return Number(rows[0]?.count ?? 0) > 0;
     } catch (error) {
-      logger.error('Failed to check character detail existence in database', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to check character detail existence in database');
       return false;
     }
   }
@@ -287,10 +287,10 @@ export class DatabaseCache {
       );
       return rows[0]?.expires_at ?? null;
     } catch (error) {
-      logger.error('Failed to get character detail expiry from database', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get character detail expiry from database');
       return null;
     }
   }
@@ -312,11 +312,11 @@ export class DatabaseCache {
         [cacheKey, cacheType, dataSize],
       );
     } catch (error) {
-      logger.error('Failed to update cache metadata', {
+      logger.error({
         cacheKey,
         cacheType,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to update cache metadata');
     }
   }
 
@@ -328,11 +328,11 @@ export class DatabaseCache {
         [cacheKey],
       );
     } catch (error) {
-      logger.error('Failed to update access stats', {
+      logger.error({
         cacheKey,
         accessType,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to update access stats');
     }
   }
 
@@ -340,10 +340,10 @@ export class DatabaseCache {
     try {
       await pgClient.execute('DELETE FROM cache_metadata WHERE cache_key = $1', [cacheKey]);
     } catch (error) {
-      logger.error('Failed to delete cache metadata', {
+      logger.error({
         cacheKey,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to delete cache metadata');
     }
   }
 
@@ -358,9 +358,9 @@ export function startDatabaseCacheCleanupScheduler(): NodeJS.Timeout {
     try {
       await databaseCache.cleanup();
     } catch (error) {
-      logger.error('Failed to cleanup database cache', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to cleanup database cache');
     }
   }, interval);
   timer.unref();

@@ -11,7 +11,7 @@ export const gemSearchCommand: CommandSpec = {
       const result = await ctx.auctionsService.searchItemsSimple(itemName, 1, 210000);
       return formatGemSearch(itemName, result);
     } catch (err) {
-      ctx.logger.warn('gemSearch command failed', { itemName, err: String(err) });
+      ctx.logger.warn({ itemName, err: String(err) }, 'gemSearch command failed');
       return `${itemName} 검색에 실패했습니다.`;
     }
   },

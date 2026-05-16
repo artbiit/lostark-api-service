@@ -81,18 +81,18 @@ export class CharactersCache {
         expires,
       });
 
-      logger.info('Account info cached successfully', {
+      logger.info({
         accountId: accountInfo.accountId,
         characterCount: accountInfo.characters.length,
         ttl: ttl || this.defaultTTL,
         requestId: this.generateRequestId(),
-      });
+      }, 'Account info cached successfully');
     } catch (error) {
-      logger.error('Failed to cache account info', {
+      logger.error({
         accountId: accountInfo.accountId,
         error: error instanceof Error ? error.message : String(error),
         requestId: this.generateRequestId(),
-      });
+      }, 'Failed to cache account info');
       throw error;
     }
   }
@@ -107,35 +107,35 @@ export class CharactersCache {
       const cached = this.memoryCache.get(key);
 
       if (!cached) {
-        logger.debug('Account info not found in cache', {
+        logger.debug({
           accountId,
           requestId: this.generateRequestId(),
-        });
+        }, 'Account info not found in cache');
         return null;
       }
 
       if (Date.now() > cached.expires) {
-        logger.debug('Account info cache expired', {
+        logger.debug({
           accountId,
           expires: new Date(cached.expires),
           requestId: this.generateRequestId(),
-        });
+        }, 'Account info cache expired');
         this.memoryCache.delete(key);
         return null;
       }
 
-      logger.debug('Account info retrieved from cache', {
+      logger.debug({
         accountId,
         requestId: this.generateRequestId(),
-      });
+      }, 'Account info retrieved from cache');
 
       return cached.data as AccountInfo;
     } catch (error) {
-      logger.error('Failed to retrieve account info from cache', {
+      logger.error({
         accountId,
         error: error instanceof Error ? error.message : String(error),
         requestId: this.generateRequestId(),
-      });
+      }, 'Failed to retrieve account info from cache');
       return null;
     }
   }
@@ -159,11 +159,11 @@ export class CharactersCache {
       const accountId = cached.data as string;
       return await this.getAccountInfo(accountId);
     } catch (error) {
-      logger.error('Failed to retrieve account by character', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
         requestId: this.generateRequestId(),
-      });
+      }, 'Failed to retrieve account by character');
       return null;
     }
   }
@@ -195,16 +195,16 @@ export class CharactersCache {
         this.memoryCache.delete(key);
       }
 
-      logger.info('Account info deleted from cache', {
+      logger.info({
         accountId,
         requestId: this.generateRequestId(),
-      });
+      }, 'Account info deleted from cache');
     } catch (error) {
-      logger.error('Failed to delete account info from cache', {
+      logger.error({
         accountId,
         error: error instanceof Error ? error.message : String(error),
         requestId: this.generateRequestId(),
-      });
+      }, 'Failed to delete account info from cache');
       throw error;
     }
   }
@@ -279,11 +279,11 @@ export class CharactersCache {
     }
 
     if (cleanedCount > 0) {
-      logger.info('Cache cleanup completed', {
+      logger.info({
         cleanedCount,
         remainingCount: this.memoryCache.size,
         requestId: this.generateRequestId(),
-      });
+      }, 'Cache cleanup completed');
     }
   }
 

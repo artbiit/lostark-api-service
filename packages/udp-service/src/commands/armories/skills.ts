@@ -12,7 +12,7 @@ export const skillsCommand: CommandSpec = {
       if (!detail?.combatSkills) return `${name} 을(를) 찾을 수 없습니다.`;
       return formatSkills(name, detail);
     } catch (err) {
-      ctx.logger.warn('skills command failed', { name, err: String(err) });
+      ctx.logger.warn({ name, err: String(err) }, 'skills command failed');
       return `${name} 은(는) 없는 것 같숨미당`;
     }
   },

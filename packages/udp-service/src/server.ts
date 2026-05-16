@@ -233,9 +233,9 @@ export class UdpServer extends EventEmitter {
     this.workerPool.start();
     this.setupSocketEventHandlers();
 
-    logger.info('UDP server initialized successfully', {
+    logger.info({
       registeredCommands: this.router.listing.length,
-    });
+    }, 'UDP server initialized successfully');
   }
 
   private async connectWithTimeout(
@@ -250,15 +250,15 @@ export class UdpServer extends EventEmitter {
       await Promise.race([connectPromise, timeout]);
       logger.info(`${label} connected for UDP service`);
     } catch (error) {
-      logger.warn(`${label} unavailable, continuing without it`, {
+      logger.warn({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, `${label} unavailable, continuing without it`);
     }
   }
 
   private setupSocketEventHandlers(): void {
     this.socket.on('error', (error) => {
-      logger.error('UDP socket error', { error: error.message });
+      logger.error({ error: error.message }, 'UDP socket error');
     });
 
     this.socket.on('message', (msg, remoteInfo) => {
@@ -267,9 +267,9 @@ export class UdpServer extends EventEmitter {
 
     this.socket.on('listening', () => {
       const address = this.socket.address();
-      logger.info('UDP server listening', {
+      logger.info({
         address: `${address.address}:${address.port}`,
-      });
+      }, 'UDP server listening');
     });
   }
 
@@ -280,11 +280,11 @@ export class UdpServer extends EventEmitter {
   private handleIncomingMessage(msg: Buffer, remoteInfo: RemoteInfo): void {
     try {
       if (msg.length > this.config.maxMessageSize) {
-        logger.warn('Message too large, dropping', {
+        logger.warn({
           size: msg.length,
           maxSize: this.config.maxMessageSize,
           remote: `${remoteInfo.address}:${remoteInfo.port}`,
-        });
+        }, 'Message too large, dropping');
         return;
       }
 
@@ -293,18 +293,18 @@ export class UdpServer extends EventEmitter {
       try {
         raw = JSON.parse(text);
       } catch (err) {
-        logger.warn('UDP payload is not JSON, dropping', {
+        logger.warn({
           error: err instanceof Error ? err.message : String(err),
           remote: `${remoteInfo.address}:${remoteInfo.port}`,
-        });
+        }, 'UDP payload is not JSON, dropping');
         return;
       }
 
       const parsed = ClientEnvelopeSchema.safeParse(raw);
       if (!parsed.success) {
-        logger.warn('Unknown envelope, dropping', {
+        logger.warn({
           remote: `${remoteInfo.address}:${remoteInfo.port}`,
-        });
+        }, 'Unknown envelope, dropping');
         return;
       }
 
@@ -314,17 +314,17 @@ export class UdpServer extends EventEmitter {
       });
 
       if (!enqueued) {
-        logger.warn('Message queue full, dropping message', {
+        logger.warn({
           session: parsed.data.session,
           queueSize: this.messageQueue.size,
           remote: `${remoteInfo.address}:${remoteInfo.port}`,
-        });
+        }, 'Message queue full, dropping message');
       }
     } catch (error) {
-      logger.error('Failed to handle incoming message', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
         remote: `${remoteInfo.address}:${remoteInfo.port}`,
-      });
+      }, 'Failed to handle incoming message');
     }
   }
 
@@ -345,10 +345,10 @@ export class UdpServer extends EventEmitter {
           this.sendReply(envelope.session, reply, remoteInfo);
         }
       } catch (error) {
-        logger.error('Failed to process envelope', {
+        logger.error({
           session: envelope.session,
           error: error instanceof Error ? error.message : String(error),
-        });
+        }, 'Failed to process envelope');
       }
     }, 1);
   }
@@ -365,18 +365,18 @@ export class UdpServer extends EventEmitter {
       const buffer = Buffer.from(JSON.stringify(reply), 'utf8');
       this.socket.send(buffer, remoteInfo.port, remoteInfo.address, (error) => {
         if (error) {
-          logger.error('Failed to send reply', {
+          logger.error({
             error: error.message,
             session,
             remote: `${remoteInfo.address}:${remoteInfo.port}`,
-          });
+          }, 'Failed to send reply');
         }
       });
     } catch (error) {
-      logger.error('Failed to serialize reply', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
         session,
-      });
+      }, 'Failed to serialize reply');
     }
   }
 
@@ -395,14 +395,14 @@ export class UdpServer extends EventEmitter {
       this.isRunning = true;
       this.startMessageProcessing();
 
-      logger.info('UDP server started successfully', {
+      logger.info({
         port: this.config.port,
         host: this.config.host,
-      });
+      }, 'UDP server started successfully');
     } catch (error) {
-      logger.error('Failed to start UDP server', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to start UDP server');
       throw error;
     }
   }
@@ -428,9 +428,9 @@ export class UdpServer extends EventEmitter {
       this.isRunning = false;
       logger.info('UDP server stopped successfully');
     } catch (error) {
-      logger.error('Failed to stop UDP server', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to stop UDP server');
       throw error;
     }
   }

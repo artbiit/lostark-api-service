@@ -12,7 +12,7 @@ export const collectiblesCommand: CommandSpec = {
       if (!detail?.collectibles) return `${name} 을(를) 찾을 수 없습니다.`;
       return formatCollectibles(name, detail);
     } catch (err) {
-      ctx.logger.warn('collectibles command failed', { name, err: String(err) });
+      ctx.logger.warn({ name, err: String(err) }, 'collectibles command failed');
       return `${name} 은(는) 없는 것 같숨미당`;
     }
   },

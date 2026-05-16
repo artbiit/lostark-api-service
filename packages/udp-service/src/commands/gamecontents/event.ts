@@ -10,7 +10,7 @@ export const eventCommand: CommandSpec = {
       const result = await ctx.newsService.getActiveEvents();
       return formatEvents(result);
     } catch (err) {
-      ctx.logger.warn('event command failed', { err: String(err) });
+      ctx.logger.warn({ err: String(err) }, 'event command failed');
       return '이벤트 정보를 불러올 수 없습니다.';
     }
   },

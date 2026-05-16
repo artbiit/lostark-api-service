@@ -34,7 +34,7 @@ export class PgClient {
     });
 
     this.pool.on('error', (err) => {
-      logger.error('Unexpected PostgreSQL pool error', { error: err.message });
+      logger.error({ error: err.message }, 'Unexpected PostgreSQL pool error');
     });
   }
 
@@ -45,16 +45,16 @@ export class PgClient {
       await client.query('SELECT 1');
       client.release();
       this.isConnected = true;
-      logger.info('PostgreSQL connected successfully', {
+      logger.info({
         host: env.DB_HOST,
         port: env.DB_PORT,
         database: env.DB_DATABASE,
-      });
+      }, 'PostgreSQL connected successfully');
     } catch (error) {
       this.isConnected = false;
-      logger.error('Failed to connect to PostgreSQL', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to connect to PostgreSQL');
       throw error;
     }
   }
@@ -65,9 +65,9 @@ export class PgClient {
       this.isConnected = false;
       logger.info('PostgreSQL disconnected successfully');
     } catch (error) {
-      logger.error('Failed to disconnect from PostgreSQL', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to disconnect from PostgreSQL');
       throw error;
     }
   }
@@ -81,17 +81,17 @@ export class PgClient {
         throw new Error('PostgreSQL not connected');
       }
       const result: QueryResult<T> = await this.pool.query(sql, params);
-      logger.debug('PostgreSQL query executed', {
+      logger.debug({
         sql: sql.substring(0, 100) + (sql.length > 100 ? '...' : ''),
         paramsCount: params?.length ?? 0,
         resultCount: result.rowCount ?? 0,
-      });
+      }, 'PostgreSQL query executed');
       return result.rows;
     } catch (error) {
-      logger.error('PostgreSQL query failed', {
+      logger.error({
         sql: sql.substring(0, 100) + (sql.length > 100 ? '...' : ''),
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'PostgreSQL query failed');
       throw error;
     }
   }
@@ -102,17 +102,17 @@ export class PgClient {
         throw new Error('PostgreSQL not connected');
       }
       const result = await this.pool.query(sql, params);
-      logger.debug('PostgreSQL execute completed', {
+      logger.debug({
         sql: sql.substring(0, 100) + (sql.length > 100 ? '...' : ''),
         paramsCount: params?.length ?? 0,
         rowCount: result.rowCount ?? 0,
-      });
+      }, 'PostgreSQL execute completed');
       return { rowCount: result.rowCount ?? 0, rows: result.rows };
     } catch (error) {
-      logger.error('PostgreSQL execute failed', {
+      logger.error({
         sql: sql.substring(0, 100) + (sql.length > 100 ? '...' : ''),
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'PostgreSQL execute failed');
       throw error;
     }
   }
@@ -135,14 +135,14 @@ export class PgClient {
           await client.query('ROLLBACK');
           logger.debug('PostgreSQL transaction rolled back');
         } catch (rollbackError) {
-          logger.error('Failed to rollback PostgreSQL transaction', {
+          logger.error({
             error: rollbackError instanceof Error ? rollbackError.message : String(rollbackError),
-          });
+          }, 'Failed to rollback PostgreSQL transaction');
         }
       }
-      logger.error('PostgreSQL transaction failed', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'PostgreSQL transaction failed');
       throw error;
     } finally {
       if (client) {

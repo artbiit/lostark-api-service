@@ -12,7 +12,7 @@ export const engravingsCommand: CommandSpec = {
       if (!detail?.engravings) return `${name} 을(를) 찾을 수 없습니다.`;
       return formatEngravings(name, detail);
     } catch (err) {
-      ctx.logger.warn('engravings command failed', { name, err: String(err) });
+      ctx.logger.warn({ name, err: String(err) }, 'engravings command failed');
       return `${name} 은(는) 없는 것 같숨미당`;
     }
   },

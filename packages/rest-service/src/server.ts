@@ -174,9 +174,9 @@ export class RestServer {
 
       logger.info('REST server initialized successfully');
     } catch (error) {
-      logger.error('Failed to initialize REST server', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to initialize REST server');
       throw error;
     }
   }
@@ -354,9 +354,9 @@ export class RestServer {
         logger.info('Redis connected successfully');
       } catch (error: unknown) {
         const errorMessage = getErrorMessage(error);
-        logger.warn('Redis connection failed, continuing without Redis', {
+        logger.warn({
           error: errorMessage,
-        });
+        }, 'Redis connection failed, continuing without Redis');
       }
 
       // MySQL 연결 (타임아웃 적용)
@@ -370,9 +370,9 @@ export class RestServer {
         logger.info('MySQL connected successfully');
       } catch (error: unknown) {
         const errorMessage = getErrorMessage(error);
-        logger.warn('MySQL connection failed, continuing without MySQL', {
+        logger.warn({
           error: errorMessage,
-        });
+        }, 'MySQL connection failed, continuing without MySQL');
       }
 
       // 캐시 최적화 시작 (비동기로 실행, 실패해도 서버 시작 계속)
@@ -383,18 +383,18 @@ export class RestServer {
             logger.info('Cache optimization started');
           } catch (error: unknown) {
             const errorMessage = getErrorMessage(error);
-            logger.warn('Cache optimization failed', {
+            logger.warn({
               error: errorMessage,
-            });
+            }, 'Cache optimization failed');
           }
         });
       }
 
       logger.info('Cache system initialization completed');
     } catch (error) {
-      logger.error('Failed to initialize cache system', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to initialize cache system');
       // 캐시 시스템 실패 시에도 서버는 계속 동작
     }
   }
@@ -430,14 +430,14 @@ export class RestServer {
         host: this.config.host,
       });
 
-      logger.info('REST server started successfully', {
+      logger.info({
         port: this.config.port,
         host: this.config.host,
-      });
+      }, 'REST server started successfully');
     } catch (error: unknown) {
-      logger.error('Failed to start REST server', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to start REST server');
       throw error;
     }
   }
@@ -459,9 +459,9 @@ export class RestServer {
 
       logger.info('REST server stopped successfully');
     } catch (error: unknown) {
-      logger.error('Failed to stop REST server', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to stop REST server');
       throw error;
     }
   }
@@ -499,9 +499,9 @@ export class RestServer {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      logger.error('Failed to get cache status', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get cache status');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -523,9 +523,9 @@ export class RestServer {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      logger.error('Failed to optimize cache', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to optimize cache');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -547,7 +547,7 @@ export class RestServer {
     const { characterName } = request.params;
 
     try {
-      logger.info('Character detail request', { characterName });
+      logger.info({ characterName }, 'Character detail request');
 
       const cachedDetail = await cacheManager.getCharacterDetail(characterName);
       const cacheHit = Boolean(cachedDetail);
@@ -598,11 +598,11 @@ export class RestServer {
         return;
       }
 
-      logger.error('Failed to get character detail', {
+      logger.error({
         characterName,
         error: errorMessage,
         responseTime,
-      });
+      }, 'Failed to get character detail');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -625,7 +625,7 @@ export class RestServer {
     const { characterName } = request.params;
 
     try {
-      logger.info('Character detail refresh request', { characterName });
+      logger.info({ characterName }, 'Character detail refresh request');
 
       const characterDetail = await this.armoriesService.refreshCharacterDetail(characterName);
 
@@ -666,11 +666,11 @@ export class RestServer {
         return;
       }
 
-      logger.error('Failed to refresh character detail', {
+      logger.error({
         characterName,
         error: errorMessage,
         responseTime,
-      });
+      }, 'Failed to refresh character detail');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -693,7 +693,7 @@ export class RestServer {
     const { characterName } = request.params;
 
     try {
-      logger.info('Class specific nodes request', { characterName });
+      logger.info({ characterName }, 'Class specific nodes request');
 
       const classNodes = await this.armoriesService.getClassSpecificNodes(characterName);
 
@@ -710,11 +710,11 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to get class specific nodes', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to get class specific nodes');
 
       if (error instanceof Error && error.message.includes('not found')) {
         reply.status(404).send({
@@ -753,7 +753,7 @@ export class RestServer {
     const { sections } = request.query;
 
     try {
-      logger.info('Character detail partial request', { characterName, sections });
+      logger.info({ characterName, sections }, 'Character detail partial request');
 
       const sectionsArray = sections
         ? (sections.split(',') as Array<
@@ -796,12 +796,12 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to get character detail partial', {
+      logger.error({
         characterName,
         sections,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to get character detail partial');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -828,7 +828,7 @@ export class RestServer {
     const { refresh } = request.query;
 
     try {
-      logger.info('Character request', { characterName, refresh: refresh === 'true' });
+      logger.info({ characterName, refresh: refresh === 'true' }, 'Character request');
 
       const shouldRefresh = refresh === 'true';
       const cachedAccount = shouldRefresh
@@ -871,11 +871,11 @@ export class RestServer {
         return;
       }
 
-      logger.error('Failed to get character', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to get character');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -900,7 +900,7 @@ export class RestServer {
     const { refresh } = request.query;
 
     try {
-      logger.info('Character siblings request', { characterName });
+      logger.info({ characterName }, 'Character siblings request');
 
       const client = new CharactersClient();
       const data = await client.getSiblings(characterName);
@@ -926,11 +926,11 @@ export class RestServer {
         return;
       }
 
-      logger.error('Failed to get character siblings', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to get character siblings');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -953,7 +953,7 @@ export class RestServer {
     const { characterName } = request.params;
 
     try {
-      logger.info('Character refresh request', { characterName });
+      logger.info({ characterName }, 'Character refresh request');
 
       const result = await this.charactersService.refreshAccountInfo(characterName);
 
@@ -975,11 +975,11 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to refresh character', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to refresh character');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1015,7 +1015,7 @@ export class RestServer {
     const query = request.query;
 
     try {
-      logger.info('Auctions search request', { query });
+      logger.info({ query }, 'Auctions search request');
 
       const pageNo = query.pageNo ? parseInt(query.pageNo) : 1;
       const searchRequest = {
@@ -1038,11 +1038,11 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to search auctions', {
+      logger.error({
         query,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to search auctions');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1075,7 +1075,7 @@ export class RestServer {
     const body = request.body;
 
     try {
-      logger.info('Auctions search refresh request', { body });
+      logger.info({ body }, 'Auctions search refresh request');
 
       const searchRequest = {
         ...body,
@@ -1102,11 +1102,11 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to refresh auctions search', {
+      logger.error({
         body,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to refresh auctions search');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1131,7 +1131,7 @@ export class RestServer {
     const { type, pageNo, refresh } = request.query;
 
     try {
-      logger.info('News request', { type, pageNo, refresh: refresh === 'true' });
+      logger.info({ type, pageNo, refresh: refresh === 'true' }, 'News request');
 
       const newsResult =
         type === 'events'
@@ -1151,12 +1151,12 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to get news', {
+      logger.error({
         type,
         pageNo,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to get news');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1179,7 +1179,7 @@ export class RestServer {
     const { type, pageNo } = request.query;
 
     try {
-      logger.info('News refresh request', { type, pageNo });
+      logger.info({ type, pageNo }, 'News refresh request');
 
       const newsResult =
         type === 'events'
@@ -1204,12 +1204,12 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to refresh news', {
+      logger.error({
         type,
         pageNo,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to refresh news');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1234,7 +1234,7 @@ export class RestServer {
     const { refresh } = request.query;
 
     try {
-      logger.info('Game contents request', { refresh: refresh === 'true' });
+      logger.info({ refresh: refresh === 'true' }, 'Game contents request');
 
       const gameContentsResult = await this.gameContentsService.getCalendar();
 
@@ -1251,10 +1251,10 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to get game contents', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to get game contents');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1293,10 +1293,10 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to refresh game contents', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to refresh game contents');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1321,7 +1321,7 @@ export class RestServer {
     const { itemIds, refresh } = request.query;
 
     try {
-      logger.info('Markets request', { itemIds, refresh: refresh === 'true' });
+      logger.info({ itemIds, refresh: refresh === 'true' }, 'Markets request');
 
       if (!itemIds) {
         reply.status(400).send({
@@ -1349,11 +1349,11 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to get markets', {
+      logger.error({
         itemIds,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to get markets');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1376,7 +1376,7 @@ export class RestServer {
     const { itemIds } = request.body;
 
     try {
-      logger.info('Markets refresh request', { itemIds });
+      logger.info({ itemIds }, 'Markets refresh request');
 
       if (!itemIds || itemIds.length === 0) {
         reply.status(400).send({
@@ -1408,11 +1408,11 @@ export class RestServer {
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      logger.error('Failed to refresh markets', {
+      logger.error({
         itemIds,
         error: error instanceof Error ? error.message : String(error),
         responseTime,
-      });
+      }, 'Failed to refresh markets');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1434,7 +1434,7 @@ export class RestServer {
     const { characterName } = request.params;
 
     try {
-      logger.info('Delete character cache request', { characterName });
+      logger.info({ characterName }, 'Delete character cache request');
 
       await cacheManager.deleteCharacterDetail(characterName);
 
@@ -1444,10 +1444,10 @@ export class RestServer {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      logger.error('Failed to delete character cache', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to delete character cache');
 
       reply.status(500).send({
         error: 'Internal Server Error',
@@ -1471,9 +1471,9 @@ export class RestServer {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      logger.error('Failed to get cache stats', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get cache stats');
 
       reply.status(500).send({
         error: 'Internal Server Error',

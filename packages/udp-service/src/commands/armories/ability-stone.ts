@@ -12,7 +12,7 @@ export const abilityStoneCommand: CommandSpec = {
       if (!detail?.equipment) return `${name} 을(를) 찾을 수 없습니다.`;
       return formatAbilityStone(name, detail);
     } catch (err) {
-      ctx.logger.warn('abilityStone command failed', { name, err: String(err) });
+      ctx.logger.warn({ name, err: String(err) }, 'abilityStone command failed');
       return `${name} 은(는) 없는 것 같숨미당`;
     }
   },

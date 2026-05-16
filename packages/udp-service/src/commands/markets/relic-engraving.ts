@@ -18,7 +18,7 @@ export const relicEngravingCommand: CommandSpec = {
       });
       return formatEngravingSearch(result as any);
     } catch (err) {
-      ctx.logger.warn('relicEngraving command failed', { itemName, err: String(err) });
+      ctx.logger.warn({ itemName, err: String(err) }, 'relicEngraving command failed');
       return `${itemName} 검색에 실패했습니다.`;
     }
   },

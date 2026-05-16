@@ -83,16 +83,16 @@ export class RedisCache {
       };
       await redisClient.set(metaKey, JSON.stringify(metaData), ttl);
 
-      logger.debug('Character detail cached in Redis', {
+      logger.debug({
         characterName,
         ttlMinutes: Math.round(ttl / 60),
         dataSize: serializedData.length,
-      });
+      }, 'Character detail cached in Redis');
     } catch (error) {
-      logger.error('Failed to cache character detail in Redis', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to cache character detail in Redis');
       throw error;
     }
   }
@@ -107,7 +107,7 @@ export class RedisCache {
 
       if (!serializedData) {
         this.stats.totalMisses++;
-        logger.debug('Character detail Redis cache miss', { characterName });
+        logger.debug({ characterName }, 'Character detail Redis cache miss');
         return null;
       }
 
@@ -116,15 +116,15 @@ export class RedisCache {
       const characterDetail = parsed.data as NormalizedCharacterDetail;
 
       this.stats.totalHits++;
-      logger.debug('Character detail Redis cache hit', { characterName });
+      logger.debug({ characterName }, 'Character detail Redis cache hit');
 
       return characterDetail;
     } catch (error) {
       this.stats.totalMisses++;
-      logger.error('Failed to get character detail from Redis', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get character detail from Redis');
       return null;
     }
   }
@@ -140,12 +140,12 @@ export class RedisCache {
       await redisClient.del(key);
       await redisClient.del(metaKey);
 
-      logger.debug('Character detail deleted from Redis', { characterName });
+      logger.debug({ characterName }, 'Character detail deleted from Redis');
     } catch (error) {
-      logger.error('Failed to delete character detail from Redis', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to delete character detail from Redis');
       throw error;
     }
   }
@@ -170,10 +170,10 @@ export class RedisCache {
 
       return JSON.parse(serializedMeta);
     } catch (error) {
-      logger.error('Failed to get character meta from Redis', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get character meta from Redis');
       return null;
     }
   }
@@ -199,9 +199,9 @@ export class RedisCache {
         lastCleanup: null, // TODO: 마지막 정리 시간 추적
       };
     } catch (error) {
-      logger.error('Failed to get Redis cache stats', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get Redis cache stats');
 
       return {
         totalEntries: 0,
@@ -223,14 +223,14 @@ export class RedisCache {
       // 여기서는 통계만 업데이트
       const stats = await this.getCacheStats();
 
-      logger.info('Redis cache cleanup completed', {
+      logger.info({
         totalEntries: stats.totalEntries,
         memoryUsage: stats.memoryUsage,
-      });
+      }, 'Redis cache cleanup completed');
     } catch (error) {
-      logger.error('Failed to cleanup Redis cache', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to cleanup Redis cache');
     }
   }
 
@@ -248,9 +248,9 @@ export class RedisCache {
 
       logger.info('Redis cache cleared');
     } catch (error) {
-      logger.error('Failed to clear Redis cache', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to clear Redis cache');
       throw error;
     }
   }
@@ -263,10 +263,10 @@ export class RedisCache {
       const key = cacheKeys.character(characterName);
       return await redisClient.exists(key);
     } catch (error) {
-      logger.error('Failed to check character detail existence in Redis', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to check character detail existence in Redis');
       return false;
     }
   }
@@ -279,10 +279,10 @@ export class RedisCache {
       const key = cacheKeys.character(characterName);
       return await redisClient.ttl(key);
     } catch (error) {
-      logger.error('Failed to get character detail TTL from Redis', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get character detail TTL from Redis');
       return -1;
     }
   }
@@ -337,9 +337,9 @@ export function startRedisCacheCleanupScheduler(): NodeJS.Timeout {
     try {
       await redisCache.cleanup();
     } catch (error) {
-      logger.error('Failed to cleanup Redis cache', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to cleanup Redis cache');
     }
   }, interval);
   timer.unref();

@@ -11,7 +11,7 @@ export const siblingsCommand: CommandSpec = {
       const result = await ctx.charactersService.processCharacterSiblings(name);
       return formatSiblings(name, result);
     } catch (err) {
-      ctx.logger.warn('siblings command failed', { name, err: String(err) });
+      ctx.logger.warn({ name, err: String(err) }, 'siblings command failed');
       return `${name} 캐릭터는 없는 것 같숨미당`;
     }
   },

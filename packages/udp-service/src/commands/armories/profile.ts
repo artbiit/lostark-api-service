@@ -15,7 +15,7 @@ export const profileCommand: CommandSpec = {
       if (!detail?.profile) return `${name} 을(를) 찾을 수 없습니다.`;
       return formatProfile(name, detail);
     } catch (err) {
-      ctx.logger.warn('profile command failed', { name, err: String(err) });
+      ctx.logger.warn({ name, err: String(err) }, 'profile command failed');
       return `${name} 은(는) 없는 것 같숨미당`;
     }
   },

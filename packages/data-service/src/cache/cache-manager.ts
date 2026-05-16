@@ -47,18 +47,18 @@ export class CacheManager {
 
     try {
       // 1단계: Memory Cache 조회
-      logger.debug('Checking memory cache', { characterName });
+      logger.debug({ characterName }, 'Checking memory cache');
       const memoryResult = await armoriesCache.getCharacterDetail(characterName);
 
       if (memoryResult) {
         this.recordResponseTime(Date.now() - startTime);
-        logger.debug('Memory cache hit', { characterName });
+        logger.debug({ characterName }, 'Memory cache hit');
         return memoryResult;
       }
 
       // 2단계: Redis Cache 조회
       if (redisCache.isConnected()) {
-        logger.debug('Checking Redis cache', { characterName });
+        logger.debug({ characterName }, 'Checking Redis cache');
         const redisResult = await redisCache.getCharacterDetail(characterName);
 
         if (redisResult) {
@@ -66,16 +66,16 @@ export class CacheManager {
           await this.syncToMemoryCache(characterName, redisResult);
 
           this.recordResponseTime(Date.now() - startTime);
-          logger.debug('Redis cache hit, synced to memory', { characterName });
+          logger.debug({ characterName }, 'Redis cache hit, synced to memory');
           return redisResult;
         }
       } else {
-        logger.warn('Redis not connected, skipping Redis cache', { characterName });
+        logger.warn({ characterName }, 'Redis not connected, skipping Redis cache');
       }
 
       // 3단계: Database Cache 조회
       if (databaseCache.isConnected()) {
-        logger.debug('Checking database cache', { characterName });
+        logger.debug({ characterName }, 'Checking database cache');
         const databaseResult = await databaseCache.getCharacterDetail(characterName);
 
         if (databaseResult) {
@@ -83,22 +83,22 @@ export class CacheManager {
           await this.syncToUpperCacheLayers(characterName, databaseResult);
 
           this.recordResponseTime(Date.now() - startTime);
-          logger.debug('Database cache hit, synced to upper layers', { characterName });
+          logger.debug({ characterName }, 'Database cache hit, synced to upper layers');
           return databaseResult;
         }
       } else {
-        logger.warn('Database not connected, skipping database cache', { characterName });
+        logger.warn({ characterName }, 'Database not connected, skipping database cache');
       }
 
       this.recordResponseTime(Date.now() - startTime);
-      logger.debug('All cache layers miss', { characterName });
+      logger.debug({ characterName }, 'All cache layers miss');
       return null;
     } catch (error) {
       this.recordResponseTime(Date.now() - startTime);
-      logger.error('Failed to get character detail from cache layers', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get character detail from cache layers');
       return null;
     }
   }
@@ -123,10 +123,10 @@ export class CacheManager {
         armoriesCache
           .setCharacterDetail(characterName, characterDetail, ttlMinutes)
           .catch((error) => {
-            logger.error('Failed to save to memory cache', {
+            logger.error({
               characterName,
               error: error instanceof Error ? error.message : String(error),
-            });
+            }, 'Failed to save to memory cache');
           }),
       );
 
@@ -136,10 +136,10 @@ export class CacheManager {
           redisCache
             .setCharacterDetail(characterName, characterDetail, ttlMinutes)
             .catch((error) => {
-              logger.error('Failed to save to Redis cache', {
+              logger.error({
                 characterName,
                 error: error instanceof Error ? error.message : String(error),
-              });
+              }, 'Failed to save to Redis cache');
             }),
         );
       }
@@ -148,10 +148,10 @@ export class CacheManager {
       if (databaseCache.isConnected()) {
         promises.push(
           databaseCache.setCharacterDetail(characterName, characterDetail).catch((error) => {
-            logger.error('Failed to save to database cache', {
+            logger.error({
               characterName,
               error: error instanceof Error ? error.message : String(error),
-            });
+            }, 'Failed to save to database cache');
           }),
         );
       }
@@ -160,17 +160,17 @@ export class CacheManager {
       await Promise.allSettled(promises);
 
       this.recordResponseTime(Date.now() - startTime);
-      logger.debug('Character detail saved to all cache layers', {
+      logger.debug({
         characterName,
         layers: ['memory', 'redis', 'database'],
         ttlMinutes,
-      });
+      }, 'Character detail saved to all cache layers');
     } catch (error) {
       this.recordResponseTime(Date.now() - startTime);
-      logger.error('Failed to save character detail to cache layers', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to save character detail to cache layers');
       throw error;
     }
   }
@@ -187,10 +187,10 @@ export class CacheManager {
       // Memory Cache 삭제
       promises.push(
         armoriesCache.deleteCharacterDetail(characterName).catch((error) => {
-          logger.error('Failed to delete from memory cache', {
+          logger.error({
             characterName,
             error: error instanceof Error ? error.message : String(error),
-          });
+          }, 'Failed to delete from memory cache');
         }),
       );
 
@@ -198,10 +198,10 @@ export class CacheManager {
       if (redisCache.isConnected()) {
         promises.push(
           redisCache.deleteCharacterDetail(characterName).catch((error) => {
-            logger.error('Failed to delete from Redis cache', {
+            logger.error({
               characterName,
               error: error instanceof Error ? error.message : String(error),
-            });
+            }, 'Failed to delete from Redis cache');
           }),
         );
       }
@@ -210,10 +210,10 @@ export class CacheManager {
       if (databaseCache.isConnected()) {
         promises.push(
           databaseCache.deleteCharacterDetail(characterName).catch((error) => {
-            logger.error('Failed to delete from database cache', {
+            logger.error({
               characterName,
               error: error instanceof Error ? error.message : String(error),
-            });
+            }, 'Failed to delete from database cache');
           }),
         );
       }
@@ -221,15 +221,15 @@ export class CacheManager {
       // 모든 삭제 작업 완료 대기
       await Promise.allSettled(promises);
 
-      logger.debug('Character detail deleted from all cache layers', {
+      logger.debug({
         characterName,
         layers: ['memory', 'redis', 'database'],
-      });
+      }, 'Character detail deleted from all cache layers');
     } catch (error) {
-      logger.error('Failed to delete character detail from cache layers', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to delete character detail from cache layers');
       throw error;
     }
   }
@@ -267,9 +267,9 @@ export class CacheManager {
         },
       };
     } catch (error) {
-      logger.error('Failed to get integrated cache stats', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to get integrated cache stats');
 
       return {
         memory: {
@@ -323,9 +323,9 @@ export class CacheManager {
 
       logger.info('Cache cleanup completed for all layers');
     } catch (error) {
-      logger.error('Failed to cleanup cache layers', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to cleanup cache layers');
     }
   }
 
@@ -348,9 +348,9 @@ export class CacheManager {
 
       logger.info('Cache cleared for all layers');
     } catch (error) {
-      logger.error('Failed to clear cache layers', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to clear cache layers');
       throw error;
     }
   }
@@ -364,12 +364,12 @@ export class CacheManager {
   ): Promise<void> {
     try {
       await armoriesCache.setCharacterDetail(characterName, characterDetail);
-      logger.debug('Data synced from Redis to Memory cache', { characterName });
+      logger.debug({ characterName }, 'Data synced from Redis to Memory cache');
     } catch (error) {
-      logger.error('Failed to sync data from Redis to Memory cache', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to sync data from Redis to Memory cache');
     }
   }
 
@@ -389,12 +389,12 @@ export class CacheManager {
         await redisCache.setCharacterDetail(characterName, characterDetail);
       }
 
-      logger.debug('Data synced from Database to upper cache layers', { characterName });
+      logger.debug({ characterName }, 'Data synced from Database to upper cache layers');
     } catch (error) {
-      logger.error('Failed to sync data from Database to upper cache layers', {
+      logger.error({
         characterName,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to sync data from Database to upper cache layers');
     }
   }
 
@@ -451,9 +451,9 @@ export function startCacheManagerCleanupScheduler(): NodeJS.Timeout {
     try {
       await cacheManager.cleanup();
     } catch (error) {
-      logger.error('Failed to cleanup cache manager', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Failed to cleanup cache manager');
     }
   }, interval);
   timer.unref();

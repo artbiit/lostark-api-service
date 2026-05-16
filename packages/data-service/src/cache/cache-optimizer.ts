@@ -113,16 +113,16 @@ export class CacheOptimizer {
 
     this.optimizationTimer = setInterval(() => {
       this.performOptimization().catch((error) => {
-        logger.error('Cache optimization failed', {
+        logger.error({
           error: error instanceof Error ? error.message : String(error),
-        });
+        }, 'Cache optimization failed');
       });
     }, this.config.optimizationInterval * 1000);
     this.optimizationTimer.unref();
 
-    logger.info('Cache optimization started', {
+    logger.info({
       interval: this.config.optimizationInterval,
-    });
+    }, 'Cache optimization started');
   }
 
   /**
@@ -160,16 +160,16 @@ export class CacheOptimizer {
 
       const optimizationTime = Date.now() - startTime;
 
-      logger.info('Cache optimization completed', {
+      logger.info({
         optimizationTime,
         optimizations: optimizationStats.optimizations,
-      });
+      }, 'Cache optimization completed');
 
       return this.lastOptimizationStats;
     } catch (error) {
-      logger.error('Cache optimization failed', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Cache optimization failed');
       throw error;
     }
   }
@@ -268,15 +268,15 @@ export class CacheOptimizer {
       // 메모리 사용량 최적화
       const memoryStats = await armoriesCache.getCacheStats();
       if (memoryStats.totalEntries > this.config.maxMemoryEntries) {
-        logger.warn('Memory cache entries exceeded limit', {
+        logger.warn({
           current: memoryStats.totalEntries,
           limit: this.config.maxMemoryEntries,
-        });
+        }, 'Memory cache entries exceeded limit');
       }
     } catch (error) {
-      logger.error('Memory cache optimization failed', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Memory cache optimization failed');
     }
   }
 
@@ -294,16 +294,16 @@ export class CacheOptimizer {
         // Redis 메모리 최적화
         const redisStats = await redisCache.getCacheStats();
         if (redisStats.totalEntries > this.config.maxRedisEntries) {
-          logger.warn('Redis cache entries exceeded limit', {
+          logger.warn({
             current: redisStats.totalEntries,
             limit: this.config.maxRedisEntries,
-          });
+          }, 'Redis cache entries exceeded limit');
         }
       }
     } catch (error) {
-      logger.error('Redis cache optimization failed', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Redis cache optimization failed');
     }
   }
 
@@ -321,16 +321,16 @@ export class CacheOptimizer {
         // Database 크기 최적화
         const databaseStats = await databaseCache.getCacheStats();
         if (databaseStats.totalEntries > this.config.maxDatabaseEntries) {
-          logger.warn('Database cache entries exceeded limit', {
+          logger.warn({
             current: databaseStats.totalEntries,
             limit: this.config.maxDatabaseEntries,
-          });
+          }, 'Database cache entries exceeded limit');
         }
       }
     } catch (error) {
-      logger.error('Database cache optimization failed', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Database cache optimization failed');
     }
   }
 
@@ -350,9 +350,9 @@ export class CacheOptimizer {
         // Database Cache 우선순위 조정
       }
     } catch (error) {
-      logger.error('Cache layer adjustment failed', {
+      logger.error({
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, 'Cache layer adjustment failed');
     }
   }
 
@@ -375,7 +375,7 @@ export class CacheOptimizer {
    */
   updateOptimizationConfig(newConfig: Partial<CacheOptimizationConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('Cache optimization config updated', { newConfig });
+    logger.info({ newConfig }, 'Cache optimization config updated');
   }
 
   /**

@@ -29,9 +29,9 @@ async function gracefulShutdown(signal: string): Promise<void> {
     logger.info('UDP service stopped successfully');
     process.exit(0);
   } catch (error) {
-    logger.error('Failed to stop UDP service gracefully', {
+    logger.error({
       error: error instanceof Error ? error.message : String(error),
-    });
+    }, 'Failed to stop UDP service gracefully');
     process.exit(1);
   }
 }
@@ -40,16 +40,16 @@ async function gracefulShutdown(signal: string): Promise<void> {
  * 비정상 종료 처리
  */
 function handleUncaughtError(error: Error): void {
-  logger.error('Uncaught error', {
+  logger.error({
     error: error.message,
     stack: error.stack,
-  });
+  }, 'Uncaught error');
 
   // 서버 중지 시도
   udpServer.stop().catch((stopError) => {
-    logger.error('Failed to stop server during error handling', {
+    logger.error({
       error: stopError instanceof Error ? stopError.message : String(stopError),
-    });
+    }, 'Failed to stop server during error handling');
   });
 
   process.exit(1);
@@ -59,16 +59,16 @@ function handleUncaughtError(error: Error): void {
  * 처리되지 않은 Promise 거부 처리
  */
 function handleUnhandledRejection(reason: unknown, promise: Promise<unknown>): void {
-  logger.error('Unhandled promise rejection', {
+  logger.error({
     reason: reason instanceof Error ? reason.message : String(reason),
     promise: promise.toString(),
-  });
+  }, 'Unhandled promise rejection');
 
   // 서버 중지 시도
   udpServer.stop().catch((stopError) => {
-    logger.error('Failed to stop server during unhandled rejection', {
+    logger.error({
       error: stopError instanceof Error ? stopError.message : String(stopError),
-    });
+    }, 'Failed to stop server during unhandled rejection');
   });
 
   process.exit(1);
@@ -91,9 +91,9 @@ async function startUdpService(): Promise<void> {
 
     logger.info('UDP service started successfully');
   } catch (error) {
-    logger.error('Failed to start UDP service', {
+    logger.error({
       error: error instanceof Error ? error.message : String(error),
-    });
+    }, 'Failed to start UDP service');
     process.exit(1);
   }
 }
@@ -112,9 +112,9 @@ process.on('unhandledRejection', handleUnhandledRejection);
 
 // 메인 함수 실행
 startUdpService().catch((error) => {
-  logger.error('Failed to start UDP service', {
+  logger.error({
     error: error instanceof Error ? error.message : String(error),
-  });
+  }, 'Failed to start UDP service');
   process.exit(1);
 });
 

@@ -12,7 +12,7 @@ export const cardsCommand: CommandSpec = {
       if (!detail?.cards) return `${name} 을(를) 찾을 수 없습니다.`;
       return formatCards(name, detail);
     } catch (err) {
-      ctx.logger.warn('cards command failed', { name, err: String(err) });
+      ctx.logger.warn({ name, err: String(err) }, 'cards command failed');
       return `${name} 은(는) 없는 것 같숨미당`;
     }
   },

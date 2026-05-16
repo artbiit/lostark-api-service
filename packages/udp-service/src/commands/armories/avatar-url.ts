@@ -12,7 +12,7 @@ export const avatarUrlCommand: CommandSpec = {
       if (!detail?.profile) return `${name} 을(를) 찾을 수 없습니다.`;
       return formatAvatarUrl(name, detail);
     } catch (err) {
-      ctx.logger.warn('avatarUrl command failed', { name, err: String(err) });
+      ctx.logger.warn({ name, err: String(err) }, 'avatarUrl command failed');
       return `${name} 은(는) 없는 것 같숨미당`;
     }
   },

@@ -12,7 +12,7 @@ export const colosseumsCommand: CommandSpec = {
       if (!detail?.colosseums) return `${name} 을(를) 찾을 수 없습니다.`;
       return formatColosseums(name, detail);
     } catch (err) {
-      ctx.logger.warn('colosseums command failed', { name, err: String(err) });
+      ctx.logger.warn({ name, err: String(err) }, 'colosseums command failed');
       return `${name} 은(는) 없는 것 같숨미당`;
     }
   },
