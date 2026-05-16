@@ -9,10 +9,22 @@
 - [2026-05-16 udp-service 카카오봇 승격](./2026-05-16-udp-service-kakao-bot-promotion/index.md)
   — legacy JS 봇 27종 명령 TypeScript 이식 + armories-normalizer 정정
   (session 20260515-231420)
+- [2026-05-16 carry-over 처리 + abyss/guardian 제거](./2026-05-16-carry-over-resolution/index.md)
+  — formatter 단위 테스트 9파일 + abyss/guardian 완전 제거(ADR-0003) + cache-flow
+  Windows 경로 수정 + UDP smoke 검증 (session 20260516-040536)
 
 ## 최근 세션
 
-### 2026-05-15/16 — udp-service 카카오봇 승격
+### 2026-05-16 — carry-over 처리 + abyss/guardian 제거 (session 20260516-040536)
+
+- formatter 단위 테스트 9파일 신규 (armories 11종 포함).
+- L2 실측: 도비스/도가토 CategoryName calendar API 미출현 → ADR-0003: 명령 완전 제거.
+- L3 cache-flow Windows 경로 버그 3건 수정 → 통과 (3-tier 354KB 정상 이동).
+- UDP smoke 통합 테스트 신규 + 수동 dgram 검증 통과 (3ms~82ms).
+- docker-compose.override.yml 신규 (로컬 PG 옵션).
+- Carry-over: graphify 재생성 (commit 후), validate:refs graphify-out 이슈.
+
+### 2026-05-15/16 — udp-service 카카오봇 승격 (session 20260515-231420)
 
 - legacy/ JavaScript UDP 봇(명령 25종) 분석 + 신규 2종(`!카드`, `!전장`) 추가.
 - envelope 계약 통합: UdpMessage 4종 폐기 → `{event,data,session}` 채택.

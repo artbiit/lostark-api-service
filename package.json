@@ -24,6 +24,8 @@
     "test:integration": "tsx --test tests/integration/**/*.test.ts",
     "test:api": "tsx --test tests/integration/api/**/*.test.ts",
     "test:cache-flow": "node tests/integration/api/simple-cache-flow-test.mjs",
+    "test:integration:udp": "tsx --test tests/integration/udp/smoke.test.mjs",
+    "check:categories": "tsx scripts/check-calendar-categories.ts",
     "test:workspace": "yarn workspaces foreach -At run test",
     "validate:monorepo": "yarn validate:deps && yarn validate:refs && yarn build && yarn typecheck",
     "db:migrate": "tsx scripts/migrate.ts",

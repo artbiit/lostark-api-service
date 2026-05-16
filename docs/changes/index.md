@@ -4,6 +4,10 @@
 
 ## 2026-05
 
+- feat+fix+chore(udp-service,tests):
+  [formatter 단위 테스트 신규 + abyss/guardian 제거 + cache-flow 경로 수정](./2026-05-16-formatter-tests-and-abyss-guardian-removal.md)
+  — 단위 테스트 9파일, UDP smoke, abyss/guardian 완전 제거(ADR-0003),
+  cache-flow Windows 경로 3건 수정. (session 20260516-040536)
 - feat+fix(udp-service,data-service,shared):
   [udp-service 카카오봇 승격 + normalizer 정정](./2026-05-16-udp-service-kakao-bot-promotion.md)
   — 27종 카카오톡 명령 이식, envelope 계약 변경(breaking),

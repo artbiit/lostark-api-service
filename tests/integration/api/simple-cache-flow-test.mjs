@@ -7,12 +7,12 @@
 
 import { readFileSync } from 'fs';
 import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 // 환경변수 로드
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const projectRoot = join(__dirname, '../../');
+const projectRoot = join(__dirname, '../../../');
 
 // .env 파일 직접 읽기
 function loadEnv() {
@@ -44,7 +44,7 @@ function loadEnv() {
 
 loadEnv();
 
-import { createCacheFlowClient } from '../common/cache-flow-client.mjs';
+import { createCacheFlowClient } from '../../common/cache-flow-client.mjs';
 
 // === 테스트 설정 ===
 
@@ -172,6 +172,6 @@ async function runTest() {
 }
 
 // 스크립트 실행
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   runTest();
 }

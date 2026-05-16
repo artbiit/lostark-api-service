@@ -28,8 +28,6 @@ import { siblingsCommand } from './characters/siblings.js';
 // Phase 3 — gamecontents
 import { procyonCommand } from './gamecontents/procyon.js';
 import { eventCommand } from './gamecontents/event.js';
-import { abyssCommand } from './gamecontents/abyss.js';
-import { guardianCommand } from './gamecontents/guardian.js';
 
 // Phase 4 — auctions / markets
 import { gemSearchCommand } from './auctions/gems.js';
@@ -65,8 +63,6 @@ export const commandRegistry: CommandRegistry = {
   // gamecontents
   프로키온: procyonCommand,
   이벤트: eventCommand,
-  도비스: abyssCommand,
-  도가토: guardianCommand,
 
   // auctions / markets
   보석값: gemSearchCommand,

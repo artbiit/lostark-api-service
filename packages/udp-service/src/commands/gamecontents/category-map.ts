@@ -2,12 +2,12 @@
  * GameContentsService.getCalendar() 응답의 CategoryName 매핑 상수.
  *
  * V9 API 의 실 응답에서 CategoryName 변형이 발견되면 본 파일만 수정.
- * (도비스 던전/도가토 등은 calendar 샘플에 미출현 — research 단계 결론.)
+ *
+ * 2026-05-16 실측: 도비스 던전(ABYSS) / 도가토(GUARDIAN) 두 콘텐츠는 게임 내 종료.
+ * 명령 제거됨 (ADR-0003)
  */
 
 export const CALENDAR_CATEGORIES = {
-  ABYSS: '도비스 던전',
-  GUARDIAN: '도가토',
   ADVENTURE_ISLAND: '모험 섬',
   ISLAND: '섬',
   CHAOS_GATE: '카오스게이트',

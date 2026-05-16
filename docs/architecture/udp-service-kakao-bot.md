@@ -1,6 +1,6 @@
 ---
 updated_at: 2026-05-16
-session_id: 20260515-231420
+session_id: 20260516-040536
 ---
 
 # udp-service 카카오봇 모듈 구조
@@ -79,7 +79,7 @@ packages/udp-service/src/
 │   ├── kakao.ts               padNumber/padString/sectionHeader/remainingTime/EMOJI
 │   ├── armories.ts            11종 (정보/장비/스킬/보석/각인/돌/수집/착장/아바타/카드/전장)
 │   ├── characters.ts          formatSiblings
-│   ├── gamecontents.ts        formatProcyon/Event/Abyss/Guardian
+│   ├── gamecontents.ts        formatProcyon/Event (Abyss/Guardian 제거 — ADR-0003)
 │   ├── auctions.ts            formatGemSearch
 │   └── markets.ts             formatExpensiveEngravings/formatEngravingSearch
 ├── commands/
@@ -87,7 +87,7 @@ packages/udp-service/src/
 │   ├── armories/              (11 파일) profile/equipment/skills/gems/engravings/
 │   │                          ability-stone/collectibles/avatars/avatar-url/cards/colosseums
 │   ├── characters/            siblings.ts
-│   ├── gamecontents/          procyon/event/abyss/guardian/category-map.ts
+│   ├── gamecontents/          procyon/event/category-map.ts (abyss/guardian 제거 — ADR-0003)
 │   ├── auctions/              gems.ts
 │   ├── markets/               expensive-engravings/legendary-engraving/relic-engraving.ts
 │   ├── minigame/              dice/pick-one/share/synergy/synergy-text/
@@ -149,25 +149,33 @@ WorkerPool (N workers)
 각 worker 가 독립 인스턴스를 가지면 캐시 일관성이 깨지므로, 모듈 레벨
 싱글톤 공유 방식을 채택.
 
-## 명령 등록 요약 (27종 + 재련 disabled)
+## 명령 등록 요약 (25종 + 재련 disabled)
+
+> 2026-05-16: 도비스(`!도비스`)·도가토(`!도가토`) 제거 (27종 → 25종).
+> 콘텐츠 게임 내 종료 확인. 상세 결정: [ADR-0003](../adr/ADR-0003-abyss-guardian-removal.md)
 
 | 그룹 | 명령 | minArgs | 의존 |
 |------|------|---------|------|
 | armories (9종) | 정보/장비/스킬/보석/각인/돌/수집/착장/아바타 | 1 | ArmoriesService |
 | armories (신규 2종) | 카드/전장 | 1 | ArmoriesService |
 | characters | 부캐 | 1 | CharactersService |
-| gamecontents | 프로키온/이벤트/도비스/도가토 | 0 | GameContentsService/NewsService |
+| gamecontents | 프로키온/이벤트 | 0 | GameContentsService/NewsService |
 | auctions | 보석값 | 1 | AuctionsService |
 | markets | 비싼유각/전각/유각 | 0~1 | MarketsService |
 | minigame | 주사위/vs(고민)/분배금/시너지/랜전카/질문 | 0~2 | Redis(랜전카만) |
 | help | 도움말(명령어) | 0 | registry |
 | ~~재련~~ | (disabled) | — | — |
+| ~~도비스~~ | (removed — ADR-0003) | — | — |
+| ~~도가토~~ | (removed — ADR-0003) | — | — |
 
 ## 관련 문서
 
 - [system-overview.md](./system-overview.md) — 전체 3-tier 아키텍처
 - [ADR-0001: envelope 채택](../adr/ADR-0001-udp-envelope-adoption.md)
 - [ADR-0002: normalizer breaking 변경](../adr/ADR-0002-normalizer-colosseums-breaking.md)
+- [ADR-0003: abyss/guardian 명령 완전 제거](../adr/ADR-0003-abyss-guardian-removal.md)
 - [changes: 카카오봇 승격](../changes/2026-05-16-udp-service-kakao-bot-promotion.md)
+- [changes: formatter 테스트 + abyss/guardian 제거](../changes/2026-05-16-formatter-tests-and-abyss-guardian-removal.md)
 - [work-log: 세션 20260515-231420](../work-log/2026-05-16-udp-service-kakao-bot-promotion/index.md)
+- [work-log: 세션 20260516-040536](../work-log/2026-05-16-carry-over-resolution/index.md)
 - [client-sample: 메신저봇R 계약](../contracts/client-sample/client-sample.md)

@@ -2,7 +2,6 @@
  * gamecontents/news 그룹 명령의 카카오톡 포맷터.
  * - 프로키온의 나침반 (calendar 필터)
  * - 이벤트 (NewsService.getActiveEvents)
- * - 도비스 / 도가토 (calendar CategoryName 필터)
  */
 
 import {
@@ -114,31 +113,3 @@ export function formatEvents(result: ActiveEventsResult, now: Date = new Date())
   return joinLines(...lines);
 }
 
-// === 도비스 ===
-
-export function formatAbyss(contents: CalendarContent[]): string {
-  const abyss = contents.filter((c) => c.CategoryName === CALENDAR_CATEGORIES.ABYSS);
-  if (abyss.length === 0) {
-    return '이번 주 도전 어비스 던전 정보가 없는 것 같숨미당.';
-  }
-  const lines: string[] = ['[금주의 도비스]'];
-  for (const c of abyss) {
-    const loc = c.Location ? ` / ${c.Location}` : '';
-    lines.push(`${c.ContentsName}${loc}`);
-  }
-  return joinLines(...lines);
-}
-
-// === 도가토 ===
-
-export function formatGuardian(contents: CalendarContent[]): string {
-  const guardian = contents.filter((c) => c.CategoryName === CALENDAR_CATEGORIES.GUARDIAN);
-  if (guardian.length === 0) {
-    return '이번 주 도전 가디언 토벌 정보가 없는 것 같숨미당.';
-  }
-  const lines: string[] = ['[금주의 도가토]'];
-  for (const c of guardian) {
-    lines.push(` ${c.ContentsName}`);
-  }
-  return joinLines(...lines);
-}
