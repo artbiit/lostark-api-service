@@ -1,7 +1,7 @@
 ---
 kind: graphify-meta
-last_generated_at: 2026-05-16T16:00:00+09:00
-source_commit: 44cc590adddab241c882963c3c9989266583c442
+last_generated_at: 2026-05-17T00:30:00+09:00
+source_commit: 11dfbaad3c50934e46edf95e593009391a615a26
 scopes:
   - packages
   - docs
@@ -60,9 +60,9 @@ docs/graph/
 
 | scope    | 마지막 생성 | 소스 커밋 | 대상 경로                                             | 요약                                                                                                                                                                                                                            |
 | -------- | ----------- | --------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| packages | 2026-05-16  | `44cc590` | `packages/`                                           | 960 nodes · 1,530 edges · 63 communities. 98 파일 (전부 code). AST-only (semantic 스킵, code-only update). abyss/guardian formatter 폐기 (ADR-0003) 반영. God nodes: ArmoriesCache, ArmoriesNormalizer, ApiClient, RestServer. |
-| docs     | 2026-05-16  | `7d5fed0` | `docs/` (자기 자신 graph 산출물 제외)                 | 421 nodes · 454 edges · 46 communities. 81 파일 (61 doc + 20 sample JSON). 145 AST + 276 semantic. 핵심 커뮤니티: UDP Envelope & Client Sample / Normalizer ADRs & Tests / Verification Strategies / Agent Team Protocol Roles. |
-| tests    | 2026-05-16  | `44cc590` | `tests/`                                              | 493 nodes · 685 edges · 35 communities. 49 파일 (45 code + 4 doc). AST-only (code-only update). minigame + formatter 테스트 9파일 신규 추가. 핵심 커뮤니티: ArmoriesService / Cache-Flow + Character Suites / Shared Env / UDP Parser & Router + Minigame.    |
+| packages | 2026-05-17  | `11dfbaa` | `packages/`                                           | 971 nodes · 1,551 edges · 73 communities. AST-only (semantic 스킵). F7 armories ArkPassive 도메인 모델 확장 반영. 직전: 960 nodes · 1,530 edges · 63 communities (44cc590).                                                       |
+| docs     | 2026-05-17  | `11dfbaa` | `docs/` (자기 자신 graph 산출물 제외)                 | 4,246 nodes · 3,838 edges · 711 communities. 418 파일 (cache 부재로 처음부터 재빌드 — work-session 누적 + sample-data 확장 반영). 직전: 421 nodes · 454 edges · 46 communities (7d5fed0).                                       |
+| tests    | 2026-05-17  | `11dfbaa` | `tests/`                                              | 598 nodes · 787 edges · 39 communities. F7 회귀 테스트(N-1~N-7 normalizer + F-1~F-13 formatter) + fixture 2건 추가 반영. 직전: 493 nodes · 685 edges · 35 communities (44cc590).                                                |
 | legacy   | 2026-05-16  | `7d5fed0` | `legacy/`                                             | 239 nodes · 348 edges · 15 communities. 20 파일 (18 code + 2 doc + loa.sql). 192 AST + 47 semantic. 핵심 커뮤니티: Legacy commandUtils Helpers / Legacy Command Catalog / Legacy API Client / MySQL Schema Tables.              |
 
 ## 갱신 시 체크리스트
