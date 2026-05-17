@@ -28,9 +28,20 @@ export interface IntegratedCacheStats {
   };
 }
 
-// DB 캐시에서 반환된 데이터의 최대 허용 나이.
+// 모든 캐시 계층(memory/redis/db)에서 반환된 데이터의 최대 허용 나이.
+// metadata.normalizedAt 을 기준으로 판정 — TTL 만으로는 worker 간 stale 데이터를 막지 못한다.
 // CACHE_DB_MAX_AGE_SECONDS 환경변수로 튜닝 (기본 60초).
 const DB_CACHE_MAX_AGE_MS = (Number(process.env.CACHE_DB_MAX_AGE_SECONDS) || 60) * 1000;
+
+export function cacheAgeMs(detail: NormalizedCharacterDetail): number {
+  const normalizedAt = detail.metadata?.normalizedAt;
+  if (!normalizedAt) return Infinity;
+  const ts = new Date(normalizedAt).getTime();
+  if (Number.isNaN(ts)) return Infinity;
+  return Date.now() - ts;
+}
+
+export const CACHE_FRESHNESS_MAX_AGE_MS = DB_CACHE_MAX_AGE_MS;
 
 // === 캐시 계층 관리자 ===
 
@@ -55,9 +66,18 @@ export class CacheManager {
       const memoryResult = await armoriesCache.getCharacterDetail(characterName);
 
       if (memoryResult) {
-        this.recordResponseTime(Date.now() - startTime);
-        logger.debug({ characterName }, 'Memory cache hit');
-        return memoryResult;
+        const memoryAge = cacheAgeMs(memoryResult);
+        if (memoryAge <= DB_CACHE_MAX_AGE_MS) {
+          this.recordResponseTime(Date.now() - startTime);
+          logger.debug({ characterName }, 'Memory cache hit');
+          return memoryResult;
+        }
+        // stale 데이터는 즉시 evict 해서 다음 호출에서 누락하지 않게 한다.
+        await armoriesCache.deleteCharacterDetail(characterName);
+        logger.debug(
+          { characterName, ageSeconds: Math.round(memoryAge / 1000), maxAgeSeconds: DB_CACHE_MAX_AGE_MS / 1000 },
+          'Memory cache data too stale, evicted',
+        );
       }
 
       // 2단계: Redis Cache 조회
@@ -66,12 +86,20 @@ export class CacheManager {
         const redisResult = await redisCache.getCharacterDetail(characterName);
 
         if (redisResult) {
-          // Redis에서 조회된 데이터를 Memory Cache에도 저장
-          await this.syncToMemoryCache(characterName, redisResult);
+          const redisAge = cacheAgeMs(redisResult);
+          if (redisAge <= DB_CACHE_MAX_AGE_MS) {
+            // Redis에서 조회된 데이터를 Memory Cache에도 저장
+            await this.syncToMemoryCache(characterName, redisResult);
 
-          this.recordResponseTime(Date.now() - startTime);
-          logger.debug({ characterName }, 'Redis cache hit, synced to memory');
-          return redisResult;
+            this.recordResponseTime(Date.now() - startTime);
+            logger.debug({ characterName }, 'Redis cache hit, synced to memory');
+            return redisResult;
+          }
+          await redisCache.deleteCharacterDetail(characterName);
+          logger.debug(
+            { characterName, ageSeconds: Math.round(redisAge / 1000), maxAgeSeconds: DB_CACHE_MAX_AGE_MS / 1000 },
+            'Redis cache data too stale, evicted',
+          );
         }
       } else {
         logger.warn({ characterName }, 'Redis not connected, skipping Redis cache');
@@ -83,11 +111,7 @@ export class CacheManager {
         const databaseResult = await databaseCache.getCharacterDetail(characterName);
 
         if (databaseResult) {
-          // DB 캐시 신선도 체크: normalizedAt 이 DB_CACHE_MAX_AGE_MS 이내인 경우만 반환.
-          // Redis 미연결 시 DB 가 fallback 역할을 하더라도 stale 데이터를 서빙하지 않는다.
-          const normalizedAt = databaseResult.metadata?.normalizedAt;
-          const age = normalizedAt ? Date.now() - new Date(normalizedAt).getTime() : Infinity;
-
+          const age = cacheAgeMs(databaseResult);
           if (age <= DB_CACHE_MAX_AGE_MS) {
             // Database에서 조회된 데이터를 상위 캐시 계층에도 저장
             await this.syncToUpperCacheLayers(characterName, databaseResult);
