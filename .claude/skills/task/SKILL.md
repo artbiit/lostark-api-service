@@ -224,13 +224,19 @@ Advisor/Worker 가 직접 수행 금지.
    실행. 배포 계획을 산출하고 보고서 "deploy_plan" 섹션에 기록. haiku 모델로
    호출. 산출된 `actions` 중 `yarn build` /
    `yarn workspace @lostark/rest-api dump:openapi` / loa-platform compose
-   재기동은 orchestrator 가 **사용자에게 안내하거나 직접 실행** (auto-commit
-   정책 준용). 배포 불필요 판정이면 `skippable_reason` 기록. **deploy-advisor
-   미도입 시점**(Phase 0~5)에서는 orchestrator 가 직접 동등 절차를 안내한다 —
-   최소: `yarn workspace @lostark/rest-api dump:openapi` 실행 후 OpenAPI diff
-   첨부, REST 계약이 바뀐 경우 `../LoA-Bot/src/infra/lostark/generated.ts`
-   재생성 안내. **서비스 재기동 여부 안내**: `packages/*/src/` 변경이 있고
-   Docker 컨테이너가 운영 중이면 `loa-platform compose 재기동` 안내 필수.
+   재기동은 orchestrator 가 **사용자 승인(AskUserQuestion 한 번) 후 Bash 로
+   직접 실행** 한다 (auto-commit 정책 준용). 복붙용 명령 텍스트만 안내하는
+   것은 사용자가 명시적으로 "내가 한다" 라고 한 경우에만. 배포 불필요 판정이면
+   `skippable_reason` 기록. **deploy-advisor 미도입 시점**(Phase 0~5)에서는
+   orchestrator 가 직접 동등 절차를 안내·실행한다 — 최소:
+   `yarn workspace @lostark/rest-api dump:openapi` 실행 후 OpenAPI diff 첨부,
+   REST 계약이 바뀐 경우 `../LoA-Bot/src/infra/lostark/generated.ts` 재생성
+   안내. **로컬 컨테이너 재기동 처리**: `packages/*/src/` 변경이 있고 로컬
+   docker 에 lostark-api-service 컨테이너가 가동 중이면 (`loa-platform-lostark-*`),
+   `loa-platform` compose 재기동을 위 정책에 따라 **직접 실행** (MEMORY:
+   `feedback-restart-commands-run-directly`,
+   `feedback-local-docker-is-user-environment`, `project-local-docker-topology`).
+   "운영 서버" 어휘 사용 금지 — 사용자 환경은 로컬 docker.
 
 그 외:
 
