@@ -289,6 +289,10 @@ export class UdpServer extends EventEmitter {
       }
 
       const text = msg.toString('utf8');
+      logger.info({
+        remote: `${remoteInfo.address}:${remoteInfo.port}`,
+        rawPayload: text.slice(0, 300),
+      }, 'UDP packet received');
       let raw: unknown;
       try {
         raw = JSON.parse(text);
@@ -296,6 +300,7 @@ export class UdpServer extends EventEmitter {
         logger.warn({
           error: err instanceof Error ? err.message : String(err),
           remote: `${remoteInfo.address}:${remoteInfo.port}`,
+          rawPayload: text.slice(0, 300),
         }, 'UDP payload is not JSON, dropping');
         return;
       }
@@ -305,6 +310,7 @@ export class UdpServer extends EventEmitter {
         logger.warn({
           remote: `${remoteInfo.address}:${remoteInfo.port}`,
           zodError: parsed.error.issues,
+          rawPayload: text.slice(0, 300),
         }, 'Unknown envelope, dropping');
         return;
       }
