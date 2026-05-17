@@ -3,16 +3,15 @@
  *
  * - 실 UDP 소켓(dgram) 으로 ClientEnvelope 를 보내고 ReplyEnvelope 수신.
  * - LOSTARK_API_KEY 없으면 skip + exit 0 (CI 환경에서 안전).
- * - TEST_CHARACTER_NAME 미지정 시 캐릭터 의존 명령(!정보, !각인) 만 skip.
+ * - TEST_CHARACTER_NAME 미지정 시 캐릭터 의존 명령만 skip.
  *
- * 대표 5종:
- *   - !정보 <캐릭명>    (armories)
- *   - !각인 <캐릭명>    (armories)
- *   - !주사위           (minigame, no API)
- *   - !도움말           (registry, no API)
- *   - !보석값 멸화 10레벨 (auctions)
+ * 전수조사 대상 26개 커맨드:
+ *   [오프라인]  !도움말 !주사위 !시너지 !질문 !vs !분배금 !랜전카
+ *   [API 노캐릭] !프로키온 !이벤트 !비싼유각 !전각 !유각 !보석값
+ *   [API 캐릭]   !정보 !각인 !장비 !스킬 !보석 !돌 !수집 !착장 !아바타 !카드 !전장 !부캐
  *
  * 2026-05-16: !도비스 / !도가토 케이스 제거 (ADR-0003 — 게임 내 콘텐츠 종료)
+ * 2026-05-17: 전수조사로 확장 — 21개 추가
  *
  * 포트 충돌 회피: UDP_GATEWAY_PORT=13001 로 덮어쓰기. 운영 3001 과 격리.
  */
@@ -21,6 +20,10 @@ import assert from 'node:assert';
 import { createSocket } from 'node:dgram';
 import { randomUUID } from 'node:crypto';
 import { test, before, after } from 'node:test';
+import { config as dotenvConfig } from 'dotenv';
+
+// .env 자동 로딩 (없으면 무시)
+dotenvConfig();
 
 // === skip 분기 (LOSTARK_API_KEY 없으면 즉시 종료) ===
 
@@ -179,6 +182,258 @@ test('!각인 <캐릭명> → reply:session 수신, data 비어있지 않음', {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!각인 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+// ============================================================
+// 오프라인 커맨드 (API 불필요)
+// ============================================================
+
+test('!시너지 → reply:session, data 비어있지 않음', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!시너지');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!질문 → reply:session, sender name 포함', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!질문');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.includes('smoke-tester'));
+  } finally {
+    client.close();
+  }
+});
+
+test('!vs A B → reply:session, A 또는 B 선택', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!vs A B');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(reply.data === '당연히 A!' || reply.data === '당연히 B!', `data='${reply.data}'`);
+  } finally {
+    client.close();
+  }
+});
+
+test('!분배금 100000 → reply:session, data 입력된 금액 포함', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!분배금 100000');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.startsWith('입력된 금액'), `data='${reply.data}'`);
+  } finally {
+    client.close();
+  }
+});
+
+test('!랜전카 → reply:session, sender name 포함', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!랜전카');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.includes('smoke-tester'), `data='${reply.data}'`);
+  } finally {
+    client.close();
+  }
+});
+
+// ============================================================
+// API 커맨드 — 캐릭터 불필요 (게임 컨텐츠 / 거래소)
+// ============================================================
+
+test('!프로키온 → reply:session 수신, data 비어있지 않음', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!프로키온');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!이벤트 → reply:session 수신, data 비어있지 않음', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!이벤트');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!비싼유각 → reply:session 수신, data 비어있지 않음', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!비싼유각');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!전각 원한 → reply:session 수신, data 비어있지 않음', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!전각 원한');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!유각 원한 → reply:session 수신, data 비어있지 않음', async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope('!유각 원한');
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+// ============================================================
+// API 커맨드 — 캐릭터 의존 (TEST_CHARACTER_NAME 필요)
+// ============================================================
+
+test('!장비 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!장비 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!스킬 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!스킬 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!보석 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!보석 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!돌 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!돌 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!수집 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!수집 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!착장 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!착장 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!아바타 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!아바타 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!카드 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!카드 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!전장 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!전장 ${charName}`);
+    const reply = await sendAndReceive(client, envelope);
+    assert.strictEqual(reply.event, `reply:${envelope.session}`);
+    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+  } finally {
+    client.close();
+  }
+});
+
+test('!부캐 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+  const client = await createClient();
+  try {
+    const envelope = makeEnvelope(`!부캐 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
     assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
