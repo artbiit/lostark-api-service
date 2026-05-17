@@ -196,7 +196,7 @@ export class UdpServer extends EventEmitter {
     const env = parseEnv();
 
     this.config = {
-      port: env.UDP_GATEWAY_PORT || 3001,
+      port: env.UDP_GATEWAY_PORT || 5022,
       host: env.UDP_GATEWAY_HOST || '0.0.0.0',
       maxMessageSize: env.UDP_GATEWAY_MAX_MESSAGE_SIZE || 8192,
       workerPoolSize: env.UDP_GATEWAY_WORKER_POOL_SIZE || 4,

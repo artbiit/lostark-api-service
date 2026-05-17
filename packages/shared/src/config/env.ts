@@ -44,7 +44,7 @@ export const envSchema = z.object({
   RATE_LIMIT_WINDOW: z.coerce.number().min(1000).default(60000),
 
   // === UDP Gateway 설정 ===
-  UDP_GATEWAY_PORT: z.coerce.number().min(1).max(65535).default(3001),
+  UDP_GATEWAY_PORT: z.coerce.number().min(1).max(65535).default(5022),
   UDP_GATEWAY_HOST: z.string().default('0.0.0.0'),
   UDP_GATEWAY_MAX_MESSAGE_SIZE: z.coerce.number().min(1024).default(8192),
   UDP_GATEWAY_WORKER_POOL_SIZE: z.coerce.number().min(1).default(4),
@@ -156,7 +156,7 @@ export const defaultConfig: EnvConfig = {
   CORS_ORIGIN: '*',
   RATE_LIMIT_MAX: 100,
   RATE_LIMIT_WINDOW: 60000,
-  UDP_GATEWAY_PORT: 3001,
+  UDP_GATEWAY_PORT: 5022,
   UDP_GATEWAY_HOST: '0.0.0.0',
   UDP_GATEWAY_MAX_MESSAGE_SIZE: 8192,
   UDP_GATEWAY_WORKER_POOL_SIZE: 4,

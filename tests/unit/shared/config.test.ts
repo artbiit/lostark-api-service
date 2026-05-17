@@ -37,7 +37,7 @@ test('Shared Config Module', async (t) => {
     const env = setupTestEnvironment();
 
     assert.strictEqual(env.REST_API_PORT, 3000);
-    assert.strictEqual(env.UDP_GATEWAY_PORT, 3001);
+    assert.strictEqual(env.UDP_GATEWAY_PORT, 5022);
   });
 
   await t.test('environment should have correct rate limits', () => {

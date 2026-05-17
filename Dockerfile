@@ -19,7 +19,7 @@ RUN corepack enable \
 RUN yarn build
 
 # 포트 노출
-EXPOSE 3000 3001
+EXPOSE 3000 5022
 
 # 헬스 체크
 # alpine 기본 BusyBox wget 사용 (curl 미설치). UDP 워크스페이스로 기동된 컨테이너는

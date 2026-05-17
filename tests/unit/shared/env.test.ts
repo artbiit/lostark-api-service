@@ -36,7 +36,7 @@ test('Environment Variables', async (t) => {
     assert.strictEqual(env.NODE_ENV, 'development');
     assert.strictEqual(env.LOSTARK_API_VERSION, 'V9.0.0');
     assert.strictEqual(env.REST_API_PORT, 3000);
-    assert.strictEqual(env.UDP_GATEWAY_PORT, 3001);
+    assert.strictEqual(env.UDP_GATEWAY_PORT, 5022);
   });
 
   await t.test('parseEnv() should validate environment variable types', () => {
@@ -99,7 +99,7 @@ test('Environment Variables', async (t) => {
     assert.strictEqual(defaultConfig.NODE_ENV, 'development');
     assert.strictEqual(defaultConfig.LOSTARK_API_VERSION, 'V9.0.0');
     assert.strictEqual(defaultConfig.REST_API_PORT, 3000);
-    assert.strictEqual(defaultConfig.UDP_GATEWAY_PORT, 3001);
+    assert.strictEqual(defaultConfig.UDP_GATEWAY_PORT, 5022);
     assert.strictEqual(defaultConfig.FETCH_RATE_LIMIT_PER_MINUTE, 100);
     assert.strictEqual(defaultConfig.FETCH_RETRY_ATTEMPTS, 3);
     assert.strictEqual(defaultConfig.LOG_LEVEL, 'info');

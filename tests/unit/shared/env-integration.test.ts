@@ -108,7 +108,7 @@ test('Environment Variables Integration', async (t) => {
       'LOSTARK_API_VERSION should default to V9.0.0',
     );
     assert.strictEqual(env.REST_API_PORT, 3000, 'REST_API_PORT should default to 3000');
-    assert.strictEqual(env.UDP_GATEWAY_PORT, 3001, 'UDP_GATEWAY_PORT should default to 3001');
+    assert.strictEqual(env.UDP_GATEWAY_PORT, 5022, 'UDP_GATEWAY_PORT should default to 5022');
     assert.strictEqual(
       env.FETCH_RATE_LIMIT_PER_MINUTE,
       100,

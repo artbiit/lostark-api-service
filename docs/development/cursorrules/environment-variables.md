@@ -103,7 +103,7 @@
 ```markdown
 ## 환경변수 설정
 
-LOSTARK_API_KEY=your_api_key_here REST_API_PORT=3000 UDP_GATEWAY_PORT=3001
+LOSTARK_API_KEY=your_api_key_here REST_API_PORT=3000 UDP_GATEWAY_PORT=5022
 ```
 
 ## 🔗 관련 문서

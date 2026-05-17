@@ -1,6 +1,6 @@
 # 운영/로컬 공용 compose.
 # - lostark-rest: HTTP REST API (TCP 3000)
-# - lostark-udp:  UDP gateway / 카카오톡 명령 봇 (UDP 3001)
+# - lostark-udp:  UDP gateway / 카카오톡 명령 봇 (UDP 5022)
 # 두 서비스는 동일 image 를 공유하고 command 로 워크스페이스만 분기한다.
 # 이미지는 lostark-rest 가 build, lostark-udp 는 image 재사용.
 #
@@ -43,11 +43,11 @@ services:
     image: lostark-api-service:local
     command: ['yarn', 'workspace', '@lostark/udp-gateway', 'start']
     ports:
-      - '3001:3001/udp' # UDP Gateway (메신저봇R 클라이언트 수신)
+      - '5022:5022/udp' # UDP Gateway (메신저봇R 클라이언트 수신)
     environment:
       <<: *lostark-env
       UDP_GATEWAY_HOST: 0.0.0.0
-      UDP_GATEWAY_PORT: 3001
+      UDP_GATEWAY_PORT: 5022
     depends_on:
       - lostark-rest
     networks:
