@@ -1,5 +1,5 @@
 /**
- * Phase 3 골든 출력 생성 스크립트 (graphify hook 동작 테스트용 trivial 수정).
+ * Phase 3 골든 출력 생성 스크립트.
  *
  * tests/fixtures/armories/character-detail-ida.json 을 읽어
  * 11개 명령 formatter 의 실제 출력을 콘솔에 덤프한다.
