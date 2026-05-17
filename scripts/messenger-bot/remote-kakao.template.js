@@ -172,11 +172,31 @@ let maximumRequest = 3;
 let messageId = 0;
 const prefixComment = "명령어 사용시 !로 시작해주셔야 합니다.\n예시) !도움말";
 function onMessage(data) {
-  if (data.author.name !== "LJS" && !data.room.startsWith("◆+!")) {
+  // Event.MESSAGE: data.author (구형) 또는 data.sender (신형 msgbot)
+  // notification 경로: data.sender = { name, hash }
+  var _senderObj = data.sender || data.author || {};
+  var _senderName = _senderObj.name ? String(_senderObj.name) : "unknown";
+  var _senderHash = _senderObj.hash ? String(_senderObj.hash) : _senderName;
+
+  // Event.MESSAGE: data.room = string
+  // notification 경로: data.room = { name, id, isGroupChat }
+  var _roomName = typeof data.room === "string" ? data.room : (data.room && data.room.name) || "";
+  var _roomId = typeof data.room === "string" ? data.room : (data.room && data.room.id) || _roomName;
+  var _isGroupChat = typeof data.room === "object" && data.room !== null
+    ? data.room.isGroupChat
+    : data.isGroupChat;
+
+  // Event.MESSAGE: data.packageName / notification 경로: data.app.packageName
+  var _packageName = data.packageName || (data.app && data.app.packageName) || "";
+
+  // Event.MESSAGE: data.isMention / notification 경로: data.containsMention
+  var _containsMention = data.isMention !== undefined ? data.isMention : data.containsMention;
+
+  if (_senderName !== "LJS" && !_roomName.startsWith("◆+!")) {
     return;
   }
   if (data.content === "접두사") {
-    bot.send(data.room, prefixComment, data.packageName);
+    bot.send(_roomId, prefixComment, _packageName);
     return;
   }
   if (!data.content.startsWith("!")) {
@@ -192,26 +212,20 @@ function onMessage(data) {
   let msg = {};
 
   msg.room = {
-    id: data.room,
-    name: data.room,
-    isGroupChat: data.isGroupChat,
+    id: _roomId,
+    name: _roomName,
+    isGroupChat: _isGroupChat,
   };
 
-  // Event.MESSAGE 경로의 author 객체에는 hash 가 없다 (notification listener 만 노출).
-  // sender.hash 가 schema 필수라 name 으로 fallback.
-  var _authorName =
-    data.author && data.author.name ? String(data.author.name) : "unknown";
-  var _authorHash =
-    data.author && data.author.hash ? String(data.author.hash) : _authorName;
-  msg.sender = { name: _authorName, hash: _authorHash };
+  msg.sender = { name: _senderName, hash: _senderHash };
   msg.content = data.content;
   msg.id = messageId;
   msg.time = new Date().getTime();
 
-  msg.containsMention = data.isMention;
+  msg.containsMention = _containsMention;
 
   msg.app = {
-    packageName: data.packageName,
+    packageName: _packageName,
     userId: config.userIds[0],
   };
 
@@ -221,8 +235,8 @@ function onMessage(data) {
   var session = java.util.UUID.randomUUID().toString();
   // reply:${session} 응답을 받았을 때 어디로 답장할지 매핑.
   pendingReplies[session] = {
-    roomId: data.room,
-    packageName: data.packageName,
+    roomId: _roomId,
+    packageName: _packageName,
   };
   setTimeout(function () {
     delete pendingReplies[session];
