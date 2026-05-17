@@ -304,6 +304,7 @@ export class UdpServer extends EventEmitter {
       if (!parsed.success) {
         logger.warn({
           remote: `${remoteInfo.address}:${remoteInfo.port}`,
+          zodError: parsed.error.issues,
         }, 'Unknown envelope, dropping');
         return;
       }
