@@ -45,63 +45,54 @@ semantic 갱신은 여전히 수동으로 진행한다.
 
 ## 도입된 메커니즘
 
-### graphify git post-commit hook
-
-**설치 일자**: 2026-05-17
-
-```powershell
-graphify hook install   # 설치
-graphify hook status    # 확인
-graphify hook uninstall # 제거
-```
+### 세션 시작 시 early `/graphify --update` (§2.2)
 
 **동작 방식**:
 
-1. 모든 `git commit` 직후 자동 실행
-2. `git diff HEAD~1 HEAD` 로 변경 파일 감지
-3. code-only → AST 재추출 + graph.json 재생성 (LLM 불필요)
-4. `nohup ... & disown`: git commit 이 즉시 반환, graph 갱신은 완전 background
-5. 로그: `~/.cache/graphify-rebuild.log`
+1. 세션 시작 시 직전 세션의 deviation 이월 Open Item 확인
+2. 이월된 scope 와 명령 식별
+3. **즉시 `/graphify <scope> --update` 실행** (report.md 초기화와 동시에)
+4. code-only 변경이면 AST만 실행 (LLM 불필요, ~1~2분)
+5. graphify-lookup-advisor 호출 전에 완료 확인
 
-**이 프로젝트의 graphify 출력 위치와 호환성**:
+**왜 이 방식인가 — graphify hook 불가 이유**:
 
-이 프로젝트는 graphify 산출물을 `docs/graph/<scope>/` 에 직접 쓴다. hook 은
-project root 에서 `_rebuild_code(Path('.'), changed_paths=changed)` 를 호출하며,
-`docs/graph/<scope>/` 내의 `.graphify_root` 마커 파일을 통해 각 스코프를
-자동 탐색한다. 스코프 목록:
+graphify 내장 hook(`graphify hook install`)을 2026-05-17에 시도했으나 이 프로젝트
+구조와 호환되지 않아 즉시 제거했다. 불호환 이유:
 
-| 스코프 | 경로 |
-|--------|------|
-| packages | `docs/graph/packages/` |
-| docs | `docs/graph/docs/` |
-| legacy | `docs/graph/legacy/` |
-| tests | `docs/graph/tests/` |
+- graphify hook 은 소스 디렉토리 = 그래프 출력 디렉토리를 가정한다
+  (`<scope>/graphify-out/graph.json`)
+- 이 프로젝트는 소스(`packages/`, `tests/`)와 출력(`docs/graph/<scope>/`)이
+  분리된 비표준 구조
+- `_rebuild_code(Path('docs/graph/packages/'), ...)` 호출 시 소스 파일이 없어
+  0 nodes/edges 로 기존 그래프를 덮어쓰는 문제 발생
+- `_rebuild_code(Path('.'), ...)` 호출 시 root-level `./graphify-out/`(gitignored)
+  를 생성하고 docs/graph 스코프를 갱신하지 않음
 
 ## 프로토콜 연동
 
-### agent-team-protocol §9.1 예외 규칙
+### SKILL.md §2.2 (세션 시작 시 이월 처리)
 
-code-only 변경 + hook installed → deviation AskUserQuestion 생략. 보고서에
-`hook: auto-pending` 기록.
+직전 세션에 deviation 이월 Open Item 이 있으면 세션 시작과 동시에
+`/graphify <scope> --update` 실행. code-only 이면 ~1~2분 완료.
 
-### SKILL.md §2.2 (세션 시작 시 확인)
+### agent-team-protocol §9.1 분기
 
-이전 세션에 deviation 이월 Open Item 이 있으면:
-- hook installed → `graph-refresh-checker` 재호출로 현재 staleness 재판정
-  (hook 이 이미 처리했으면 `fresh` 반환)
-- hook not installed → 기존 §9.1 AskUserQuestion 절차
+code-only 변경 → deviation(B) 허용 + 보고서에 다음 세션 명령 기록.
+docs/md 포함 → (A) 즉시 재생성 권장.
 
 ### SKILL.md §9 종료조건 #4
 
-partial-stale + hook installed + code-only → 커밋 후 hook 에 위임. 추가 조작 불필요.
+partial-stale + code-only → deviation(B) 로 이월 허용. Open Items 에 명령 기록.
 
 ## 적용 범위 한계
 
-- **docs/md/image 가 포함된 세션**: hook 이 code-only 만 처리하므로 semantic 재추출
-  필요 분은 deviation 절차 유지.
-- **hook 실패 시**: `~/.cache/graphify-rebuild.log` 확인 후 수동 재생성.
-- **타 프로젝트 적용**: 변경 파일 유형 분포 확인 필수. docs-heavy 프로젝트는 효과
-  제한적.
+- **docs/md/image 가 포함된 세션**: semantic 재추출(LLM) 필요. deviation 이월 시
+  다음 세션 부담이 남으므로 즉시 재생성 권장.
+- **code-only 대형 변경 (신규 파일 다수)**: --update 가 아닌 full rebuild 필요 여부
+  graph-refresh-checker 판정에 따름.
+- **타 프로젝트 적용**: graphify hook 은 소스=출력 단일 구조에서만 동작. 이 프로젝트
+  처럼 소스/출력 분리 구조에서는 hook 불가.
 
 ## 관련 문서
 

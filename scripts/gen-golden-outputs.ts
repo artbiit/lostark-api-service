@@ -57,4 +57,3 @@ for (const { cmd, fn } of commands) {
     console.error(`ERROR:`, e);
   }
 }
-# hook test 105411

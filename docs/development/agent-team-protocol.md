@@ -359,19 +359,18 @@ user_signals:
 자동 이월은 금지. AskUserQuestion 으로 (A)/(B) 결정을 받고 그 답을 보고서에
 인용한다.
 
-**graphify hook 설치 시 예외 규칙**:
+**변경 유형별 처리 분기**:
 
-변경이 **code-only** (TypeScript/JavaScript 등, docs/md/image 미포함) 이고
-`graphify hook status` 가 `installed` 이면 — deviation AskUserQuestion 을 **생략**
-한다. 커밋 직후 hook 이 background AST 재생성을 자동 실행하므로 사용자 승인 없이도
-graph 가 갱신된다. 보고서 "graph_refresh" 에 `partial-stale → hook: auto-pending`
-기록.
+- **code-only 변경** (TypeScript/JavaScript 등, docs/md 미포함): deviation(B) 로
+  이월 허용. 보고서 `Open Items` 에 다음 세션 실행 명령을 정확히 기록:
+  ```
+  /graphify <scope> --update   # AST-only, LLM 불필요, ~1~2분
+  ```
+  다음 세션 §2.2(SKILL.md) 에서 세션 시작과 동시에 자동 실행.
+- **docs/md/image 포함 변경**: (A) 즉시 재생성 권장. semantic 재추출(LLM) 이
+  필요하므로 이월하면 다음 세션에도 부담이 남는다.
 
-- docs/md/image 가 포함된 변경: hook 이 code-only 에만 작동하므로 이 예외 불가.
-  semantic 재추출(LLM) 이 필요한 변경은 여전히 (A)/(B) 절차를 따른다.
-- hook 실패 시: `~/.cache/graphify-rebuild.log` 확인 후 (A) 로 fallback.
-
-이 예외를 지원하는 프로젝트별 근거는 `docs/development/graphify-background-execution.md`
+이 처리 전략의 프로젝트별 근거는 `docs/development/graphify-background-execution.md`
 에 기록한다.
 
 ## 10. MCP / 외부 도구 통합 규칙
