@@ -19,6 +19,26 @@ import {
   NormalizedCharacterDetail,
 } from '../normalizers/armories-normalizer.js';
 
+// === Section 상수 / 타입 ===
+
+/**
+ * 로스트아크 armoriesClient 가 지원하는 전체 section 목록 (9개).
+ * getCharacterDetailPartial 의 인라인 union 과 mergeIntoCache 가 공유한다.
+ */
+export const FULL_SECTIONS = [
+  'profile',
+  'equipment',
+  'avatars',
+  'combat-skills',
+  'engravings',
+  'cards',
+  'gems',
+  'colosseums',
+  'collectibles',
+] as const;
+
+export type ArmorySection = (typeof FULL_SECTIONS)[number];
+
 // === 큐 항목 타입 ===
 
 /**
@@ -226,7 +246,10 @@ export class ArmoriesService {
         existingDetail || undefined,
       );
 
-      // 4. 캐시에 저장
+      // 4. full fetch → fetchedSections = 모든 9개 section
+      normalizationResult.characterDetail.metadata.fetchedSections = [...FULL_SECTIONS];
+
+      // 5. 캐시에 저장
       await cacheManager.setCharacterDetail(characterName, normalizationResult.characterDetail);
 
       const processingTime = Date.now() - startTime;
@@ -294,124 +317,78 @@ export class ArmoriesService {
   }
 
   /**
-   * 캐릭터 상세 정보 부분 조회
+   * 캐릭터 상세 정보 부분 조회.
+   *
+   * fetchedSections 메타 기반 partial cache merge:
+   * - cache hit 시 missSections(미조회) 를 추출해 추가 fetch + merge 후 반환.
+   * - cache miss 시 `profile` 포함 fetch 후 normalizeCharacterDetail → 저장.
+   * - old entry (fetchedSections 부재) 는 FULL_SECTIONS fallback → 추가 fetch 없음.
    */
   async getCharacterDetailPartial(
     characterName: string,
-    sections: Array<
-      | 'profile'
-      | 'equipment'
-      | 'avatars'
-      | 'combat-skills'
-      | 'engravings'
-      | 'cards'
-      | 'gems'
-      | 'colosseums'
-      | 'collectibles'
-    >,
+    sections: ArmorySection[],
   ): Promise<Partial<NormalizedCharacterDetail> | null> {
-    // 먼저 캐시에서 확인
+    // 1. invalid key 방어
+    const validSections = sections.filter((s): s is ArmorySection =>
+      (FULL_SECTIONS as readonly string[]).includes(s),
+    );
+
+    // 2. 캐시 확인
     const cachedDetail = await cacheManager.getCharacterDetail(characterName);
 
     if (cachedDetail) {
-      // 캐시된 데이터에서 요청된 섹션 + 핵심 메타데이터 반환.
-      // formatter 가 top-level 식별자(serverName/itemLevel 등) 에 의존하므로 항상 포함.
-      const result: Partial<NormalizedCharacterDetail> = pickCoreFields(cachedDetail);
-
-      for (const section of sections) {
-        switch (section) {
-          case 'profile':
-            result.profile = cachedDetail.profile;
-            break;
-          case 'equipment':
-            result.equipment = cachedDetail.equipment;
-            // §7.1: !돌 명령이 sections=['equipment'] 만 요청하므로 abilityStone 도 동봉.
-            // 기존 캐시 entry 가 abilityStone 부재 시 undefined → formatter 가드 책임 (Phase 2).
-            result.abilityStone = cachedDetail.abilityStone ?? null;
-            break;
-          case 'avatars':
-            result.avatars = cachedDetail.avatars;
-            break;
-          case 'combat-skills':
-            result.combatSkills = cachedDetail.combatSkills;
-            break;
-          case 'engravings':
-            result.engravings = cachedDetail.engravings;
-            break;
-          case 'cards':
-            result.cards = cachedDetail.cards;
-            break;
-          case 'gems':
-            result.gems = cachedDetail.gems;
-            break;
-          case 'colosseums':
-            result.colosseums = cachedDetail.colosseums;
-            break;
-          case 'collectibles':
-            result.collectibles = cachedDetail.collectibles;
-            break;
-        }
-      }
-
-      return result;
-    }
-
-    // 캐시에 없으면 API에서 부분 조회
-    const partialData = await armoriesClient.getCharacterPartial(characterName, sections);
-
-    // 부분 데이터를 정규화 (기본 정보는 필수)
-    if (partialData.ArmoryProfile) {
-      const normalizedDetail = await armoriesNormalizer.normalizeCharacterDetail(
-        characterName,
-        partialData as ArmoryCharacterV9,
+      // 2a. fetchedSections 집합 (old entry → FULL_SECTIONS fallback)
+      const fetchedSet = new Set<string>(
+        cachedDetail.metadata.fetchedSections ?? FULL_SECTIONS,
       );
 
-      // 캐시에 저장
-      await cacheManager.setCharacterDetail(characterName, normalizedDetail.characterDetail);
+      // 2b. 미조회 section 목록
+      const missSections = validSections.filter((s) => !fetchedSet.has(s));
 
-      // 요청된 섹션 + 핵심 메타데이터 반환
-      const result: Partial<NormalizedCharacterDetail> = pickCoreFields(
-        normalizedDetail.characterDetail,
-      );
-
-      for (const section of sections) {
-        switch (section) {
-          case 'profile':
-            result.profile = normalizedDetail.characterDetail.profile;
-            break;
-          case 'equipment':
-            result.equipment = normalizedDetail.characterDetail.equipment;
-            // §7.1: equipment 와 함께 abilityStone 도 동봉.
-            result.abilityStone = normalizedDetail.characterDetail.abilityStone ?? null;
-            break;
-          case 'avatars':
-            result.avatars = normalizedDetail.characterDetail.avatars;
-            break;
-          case 'combat-skills':
-            result.combatSkills = normalizedDetail.characterDetail.combatSkills;
-            break;
-          case 'engravings':
-            result.engravings = normalizedDetail.characterDetail.engravings;
-            break;
-          case 'cards':
-            result.cards = normalizedDetail.characterDetail.cards;
-            break;
-          case 'gems':
-            result.gems = normalizedDetail.characterDetail.gems;
-            break;
-          case 'colosseums':
-            result.colosseums = normalizedDetail.characterDetail.colosseums;
-            break;
-          case 'collectibles':
-            result.collectibles = normalizedDetail.characterDetail.collectibles;
-            break;
-        }
+      // 2c. 모두 조회됨 → 그대로 pick
+      if (missSections.length === 0) {
+        return pickSections(cachedDetail, validSections);
       }
 
-      return result;
+      // 2d. §profile-miss-guard: profile 이 miss 면 full fetch 경로로 (이론상 미발생)
+      if (missSections.includes('profile')) {
+        await cacheManager.deleteCharacterDetail(characterName);
+        // fall through to cache-miss path below
+      } else {
+        // 2e. missSections 만 추가 fetch → merge → 재저장
+        const partialRaw = await armoriesClient.getCharacterPartial(
+          characterName,
+          missSections,
+        );
+        const mergedDetail = mergeIntoCache(cachedDetail, partialRaw, missSections);
+        await cacheManager.setCharacterDetail(characterName, mergedDetail);
+        return pickSections(mergedDetail, validSections);
+      }
     }
 
-    return null;
+    // 3. cache miss: profile 강제 포함 후 fetch
+    const fetchSections: ArmorySection[] = validSections.includes('profile')
+      ? validSections
+      : (['profile', ...validSections] as ArmorySection[]);
+
+    const partialData = await armoriesClient.getCharacterPartial(characterName, fetchSections);
+
+    if (!partialData.ArmoryProfile) {
+      return null;
+    }
+
+    const normalizedDetail = await armoriesNormalizer.normalizeCharacterDetail(
+      characterName,
+      partialData as ArmoryCharacterV9,
+    );
+
+    // fetchedSections 기록 (dedup: profile 이 fetchSections 에 이미 포함)
+    const fetchedSectionsSet = new Set<string>(fetchSections);
+    normalizedDetail.characterDetail.metadata.fetchedSections = Array.from(fetchedSectionsSet);
+
+    await cacheManager.setCharacterDetail(characterName, normalizedDetail.characterDetail);
+
+    return pickSections(normalizedDetail.characterDetail, validSections);
   }
 
   /**
@@ -737,6 +714,123 @@ function pickCoreFields(
     arkPassive: detail.arkPassive,
     metadata: detail.metadata,
   };
+}
+
+/**
+ * 요청된 sections 에 해당하는 필드를 cachedDetail 에서 pick 해 반환.
+ * core fields (식별자/메타) 는 항상 포함.
+ */
+function pickSections(
+  detail: NormalizedCharacterDetail,
+  sections: ArmorySection[],
+): Partial<NormalizedCharacterDetail> {
+  const result: Partial<NormalizedCharacterDetail> = pickCoreFields(detail);
+
+  for (const section of sections) {
+    switch (section) {
+      case 'profile':
+        result.profile = detail.profile;
+        break;
+      case 'equipment':
+        result.equipment = detail.equipment;
+        // §7.1: equipment 와 함께 abilityStone 도 동봉
+        result.abilityStone = detail.abilityStone ?? null;
+        break;
+      case 'avatars':
+        result.avatars = detail.avatars;
+        break;
+      case 'combat-skills':
+        result.combatSkills = detail.combatSkills;
+        break;
+      case 'engravings':
+        result.engravings = detail.engravings;
+        break;
+      case 'cards':
+        result.cards = detail.cards;
+        break;
+      case 'gems':
+        result.gems = detail.gems;
+        break;
+      case 'colosseums':
+        result.colosseums = detail.colosseums;
+        break;
+      case 'collectibles':
+        result.collectibles = detail.collectibles;
+        break;
+    }
+  }
+
+  return result;
+}
+
+/**
+ * 기존 cache entry 에 새 partial fetch 결과를 merge.
+ * - missSections 에 해당하는 field 는 새 값으로 덮음.
+ * - 나머지 field 는 existing 값 보존.
+ * - fetchedSections 는 union.
+ * - metadata.normalizedAt 는 현재 시각으로 갱신.
+ */
+function mergeIntoCache(
+  existing: NormalizedCharacterDetail,
+  partialRaw: Partial<ArmoryCharacterV9>,
+  missSections: ArmorySection[],
+): NormalizedCharacterDetail {
+  const merged: NormalizedCharacterDetail = { ...existing };
+  const newFetched = new Set<string>(existing.metadata.fetchedSections ?? FULL_SECTIONS);
+
+  for (const section of missSections) {
+    switch (section) {
+      case 'gems':
+        merged.gems = armoriesNormalizer.normalizeGems(partialRaw.ArmoryGem ?? {});
+        break;
+      case 'avatars':
+        merged.avatars = armoriesNormalizer.normalizeAvatars(partialRaw.ArmoryAvatar ?? {});
+        break;
+      case 'collectibles':
+        merged.collectibles = armoriesNormalizer.normalizeCollectibles(
+          partialRaw.Collectibles ?? {},
+        );
+        break;
+      case 'combat-skills':
+        merged.combatSkills = armoriesNormalizer.normalizeCombatSkills(
+          partialRaw.ArmorySkill ?? {},
+        );
+        break;
+      case 'engravings':
+        merged.engravings = armoriesNormalizer.normalizeEngravings(
+          partialRaw.ArmoryEngraving ?? {},
+        );
+        break;
+      case 'cards':
+        merged.cards = armoriesNormalizer.normalizeCards(partialRaw.ArmoryCard ?? {});
+        break;
+      case 'colosseums':
+        merged.colosseums = armoriesNormalizer.normalizeColosseums(
+          partialRaw.ArmoryColosseum ?? {},
+        );
+        break;
+      case 'equipment': {
+        // §7.1: equipment fetch 는 abilityStone 도 동반
+        const rawEq = Array.isArray(partialRaw.ArmoryEquipment) ? partialRaw.ArmoryEquipment : [];
+        merged.equipment = armoriesNormalizer.normalizeEquipment(rawEq);
+        merged.abilityStone = armoriesNormalizer.normalizeAbilityStone(rawEq);
+        break;
+      }
+      case 'profile':
+        // profile 이 missSections 에 있는 것은 이론상 미발생 (§profile-miss-guard 에서 차단).
+        // 방어: 아무 처리 않음. profile miss 는 full fetch 경로로 보낸다.
+        break;
+    }
+    newFetched.add(section);
+  }
+
+  merged.metadata = {
+    ...existing.metadata,
+    normalizedAt: new Date(),
+    fetchedSections: Array.from(newFetched),
+  };
+
+  return merged;
 }
 
 // === 싱글톤 인스턴스 ===

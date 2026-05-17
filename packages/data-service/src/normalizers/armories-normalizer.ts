@@ -209,6 +209,13 @@ export interface NormalizedCharacterDetail {
     normalizedAt: Date;
     apiVersion: string;
     dataHash: string;
+    /**
+     * 이 cache entry 를 생성할 때 실제 API 를 호출한 section 목록.
+     * partial fetch: 요청한 sections 만 열거.
+     * full fetch: FULL_SECTIONS (9개) 전부.
+     * 부재(old entry): 모든 section 이 fetch 된 것으로 backward-compat 처리.
+     */
+    fetchedSections: string[];
   };
 }
 
@@ -324,6 +331,9 @@ export class ArmoriesNormalizer {
           normalizedAt: new Date(),
           apiVersion: 'V9.0.0',
           dataHash: this.calculateDataHash(armoryData),
+          // fetchedSections 는 service 레이어(getCharacterDetailPartial / processCharacterDetail)가 덮어씀.
+          // normalizer 는 전체 데이터를 받아 정규화하므로 여기서는 [] 로 초기화.
+          fetchedSections: [],
         },
       };
 
@@ -384,7 +394,7 @@ export class ArmoriesNormalizer {
   /**
    * 장비 정보 정규화
    */
-  private normalizeEquipment(
+  normalizeEquipment(
     equipment: any[] | undefined,
   ): Array<{ type: string; name: string; icon: string; grade: string; tooltip: string }> {
     return (equipment ?? []).map((item) => ({
@@ -529,7 +539,7 @@ export class ArmoriesNormalizer {
    *    각 entry 의 `{Name, Description, Level, Grade}` 를 매핑.
    * 2. ArkPassive 비활성 — 기존 `Engravings[]` 사용 (level/grade 없음).
    */
-  private normalizeEngravings(
+  normalizeEngravings(
     engravingData: any,
   ): Array<{
     slot: number;
@@ -568,7 +578,7 @@ export class ArmoriesNormalizer {
    * engravingEffects 는 본 메서드 시점에서 [] 로 두고, normalizeCharacterDetail 이
    * normalizeEngravings 결과로 채워 넣는다.
    */
-  private normalizeArkPassive(arkPassiveData: any): NormalizedArkPassive | null {
+  normalizeArkPassive(arkPassiveData: any): NormalizedArkPassive | null {
     if (!arkPassiveData) return null;
 
     const points = { evolution: 0, realization: 0, leap: 0 };
@@ -601,7 +611,7 @@ export class ArmoriesNormalizer {
   /**
    * 카드 정보 정규화 (세트 효과 Effects 포함)
    */
-  private normalizeCards(cardData: any): {
+  normalizeCards(cardData: any): {
     cards: Array<{
       slot: number;
       name: string;
@@ -642,7 +652,7 @@ export class ArmoriesNormalizer {
   /**
    * 보석 정보 정규화
    */
-  private normalizeGems(gemData: any): Array<{
+  normalizeGems(gemData: any): Array<{
     slot: number;
     name: string;
     icon: string;
@@ -665,7 +675,7 @@ export class ArmoriesNormalizer {
   /**
    * 전투 스킬 정보 정규화
    */
-  private normalizeCombatSkills(skillData: any): Array<{
+  normalizeCombatSkills(skillData: any): Array<{
     name: string;
     icon: string;
     level: number;
@@ -717,7 +727,7 @@ export class ArmoriesNormalizer {
   /**
    * 아바타 정보 정규화
    */
-  private normalizeAvatars(avatarData: any): Array<{
+  normalizeAvatars(avatarData: any): Array<{
     type: string;
     name: string;
     icon: string;
@@ -745,7 +755,7 @@ export class ArmoriesNormalizer {
    * - 비어있는 모드는 키 자체 생략 (optional)
    * - legacy 의 deathmatch 키는 폐기 (API 응답에 없음)
    */
-  private normalizeColosseums(colosseumData: any): Array<{
+  normalizeColosseums(colosseumData: any): Array<{
     seasonName: string;
     competitive?: unknown;
     teamDeathmatch?: unknown;
@@ -785,7 +795,7 @@ export class ArmoriesNormalizer {
   /**
    * 수집품 정보 정규화
    */
-  private normalizeCollectibles(collectibleData: any): Array<{
+  normalizeCollectibles(collectibleData: any): Array<{
     type: string;
     icon: string;
     point: number;
