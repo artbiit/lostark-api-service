@@ -73,6 +73,28 @@ mkdir -p .claude/work-session/<sid>/{research,implementation,artifacts}
   checked_at: <iso>
 ```
 
+### 2.2 Graphify 자동 갱신 상태 확인 (세션 시작 시)
+
+**디렉토리 생성 직후, report.md 초기화 전에** 이전 세션 deviation 이월 여부를
+확인한다.
+
+가장 최근 `.claude/work-session/<이전-sid>/report.md` 를 탐색해
+`graph_refresh.decision: deviation` 항목이 있으면:
+
+1. `graphify hook status` 로 hook 설치 여부 확인
+2. **hook installed** → 이전 커밋 이후 hook 이 background 재생성을 실행했을 가능성
+   있음. `graph-refresh-checker` 를 즉시 호출해 현재 staleness 재판정.
+   - `fresh` → Open Item 닫기, 이 단계 완료
+   - 여전히 stale → §9.1 절차 진행 (code-only 이면 커밋 후 hook 위임 선택 가능)
+3. **hook not installed** → 기존 §9.1 AskUserQuestion 절차 진행
+
+deviation 이월 없음 → 이 단계 스킵.
+
+> **이 프로젝트 한정**: graphify hook 이 설치(2026-05-17)되어 있고 변경이
+> TypeScript code-only 이면 커밋 직후 hook 이 LLM 없이 background AST 재생성을
+> 자동 실행한다. 이 경우 deviation 이월이 발생하더라도 graph 는 이미 갱신 완료일
+> 가능성이 높다. 상세: `docs/development/graphify-background-execution.md`
+
 ### 3. report.md 초기화
 
 해당 디렉토리에 `report.md` 를 프로토콜 §8 스키마 v1 로 생성. 최초엔 헤더 +
@@ -185,8 +207,13 @@ Advisor/Worker 가 직접 수행 금지.
 4. **`graph-refresh-checker` 호출 + 판정 기반 처리** — 코드 변경이 1줄이라도
    있으면 예외 없이 실행. 판정별 필수 후속:
    - `fresh` → 후속 없음. 보고서 "graph_refresh" 섹션에 `fresh` 기록.
-   - `partial-stale` → 해당 scope 만 `/graphify <대상경로>` 재생성.
-     `docs/graph/index.md` frontmatter + Scopes 표 갱신.
+   - `partial-stale` →
+     - **graphify hook 설치 + code-only 변경**: 본 커밋 직후 hook 이 background
+       에서 자동 재생성. 추가 조작 불필요. 보고서 "graph_refresh" 에
+       `partial-stale → hook: auto-pending` 기록.
+     - **그 외 (hook 미설치 또는 docs/md 변경 포함)**: 해당 scope 만
+       `/graphify <대상경로>` 재생성. `docs/graph/index.md` frontmatter + Scopes
+       표 갱신.
    - `fully-stale` → 영향 scope 전체 `/graphify` 재생성. 메타 갱신.
    - `no-graph` → 코드베이스가 비어있지 않다면 **세션 내에서 최초 생성**.
      `/graphify <주요 경로>` 실행 + 메타 작성. 판정 결과와 수행한 처리는 보고서
@@ -206,7 +233,8 @@ Advisor/Worker 가 직접 수행 금지.
    미도입 시점**(Phase 0~5)에서는 orchestrator 가 직접 동등 절차를 안내한다 —
    최소: `yarn workspace @lostark/rest-api dump:openapi` 실행 후 OpenAPI diff
    첨부, REST 계약이 바뀐 경우 `../LoA-Bot/src/infra/lostark/generated.ts`
-   재생성 안내.
+   재생성 안내. **서비스 재기동 여부 안내**: `packages/*/src/` 변경이 있고
+   Docker 컨테이너가 운영 중이면 `loa-platform compose 재기동` 안내 필수.
 
 그 외:
 

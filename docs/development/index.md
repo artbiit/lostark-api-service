@@ -13,6 +13,8 @@
   `docs/` 카테고리 분류 기준
 - [agent-team-protocol](./agent-team-protocol.md) — 에이전트 팀 운영 권위
   레퍼런스 (`/task` 진입)
+- [graphify-background-execution](./graphify-background-execution.md) — graphify
+  background 갱신 근거 + git hook 운용 (이 프로젝트 한정)
 - [verification-strategies](./verification-strategies.md) — 검증 사다리(L1~L4) +
   변경 범주별 의무 레벨 + 전략 레지스트리
 - [coding-standards](./coding-standards.md) — 권위 코딩 컨벤션 풀
