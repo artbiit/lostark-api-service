@@ -355,11 +355,13 @@ export class UdpServer extends EventEmitter {
 
   /**
    * reply envelope 송신.
+   * 클라이언트(메신저봇R)가 data 를 decodeURIComponent 로 처리하므로
+   * bare % 는 %25 로 이스케이프해야 URIError 를 피할 수 있다.
    */
   private sendReply(session: string, text: string, remoteInfo: RemoteInfo): void {
     const reply: ReplyEnvelope = {
       event: `reply:${session}`,
-      data: text,
+      data: text.replace(/%(?![0-9A-Fa-f]{2})/g, '%25'),
     };
     try {
       const buffer = Buffer.from(JSON.stringify(reply), 'utf8');

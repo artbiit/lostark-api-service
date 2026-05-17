@@ -8,7 +8,7 @@ export const abilityStoneCommand: CommandSpec = {
   handler: async (args, _message, ctx) => {
     const name = args[0]!;
     try {
-      const detail = await ctx.armoriesService.getCharacterDetailPartial(name, ['equipment']);
+      const detail = await ctx.armoriesService.getCharacterDetailPartial(name, ['profile', 'equipment']);
       if (!detail?.equipment) return `${name} 은(는) 장착중인 스톤이 없는 것 같숨미당.`;
       return formatAbilityStone(name, detail);
     } catch (err) {
