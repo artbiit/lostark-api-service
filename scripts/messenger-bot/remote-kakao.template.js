@@ -233,17 +233,23 @@ function onMessage(data) {
 var thread = new java.lang.Thread({
   run: function () {
     while (true) {
-      socket.receive(inPacket);
-      var message = decodeURIComponent(
-        String(
+      try {
+        socket.receive(inPacket);
+        var raw = String(
           new java.lang.String(
             inPacket.getData(),
             inPacket.getOffset(),
             inPacket.getLength()
           )
-        )
-      );
-      receiveMessage(message);
+        );
+        var message;
+        try {
+          message = decodeURIComponent(raw);
+        } catch (_) {
+          message = raw;
+        }
+        receiveMessage(message);
+      } catch (_) {}
     }
   },
 });
