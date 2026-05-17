@@ -32,6 +32,9 @@ function loadFixture(p: string): any {
 const proto = ArmoriesNormalizer.prototype as unknown as {
   normalizeArkPassive(data: unknown): any;
   normalizeEngravings(data: unknown): any[];
+  normalizeCombatSkills(data: unknown): any[];
+  normalizeAvatars(data: unknown): any[];
+  normalizeCollectibles(data: unknown): any[];
 };
 
 // === N-1 ArkPassive 활성 캐릭 정규화 ===
@@ -395,5 +398,63 @@ test('normalizeCharacterDetail — abilityStone 통합', async (t) => {
         typeof characterDetail.abilityStone === 'object',
       'abilityStone field must be present (null or object)',
     );
+  });
+});
+
+// === Regression: partial endpoint bare-array 응답 처리 ===
+// 공식 API 의 partial 엔드포인트(`/combat-skills`, `/avatars`, `/collectibles`) 는
+// bare 배열을 직접 반환하지만, full `/armories/characters/{name}` 응답은 wrap 객체
+// (`{CombatSkills: []}` 등) 형태다. normalizer 가 양쪽 모두 처리해야 한다.
+
+test('normalize* — partial endpoint bare-array 응답 처리', async (t) => {
+  const norm = new ArmoriesNormalizer();
+  const protoNorm = norm as unknown as typeof proto;
+
+  await t.test('normalizeCombatSkills: bare array 입력', () => {
+    const bareSkills = [
+      { Name: '권왕의 진격', Icon: 'a', Level: 10, Type: '일반', IsAwakening: false, Tripods: [] },
+      { Name: '회피기', Icon: 'b', Level: 4, Type: '일반', IsAwakening: false, Tripods: [] },
+      { Name: '미사용', Icon: 'c', Level: 1, Type: '일반', IsAwakening: false, Tripods: [] },
+    ];
+    const out = protoNorm.normalizeCombatSkills(bareSkills);
+    assert.strictEqual(out.length, 3);
+    assert.strictEqual(out[0].name, '권왕의 진격');
+    assert.strictEqual(out[0].level, 10);
+  });
+
+  await t.test('normalizeCombatSkills: wrap 객체 입력 (full endpoint) 도 유지', () => {
+    const wrapped = { CombatSkills: [
+      { Name: '스킬1', Icon: 'a', Level: 7, Type: '일반', IsAwakening: false, Tripods: [] },
+    ] };
+    const out = protoNorm.normalizeCombatSkills(wrapped);
+    assert.strictEqual(out.length, 1);
+    assert.strictEqual(out[0].name, '스킬1');
+  });
+
+  await t.test('normalizeAvatars: bare array 입력', () => {
+    const bare = [
+      { Type: '무기', Name: 'a', Icon: 'i', Grade: '전설', IsSet: false, IsInner: false, Tooltip: '' },
+    ];
+    const out = protoNorm.normalizeAvatars(bare);
+    assert.strictEqual(out.length, 1);
+    assert.strictEqual(out[0].type, '무기');
+  });
+
+  await t.test('normalizeCollectibles: bare array 입력', () => {
+    const bare = [
+      { Type: '모코코 씨앗', Icon: 'i', Point: 100, MaxPoint: 1000, CollectiblePoints: [] },
+    ];
+    const out = protoNorm.normalizeCollectibles(bare);
+    assert.strictEqual(out.length, 1);
+    assert.strictEqual(out[0].point, 100);
+  });
+
+  await t.test('normalizeCombatSkills: empty bare array → []', () => {
+    assert.deepStrictEqual(protoNorm.normalizeCombatSkills([]), []);
+  });
+
+  await t.test('normalizeCombatSkills: null/undefined → []', () => {
+    assert.deepStrictEqual(protoNorm.normalizeCombatSkills(null), []);
+    assert.deepStrictEqual(protoNorm.normalizeCombatSkills(undefined), []);
   });
 });

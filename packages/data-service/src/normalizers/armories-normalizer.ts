@@ -686,7 +686,8 @@ export class ArmoriesNormalizer {
       tooltip?: string;
     };
   }> {
-    const skills = skillData?.CombatSkills ?? [];
+    // partial `/combat-skills` 엔드포인트는 bare 배열, full `/armories/characters/{name}` 은 `{CombatSkills: []}` wrap 객체로 반환.
+    const skills = Array.isArray(skillData) ? skillData : (skillData?.CombatSkills ?? []);
 
     return skills.map((skill: any) => ({
       name: skill.Name,
@@ -725,7 +726,8 @@ export class ArmoriesNormalizer {
     isInner: boolean;
     tooltip: string;
   }> {
-    const avatars = avatarData?.Avatars ?? [];
+    // partial `/avatars` 엔드포인트는 bare 배열, full 응답은 `{Avatars: []}` wrap 객체.
+    const avatars = Array.isArray(avatarData) ? avatarData : (avatarData?.Avatars ?? []);
 
     return avatars.map((avatar: any) => ({
       type: avatar.Type,
@@ -794,7 +796,10 @@ export class ArmoriesNormalizer {
       maxPoint: number;
     }>;
   }> {
-    const collectibles = collectibleData?.Collectibles ?? [];
+    // partial `/collectibles` 와 full 응답 모두 bare 배열이지만, 과거 wrap 형태 호환을 위해 양쪽 모두 허용.
+    const collectibles = Array.isArray(collectibleData)
+      ? collectibleData
+      : (collectibleData?.Collectibles ?? []);
 
     return collectibles.map((collectible: any) => ({
       type: collectible.Type,
