@@ -370,6 +370,26 @@ function removeHtmlTags(html: string): string {
   return html.replace(/<[^>]*>?/g, '');
 }
 
+// 룬 tooltip JSON 의 ItemPartBox 중 "스킬 룬 효과" 항목에서 Element_001 효과 문구만 추출.
+function extractRuneEffect(tooltipRaw: unknown): string {
+  if (typeof tooltipRaw !== 'string' || !tooltipRaw) return '';
+  let parsed: Record<string, any>;
+  try {
+    parsed = JSON.parse(removeHtmlTags(tooltipRaw));
+  } catch {
+    return '';
+  }
+  for (const k of Object.keys(parsed)) {
+    const el = parsed[k];
+    if (el?.type !== 'ItemPartBox') continue;
+    const label = el.value?.Element_000;
+    if (typeof label !== 'string' || !label.includes('스킬 룬 효과')) continue;
+    const text = el.value?.Element_001;
+    if (typeof text === 'string' && text.trim()) return text.trim();
+  }
+  return '';
+}
+
 // === 스킬 ===
 
 export function formatSkills(name: string, detail: AnyDetail): string {
@@ -387,6 +407,8 @@ export function formatSkills(name: string, detail: AnyDetail): string {
     if (skill.rune) {
       const grade = skill.rune.grade ?? '';
       txt += ` [${grade[0] ?? ''} ${skill.rune.name}]`;
+      const effect = extractRuneEffect(skill.rune.tooltip);
+      if (effect) txt += ` ${effect}`;
     }
     lines.push(txt);
 
@@ -405,8 +427,9 @@ export function formatSkills(name: string, detail: AnyDetail): string {
     for (const key of keys) {
       const ts = tripods[key] ?? [];
       const slotStr = ts.map((t) => t.slot).join('');
-      const lvStr = ts.map((t) => t.level).join('');
-      lines.push(`[${key}] ${slotStr}/${lvStr}`);
+      // 트라이포드 레벨은 V9 시점 응답에서 제거 — lvStr 이 빈 문자열이면 슬래시도 생략.
+      const lvStr = ts.map((t) => t.level).filter((v) => v !== undefined && v !== null).join('');
+      lines.push(lvStr ? `[${key}] ${slotStr}/${lvStr}` : `[${key}] ${slotStr}`);
     }
   }
 

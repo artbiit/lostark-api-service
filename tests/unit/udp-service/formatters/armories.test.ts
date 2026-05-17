@@ -300,6 +300,79 @@ test('formatSkills', async (t) => {
     assert.match(out, /\[전 속행\]/);
   });
 
+  // F-15: V9 응답에서 트라이포드 Level 필드가 사라짐 → 빈 lvStr 일 때 슬래시 생략.
+  await t.test('F-15: omits trailing slash when tripod level is absent (V9)', () => {
+    const detail = {
+      combatSkills: [
+        {
+          name: '과충전 배터리',
+          level: 10,
+          tripods: [
+            { name: 't1', slot: 2, isSelected: true },
+            { name: 't2', slot: 3, isSelected: true },
+            { name: 't3', slot: 1, isSelected: true },
+          ],
+        },
+      ],
+    };
+    const out = formatSkills('아트네', detail);
+    assert.match(out, /\[과충전 배터리\] 231(?!\/)/);
+    assert.ok(!out.includes('231/'));
+  });
+
+  // F-16: 룬 tooltip 에서 효과 설명을 추출해 룬 라벨 뒤에 붙인다.
+  await t.test('F-16: appends rune effect text from tooltip', () => {
+    const tooltip = JSON.stringify({
+      Element_000: { type: 'NameTagBox', value: '<P>속행</P>' },
+      Element_003: {
+        type: 'ItemPartBox',
+        value: {
+          Element_000: "<FONT COLOR='#A9D0F5'>스킬 룬 효과</FONT>",
+          Element_001: '스킬 사용 시 일정 확률로 전체 재사용 대기 시간이 16% 감소',
+        },
+      },
+      Element_004: { type: 'SingleTextBox', value: '특별한 룬이다.' },
+    });
+    const detail = {
+      combatSkills: [
+        {
+          name: '파천섬광',
+          level: 10,
+          tripods: [],
+          rune: { name: '속행', grade: '전설', tooltip },
+        },
+      ],
+    };
+    const out = formatSkills('아트네', detail);
+    assert.match(out, /\[전 속행\] 스킬 사용 시 일정 확률로 전체 재사용 대기 시간이 16% 감소/);
+    // 일반 룬 설명("특별한 룬이다.") 은 추출되지 않아야 한다.
+    assert.ok(!out.includes('특별한 룬이다.'));
+  });
+
+  // F-17: 룬 tooltip 이 없거나 비정형이면 효과 문구 미부착(기존 형식 유지).
+  await t.test('F-17: keeps legacy rune label when tooltip missing or malformed', () => {
+    const detail = {
+      combatSkills: [
+        {
+          name: '파천섬광',
+          level: 10,
+          tripods: [],
+          rune: { name: '속행', grade: '전설' },
+        },
+        {
+          name: '연쇄돌풍',
+          level: 10,
+          tripods: [],
+          rune: { name: '바람', grade: '영웅', tooltip: '{not json' },
+        },
+      ],
+    };
+    const out = formatSkills('아트네', detail);
+    const skillLines = out.split('\n');
+    assert.ok(skillLines.some((l) => l.endsWith('[전 속행]')), '효과 미부착 [전 속행] 라인 존재');
+    assert.ok(skillLines.some((l) => l.endsWith('[영 바람]')), '효과 미부착 [영 바람] 라인 존재');
+  });
+
   // F-14 (신규): 30 라인 초과 시 마지막 라인이 `... 외 N개 생략` 으로 절단 (design §1.4).
   await t.test('F-14: truncates output to 30 lines with omission footer', () => {
     // 40 개 스킬 → 헤더 1 + 본문 40 = 41 라인 → 30 라인으로 절단
