@@ -133,7 +133,7 @@ export class AuctionsNormalizer {
    */
   static normalizeSearchResult(data: AuctionSearchResponseV9): NormalizedAuctionSearchResult {
     return {
-      items: data.Items.map(this.normalizeAuctionItem),
+      items: (data.Items ?? []).map(this.normalizeAuctionItem),
       totalCount: data.TotalCount,
       pageNo: data.PageNo,
       pageSize: data.PageSize,

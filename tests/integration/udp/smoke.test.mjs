@@ -111,6 +111,23 @@ function createClient() {
   });
 }
 
+// catch-block 에러 패턴 (= 비정상 응답)
+const API_ERROR_PATTERNS = [
+  ' 은(는) 없는 것 같숨미당',  // armory catch-block
+  '캐릭터는 없는 것 같숨미당',  // siblings catch-block
+  '처리 중 오류가 발생했습니다', // router catch-all
+  '정보를 불러올 수 없습니다',   // gamecontents/auctions catch-block
+  '검색에 실패했습니다',         // market/auction catch-block
+];
+
+/** API 커맨드 정상 응답 검증 — 에러 패턴 포함 시 실패. */
+function assertNormalResponse(data, label = '') {
+  assert.ok(typeof data === 'string' && data.length > 0, `${label}: empty response`);
+  for (const pattern of API_ERROR_PATTERNS) {
+    assert.ok(!data.includes(pattern), `${label}: error response — "${data.slice(0, 120)}"`);
+  }
+}
+
 // === 라이프사이클 훅 ===
 
 before(async () => {
@@ -150,13 +167,13 @@ test('!도움말 → reply:session, data starts with [접두사]', async () => {
   }
 });
 
-test('!보석값 멸화 10레벨 → reply:session 수신, data 비어있지 않음', async () => {
+test('!보석값 멸화 10레벨 → reply:session 수신, 정상 응답', async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope('!보석값 멸화 10레벨');
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!보석값');
   } finally {
     client.close();
   }
@@ -166,25 +183,25 @@ test('!보석값 멸화 10레벨 → reply:session 수신, data 비어있지 않
 
 const charName = process.env.TEST_CHARACTER_NAME;
 
-test('!정보 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!정보 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!정보 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!정보');
   } finally {
     client.close();
   }
 });
 
-test('!각인 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!각인 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!각인 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!각인');
   } finally {
     client.close();
   }
@@ -258,61 +275,61 @@ test('!랜전카 → reply:session, sender name 포함', async () => {
 // API 커맨드 — 캐릭터 불필요 (게임 컨텐츠 / 거래소)
 // ============================================================
 
-test('!프로키온 → reply:session 수신, data 비어있지 않음', async () => {
+test('!프로키온 → reply:session 수신, 정상 응답', async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope('!프로키온');
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!프로키온');
   } finally {
     client.close();
   }
 });
 
-test('!이벤트 → reply:session 수신, data 비어있지 않음', async () => {
+test('!이벤트 → reply:session 수신, 정상 응답', async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope('!이벤트');
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!이벤트');
   } finally {
     client.close();
   }
 });
 
-test('!비싼유각 → reply:session 수신, data 비어있지 않음', async () => {
+test('!비싼유각 → reply:session 수신, 정상 응답', async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope('!비싼유각');
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!비싼유각');
   } finally {
     client.close();
   }
 });
 
-test('!전각 원한 → reply:session 수신, data 비어있지 않음', async () => {
+test('!전각 원한 → reply:session 수신, 정상 응답', async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope('!전각 원한');
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!전각');
   } finally {
     client.close();
   }
 });
 
-test('!유각 원한 → reply:session 수신, data 비어있지 않음', async () => {
+test('!유각 원한 → reply:session 수신, 정상 응답', async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope('!유각 원한');
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!유각');
   } finally {
     client.close();
   }
@@ -322,121 +339,121 @@ test('!유각 원한 → reply:session 수신, data 비어있지 않음', async 
 // API 커맨드 — 캐릭터 의존 (TEST_CHARACTER_NAME 필요)
 // ============================================================
 
-test('!장비 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!장비 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!장비 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!장비');
   } finally {
     client.close();
   }
 });
 
-test('!스킬 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!스킬 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!스킬 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!스킬');
   } finally {
     client.close();
   }
 });
 
-test('!보석 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!보석 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!보석 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!보석');
   } finally {
     client.close();
   }
 });
 
-test('!돌 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!돌 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!돌 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!돌');
   } finally {
     client.close();
   }
 });
 
-test('!수집 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!수집 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!수집 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!수집');
   } finally {
     client.close();
   }
 });
 
-test('!착장 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!착장 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!착장 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!착장');
   } finally {
     client.close();
   }
 });
 
-test('!아바타 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!아바타 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!아바타 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!아바타');
   } finally {
     client.close();
   }
 });
 
-test('!카드 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!카드 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!카드 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!카드');
   } finally {
     client.close();
   }
 });
 
-test('!전장 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!전장 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!전장 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!전장');
   } finally {
     client.close();
   }
 });
 
-test('!부캐 <캐릭명> → reply:session 수신, data 비어있지 않음', { skip: !charName }, async () => {
+test('!부캐 <캐릭명> → reply:session 수신, 정상 응답', { skip: !charName }, async () => {
   const client = await createClient();
   try {
     const envelope = makeEnvelope(`!부캐 ${charName}`);
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.length > 0);
+    assertNormalResponse(reply.data, '!부캐');
   } finally {
     client.close();
   }
