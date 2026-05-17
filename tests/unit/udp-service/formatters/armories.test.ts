@@ -272,10 +272,11 @@ test('formatSkills', async (t) => {
     const out = formatSkills('아트네', detail);
     assert.match(out, /<아트네의 스킬>/);
     assert.match(out, /Lv\.10 강스킬/);
-    assert.match(out, /Lv\.4  룬스킬 \[전 바람\]/);
+    // 슬롯(12) 가 스킬 라인에 흡수, 룬 라벨은 그 뒤. 별도 트라이포드 섹션은 없다.
+    assert.match(out, /Lv\.4  룬스킬 12 \[전 바람\]/);
     assert.ok(!out.includes('약스킬'));
-    assert.match(out, /<트라이포드 정보>/);
-    assert.match(out, /\[룬스킬\] 12\/35/);
+    assert.doesNotMatch(out, /<트라이포드 정보>/);
+    assert.ok(!out.includes('12/35'));
   });
 
   await t.test('returns fallback when no skill is at level 2+', () => {
@@ -300,8 +301,8 @@ test('formatSkills', async (t) => {
     assert.match(out, /\[전 속행\]/);
   });
 
-  // F-15: V9 응답에서 트라이포드 Level 필드가 사라짐 → 빈 lvStr 일 때 슬래시 생략.
-  await t.test('F-15: omits trailing slash when tripod level is absent (V9)', () => {
+  // F-15: V9 응답은 트라이포드 Level 부재 → 슬롯을 스킬 라인에 흡수, 별도 섹션 미출력.
+  await t.test('F-15: absorbs selected tripod slots into the skill line (no tripod section)', () => {
     const detail = {
       combatSkills: [
         {
@@ -311,17 +312,19 @@ test('formatSkills', async (t) => {
             { name: 't1', slot: 2, isSelected: true },
             { name: 't2', slot: 3, isSelected: true },
             { name: 't3', slot: 1, isSelected: true },
+            { name: 't4', slot: 2, isSelected: false },
           ],
         },
       ],
     };
     const out = formatSkills('아트네', detail);
-    assert.match(out, /\[과충전 배터리\] 231(?!\/)/);
+    assert.match(out, /Lv\.10 과충전 배터리 231(?:\n|$)/);
+    assert.doesNotMatch(out, /<트라이포드 정보>/);
     assert.ok(!out.includes('231/'));
   });
 
-  // F-16: 룬 tooltip 에서 효과 설명을 추출해 룬 라벨 뒤에 붙인다.
-  await t.test('F-16: appends rune effect text from tooltip', () => {
+  // F-16: 룬은 라벨만 (등급 첫글자 + 이름). tooltip 효과 설명은 출력 대상이 아니다.
+  await t.test('F-16: rune label only — tooltip effect is not appended', () => {
     const tooltip = JSON.stringify({
       Element_000: { type: 'NameTagBox', value: '<P>속행</P>' },
       Element_003: {
@@ -331,7 +334,6 @@ test('formatSkills', async (t) => {
           Element_001: '스킬 사용 시 일정 확률로 전체 재사용 대기 시간이 16% 감소',
         },
       },
-      Element_004: { type: 'SingleTextBox', value: '특별한 룬이다.' },
     });
     const detail = {
       combatSkills: [
@@ -344,33 +346,29 @@ test('formatSkills', async (t) => {
       ],
     };
     const out = formatSkills('아트네', detail);
-    assert.match(out, /\[전 속행\] 스킬 사용 시 일정 확률로 전체 재사용 대기 시간이 16% 감소/);
-    // 일반 룬 설명("특별한 룬이다.") 은 추출되지 않아야 한다.
-    assert.ok(!out.includes('특별한 룬이다.'));
+    const lines = out.split('\n');
+    assert.ok(lines.some((l) => l.endsWith('[전 속행]')), '룬 라벨로 끝나는 라인 존재');
+    assert.ok(!out.includes('재사용 대기'), 'tooltip 효과 문구는 미부착');
   });
 
-  // F-17: 룬 tooltip 이 없거나 비정형이면 효과 문구 미부착(기존 형식 유지).
-  await t.test('F-17: keeps legacy rune label when tooltip missing or malformed', () => {
+  // F-17: 슬롯·룬 동시 부착 시 순서는 "<슬롯> [등급 룬이름]" (룬 라벨이 항상 라인 끝).
+  await t.test('F-17: slot precedes rune label on the same line', () => {
     const detail = {
       combatSkills: [
         {
-          name: '파천섬광',
+          name: '소나티네',
           level: 10,
-          tripods: [],
-          rune: { name: '속행', grade: '전설' },
-        },
-        {
-          name: '연쇄돌풍',
-          level: 10,
-          tripods: [],
-          rune: { name: '바람', grade: '영웅', tooltip: '{not json' },
+          tripods: [
+            { name: 't1', slot: 1, isSelected: true },
+            { name: 't2', slot: 3, isSelected: true },
+            { name: 't3', slot: 2, isSelected: true },
+          ],
+          rune: { name: '속행', grade: '영웅' },
         },
       ],
     };
     const out = formatSkills('아트네', detail);
-    const skillLines = out.split('\n');
-    assert.ok(skillLines.some((l) => l.endsWith('[전 속행]')), '효과 미부착 [전 속행] 라인 존재');
-    assert.ok(skillLines.some((l) => l.endsWith('[영 바람]')), '효과 미부착 [영 바람] 라인 존재');
+    assert.match(out, /Lv\.10 소나티네 132 \[영 속행\](?:\n|$)/);
   });
 
   // F-14 (신규): 30 라인 초과 시 마지막 라인이 `... 외 N개 생략` 으로 절단 (design §1.4).

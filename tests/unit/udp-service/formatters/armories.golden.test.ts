@@ -124,8 +124,10 @@ test('골든: formatSkills — 이다 (30 라인 미만, truncate 미적용)', (
   assert.match(out, /<이다의 스킬>/);
   // Lv2 이상 스킬만 포함 — 이다 fixture 에서 Lv>=2 스킬
   assert.match(out, /Lv\.\d+\s+/);
-  // 트라이포드 섹션
-  assert.match(out, /<트라이포드 정보>/);
+  // 트라이포드 슬롯이 스킬 라인에 흡수 — 별도 섹션은 더 이상 출력하지 않는다.
+  assert.doesNotMatch(out, /<트라이포드 정보>/);
+  // 적어도 한 스킬은 선택된 슬롯이 라인에 붙어 있어야 한다 (이다 fixture 기준).
+  assert.match(out, /^Lv\.\d+ {1,2}\S.* \d{2,3}( \[|$)/m);
   // 30 라인 이하 — truncate 미적용
   const lineCount = out.split('\n').length;
   assert.ok(lineCount <= 30, `skills output should be <= 30 lines, got ${lineCount}`);
