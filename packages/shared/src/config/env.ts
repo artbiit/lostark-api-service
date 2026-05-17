@@ -58,6 +58,7 @@ export const envSchema = z.object({
   CACHE_REDIS_DB: z.coerce.number().min(0).max(15).default(0),
   CACHE_MEMORY_TTL_SECONDS: z.coerce.number().min(1).default(300), // 5분
   CACHE_REDIS_TTL_SECONDS: z.coerce.number().min(1).default(1800), // 30분
+  CACHE_DB_MAX_AGE_SECONDS: z.coerce.number().min(1).default(60), // DB 캐시 신선도 상한 (1분)
 
   // === 로깅 설정 ===
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
@@ -165,6 +166,7 @@ export const defaultConfig: EnvConfig = {
   CACHE_REDIS_DB: 0,
   CACHE_MEMORY_TTL_SECONDS: 300,
   CACHE_REDIS_TTL_SECONDS: 1800,
+  CACHE_DB_MAX_AGE_SECONDS: 60,
   LOG_LEVEL: 'info',
   LOG_PRETTY_PRINT: false,
   DB_HOST: 'localhost',

@@ -29,9 +29,8 @@ export interface IntegratedCacheStats {
 }
 
 // DB 캐시에서 반환된 데이터의 최대 허용 나이.
-// Redis 가 연결되지 않은 환경에서 DB 가 Redis 역할을 대체할 때도
-// CACHE_REDIS_TTL_SECONDS 와 동일한 신선도를 보장한다.
-const DB_CACHE_MAX_AGE_MS = (Number(process.env.CACHE_REDIS_TTL_SECONDS) || 1800) * 1000;
+// CACHE_DB_MAX_AGE_SECONDS 환경변수로 튜닝 (기본 60초).
+const DB_CACHE_MAX_AGE_MS = (Number(process.env.CACHE_DB_MAX_AGE_SECONDS) || 60) * 1000;
 
 // === 캐시 계층 관리자 ===
 
