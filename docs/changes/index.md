@@ -4,6 +4,10 @@
 
 ## 2026-05
 
+- feat(udp-service):
+  [!분배금 명령어 재구성 — PVE 전리품 경매 손익분기 입찰 한도](./2026-05-17-share-command-bid-cap-rework.md)
+  — 출력 라벨/공식 명료화(자가소비·재판매·비낙찰분배 분리), 인원 4/8인(16인 제거),
+  description 텍스트 갱신, 테스트 6 케이스. (session 20260517-215316)
 - feat+refactor(data-service,udp-service):
   [아크패시브 시즌 기준 armories 응답 재기획](./2026-05-17-armories-arkpassive-rewrite.md)
   — NormalizedAbilityStone 신설, formatAbilityStone/Engravings 재작성, 11개 핸들러 톤 통일,
