@@ -14,6 +14,7 @@ var config = {
   port: __SERVER_PORT__,
   packageNames: ["com.kakao.talk"],
   userIds: [0],
+  allowedSenders: ["__SENDER_NAME__"], // 본인 카카오 이름. 복수 가능: ["이름1","이름2"]
 };
 //var RKPlugins = {};
 // var pluginDir = new java.io.File(com.xfl.msgbot.utils.SharedVar.Companion.getBotsPath(), "".concat(scriptName, "/plugins"));
@@ -192,7 +193,7 @@ function onMessage(data) {
   // Event.MESSAGE: data.isMention / notification 경로: data.containsMention
   var _containsMention = data.isMention !== undefined ? data.isMention : data.containsMention;
 
-  if (_senderName !== "LJS" && !_roomName.startsWith("◆+!")) {
+  if (!config.allowedSenders.includes(_senderName) && !_roomName.startsWith("◆+!")) {
     return;
   }
   if (data.content === "접두사") {
@@ -248,6 +249,7 @@ var thread = new java.lang.Thread({
   run: function () {
     while (true) {
       try {
+        inPacket.setLength(buffer.length); // 수신 후 축소된 버퍼를 매번 복원
         socket.receive(inPacket);
         var raw = String(
           new java.lang.String(

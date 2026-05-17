@@ -32,7 +32,7 @@ PowerShell 7+ 기준. cwd 는 레포 루트.
 ```powershell
 # 1. 템플릿 → 로컬 사본 생성 (실값 치환)
 $src = Get-Content -Raw -Path "scripts/messenger-bot/remote-kakao.template.js"
-$out = $src.Replace('__SERVER_HOST__', '192.168.0.2').Replace('__SERVER_PORT__', '3001')
+$out = $src.Replace('__SERVER_HOST__', '192.168.0.2').Replace('__SERVER_PORT__', '3001').Replace('__SENDER_NAME__', '이정수')
 Set-Content -Path "scripts/messenger-bot/remote-kakao.js" -Value $out -NoNewline -Encoding utf8
 
 # 2. gitignore 확인 (있어야 함)
@@ -42,6 +42,7 @@ Select-String -Path .gitignore -Pattern "scripts/messenger-bot/remote-kakao.js"
 `__SERVER_HOST__` 는 본 레포 docker 호스트의 LAN IP. 환경별로 다르다.
 `__SERVER_PORT__` 는 `packages/shared/src/config/env.ts` 의 `UDP_GATEWAY_PORT`
 기본값 `3001` 과 맞춘다.
+`__SENDER_NAME__` 은 카카오톡에서 표시되는 본인 이름 (예: `이정수`). 복수 지정 시 `config.allowedSenders` 배열을 직접 편집.
 
 ## 안드로이드 기기 배포
 
@@ -56,13 +57,13 @@ Select-String -Path .gitignore -Pattern "scripts/messenger-bot/remote-kakao.js"
 
 ## 동작 게이트
 
-원본 스크립트에 두 가지 사용자 화이트리스트가 박혀 있다 (실수 트리거 방지):
+두 가지 사용자 화이트리스트가 있다 (실수 트리거 방지):
 
-- `data.author.name === "LJS"` 인 발신자
-- 또는 `data.room.startsWith("◆+!")` 인 방
+- `config.allowedSenders` 에 있는 발신자 이름 (카카오톡 표시 이름)
+- 또는 방 이름이 `◆+!` 로 시작하는 경우
 
-테스트 톡방 이름을 `◆+!` 로 시작시키면 누구든 명령 가능. 사용자 이름을 바꾸려면
-`onMessage` 함수 안의 비교 문자열을 직접 수정 (템플릿/로컬 사본 모두).
+`allowedSenders` 는 `__SENDER_NAME__` placeholder 를 통해 Setup 시 치환한다.
+테스트 톡방 이름을 `◆+!` 로 시작시키면 누구든 명령 가능.
 
 ## 연결 확인 (서버 → 클라이언트 왕복)
 
