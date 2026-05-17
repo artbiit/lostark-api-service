@@ -28,6 +28,11 @@ export interface IntegratedCacheStats {
   };
 }
 
+// DB 캐시에서 반환된 데이터의 최대 허용 나이.
+// Redis 가 연결되지 않은 환경에서 DB 가 Redis 역할을 대체할 때도
+// CACHE_REDIS_TTL_SECONDS 와 동일한 신선도를 보장한다.
+const DB_CACHE_MAX_AGE_MS = (Number(process.env.CACHE_REDIS_TTL_SECONDS) || 1800) * 1000;
+
 // === 캐시 계층 관리자 ===
 
 /**
@@ -79,12 +84,24 @@ export class CacheManager {
         const databaseResult = await databaseCache.getCharacterDetail(characterName);
 
         if (databaseResult) {
-          // Database에서 조회된 데이터를 상위 캐시 계층에도 저장
-          await this.syncToUpperCacheLayers(characterName, databaseResult);
+          // DB 캐시 신선도 체크: normalizedAt 이 DB_CACHE_MAX_AGE_MS 이내인 경우만 반환.
+          // Redis 미연결 시 DB 가 fallback 역할을 하더라도 stale 데이터를 서빙하지 않는다.
+          const normalizedAt = databaseResult.metadata?.normalizedAt;
+          const age = normalizedAt ? Date.now() - new Date(normalizedAt).getTime() : Infinity;
 
-          this.recordResponseTime(Date.now() - startTime);
-          logger.debug({ characterName }, 'Database cache hit, synced to upper layers');
-          return databaseResult;
+          if (age <= DB_CACHE_MAX_AGE_MS) {
+            // Database에서 조회된 데이터를 상위 캐시 계층에도 저장
+            await this.syncToUpperCacheLayers(characterName, databaseResult);
+
+            this.recordResponseTime(Date.now() - startTime);
+            logger.debug({ characterName }, 'Database cache hit, synced to upper layers');
+            return databaseResult;
+          }
+
+          logger.debug(
+            { characterName, ageSeconds: Math.round(age / 1000), maxAgeSeconds: DB_CACHE_MAX_AGE_MS / 1000 },
+            'Database cache data too stale, treating as miss',
+          );
         }
       } else {
         logger.warn({ characterName }, 'Database not connected, skipping database cache');
