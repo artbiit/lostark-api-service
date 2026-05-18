@@ -156,26 +156,29 @@ test('formatProfile', async (t) => {
   });
 
   // F-6 / F-7 (폐기): 돌 오우너 라인 — design §3.1 에 따라 라인 자체 제거.
-  await t.test('F-6 (deprecated): does NOT render 돌 오우너 line even with positive total >= 16', () => {
-    const tooltip = JSON.stringify({
-      e0: {
-        type: 'IndentStringGroup',
-        value: {
-          Element_000: {
-            contentStr: {
-              k0: { contentStr: '[원한] 효과 +9' },
-              k1: { contentStr: '[돌격대장] 효과 +9' },
+  await t.test(
+    'F-6 (deprecated): does NOT render 돌 오우너 line even with positive total >= 16',
+    () => {
+      const tooltip = JSON.stringify({
+        e0: {
+          type: 'IndentStringGroup',
+          value: {
+            Element_000: {
+              contentStr: {
+                k0: { contentStr: '[원한] 효과 +9' },
+                k1: { contentStr: '[돌격대장] 효과 +9' },
+              },
             },
           },
         },
-      },
-    });
-    const detail = {
-      equipment: [{ type: '어빌리티 스톤', name: '돌', tooltip }],
-    };
-    const out = formatProfile('아트네', detail);
-    assert.doesNotMatch(out, /돌 오우너/);
-  });
+      });
+      const detail = {
+        equipment: [{ type: '어빌리티 스톤', name: '돌', tooltip }],
+      };
+      const out = formatProfile('아트네', detail);
+      assert.doesNotMatch(out, /돌 오우너/);
+    },
+  );
 
   // F-8: ArkPassive null fallback (throw 없음)
   await t.test('F-8: formatProfile does not throw when arkPassive is null', () => {
@@ -302,26 +305,29 @@ test('formatSkills', async (t) => {
   });
 
   // F-15: V9 응답은 트라이포드 Level 부재 → 슬롯을 스킬 라인에 흡수, 별도 섹션 미출력.
-  await t.test('F-15: absorbs selected tripod slots into the skill line (no tripod section)', () => {
-    const detail = {
-      combatSkills: [
-        {
-          name: '과충전 배터리',
-          level: 10,
-          tripods: [
-            { name: 't1', slot: 2, isSelected: true },
-            { name: 't2', slot: 3, isSelected: true },
-            { name: 't3', slot: 1, isSelected: true },
-            { name: 't4', slot: 2, isSelected: false },
-          ],
-        },
-      ],
-    };
-    const out = formatSkills('아트네', detail);
-    assert.match(out, /Lv\.10 과충전 배터리 231(?:\n|$)/);
-    assert.doesNotMatch(out, /<트라이포드 정보>/);
-    assert.ok(!out.includes('231/'));
-  });
+  await t.test(
+    'F-15: absorbs selected tripod slots into the skill line (no tripod section)',
+    () => {
+      const detail = {
+        combatSkills: [
+          {
+            name: '과충전 배터리',
+            level: 10,
+            tripods: [
+              { name: 't1', slot: 2, isSelected: true },
+              { name: 't2', slot: 3, isSelected: true },
+              { name: 't3', slot: 1, isSelected: true },
+              { name: 't4', slot: 2, isSelected: false },
+            ],
+          },
+        ],
+      };
+      const out = formatSkills('아트네', detail);
+      assert.match(out, /Lv\.10 과충전 배터리 231(?:\n|$)/);
+      assert.doesNotMatch(out, /<트라이포드 정보>/);
+      assert.ok(!out.includes('231/'));
+    },
+  );
 
   // F-16: 룬은 라벨만 (등급 첫글자 + 이름). tooltip 효과 설명은 출력 대상이 아니다.
   await t.test('F-16: rune label only — tooltip effect is not appended', () => {
@@ -347,7 +353,10 @@ test('formatSkills', async (t) => {
     };
     const out = formatSkills('아트네', detail);
     const lines = out.split('\n');
-    assert.ok(lines.some((l) => l.endsWith('[전 속행]')), '룬 라벨로 끝나는 라인 존재');
+    assert.ok(
+      lines.some((l) => l.endsWith('[전 속행]')),
+      '룬 라벨로 끝나는 라인 존재',
+    );
     assert.ok(!out.includes('재사용 대기'), 'tooltip 효과 문구는 미부착');
   });
 
@@ -395,8 +404,7 @@ test('formatGems', async (t) => {
       e1: {
         type: 'ItemPartBox',
         value: {
-          Element_001:
-            '[스킬명] 공격력 피해 +20% 효과를 받습니다.',
+          Element_001: '[스킬명] 공격력 피해 +20% 효과를 받습니다.',
         },
       },
     });
@@ -641,9 +649,7 @@ test('formatCards', async (t) => {
         ],
         effects: [
           {
-            items: [
-              { name: '세트1 12각성', description: '치명 피해 +10%' },
-            ],
+            items: [{ name: '세트1 12각성', description: '치명 피해 +10%' }],
           },
         ],
       },

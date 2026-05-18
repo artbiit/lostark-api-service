@@ -35,11 +35,14 @@ export class CharactersNormalizer {
     characterName: string,
     siblingsData: CharacterSiblingsResponseV9,
   ): Promise<AccountInfo> {
-    logger.info({
-      characterName,
-      characterCount: siblingsData.length,
-      requestId: this.generateRequestId(),
-    }, 'Normalizing siblings data');
+    logger.info(
+      {
+        characterName,
+        characterCount: siblingsData.length,
+        requestId: this.generateRequestId(),
+      },
+      'Normalizing siblings data',
+    );
 
     // 첫 번째 캐릭터를 기준으로 계정 ID 생성
     const firstCharacter = siblingsData[0];
@@ -80,14 +83,17 @@ export class CharactersNormalizer {
       mostActiveServer,
     };
 
-    logger.info({
-      accountId,
-      characterCount: characters.length,
-      serverCount: serverDistribution.length,
-      averageItemLevel,
-      mostActiveServer,
-      requestId: this.generateRequestId(),
-    }, 'Successfully normalized siblings data');
+    logger.info(
+      {
+        accountId,
+        characterCount: characters.length,
+        serverCount: serverDistribution.length,
+        averageItemLevel,
+        mostActiveServer,
+        requestId: this.generateRequestId(),
+      },
+      'Successfully normalized siblings data',
+    );
 
     return accountInfo;
   }
@@ -99,12 +105,15 @@ export class CharactersNormalizer {
     currentAccount: AccountInfo,
     newSiblingsData: CharacterSiblingsResponseV9,
   ): Promise<CharacterChangeDetection> {
-    logger.info({
-      accountId: currentAccount.accountId,
-      currentCharacterCount: currentAccount.characters.length,
-      newCharacterCount: newSiblingsData.length,
-      requestId: this.generateRequestId(),
-    }, 'Detecting character changes');
+    logger.info(
+      {
+        accountId: currentAccount.accountId,
+        currentCharacterCount: currentAccount.characters.length,
+        newCharacterCount: newSiblingsData.length,
+        requestId: this.generateRequestId(),
+      },
+      'Detecting character changes',
+    );
 
     const changes: ItemLevelChange[] = [];
     const newCharacters: CharacterInfo[] = [];
@@ -151,14 +160,17 @@ export class CharactersNormalizer {
             reason: levelDiff > 10 ? 'level_up' : 'manual_update',
           });
 
-          logger.info({
-            characterName: existingChar.characterName,
-            oldLevel: existingChar.itemLevel,
-            newLevel: newChar.itemLevel,
-            levelDiff,
-            reason: levelDiff > 10 ? 'level_up' : 'manual_update',
-            requestId: this.generateRequestId(),
-          }, 'Detected item level change');
+          logger.info(
+            {
+              characterName: existingChar.characterName,
+              oldLevel: existingChar.itemLevel,
+              newLevel: newChar.itemLevel,
+              levelDiff,
+              reason: levelDiff > 10 ? 'level_up' : 'manual_update',
+              requestId: this.generateRequestId(),
+            },
+            'Detected item level change',
+          );
         }
       }
     }
@@ -181,12 +193,15 @@ export class CharactersNormalizer {
           reason: 'new_character',
         });
 
-        logger.info({
-          characterName: newChar.characterName,
-          serverName: newChar.serverName,
-          itemLevel: newChar.itemLevel,
-          requestId: this.generateRequestId(),
-        }, 'Detected new character');
+        logger.info(
+          {
+            characterName: newChar.characterName,
+            serverName: newChar.serverName,
+            itemLevel: newChar.itemLevel,
+            requestId: this.generateRequestId(),
+          },
+          'Detected new character',
+        );
       }
     }
 
@@ -198,13 +213,16 @@ export class CharactersNormalizer {
       detectedAt: new Date(),
     };
 
-    logger.info({
-      accountId: currentAccount.accountId,
-      changeCount: changes.length,
-      newCharacterCount: newCharacters.length,
-      deletedCharacterCount: deletedCharacters.length,
-      requestId: this.generateRequestId(),
-    }, 'Character change detection completed');
+    logger.info(
+      {
+        accountId: currentAccount.accountId,
+        changeCount: changes.length,
+        newCharacterCount: newCharacters.length,
+        deletedCharacterCount: deletedCharacters.length,
+        requestId: this.generateRequestId(),
+      },
+      'Character change detection completed',
+    );
 
     return detection;
   }
@@ -216,10 +234,13 @@ export class CharactersNormalizer {
     currentAccount: AccountInfo,
     newSiblingsData: CharacterSiblingsResponseV9,
   ): Promise<AccountInfo> {
-    logger.info({
-      accountId: currentAccount.accountId,
-      requestId: this.generateRequestId(),
-    }, 'Updating account info');
+    logger.info(
+      {
+        accountId: currentAccount.accountId,
+        requestId: this.generateRequestId(),
+      },
+      'Updating account info',
+    );
 
     // 새 계정 정보 생성
     const newAccountInfo = await this.normalizeSiblings(
@@ -240,19 +261,25 @@ export class CharactersNormalizer {
       .map((char: any) => char.characterName);
 
     if (deletedCharacterNames.length > 0) {
-      logger.info({
-        accountId: currentAccount.accountId,
-        deletedCharacterNames,
-        requestId: this.generateRequestId(),
-      }, 'Marking characters as inactive');
+      logger.info(
+        {
+          accountId: currentAccount.accountId,
+          deletedCharacterNames,
+          requestId: this.generateRequestId(),
+        },
+        'Marking characters as inactive',
+      );
     }
 
-    logger.info({
-      accountId: currentAccount.accountId,
-      newCharacterCount: newAccountInfo.characters.length,
-      deletedCharacterCount: deletedCharacterNames.length,
-      requestId: this.generateRequestId(),
-    }, 'Account info updated successfully');
+    logger.info(
+      {
+        accountId: currentAccount.accountId,
+        newCharacterCount: newAccountInfo.characters.length,
+        deletedCharacterCount: deletedCharacterNames.length,
+        requestId: this.generateRequestId(),
+      },
+      'Account info updated successfully',
+    );
 
     return newAccountInfo;
   }
@@ -293,12 +320,15 @@ export class CharactersNormalizer {
       }
     }
 
-    logger.info({
-      accountId: detection.accountId,
-      queueItemCount: queueItems.length,
-      highPriorityCount: queueItems.filter((item) => item.priority >= 3).length,
-      requestId: this.generateRequestId(),
-    }, 'Generated ARMORIES queue items');
+    logger.info(
+      {
+        accountId: detection.accountId,
+        queueItemCount: queueItems.length,
+        highPriorityCount: queueItems.filter((item) => item.priority >= 3).length,
+        requestId: this.generateRequestId(),
+      },
+      'Generated ARMORIES queue items',
+    );
 
     return queueItems;
   }

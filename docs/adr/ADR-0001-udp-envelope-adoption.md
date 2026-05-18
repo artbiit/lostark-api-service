@@ -17,13 +17,13 @@ Accepted
 ## Context
 
 `packages/udp-service` 는 서버 측 UdpMessage 를 4종의 type 으로 분류하는 자체
-envelope(`{id, type, payload, timestamp}`) 을 사용했다.
-(`character_detail`, `character_refresh`, `cache_status`, `ping`)
+envelope(`{id, type, payload, timestamp}`) 을 사용했다. (`character_detail`,
+`character_refresh`, `cache_status`, `ping`)
 
 반면 실제 클라이언트인 메신저봇R Android 앱은
 `{event: 'message', data: KakaoMessage, session: string}` 형태로만 송신했으며,
-위 4종 type 을 보내는 코드는 repo 어디에도 존재하지 않았다.
-즉 서버 측 4종 핸들러는 **dead code** 였다.
+위 4종 type 을 보내는 코드는 repo 어디에도 존재하지 않았다. 즉 서버 측 4종
+핸들러는 **dead code** 였다.
 
 카카오톡 봇 승격 작업(세션 20260515-231420)에서 명령 파서·라우터를 신규 도입함에
 따라, 어떤 envelope 을 권위 계약으로 삼을지 결정이 필요했다.
@@ -50,19 +50,22 @@ envelope(`{id, type, payload, timestamp}`) 을 사용했다.
 
 **부정적 / 위험**
 
-- 기존 4종 type 을 호출하던 **미발견 외부 컨슈머** 가 있다면 즉시 깨짐.
-  grep 결과 repo 내 호출처 없음을 확인 후 결정.
+- 기존 4종 type 을 호출하던 **미발견 외부 컨슈머** 가 있다면 즉시 깨짐. grep
+  결과 repo 내 호출처 없음을 확인 후 결정.
 - 내부망 전용 서비스라 외부 publish 없음 — 영향 범위 monorepo 한정.
 
 ## Alternatives Considered
 
-| 안 | 이유로 기각 |
-|----|------------|
+| 안                                            | 이유로 기각                                                                                            |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | B: 기존 UdpMessage 유지 + `message` 타입 추가 | 클라이언트가 이미 `{event,data,session}` 를 보내므로 사실상 동작 불가. 어댑터 추가 비용 > 단순화 이득. |
-| C: 양방향 호환 zod union | Dead code 유지 비용. 호출자 없는 4종을 위해 복잡도 지불 불합리. |
+| C: 양방향 호환 zod union                      | Dead code 유지 비용. 호출자 없는 4종을 위해 복잡도 지불 불합리.                                        |
 
 ## References
 
-- 세션 work-log: [2026-05-16-udp-service-kakao-bot-promotion](../work-log/2026-05-16-udp-service-kakao-bot-promotion/index.md)
-- 클라이언트 계약 샘플: [client-sample.md](../contracts/client-sample/client-sample.md)
-- 설계 근거: `.claude/work-session/20260515-231420/design.md` §대안 비교 (envelope 방향성)
+- 세션 work-log:
+  [2026-05-16-udp-service-kakao-bot-promotion](../work-log/2026-05-16-udp-service-kakao-bot-promotion/index.md)
+- 클라이언트 계약 샘플:
+  [client-sample.md](../contracts/client-sample/client-sample.md)
+- 설계 근거: `.claude/work-session/20260515-231420/design.md` §대안 비교
+  (envelope 방향성)

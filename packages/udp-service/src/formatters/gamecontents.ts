@@ -32,7 +32,9 @@ export function formatProcyon(contents: CalendarContent[], now: Date = new Date(
     if (!Array.isArray(c.StartTimes) || c.StartTimes.length === 0) continue;
 
     // 오늘 KST 안에서 아직 안 지난 시작시간만 사용.
-    const upcoming = c.StartTimes.map((s) => new Date(s)).filter((d) => d.getTime() > kstNow.getTime());
+    const upcoming = c.StartTimes.map((s) => new Date(s)).filter(
+      (d) => d.getTime() > kstNow.getTime(),
+    );
     if (upcoming.length === 0) continue;
     upcoming.sort((a, b) => a.getTime() - b.getTime());
     const earliest = upcoming[0]!;
@@ -112,4 +114,3 @@ export function formatEvents(result: ActiveEventsResult, now: Date = new Date())
   if (index === 0) return '진행 중인 이벤트가 없습니다.';
   return joinLines(...lines);
 }
-

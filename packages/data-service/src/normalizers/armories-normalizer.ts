@@ -250,10 +250,13 @@ export class ArmoriesNormalizer {
   ): Promise<NormalizationResult> {
     const requestId = this.generateRequestId();
 
-    logger.info({
-      characterName,
-      requestId,
-    }, 'Normalizing character armory data');
+    logger.info(
+      {
+        characterName,
+        requestId,
+      },
+      'Normalizing character armory data',
+    );
 
     try {
       // 1. 기본 정보 추출
@@ -342,25 +345,31 @@ export class ArmoriesNormalizer {
         ? this.detectChanges(existingDetail, characterDetail)
         : undefined;
 
-      logger.info({
-        characterName,
-        itemLevel,
-        requestId,
-        changes: changes
-          ? Object.keys(changes).filter((key) => changes[key as keyof typeof changes])
-          : undefined,
-      }, 'Character armory data normalized successfully');
+      logger.info(
+        {
+          characterName,
+          itemLevel,
+          requestId,
+          changes: changes
+            ? Object.keys(changes).filter((key) => changes[key as keyof typeof changes])
+            : undefined,
+        },
+        'Character armory data normalized successfully',
+      );
 
       return {
         characterDetail,
         changes: changes || undefined,
       };
     } catch (error) {
-      logger.error({
-        characterName,
-        error: error instanceof Error ? error.message : String(error),
-        requestId,
-      }, 'Failed to normalize character armory data');
+      logger.error(
+        {
+          characterName,
+          error: error instanceof Error ? error.message : String(error),
+          requestId,
+        },
+        'Failed to normalize character armory data',
+      );
       throw error;
     }
   }
@@ -539,9 +548,7 @@ export class ArmoriesNormalizer {
    *    각 entry 의 `{Name, Description, Level, Grade}` 를 매핑.
    * 2. ArkPassive 비활성 — 기존 `Engravings[]` 사용 (level/grade 없음).
    */
-  normalizeEngravings(
-    engravingData: any,
-  ): Array<{
+  normalizeEngravings(engravingData: any): Array<{
     slot: number;
     name: string;
     icon: string;

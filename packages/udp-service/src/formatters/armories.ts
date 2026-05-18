@@ -80,7 +80,9 @@ export function formatProfile(name: string, detail: AnyDetail): string {
     combat.sort((a: any, b: any) => (b.value ?? 0) - (a.value ?? 0));
     const top2 = combat.slice(0, 2);
     if (top2.length === 2) {
-      lines.push(`전투특성\t${top2[0].type[0]}:${top2[0].value} ${top2[1].type[0]}:${top2[1].value}`);
+      lines.push(
+        `전투특성\t${top2[0].type[0]}:${top2[0].value} ${top2[1].type[0]}:${top2[1].value}`,
+      );
     }
   }
 
@@ -105,9 +107,7 @@ export function formatProfile(name: string, detail: AnyDetail): string {
   const equipment = Array.isArray(detail.equipment) ? detail.equipment : [];
   if (equipment.length > 0) {
     const eq = summarizeEquipmentForProfile(equipment);
-    lines.push(
-      `엘/초/상\t${eq.elixirTotal}/${eq.transcendenceTotal}/${eq.advancedReforgeTotal}`,
-    );
+    lines.push(`엘/초/상\t${eq.elixirTotal}/${eq.transcendenceTotal}/${eq.advancedReforgeTotal}`);
   }
 
   // 10. 진/깨/도 (ArkPassive 활성 시)
@@ -333,7 +333,9 @@ function parseEquipmentTooltip(eq: any): ParsedEquipment {
               const nameStart = str.indexOf('] ') + 2;
               const nameEnd = str.indexOf(' Lv.');
               const elName =
-                nameStart > 1 && nameEnd > nameStart ? str.substring(nameStart, nameEnd).trim() : 'Unknown';
+                nameStart > 1 && nameEnd > nameStart
+                  ? str.substring(nameStart, nameEnd).trim()
+                  : 'Unknown';
               result.elixirs.push({
                 slot: typeMatch?.[1] ?? 'Unknown',
                 name: elName,
@@ -532,10 +534,7 @@ export function formatAbilityStone(name: string, detail: AnyDetail): string {
   const debuffs = effects.filter((e: any) => e.kind === 'debuff');
   const levelBonus = effects.find((e: any) => e.kind === 'level-bonus');
 
-  const lines: string[] = [
-    `${name}의 어빌리티 스톤`,
-    `[${stone.grade ?? ''}] ${stone.name ?? ''}`,
-  ];
+  const lines: string[] = [`${name}의 어빌리티 스톤`, `[${stone.grade ?? ''}] ${stone.name ?? ''}`];
 
   if (engravings.length > 0) {
     lines.push('', '[각인]');
@@ -590,7 +589,10 @@ export function formatAvatars(name: string, detail: AnyDetail): string {
   const inner: any[] = [];
   const outer: any[] = [];
   for (const a of avatars) {
-    const typeShort = String(a.type ?? '').split(' ')[0]?.substring(0, 2) ?? '이동';
+    const typeShort =
+      String(a.type ?? '')
+        .split(' ')[0]
+        ?.substring(0, 2) ?? '이동';
     const entry = { type: typeShort || '이동', name: a.name };
     if (a.isInner) inner.unshift(entry);
     else outer.unshift(entry);

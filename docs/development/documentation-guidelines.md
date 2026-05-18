@@ -35,13 +35,14 @@
 
 ## analysis 문서 — 분석 관점 명시 (필수)
 
-`docs/analysis/` 문서는 frontmatter 에 **분석 관점** 을 명시합니다.
-다음 작업의 출발점으로 채택될 때 잘못된 전제가 잡히는 것을 방지합니다.
+`docs/analysis/` 문서는 frontmatter 에 **분석 관점** 을 명시합니다. 다음 작업의
+출발점으로 채택될 때 잘못된 전제가 잡히는 것을 방지합니다.
 
 ```yaml
 ---
 kind: analysis
-perspective: legacy-compatible-enhancement | season-appropriate-redesign | neutral
+perspective:
+  legacy-compatible-enhancement | season-appropriate-redesign | neutral
 valid_starting_point_for: [legacy-compat, season-rewrite, ...]
 generated_at: <iso>
 ---
@@ -49,8 +50,8 @@ generated_at: <iso>
 
 값 의미:
 
-- `legacy-compatible-enhancement` — legacy 동작 호환을 유지하면서 보강·정합화하는
-  관점. legacy 가 전제 ("이 라인을 어떻게 복원/유지할까").
+- `legacy-compatible-enhancement` — legacy 동작 호환을 유지하면서
+  보강·정합화하는 관점. legacy 가 전제 ("이 라인을 어떻게 복원/유지할까").
 - `season-appropriate-redesign` — 현재 시즌(아크패시브 등) 기준 재설계 관점.
   legacy 가 폐기 후보.
 - `neutral` — 사실 비교만, 채택 방향 미결.

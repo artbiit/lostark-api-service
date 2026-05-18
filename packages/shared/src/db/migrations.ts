@@ -136,9 +136,12 @@ export class MigrationManager {
       `);
       logger.info('Migrations table initialized');
     } catch (error) {
-      logger.error({
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Failed to initialize migrations table');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Failed to initialize migrations table',
+      );
       throw error;
     }
   }
@@ -158,9 +161,12 @@ export class MigrationManager {
         executionTime: r.execution_time,
       }));
     } catch (error) {
-      logger.error({
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Failed to get executed migrations');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Failed to get executed migrations',
+      );
       return [];
     }
   }
@@ -171,17 +177,23 @@ export class MigrationManager {
         'INSERT INTO migrations (version, name, execution_time) VALUES ($1, $2, $3)',
         [migration.version, migration.name, executionTime],
       );
-      logger.info({
-        version: migration.version,
-        name: migration.name,
-        executionTime,
-      }, 'Migration recorded');
+      logger.info(
+        {
+          version: migration.version,
+          name: migration.name,
+          executionTime,
+        },
+        'Migration recorded',
+      );
     } catch (error) {
-      logger.error({
-        version: migration.version,
-        name: migration.name,
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Failed to record migration');
+      logger.error(
+        {
+          version: migration.version,
+          name: migration.name,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Failed to record migration',
+      );
       throw error;
     }
   }
@@ -191,10 +203,13 @@ export class MigrationManager {
       await pgClient.execute('DELETE FROM migrations WHERE version = $1', [version]);
       logger.info({ version }, 'Migration record removed');
     } catch (error) {
-      logger.error({
-        version,
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Failed to remove migration record');
+      logger.error(
+        {
+          version,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Failed to remove migration record',
+      );
       throw error;
     }
   }
@@ -204,10 +219,13 @@ export class MigrationManager {
     const sql = direction === 'up' ? migration.up : migration.down;
 
     try {
-      logger.info({
-        version: migration.version,
-        name: migration.name,
-      }, `Executing migration ${direction}`);
+      logger.info(
+        {
+          version: migration.version,
+          name: migration.name,
+        },
+        `Executing migration ${direction}`,
+      );
 
       await pgClient.execute(sql);
 
@@ -219,17 +237,23 @@ export class MigrationManager {
         await this.removeMigrationRecord(migration.version);
       }
 
-      logger.info({
-        version: migration.version,
-        name: migration.name,
-        executionTime,
-      }, `Migration ${direction} completed`);
+      logger.info(
+        {
+          version: migration.version,
+          name: migration.name,
+          executionTime,
+        },
+        `Migration ${direction} completed`,
+      );
     } catch (error) {
-      logger.error({
-        version: migration.version,
-        name: migration.name,
-        error: error instanceof Error ? error.message : String(error),
-      }, `Migration ${direction} failed`);
+      logger.error(
+        {
+          version: migration.version,
+          name: migration.name,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        `Migration ${direction} failed`,
+      );
       throw error;
     }
   }
@@ -256,9 +280,12 @@ export class MigrationManager {
         ...(lastMigration && { lastMigration }),
       };
     } catch (error) {
-      logger.error({
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Failed to get migration status');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Failed to get migration status',
+      );
       return {
         totalMigrations: MIGRATIONS.length,
         executedMigrations: 0,
@@ -285,9 +312,12 @@ export class MigrationManager {
       }
       logger.info('All migrations completed successfully');
     } catch (error) {
-      logger.error({
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Migration failed');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Migration failed',
+      );
       throw error;
     }
   }
@@ -315,9 +345,12 @@ export class MigrationManager {
       }
       logger.info('Rollback completed successfully');
     } catch (error) {
-      logger.error({
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Rollback failed');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Rollback failed',
+      );
       throw error;
     }
   }

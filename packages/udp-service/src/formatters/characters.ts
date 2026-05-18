@@ -46,7 +46,9 @@ export function formatSiblings(name: string, data: SiblingsLike): string {
 
   const lines: string[] = [sectionHeader(`${name}님과 같은 ${targetServer} 서버 캐릭터들`)];
   for (const c of sameServer) {
-    lines.push(`[${c.characterClassName}] Lv.${c.characterLevel} (${c.itemLevel})\n\t${c.characterName}`);
+    lines.push(
+      `[${c.characterClassName}] Lv.${c.characterLevel} (${c.itemLevel})\n\t${c.characterName}`,
+    );
   }
   return joinLines(...lines);
 }

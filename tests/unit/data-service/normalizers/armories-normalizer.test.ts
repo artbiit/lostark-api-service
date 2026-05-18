@@ -188,9 +188,7 @@ test('normalizeEngravings — 분기', async (t) => {
 
   await t.test('ArkPassiveEffects 가 없으면 Engravings 배열 사용 (level/grade undefined)', () => {
     const data = {
-      Engravings: [
-        { Slot: 1, Name: '돌격대장', Icon: 'icon-a', Tooltip: 'tip-a' },
-      ],
+      Engravings: [{ Slot: 1, Name: '돌격대장', Icon: 'icon-a', Tooltip: 'tip-a' }],
       Effects: [],
     };
     const result = proto.normalizeEngravings.call(new ArmoriesNormalizer(), data);
@@ -372,33 +370,38 @@ test('normalizeAbilityStone — V9 sample (이다)', async (t) => {
 // === normalizeCharacterDetail — abilityStone 필드 통합 ===
 
 test('normalizeCharacterDetail — abilityStone 통합', async (t) => {
-  await t.test('case: ArkPassive fixture (이다) 가 어빌리티 스톤 4효과 + craftingBonus 정규화', async () => {
-    const fixture = loadFixture(FIXTURE_ARK);
-    const norm = new ArmoriesNormalizer();
-    const { characterDetail } = await norm.normalizeCharacterDetail('테스트캐릭', fixture);
-    assert.ok(characterDetail.abilityStone, 'abilityStone should be present');
-    assert.strictEqual(characterDetail.abilityStone!.name, '위대한 비상의 돌');
-    assert.strictEqual(characterDetail.abilityStone!.grade, '고대');
-    assert.strictEqual(characterDetail.abilityStone!.craftingBonus, '체력 +3525');
-    assert.strictEqual(characterDetail.abilityStone!.engravingEffects.length, 4);
-    const kinds = characterDetail.abilityStone!.engravingEffects.map((e) => e.kind);
-    assert.deepStrictEqual(kinds, ['engraving', 'engraving', 'debuff', 'level-bonus']);
-  });
+  await t.test(
+    'case: ArkPassive fixture (이다) 가 어빌리티 스톤 4효과 + craftingBonus 정규화',
+    async () => {
+      const fixture = loadFixture(FIXTURE_ARK);
+      const norm = new ArmoriesNormalizer();
+      const { characterDetail } = await norm.normalizeCharacterDetail('테스트캐릭', fixture);
+      assert.ok(characterDetail.abilityStone, 'abilityStone should be present');
+      assert.strictEqual(characterDetail.abilityStone!.name, '위대한 비상의 돌');
+      assert.strictEqual(characterDetail.abilityStone!.grade, '고대');
+      assert.strictEqual(characterDetail.abilityStone!.craftingBonus, '체력 +3525');
+      assert.strictEqual(characterDetail.abilityStone!.engravingEffects.length, 4);
+      const kinds = characterDetail.abilityStone!.engravingEffects.map((e) => e.kind);
+      assert.deepStrictEqual(kinds, ['engraving', 'engraving', 'debuff', 'level-bonus']);
+    },
+  );
 
-  await t.test('case: 비-ArkPassive fixture 에 어빌리티 스톤 부재 시 abilityStone === null', async () => {
-    const fixture = loadFixture(FIXTURE_NO_ARK);
-    // FIXTURE_NO_ARK 의 ArmoryEquipment 에 어빌리티 스톤 entry 가 있는지 확인 후 결과 검증.
-    // 있어도 (이다 데이터 그대로 카피) abilityStone 은 신 메서드로 정규화되므로 null 이 아닐 수 있음.
-    // 본 케이스는 "통합 호출이 throw 없이 abilityStone 필드를 채운다" 만 검증.
-    const norm = new ArmoriesNormalizer();
-    const { characterDetail } = await norm.normalizeCharacterDetail('테스트캐릭', fixture);
-    // 필드 자체가 존재해야 함 (null 또는 객체).
-    assert.ok(
-      characterDetail.abilityStone === null ||
-        typeof characterDetail.abilityStone === 'object',
-      'abilityStone field must be present (null or object)',
-    );
-  });
+  await t.test(
+    'case: 비-ArkPassive fixture 에 어빌리티 스톤 부재 시 abilityStone === null',
+    async () => {
+      const fixture = loadFixture(FIXTURE_NO_ARK);
+      // FIXTURE_NO_ARK 의 ArmoryEquipment 에 어빌리티 스톤 entry 가 있는지 확인 후 결과 검증.
+      // 있어도 (이다 데이터 그대로 카피) abilityStone 은 신 메서드로 정규화되므로 null 이 아닐 수 있음.
+      // 본 케이스는 "통합 호출이 throw 없이 abilityStone 필드를 채운다" 만 검증.
+      const norm = new ArmoriesNormalizer();
+      const { characterDetail } = await norm.normalizeCharacterDetail('테스트캐릭', fixture);
+      // 필드 자체가 존재해야 함 (null 또는 객체).
+      assert.ok(
+        characterDetail.abilityStone === null || typeof characterDetail.abilityStone === 'object',
+        'abilityStone field must be present (null or object)',
+      );
+    },
+  );
 });
 
 // === Regression: partial endpoint bare-array 응답 처리 ===
@@ -423,9 +426,11 @@ test('normalize* — partial endpoint bare-array 응답 처리', async (t) => {
   });
 
   await t.test('normalizeCombatSkills: wrap 객체 입력 (full endpoint) 도 유지', () => {
-    const wrapped = { CombatSkills: [
-      { Name: '스킬1', Icon: 'a', Level: 7, Type: '일반', IsAwakening: false, Tripods: [] },
-    ] };
+    const wrapped = {
+      CombatSkills: [
+        { Name: '스킬1', Icon: 'a', Level: 7, Type: '일반', IsAwakening: false, Tripods: [] },
+      ],
+    };
     const out = protoNorm.normalizeCombatSkills(wrapped);
     assert.strictEqual(out.length, 1);
     assert.strictEqual(out[0].name, '스킬1');
@@ -433,7 +438,15 @@ test('normalize* — partial endpoint bare-array 응답 처리', async (t) => {
 
   await t.test('normalizeAvatars: bare array 입력', () => {
     const bare = [
-      { Type: '무기', Name: 'a', Icon: 'i', Grade: '전설', IsSet: false, IsInner: false, Tooltip: '' },
+      {
+        Type: '무기',
+        Name: 'a',
+        Icon: 'i',
+        Grade: '전설',
+        IsSet: false,
+        IsInner: false,
+        Tooltip: '',
+      },
     ];
     const out = protoNorm.normalizeAvatars(bare);
     assert.strictEqual(out.length, 1);

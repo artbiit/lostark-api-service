@@ -5,10 +5,7 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
 
-import {
-  createRouter,
-  type CommandRegistry,
-} from '@lostark/udp-gateway/routing/router.js';
+import { createRouter, type CommandRegistry } from '@lostark/udp-gateway/routing/router.js';
 import type { KakaoMessage } from '@lostark/udp-gateway/contracts/envelope.js';
 
 function makeCtx(): any {

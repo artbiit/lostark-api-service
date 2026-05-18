@@ -54,16 +54,22 @@ export class RedisClient {
       this.isConnected = true;
       this.reconnectAttempts = 0;
 
-      logger.info({
-        url: this.client.options?.url?.replace(/\/\/.*@/, '//***:***@'), // 비밀번호 마스킹
-        database: this.client.options?.database,
-      }, 'Redis connected successfully');
+      logger.info(
+        {
+          url: this.client.options?.url?.replace(/\/\/.*@/, '//***:***@'), // 비밀번호 마스킹
+          database: this.client.options?.database,
+        },
+        'Redis connected successfully',
+      );
     } catch (error) {
       this.isConnected = false;
-      logger.error({
-        error: error instanceof Error ? error.message : String(error),
-        reconnectAttempts: this.reconnectAttempts,
-      }, 'Failed to connect to Redis');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+          reconnectAttempts: this.reconnectAttempts,
+        },
+        'Failed to connect to Redis',
+      );
       throw error;
     }
   }
@@ -78,9 +84,12 @@ export class RedisClient {
 
       logger.info('Redis disconnected successfully');
     } catch (error) {
-      logger.error({
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Failed to disconnect from Redis');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Failed to disconnect from Redis',
+      );
       throw error;
     }
   }
@@ -96,18 +105,24 @@ export class RedisClient {
 
       const value = await this.client.get(key);
 
-      logger.debug({
-        key,
-        found: value !== null,
-        valueLength: value?.length || 0,
-      }, 'Redis get operation');
+      logger.debug(
+        {
+          key,
+          found: value !== null,
+          valueLength: value?.length || 0,
+        },
+        'Redis get operation',
+      );
 
       return value;
     } catch (error) {
-      logger.error({
-        key,
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Redis get operation failed');
+      logger.error(
+        {
+          key,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Redis get operation failed',
+      );
       throw error;
     }
   }
@@ -127,18 +142,24 @@ export class RedisClient {
         await this.client.set(key, value);
       }
 
-      logger.debug({
-        key,
-        valueLength: value.length,
-        ttl,
-      }, 'Redis set operation');
+      logger.debug(
+        {
+          key,
+          valueLength: value.length,
+          ttl,
+        },
+        'Redis set operation',
+      );
     } catch (error) {
-      logger.error({
-        key,
-        valueLength: value.length,
-        ttl,
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Redis set operation failed');
+      logger.error(
+        {
+          key,
+          valueLength: value.length,
+          ttl,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Redis set operation failed',
+      );
       throw error;
     }
   }
@@ -154,15 +175,21 @@ export class RedisClient {
 
       const deleted = await this.client.del(key);
 
-      logger.debug({
-        key,
-        deleted: deleted > 0,
-      }, 'Redis del operation');
+      logger.debug(
+        {
+          key,
+          deleted: deleted > 0,
+        },
+        'Redis del operation',
+      );
     } catch (error) {
-      logger.error({
-        key,
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Redis del operation failed');
+      logger.error(
+        {
+          key,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Redis del operation failed',
+      );
       throw error;
     }
   }
@@ -178,17 +205,23 @@ export class RedisClient {
 
       const deleted = await this.client.del(keys);
 
-      logger.debug({
-        keysCount: keys.length,
-        deletedCount: deleted,
-      }, 'Redis delMultiple operation');
+      logger.debug(
+        {
+          keysCount: keys.length,
+          deletedCount: deleted,
+        },
+        'Redis delMultiple operation',
+      );
 
       return deleted;
     } catch (error) {
-      logger.error({
-        keysCount: keys.length,
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Redis delMultiple operation failed');
+      logger.error(
+        {
+          keysCount: keys.length,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Redis delMultiple operation failed',
+      );
       throw error;
     }
   }
@@ -205,10 +238,13 @@ export class RedisClient {
       const result = await this.client.exists(key);
       return result === 1;
     } catch (error) {
-      logger.error({
-        key,
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Redis exists operation failed');
+      logger.error(
+        {
+          key,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Redis exists operation failed',
+      );
       throw error;
     }
   }
@@ -224,10 +260,13 @@ export class RedisClient {
 
       return await this.client.ttl(key);
     } catch (error) {
-      logger.error({
-        key,
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Redis ttl operation failed');
+      logger.error(
+        {
+          key,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Redis ttl operation failed',
+      );
       throw error;
     }
   }
@@ -275,9 +314,12 @@ export class RedisClient {
         memoryUsage: Math.round(memoryUsage),
       };
     } catch (error) {
-      logger.error({
-        error: error instanceof Error ? error.message : String(error),
-      }, 'Failed to get Redis stats');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Failed to get Redis stats',
+      );
 
       return {
         connected: this.isConnected,
@@ -312,10 +354,13 @@ export class RedisClient {
 
     this.client.on('error', (error) => {
       this.isConnected = false;
-      logger.error({
-        error: error.message,
-        reconnectAttempts: this.reconnectAttempts,
-      }, 'Redis error');
+      logger.error(
+        {
+          error: error.message,
+          reconnectAttempts: this.reconnectAttempts,
+        },
+        'Redis error',
+      );
     });
 
     this.client.on('end', () => {
@@ -325,9 +370,12 @@ export class RedisClient {
 
     this.client.on('reconnecting', () => {
       this.reconnectAttempts++;
-      logger.info({
-        attempt: this.reconnectAttempts,
-      }, 'Redis reconnecting');
+      logger.info(
+        {
+          attempt: this.reconnectAttempts,
+        },
+        'Redis reconnecting',
+      );
     });
   }
 }

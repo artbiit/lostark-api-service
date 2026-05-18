@@ -28,9 +28,12 @@ export const randomCardCommand: CommandSpec = {
       const cached = await ctx.redis.get(key);
       if (cached) card = cached;
     } catch (err) {
-      ctx.logger.debug({
-        err: String(err),
-      }, 'randomCard cache lookup failed (fallback to fresh draw)');
+      ctx.logger.debug(
+        {
+          err: String(err),
+        },
+        'randomCard cache lookup failed (fallback to fresh draw)',
+      );
     }
 
     // 2) 미존재 → 추첨 + set
@@ -41,9 +44,12 @@ export const randomCardCommand: CommandSpec = {
         const ttl = ttlUntilKSTMidnightSeconds();
         await ctx.redis.set(key, card, ttl);
       } catch (err) {
-        ctx.logger.debug({
-          err: String(err),
-        }, 'randomCard cache set failed (continuing without persist)');
+        ctx.logger.debug(
+          {
+            err: String(err),
+          },
+          'randomCard cache set failed (continuing without persist)',
+        );
       }
     }
 

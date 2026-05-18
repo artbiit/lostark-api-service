@@ -43,17 +43,20 @@
 ### cache-write 경로 fix 의 시나리오 의무
 
 cache 에 entry 를 쓰는 코드(`set/upsert/write` 또는 normalize 결과 캐싱) 를
-수정한 fix 는 L3 / 회귀 테스트에 다음 **세 시점**을 모두 포함한다. cache pollution
-류 결함은 단일 호출 테스트만으로 못 잡는다.
+수정한 fix 는 L3 / 회귀 테스트에 다음 **세 시점**을 모두 포함한다. cache
+pollution 류 결함은 단일 호출 테스트만으로 못 잡는다.
 
 1. **fix 한 호출 자체** — 의도한 entry 가 cache 에 들어가는지.
-2. **다음 호출이 cache hit 으로 동일/인접 데이터를 읽을 때** — 의도한 결과가 나오는지.
-   (특히 partial fetch / normalize-all-fields 패턴은 후속 hit 에서 빈 배열로 응답하는 결함이 자주 발생.)
-3. **오염된 old entry 가 있을 때** — 새 코드가 어떻게 동작하는지 (backward-compat).
+2. **다음 호출이 cache hit 으로 동일/인접 데이터를 읽을 때** — 의도한 결과가
+   나오는지. (특히 partial fetch / normalize-all-fields 패턴은 후속 hit 에서 빈
+   배열로 응답하는 결함이 자주 발생.)
+3. **오염된 old entry 가 있을 때** — 새 코드가 어떻게 동작하는지
+   (backward-compat).
 
-근거 사례: 2026-05-17 `7565753` 의 partial bare-array fix 가 normalizer 자체는 맞게
-고쳤지만 cache-write 경로의 부재 fields → 빈 배열 캐싱 결함을 보지 못해, 다음
-세션(`4455d10`) 에서 `fetchedSections` 메타 + `mergeIntoCache` 로 근본 수정.
+근거 사례: 2026-05-17 `7565753` 의 partial bare-array fix 가 normalizer 자체는
+맞게 고쳤지만 cache-write 경로의 부재 fields → 빈 배열 캐싱 결함을 보지 못해,
+다음 세션(`4455d10`) 에서 `fetchedSections` 메타 + `mergeIntoCache` 로 근본
+수정.
 
 관련 MEMORY: `partial-fix-downstream-cache-hit-check`,
 `partial-normalize-absent-fields-cache-poison`.

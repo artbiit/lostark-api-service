@@ -62,7 +62,11 @@ function sendAndReceive(client, envelope, timeoutMs = TIMEOUT_MS) {
       try {
         const text = msg.toString('utf8');
         const parsed = JSON.parse(text);
-        if (parsed && typeof parsed.event === 'string' && parsed.event === `reply:${envelope.session}`) {
+        if (
+          parsed &&
+          typeof parsed.event === 'string' &&
+          parsed.event === `reply:${envelope.session}`
+        ) {
           client.removeListener('message', onMessage);
           clearTimeout(timer);
           resolve(parsed);
@@ -113,11 +117,11 @@ function createClient() {
 
 // catch-block 에러 패턴 (= 비정상 응답)
 const API_ERROR_PATTERNS = [
-  ' 은(는) 없는 것 같숨미당',  // armory catch-block
-  '캐릭터는 없는 것 같숨미당',  // siblings catch-block
+  ' 은(는) 없는 것 같숨미당', // armory catch-block
+  '캐릭터는 없는 것 같숨미당', // siblings catch-block
   '처리 중 오류가 발생했습니다', // router catch-all
-  '정보를 불러올 수 없습니다',   // gamecontents/auctions catch-block
-  '검색에 실패했습니다',         // market/auction catch-block
+  '정보를 불러올 수 없습니다', // gamecontents/auctions catch-block
+  '검색에 실패했습니다', // market/auction catch-block
 ];
 
 /** API 커맨드 정상 응답 검증 — 에러 패턴 포함 시 실패. */
@@ -253,7 +257,10 @@ test('!분배금 100000 → reply:session, data 입력된 금액 포함', async 
     const envelope = makeEnvelope('!분배금 100000');
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.startsWith('입력된 금액'), `data='${reply.data}'`);
+    assert.ok(
+      typeof reply.data === 'string' && reply.data.startsWith('입력된 금액'),
+      `data='${reply.data}'`,
+    );
   } finally {
     client.close();
   }
@@ -265,7 +272,10 @@ test('!랜전카 → reply:session, sender name 포함', async () => {
     const envelope = makeEnvelope('!랜전카');
     const reply = await sendAndReceive(client, envelope);
     assert.strictEqual(reply.event, `reply:${envelope.session}`);
-    assert.ok(typeof reply.data === 'string' && reply.data.includes('smoke-tester'), `data='${reply.data}'`);
+    assert.ok(
+      typeof reply.data === 'string' && reply.data.includes('smoke-tester'),
+      `data='${reply.data}'`,
+    );
   } finally {
     client.close();
   }

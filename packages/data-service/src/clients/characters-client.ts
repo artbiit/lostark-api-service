@@ -42,43 +42,55 @@ export class CharactersClient {
     const endpoint = CHARACTERS_ENDPOINTS.SIBLINGS(encodedName);
     const url = `${this.baseUrl}${endpoint}`;
 
-    logger.info({
-      characterName,
-      encodedName,
-      endpoint,
-      requestId: this.generateRequestId(),
-    }, 'Fetching character siblings');
+    logger.info(
+      {
+        characterName,
+        encodedName,
+        endpoint,
+        requestId: this.generateRequestId(),
+      },
+      'Fetching character siblings',
+    );
 
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
         const response = await this.makeRequest(url, attempt);
 
-        logger.info({
-          characterName,
-          characterCount: response.length,
-          attempt,
-          requestId: this.generateRequestId(),
-        }, 'Successfully fetched character siblings');
+        logger.info(
+          {
+            characterName,
+            characterCount: response.length,
+            attempt,
+            requestId: this.generateRequestId(),
+          },
+          'Successfully fetched character siblings',
+        );
 
         return response;
       } catch (error) {
         if (attempt === this.maxRetries) {
-          logger.error({
-            characterName,
-            endpoint,
-            error: error instanceof Error ? error.message : String(error),
-            requestId: this.generateRequestId(),
-          }, 'Failed to fetch character siblings after all retries');
+          logger.error(
+            {
+              characterName,
+              endpoint,
+              error: error instanceof Error ? error.message : String(error),
+              requestId: this.generateRequestId(),
+            },
+            'Failed to fetch character siblings after all retries',
+          );
           throw error;
         }
 
-        logger.warn({
-          characterName,
-          attempt,
-          nextAttempt: attempt + 1,
-          error: error instanceof Error ? error.message : String(error),
-          requestId: this.generateRequestId(),
-        }, 'Retrying character siblings fetch');
+        logger.warn(
+          {
+            characterName,
+            attempt,
+            nextAttempt: attempt + 1,
+            error: error instanceof Error ? error.message : String(error),
+            requestId: this.generateRequestId(),
+          },
+          'Retrying character siblings fetch',
+        );
 
         await this.delay(this.retryDelay * attempt);
       }
@@ -141,13 +153,16 @@ export class CharactersClient {
     const reset = response.headers.get('X-RateLimit-Reset');
 
     if (limit && remaining && reset) {
-      logger.debug({
-        limit: parseInt(limit),
-        remaining: parseInt(remaining),
-        reset: new Date(parseInt(reset) * 1000),
-        attempt,
-        requestId: this.generateRequestId(),
-      }, 'Rate limit info');
+      logger.debug(
+        {
+          limit: parseInt(limit),
+          remaining: parseInt(remaining),
+          reset: new Date(parseInt(reset) * 1000),
+          attempt,
+          requestId: this.generateRequestId(),
+        },
+        'Rate limit info',
+      );
 
       // Rate Limit 초과 시 대기
       if (parseInt(remaining) === 0) {
@@ -155,11 +170,14 @@ export class CharactersClient {
         const now = Date.now();
         const waitTime = Math.max(0, resetTime - now) + 1000; // 1초 여유
 
-        logger.warn({
-          waitTimeMs: waitTime,
-          resetTime: new Date(resetTime),
-          requestId: this.generateRequestId(),
-        }, 'Rate limit exceeded, waiting for reset');
+        logger.warn(
+          {
+            waitTimeMs: waitTime,
+            resetTime: new Date(resetTime),
+            requestId: this.generateRequestId(),
+          },
+          'Rate limit exceeded, waiting for reset',
+        );
 
         // 실제로는 큐 시스템에서 처리해야 하지만, 여기서는 간단히 대기
         if (waitTime > 0) {

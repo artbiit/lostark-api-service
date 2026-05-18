@@ -86,7 +86,10 @@ test('remainingTime', async (t) => {
 test('dayOfWeekKR returns Korean day name', () => {
   // 2026-05-16 is a Saturday (week index 6).
   const date = new Date('2026-05-16T03:00:00Z');
-  assert.strictEqual(dayOfWeekKR(date), ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][date.getDay()]);
+  assert.strictEqual(
+    dayOfWeekKR(date),
+    ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][date.getDay()],
+  );
 });
 
 test('nowKST returns a Date object', () => {

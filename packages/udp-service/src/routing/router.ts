@@ -89,11 +89,14 @@ export function createRouter(registry: CommandRegistry): Router {
       try {
         return await spec.handler(parsed.args, message, ctx);
       } catch (err) {
-        ctx.logger.warn({
-          command: parsed.name,
-          args: parsed.args,
-          err: err instanceof Error ? err.message : String(err),
-        }, 'Command handler threw');
+        ctx.logger.warn(
+          {
+            command: parsed.name,
+            args: parsed.args,
+            err: err instanceof Error ? err.message : String(err),
+          },
+          'Command handler threw',
+        );
         return `${parsed.name} 처리 중 오류가 발생했습니다.`;
       }
     },

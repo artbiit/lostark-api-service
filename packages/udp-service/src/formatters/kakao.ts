@@ -8,14 +8,16 @@
 // === padStart 헬퍼 ===
 
 /** 품질 3자리 (예: 099, 100). */
-export const padQuality = (q: number): string => String(Math.max(0, Math.floor(q))).padStart(3, '0');
+export const padQuality = (q: number): string =>
+  String(Math.max(0, Math.floor(q))).padStart(3, '0');
 
 /** 아이템 레벨 4자리 (예: 1620, 1640). */
 export const padItemLevel = (lv: number): string =>
   String(Math.max(0, Math.floor(lv))).padStart(4, '0');
 
 /** 두 자리 (예: 01, 12). 초월/상재 카운트. */
-export const padTwoDigit = (n: number): string => String(Math.max(0, Math.floor(n))).padStart(2, '0');
+export const padTwoDigit = (n: number): string =>
+  String(Math.max(0, Math.floor(n))).padStart(2, '0');
 
 // === 섹션 헤더 ===
 
@@ -60,10 +62,7 @@ export function elapsedTime(updatedAt: Date | string | number, now: Date = new D
  * `target` 까지 남은 시간을 한국어로 표현.
  * 예) "2시간 후", "3일 후", "10초 후".
  */
-export function remainingTime(
-  target: Date | string | number,
-  now: Date = new Date(),
-): string {
+export function remainingTime(target: Date | string | number, now: Date = new Date()): string {
   const end = new Date(target);
   const diffSeconds = Math.floor((end.getTime() - now.getTime()) / 1000);
   if (diffSeconds <= 0) return '방금 전';

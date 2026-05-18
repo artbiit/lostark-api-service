@@ -370,8 +370,8 @@ user_signals:
 - **docs/md/image 포함 변경**: (A) 즉시 재생성 권장. semantic 재추출(LLM) 이
   필요하므로 이월하면 다음 세션에도 부담이 남는다.
 
-이 처리 전략의 프로젝트별 근거는 `docs/development/graphify-background-execution.md`
-에 기록한다.
+이 처리 전략의 프로젝트별 근거는
+`docs/development/graphify-background-execution.md` 에 기록한다.
 
 ## 10. MCP / 외부 도구 통합 규칙
 

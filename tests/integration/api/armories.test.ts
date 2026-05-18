@@ -146,7 +146,12 @@ test('어빌리티 스톤 — live 호출 normalize 정상 (L2)', async () => {
       console.log(`✅ L2 어빌리티 스톤 테스트 성공: ${liveCharacter} — 스톤 미장착 (null)`);
     }
   } catch (error) {
-    if (error instanceof Error && (error.message.includes('timeout') || error.message.includes('401') || error.message.includes('403'))) {
+    if (
+      error instanceof Error &&
+      (error.message.includes('timeout') ||
+        error.message.includes('401') ||
+        error.message.includes('403'))
+    ) {
       console.log(`⚠️  API 접근 불가 (${error.message}), L2 테스트 건너뜁니다`);
       return;
     }

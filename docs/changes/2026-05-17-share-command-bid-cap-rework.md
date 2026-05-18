@@ -1,15 +1,14 @@
 # !분배금 명령어 재구성 — PVE 전리품 경매 손익분기 입찰 한도
 
-session: 20260517-215316
-commit: (TBD)
-영향: `packages/udp-service/src/commands/minigame/share.ts`,
-     `tests/unit/udp-service/commands/minigame/share.test.ts`
+session: 20260517-215316 commit: (TBD) 영향:
+`packages/udp-service/src/commands/minigame/share.ts`,
+`tests/unit/udp-service/commands/minigame/share.test.ts`
 
 ## 변경 의도
 
-원 의도(legacy 단계부터): "시장최저가를 입력하면, **로스트아크 거래소
-수수료 + PVE 전리품 경매 분배 시스템**을 고려해 **얼마로 입찰해야 이득**인지
-제시". 그러나 legacy → udp-service 이식 시점까지 계산값과 라벨이 어긋나 있었음.
+원 의도(legacy 단계부터): "시장최저가를 입력하면, **로스트아크 거래소 수수료 +
+PVE 전리품 경매 분배 시스템**을 고려해 **얼마로 입찰해야 이득**인지 제시".
+그러나 legacy → udp-service 이식 시점까지 계산값과 라벨이 어긋나 있었음.
 
 - 라벨이 "(p-1)/p 비율 분배금" 처럼 보이지만, 표시값은 **공교롭게도 손익분기
   최대 입찰가**(`P × 0.95 × (N-1)/N`) 와 동일했음.
@@ -43,10 +42,10 @@ commit: (TBD)
 
 ### 공식
 
-| 항목 | 공식 |
-|------|------|
-| 자가소비 최대 입찰가 | `floor(P × 0.95 × (N-1)/N)` |
-| 재판매 최대 입찰가   | `floor(P × 0.95² × (N-1)/N)` |
+| 항목                 | 공식                             |
+| -------------------- | -------------------------------- |
+| 자가소비 최대 입찰가 | `floor(P × 0.95 × (N-1)/N)`      |
+| 재판매 최대 입찰가   | `floor(P × 0.95² × (N-1)/N)`     |
 | 비낙찰자 분배금      | `floor(자가소비한도 × 0.95 / N)` |
 
 - P: 시장최저가
@@ -60,13 +59,14 @@ commit: (TBD)
 
 ## 근거
 
-조사 결과 — `.claude/work-session/20260517-215316/research/share-formula-research.md`:
+조사 결과 —
+`.claude/work-session/20260517-215316/research/share-formula-research.md`:
 
 - 거래소 5% 수수료: 복수 출처 일치 (인벤·아카라이브·공식 가이드).
-- 낙찰자 포함 N 분의 1 분배: 인벤 공략 + 다수 계산기 사이트
-  (rloa.gg, loachart.com, loatool.taeu.kr, mokoko.co.kr, iloa.gg) 채택.
+- 낙찰자 포함 N 분의 1 분배: 인벤 공략 + 다수 계산기 사이트 (rloa.gg,
+  loachart.com, loatool.taeu.kr, mokoko.co.kr, iloa.gg) 채택.
 - 표준 공식 `P × 0.95 × (N-1)/N`: 인벤 공략 [경매 최적가 계산 공식]
-  + 루리웹 4인팟 입찰 팁 일치.
+  - 루리웹 4인팟 입찰 팁 일치.
 
 ## 테스트
 
@@ -82,12 +82,13 @@ commit: (TBD)
 
 - registry, router, formatter 미터치.
 - 다른 minigame 명령어(주사위/vs/시너지/랜전카/질문) 비영향.
-- legacy/src/Service/Commands/mingame.js(소스) 는 deprecated 폴더이므로 동기화 불필요.
+- legacy/src/Service/Commands/mingame.js(소스) 는 deprecated 폴더이므로 동기화
+  불필요.
 
 ## 미해결 / Open Items
 
 - 8인 단위 경매가 게임에서 실제로 8인 전체 분배인지 4인 소파티 단위인지 출처
   확인 불가. 현재 코드는 8인 전체를 단일 분배 단위로 가정. 보고된 게임 동작과
   다르면 추후 정정 필요.
-- 우편 수수료 5% 중복 적용 케이스는 채택하지 않음(거래소 5% 1회만).
-  실제 게임 동작이 다르면 재조정.
+- 우편 수수료 5% 중복 적용 케이스는 채택하지 않음(거래소 5% 1회만). 실제 게임
+  동작이 다르면 재조정.

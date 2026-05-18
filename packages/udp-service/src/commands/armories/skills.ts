@@ -8,7 +8,10 @@ export const skillsCommand: CommandSpec = {
   handler: async (args, _message, ctx) => {
     const name = args[0]!;
     try {
-      const detail = await ctx.armoriesService.getCharacterDetailPartial(name, ['profile', 'combat-skills']);
+      const detail = await ctx.armoriesService.getCharacterDetailPartial(name, [
+        'profile',
+        'combat-skills',
+      ]);
       if (!detail?.combatSkills) return `${name} 은(는) Lv.2 이상 스킬이 없는 것 같숨미당.`;
       return formatSkills(name, detail);
     } catch (err) {

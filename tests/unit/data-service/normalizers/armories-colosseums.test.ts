@@ -11,7 +11,7 @@ import { test } from 'node:test';
 
 import { ArmoriesNormalizer } from '@lostark/data-service';
 
-const proto = (ArmoriesNormalizer.prototype as unknown) as {
+const proto = ArmoriesNormalizer.prototype as unknown as {
   normalizeColosseums(data: unknown): Array<{
     seasonName: string;
     competitive?: unknown;

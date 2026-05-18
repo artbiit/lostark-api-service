@@ -30,10 +30,7 @@ import {
 } from '@lostark/udp-gateway/formatters/armories.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const FIXTURE_PATH = resolve(
-  __dirname,
-  '../../../fixtures/armories/character-detail-ida.json',
-);
+const FIXTURE_PATH = resolve(__dirname, '../../../fixtures/armories/character-detail-ida.json');
 
 function loadFixture(): Record<string, any> {
   return JSON.parse(readFileSync(FIXTURE_PATH, 'utf-8'));
@@ -232,7 +229,9 @@ test('골든: formatAvatars — 이다 아바타 목록', () => {
   // Outer / Inner 섹션
   assert.match(out, /\[Outer\]/);
   // 이다 fixture 에 10개 아바타 있음
-  const avatarLines = out.split('\n').filter((l) => l.trim().startsWith('[') && !l.includes('Outer') && !l.includes('Inner'));
+  const avatarLines = out
+    .split('\n')
+    .filter((l) => l.trim().startsWith('[') && !l.includes('Outer') && !l.includes('Inner'));
   assert.ok(avatarLines.length > 0, 'should have avatar items');
 });
 

@@ -9,18 +9,18 @@ deploy_target: msgbot (com.xfl.msgbot) 런타임
 이 디렉토리는 안드로이드 **메신저봇R** (msgbot, `com.xfl.msgbot`) 런타임에서
 동작하는 카카오톡 알림 후킹 + UDP 브리지 스크립트를 관리한다.
 
-서버 측은 `packages/udp-service` (UDP gateway, 기본 port `5022`).
-이 스크립트가 카카오톡 알림을 잡아 `{event:'message', data, session}` envelope
-으로 UDP 전송 → 서버가 명령 라우팅 후 `{event:'reply:<session>', data}` 로
-응답하면, 스크립트가 `bot.send` 로 톡방에 회신한다.
+서버 측은 `packages/udp-service` (UDP gateway, 기본 port `5022`). 이 스크립트가
+카카오톡 알림을 잡아 `{event:'message', data, session}` envelope 으로 UDP 전송 →
+서버가 명령 라우팅 후 `{event:'reply:<session>', data}` 로 응답하면, 스크립트가
+`bot.send` 로 톡방에 회신한다.
 
 ## 파일 구성
 
-| 파일 | git | 용도 |
-| --- | --- | --- |
-| `remote-kakao.template.js` | 커밋 | placeholder 버전. 원본 코드 + `__SERVER_HOST__`, `__SERVER_PORT__` |
-| `remote-kakao.js`          | **.gitignore** | 실값 치환된 로컬 사본. 안드로이드 기기에 복사하는 실제 파일 |
-| `README.md`                | 커밋 | 이 문서 |
+| 파일                       | git            | 용도                                                               |
+| -------------------------- | -------------- | ------------------------------------------------------------------ |
+| `remote-kakao.template.js` | 커밋           | placeholder 버전. 원본 코드 + `__SERVER_HOST__`, `__SERVER_PORT__` |
+| `remote-kakao.js`          | **.gitignore** | 실값 치환된 로컬 사본. 안드로이드 기기에 복사하는 실제 파일        |
+| `README.md`                | 커밋           | 이 문서                                                            |
 
 > public 레포라 내부 LAN IP/포트는 `remote-kakao.js` 에만 들어 있고 커밋되지
 > 않는다. 절대 `git add scripts/messenger-bot/remote-kakao.js` 금지.
@@ -41,13 +41,14 @@ Select-String -Path .gitignore -Pattern "scripts/messenger-bot/remote-kakao.js"
 
 `__SERVER_HOST__` 는 본 레포 docker 호스트의 LAN IP. 환경별로 다르다.
 `__SERVER_PORT__` 는 `packages/shared/src/config/env.ts` 의 `UDP_GATEWAY_PORT`
-기본값 `5022` 와 맞춘다.
-`__SENDER_NAME__` 은 카카오톡에서 표시되는 본인 이름 (예: `이정수`). 복수 지정 시 `config.allowedSenders` 배열을 직접 편집.
+기본값 `5022` 와 맞춘다. `__SENDER_NAME__` 은 카카오톡에서 표시되는 본인 이름
+(예: `이정수`). 복수 지정 시 `config.allowedSenders` 배열을 직접 편집.
 
 ## 안드로이드 기기 배포
 
 1. 본 레포가 도는 PC 와 안드로이드 기기를 **같은 LAN/WiFi** 에 둔다.
-2. PC 에서 서버 기동 (Docker compose 또는 직접 `yarn workspace @lostark/udp-gateway start`).
+2. PC 에서 서버 기동 (Docker compose 또는 직접
+   `yarn workspace @lostark/udp-gateway start`).
    - 방화벽이 `5022/udp` 인바운드를 막지 않는지 확인 (Windows Defender 인바운드
      규칙).
 3. 안드로이드 기기에 msgbot 설치 후 `remote-kakao.js` 본문을 새 스크립트로

@@ -81,16 +81,17 @@ mkdir -p .claude/work-session/<sid>/{research,implementation,artifacts}
 가장 최근 `.claude/work-session/<이전-sid>/report.md` 를 탐색해
 `graph_refresh.decision: deviation` 항목이 있으면:
 
-이월된 scope 와 명령을 Open Item 에서 읽어 **세션 시작과 동시에 `/graphify
-<scope> --update` 를 즉시 실행**한다. code-only 변경이면 AST 만 실행되므로 약
-1~2 분이면 완료된다. graphify-lookup-advisor 호출 전에 완료 여부를 확인한다.
+이월된 scope 와 명령을 Open Item 에서 읽어 **세션 시작과 동시에
+`/graphify <scope> --update` 를 즉시 실행**한다. code-only 변경이면 AST 만
+실행되므로 약 1~2 분이면 완료된다. graphify-lookup-advisor 호출 전에 완료 여부를
+확인한다.
 
 deviation 이월 없음 → 이 단계 스킵.
 
 > **이 프로젝트 한정**: 변경이 TypeScript code-only 이면 graphify `--update` 가
 > LLM 없이 AST 만으로 실행된다 (약 1~2분, 토큰 비용 0). 이 때문에 세션 시작과
-> 동시에 업데이트를 실행해도 사용자 대기 부담이 최소화된다.
-> 상세: `docs/development/graphify-background-execution.md`
+> 동시에 업데이트를 실행해도 사용자 대기 부담이 최소화된다. 상세:
+> `docs/development/graphify-background-execution.md`
 
 ### 3. report.md 초기화
 
@@ -224,19 +225,20 @@ Advisor/Worker 가 직접 수행 금지.
    실행. 배포 계획을 산출하고 보고서 "deploy_plan" 섹션에 기록. haiku 모델로
    호출. 산출된 `actions` 중 `yarn build` /
    `yarn workspace @lostark/rest-api dump:openapi` / loa-platform compose
-   재기동은 orchestrator 가 **사용자 승인(AskUserQuestion 한 번) 후 Bash 로
-   직접 실행** 한다 (auto-commit 정책 준용). 복붙용 명령 텍스트만 안내하는
-   것은 사용자가 명시적으로 "내가 한다" 라고 한 경우에만. 배포 불필요 판정이면
+   재기동은 orchestrator 가 **사용자 승인(AskUserQuestion 한 번) 후 Bash 로 직접
+   실행** 한다 (auto-commit 정책 준용). 복붙용 명령 텍스트만 안내하는 것은
+   사용자가 명시적으로 "내가 한다" 라고 한 경우에만. 배포 불필요 판정이면
    `skippable_reason` 기록. **deploy-advisor 미도입 시점**(Phase 0~5)에서는
    orchestrator 가 직접 동등 절차를 안내·실행한다 — 최소:
    `yarn workspace @lostark/rest-api dump:openapi` 실행 후 OpenAPI diff 첨부,
    REST 계약이 바뀐 경우 `../LoA-Bot/src/infra/lostark/generated.ts` 재생성
    안내. **로컬 컨테이너 재기동 처리**: `packages/*/src/` 변경이 있고 로컬
-   docker 에 lostark-api-service 컨테이너가 가동 중이면 (`loa-platform-lostark-*`),
-   `loa-platform` compose 재기동을 위 정책에 따라 **직접 실행** (MEMORY:
-   `feedback-restart-commands-run-directly`,
-   `feedback-local-docker-is-user-environment`, `project-local-docker-topology`).
-   "운영 서버" 어휘 사용 금지 — 사용자 환경은 로컬 docker.
+   docker 에 lostark-api-service 컨테이너가 가동 중이면
+   (`loa-platform-lostark-*`), `loa-platform` compose 재기동을 위 정책에 따라
+   **직접 실행** (MEMORY: `feedback-restart-commands-run-directly`,
+   `feedback-local-docker-is-user-environment`,
+   `project-local-docker-topology`). "운영 서버" 어휘 사용 금지 — 사용자 환경은
+   로컬 docker.
 
 그 외:
 

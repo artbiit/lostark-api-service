@@ -125,6 +125,9 @@ async function main(): Promise<void> {
 }
 
 main().catch((err) => {
-  console.error('❌ 예기치 못한 오류:', err instanceof Error ? err.stack ?? err.message : String(err));
+  console.error(
+    '❌ 예기치 못한 오류:',
+    err instanceof Error ? (err.stack ?? err.message) : String(err),
+  );
   process.exit(1);
 });

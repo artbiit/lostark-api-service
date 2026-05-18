@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 // 메신저봇R(Android) 클라이언트 스크립트 템플릿.
 //
 // 이 파일은 placeholder 형태로 커밋되며, 실제 안드로이드 기기에 배포할 때는
@@ -7,14 +7,14 @@
 //
 // 원본 출처: pandoli365/remote-kakao 파생, msgbot (com.xfl.msgbot) 런타임 전용.
 const bot = BotManager.getCurrentBot();
-Device.acquireWakeLock(android.os.PowerManager.PARTIAL_WAKE_LOCK, "");
-var scriptName = "remote-kakao";
+Device.acquireWakeLock(android.os.PowerManager.PARTIAL_WAKE_LOCK, '');
+var scriptName = 'remote-kakao';
 var config = {
-  address: "__SERVER_HOST__",
+  address: '__SERVER_HOST__',
   port: __SERVER_PORT__,
-  packageNames: ["com.kakao.talk"],
+  packageNames: ['com.kakao.talk'],
   userIds: [0],
-  allowedSenders: ["__SENDER_NAME__"], // 본인 카카오 이름. 복수 가능: ["이름1","이름2"]
+  allowedSenders: ['__SENDER_NAME__'], // 본인 카카오 이름. 복수 가능: ["이름1","이름2"]
 };
 //var RKPlugins = {};
 // var pluginDir = new java.io.File(com.xfl.msgbot.utils.SharedVar.Companion.getBotsPath(), "".concat(scriptName, "/plugins"));
@@ -37,17 +37,11 @@ function getBytes(str) {
   return new java.lang.String(str).getBytes();
 }
 
-
 function sendEvent(event, data, session) {
   var payload = { event: event, data: data };
   if (session !== undefined) payload.session = String(session);
   var bytes = getBytes(JSON.stringify(payload));
-  var outPacket = new java.net.DatagramPacket(
-    bytes,
-    bytes.length,
-    address,
-    config.port
-  );
+  var outPacket = new java.net.DatagramPacket(bytes, bytes.length, address, config.port);
   socket.send(outPacket);
 }
 function bitmapToBase64(icon) {
@@ -67,11 +61,11 @@ var receiveMessage = function (msg) {
     session = _q.session;
 
   // 서버 → 클라이언트 응답 처리. event 가 'reply:<session>' 형식이면 카톡으로 송신.
-  if (typeof event === "string" && event.indexOf("reply:") === 0) {
+  if (typeof event === 'string' && event.indexOf('reply:') === 0) {
     var sess = event.substring(6);
     var route = pendingReplies[sess];
     delete pendingReplies[sess];
-    if (route && route.roomId && typeof data === "string" && data.length > 0) {
+    if (route && route.roomId && typeof data === 'string' && data.length > 0) {
       try {
         bot.send(route.roomId, data, route.packageName);
       } catch (_) {}
@@ -80,10 +74,10 @@ var receiveMessage = function (msg) {
   }
 
   function sendReply(data) {
-    return sendEvent("reply:".concat(session), data);
+    return sendEvent('reply:'.concat(session), data);
   }
   switch (event) {
-    case "send_text":
+    case 'send_text':
       try {
         bot.send(data.roomId, data.text, data.packageName);
         sendReply(true);
@@ -92,19 +86,16 @@ var receiveMessage = function (msg) {
         sendReply(false);
       }
       break;
-    case "read":
+    case 'read':
       if (
-        ((_e = data.userId) === null || _e === void 0
-          ? void 0
-          : _e.toString()) &&
+        ((_e = data.userId) === null || _e === void 0 ? void 0 : _e.toString()) &&
         data.packageName &&
         data.roomId
       ) {
         var action =
           (_h =
             (_g =
-              (_f = replyActions.get(Number(data.userId))) === null ||
-              _f === void 0
+              (_f = replyActions.get(Number(data.userId))) === null || _f === void 0
                 ? void 0
                 : _f.get(data.packageName.toString())) === null || _g === void 0
               ? void 0
@@ -113,11 +104,7 @@ var receiveMessage = function (msg) {
             : _h[0];
         if (action) {
           try {
-            action.actionIntent.send(
-              Api.getContext(),
-              1,
-              new android.content.Intent()
-            );
+            action.actionIntent.send(Api.getContext(), 1, new android.content.Intent());
             sendReply(true);
           } catch (_) {
             sendReply(false);
@@ -126,18 +113,15 @@ var receiveMessage = function (msg) {
       }
       sendReply(false);
       break;
-    case "get_profile_image":
+    case 'get_profile_image':
       if (
-        ((_j = data.userId) === null || _j === void 0
-          ? void 0
-          : _j.toString()) &&
+        ((_j = data.userId) === null || _j === void 0 ? void 0 : _j.toString()) &&
         data.packageName &&
         data.userHash
       ) {
         var profileImage =
           (_l =
-            (_k = profileImages.get(Number(data.userId))) === null ||
-            _k === void 0
+            (_k = profileImages.get(Number(data.userId))) === null || _k === void 0
               ? void 0
               : _k.get(data.packageName.toString())) === null || _l === void 0
             ? void 0
@@ -146,11 +130,9 @@ var receiveMessage = function (msg) {
       }
       sendReply(undefined);
       break;
-    case "get_room_icon":
+    case 'get_room_icon':
       if (
-        ((_m = data.userId) === null || _m === void 0
-          ? void 0
-          : _m.toString()) &&
+        ((_m = data.userId) === null || _m === void 0 ? void 0 : _m.toString()) &&
         data.packageName &&
         data.roomId
       ) {
@@ -171,36 +153,36 @@ let count = 0;
 let resetInterval = 1000;
 let maximumRequest = 3;
 let messageId = 0;
-const prefixComment = "명령어 사용시 !로 시작해주셔야 합니다.\n예시) !도움말";
+const prefixComment = '명령어 사용시 !로 시작해주셔야 합니다.\n예시) !도움말';
 function onMessage(data) {
   // Event.MESSAGE: data.author (구형) 또는 data.sender (신형 msgbot)
   // notification 경로: data.sender = { name, hash }
   var _senderObj = data.sender || data.author || {};
-  var _senderName = _senderObj.name ? String(_senderObj.name) : "unknown";
+  var _senderName = _senderObj.name ? String(_senderObj.name) : 'unknown';
   var _senderHash = _senderObj.hash ? String(_senderObj.hash) : _senderName;
 
   // Event.MESSAGE: data.room = string
   // notification 경로: data.room = { name, id, isGroupChat }
-  var _roomName = typeof data.room === "string" ? data.room : (data.room && data.room.name) || "";
-  var _roomId = typeof data.room === "string" ? data.room : (data.room && data.room.id) || _roomName;
-  var _isGroupChat = typeof data.room === "object" && data.room !== null
-    ? data.room.isGroupChat
-    : data.isGroupChat;
+  var _roomName = typeof data.room === 'string' ? data.room : (data.room && data.room.name) || '';
+  var _roomId =
+    typeof data.room === 'string' ? data.room : (data.room && data.room.id) || _roomName;
+  var _isGroupChat =
+    typeof data.room === 'object' && data.room !== null ? data.room.isGroupChat : data.isGroupChat;
 
   // Event.MESSAGE: data.packageName / notification 경로: data.app.packageName
-  var _packageName = data.packageName || (data.app && data.app.packageName) || "";
+  var _packageName = data.packageName || (data.app && data.app.packageName) || '';
 
   // Event.MESSAGE: data.isMention / notification 경로: data.containsMention
   var _containsMention = data.isMention !== undefined ? data.isMention : data.containsMention;
 
-  if (!config.allowedSenders.includes(_senderName) && !_roomName.startsWith("◆+!")) {
+  if (!config.allowedSenders.includes(_senderName) && !_roomName.startsWith('◆+!')) {
     return;
   }
-  if (data.content === "접두사") {
+  if (data.content === '접두사') {
     bot.send(_roomId, prefixComment, _packageName);
     return;
   }
-  if (!data.content.startsWith("!")) {
+  if (!data.content.startsWith('!')) {
     return;
   }
   if (count === 1) {
@@ -242,7 +224,7 @@ function onMessage(data) {
   setTimeout(function () {
     delete pendingReplies[session];
   }, 5000);
-  sendEvent("message", msg, session);
+  sendEvent('message', msg, session);
 }
 // @ts-ignore
 var thread = new java.lang.Thread({
@@ -252,11 +234,7 @@ var thread = new java.lang.Thread({
         inPacket.setLength(buffer.length); // 수신 후 축소된 버퍼를 매번 복원
         socket.receive(inPacket);
         var raw = String(
-          new java.lang.String(
-            inPacket.getData(),
-            inPacket.getOffset(),
-            inPacket.getLength()
-          )
+          new java.lang.String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength()),
         );
         var message;
         try {
@@ -276,121 +254,79 @@ function onStartCompile() {
 thread.start();
 bot.addListener(Event.MESSAGE, onMessage);
 function onNotificationPosted(sbn) {
-  var _a,
-    _b,
-    _c,
-    _d,
-    _e,
-    _f,
-    _g,
-    _h,
-    _j,
-    _k,
-    _l,
-    _m,
-    _o,
-    _p,
-    _q,
-    _r,
-    _s,
-    _t,
-    _u,
-    _v;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
   var packageName = sbn.getPackageName();
   var userId = sbn.getUser().hashCode();
-  if (
-    !config.packageNames.includes(packageName) ||
-    !config.userIds.includes(userId)
-  )
-    return;
+  if (!config.packageNames.includes(packageName) || !config.userIds.includes(userId)) return;
   var noti = sbn.getNotification();
   var actions = noti.actions;
   var bundle = noti.extras;
   if (
     !actions ||
     !bundle ||
-    bundle.getString("android.template") !==
-      "android.app.Notification$MessagingStyle"
+    bundle.getString('android.template') !== 'android.app.Notification$MessagingStyle'
   )
     return;
-  var senderName = bundle.getString("android.title");
+  var senderName = bundle.getString('android.title');
   var roomName =
     (_b =
-      (_a = bundle.getString("android.subText")) !== null && _a !== void 0
+      (_a = bundle.getString('android.subText')) !== null && _a !== void 0
         ? _a
-        : bundle.getString("android.summaryText")) !== null && _b !== void 0
+        : bundle.getString('android.summaryText')) !== null && _b !== void 0
       ? _b
       : senderName;
-  var androidText = bundle.get("android.text");
+  var androidText = bundle.get('android.text');
   var content = androidText.toString();
   var containsMention = androidText instanceof android.text.SpannableString;
-  var isGroupChat = bundle.getBoolean("android.isGroupConversation");
-  var messageBundle = bundle.getParcelableArray("android.messages")[0];
-  var senderPerson = messageBundle.get("sender_person");
+  var isGroupChat = bundle.getBoolean('android.isGroupConversation');
+  var messageBundle = bundle.getParcelableArray('android.messages')[0];
+  var senderPerson = messageBundle.get('sender_person');
   var senderHash = senderPerson.getKey();
-  var time = messageBundle.getLong("time");
+  var time = messageBundle.getLong('time');
   var roomId = sbn.getTag();
-  var logId = java.lang.Long.toString(bundle.getLong("chatLogId"));
+  var logId = java.lang.Long.toString(bundle.getLong('chatLogId'));
   var profileImage = bitmapToBase64(senderPerson.getIcon().getBitmap());
   if (!profileImages.has(userId)) profileImages.set(userId, new Map());
-  if (
-    !((_c = profileImages.get(userId)) === null || _c === void 0
-      ? void 0
-      : _c.has(packageName))
-  )
+  if (!((_c = profileImages.get(userId)) === null || _c === void 0 ? void 0 : _c.has(packageName)))
     (_d = profileImages.get(userId)) === null || _d === void 0
       ? void 0
       : _d.set(packageName, new Map());
   if (
     !((_f =
-      (_e = profileImages.get(userId)) === null || _e === void 0
-        ? void 0
-        : _e.get(packageName)) === null || _f === void 0
+      (_e = profileImages.get(userId)) === null || _e === void 0 ? void 0 : _e.get(packageName)) ===
+      null || _f === void 0
       ? void 0
       : _f.has(senderHash))
   )
     (_h =
-      (_g = profileImages.get(userId)) === null || _g === void 0
-        ? void 0
-        : _g.get(packageName)) === null || _h === void 0
+      (_g = profileImages.get(userId)) === null || _g === void 0 ? void 0 : _g.get(packageName)) ===
+      null || _h === void 0
       ? void 0
       : _h.set(roomId, profileImage);
-  var roomIcon = bitmapToBase64(bundle.get("android.largeIcon").getBitmap());
+  var roomIcon = bitmapToBase64(bundle.get('android.largeIcon').getBitmap());
   if (!roomIcons.has(userId)) roomIcons.set(userId, new Map());
-  if (
-    !((_j = roomIcons.get(userId)) === null || _j === void 0
-      ? void 0
-      : _j.has(packageName))
-  )
+  if (!((_j = roomIcons.get(userId)) === null || _j === void 0 ? void 0 : _j.has(packageName)))
     (_k = roomIcons.get(userId)) === null || _k === void 0
       ? void 0
       : _k.set(packageName, new Map());
   if (
     !((_m =
-      (_l = roomIcons.get(userId)) === null || _l === void 0
-        ? void 0
-        : _l.get(packageName)) === null || _m === void 0
+      (_l = roomIcons.get(userId)) === null || _l === void 0 ? void 0 : _l.get(packageName)) ===
+      null || _m === void 0
       ? void 0
       : _m.has(roomId))
   )
-    (_p =
-      (_o = roomIcons.get(userId)) === null || _o === void 0
-        ? void 0
-        : _o.get(packageName)) === null || _p === void 0
+    (_p = (_o = roomIcons.get(userId)) === null || _o === void 0 ? void 0 : _o.get(packageName)) ===
+      null || _p === void 0
       ? void 0
       : _p.set(roomId, roomIcon);
   var readAction = undefined;
   for (var _i = 0, _w = Array.from(actions); _i < _w.length; _i++) {
     var action = _w[_i];
-    if (
-      action.getRemoteInputs() &&
-      ["reply", "답장"].includes(action.title.toLowerCase())
-    ) {
+    if (action.getRemoteInputs() && ['reply', '답장'].includes(action.title.toLowerCase())) {
       if (!replyActions.has(userId)) replyActions.set(userId, new Map());
       if (
-        !((_q = replyActions.get(userId)) === null || _q === void 0
-          ? void 0
-          : _q.has(packageName))
+        !((_q = replyActions.get(userId)) === null || _q === void 0 ? void 0 : _q.has(packageName))
       )
         (_r = replyActions.get(userId)) === null || _r === void 0
           ? void 0
@@ -409,9 +345,7 @@ function onNotificationPosted(sbn) {
             : _u.get(packageName)) === null || _v === void 0
           ? void 0
           : _v.set(roomId, [
-              readAction !== null && readAction !== void 0
-                ? readAction
-                : actions[1],
+              readAction !== null && readAction !== void 0 ? readAction : actions[1],
               action,
             ]);
       onMessage.call(null, {
@@ -423,12 +357,12 @@ function onNotificationPosted(sbn) {
         time: time,
         app: { packageName: packageName, userId: userId },
       });
-    } else if (["read", "읽음"].includes(action.title.toLowerCase())) {
+    } else if (['read', '읽음'].includes(action.title.toLowerCase())) {
       readAction = action;
       com.xfl.msgbot.application.service.NotificationListener.Companion.setMarkAsRead(
         packageName,
         roomName,
-        action
+        action,
       );
     }
   }

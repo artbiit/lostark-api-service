@@ -104,10 +104,13 @@ export class ArmoriesService {
     // 맵을 다시 배열로 변환하고 우선순위별 정렬
     this.processingQueue = Array.from(existingMap.values()).sort((a, b) => b.priority - a.priority);
 
-    logger.info({
-      addedCount: items.length,
-      totalQueueSize: this.processingQueue.length,
-    }, 'Added items to ARMORIES queue');
+    logger.info(
+      {
+        addedCount: items.length,
+        totalQueueSize: this.processingQueue.length,
+      },
+      'Added items to ARMORIES queue',
+    );
 
     // 큐 처리 시작 (비동기)
     this.processQueue();
@@ -124,10 +127,13 @@ export class ArmoriesService {
     this.isProcessing = true;
     const requestId = this.generateRequestId();
 
-    logger.info({
-      queueSize: this.processingQueue.length,
-      requestId,
-    }, 'Starting ARMORIES queue processing');
+    logger.info(
+      {
+        queueSize: this.processingQueue.length,
+        requestId,
+      },
+      'Starting ARMORIES queue processing',
+    );
 
     try {
       const batchSize = 5; // 한 번에 처리할 항목 수
@@ -137,11 +143,14 @@ export class ArmoriesService {
       const promises = batch.map((item) => this.processQueueItem(item, requestId));
       await Promise.allSettled(promises);
 
-      logger.info({
-        processedCount: batch.length,
-        remainingQueueSize: this.processingQueue.length,
-        requestId,
-      }, 'ARMORIES queue batch processed');
+      logger.info(
+        {
+          processedCount: batch.length,
+          remainingQueueSize: this.processingQueue.length,
+          requestId,
+        },
+        'ARMORIES queue batch processed',
+      );
 
       // 큐에 남은 항목이 있으면 계속 처리
       if (this.processingQueue.length > 0) {
@@ -149,10 +158,13 @@ export class ArmoriesService {
         setTimeout(() => this.processQueue(), 1000);
       }
     } catch (error) {
-      logger.error({
-        error: error instanceof Error ? error.message : String(error),
-        requestId,
-      }, 'Failed to process ARMORIES queue');
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+          requestId,
+        },
+        'Failed to process ARMORIES queue',
+      );
     } finally {
       this.isProcessing = false;
     }
@@ -165,33 +177,42 @@ export class ArmoriesService {
     const startTime = Date.now();
 
     try {
-      logger.info({
-        characterName: item.characterName,
-        reason: item.reason,
-        priority: item.priority,
-        requestId,
-      }, 'Processing ARMORIES queue item');
+      logger.info(
+        {
+          characterName: item.characterName,
+          reason: item.reason,
+          priority: item.priority,
+          requestId,
+        },
+        'Processing ARMORIES queue item',
+      );
 
       // 캐릭터 상세 정보 처리
       const result = await this.processCharacterDetail(item.characterName);
 
-      logger.info({
-        characterName: item.characterName,
-        processingTime: result.processingTime,
-        cacheHit: result.cacheHit,
-        changes: result.changes
-          ? Object.keys(result.changes).filter(
-              (key) => result.changes![key as keyof typeof result.changes],
-            )
-          : undefined,
-        requestId,
-      }, 'ARMORIES queue item processed successfully');
+      logger.info(
+        {
+          characterName: item.characterName,
+          processingTime: result.processingTime,
+          cacheHit: result.cacheHit,
+          changes: result.changes
+            ? Object.keys(result.changes).filter(
+                (key) => result.changes![key as keyof typeof result.changes],
+              )
+            : undefined,
+          requestId,
+        },
+        'ARMORIES queue item processed successfully',
+      );
     } catch (error) {
-      logger.error({
-        characterName: item.characterName,
-        error: error instanceof Error ? error.message : String(error),
-        requestId,
-      }, 'Failed to process ARMORIES queue item');
+      logger.error(
+        {
+          characterName: item.characterName,
+          error: error instanceof Error ? error.message : String(error),
+          requestId,
+        },
+        'Failed to process ARMORIES queue item',
+      );
 
       // 실패한 항목을 다시 큐에 추가 (우선순위 낮춤)
       if (item.priority > 1) {
@@ -212,10 +233,13 @@ export class ArmoriesService {
     const startTime = Date.now();
     const requestId = this.generateRequestId();
 
-    logger.info({
-      characterName,
-      requestId,
-    }, 'Starting character detail processing');
+    logger.info(
+      {
+        characterName,
+        requestId,
+      },
+      'Starting character detail processing',
+    );
 
     try {
       // 1. 캐시에서 기존 정보 확인
@@ -224,10 +248,13 @@ export class ArmoriesService {
 
       if (existingDetail) {
         cacheHit = true;
-        logger.debug({
-          characterName,
-          requestId,
-        }, 'Character detail found in cache');
+        logger.debug(
+          {
+            characterName,
+            requestId,
+          },
+          'Character detail found in cache',
+        );
 
         return {
           characterDetail: existingDetail,
@@ -254,19 +281,22 @@ export class ArmoriesService {
 
       const processingTime = Date.now() - startTime;
 
-      logger.info({
-        characterName,
-        itemLevel: normalizationResult.characterDetail.itemLevel,
-        processingTime,
-        cacheHit: false,
-        changes: normalizationResult.changes
-          ? Object.keys(normalizationResult.changes).filter(
-              (key) =>
-                normalizationResult.changes![key as keyof typeof normalizationResult.changes],
-            )
-          : undefined,
-        requestId,
-      }, 'Character detail processed successfully');
+      logger.info(
+        {
+          characterName,
+          itemLevel: normalizationResult.characterDetail.itemLevel,
+          processingTime,
+          cacheHit: false,
+          changes: normalizationResult.changes
+            ? Object.keys(normalizationResult.changes).filter(
+                (key) =>
+                  normalizationResult.changes![key as keyof typeof normalizationResult.changes],
+              )
+            : undefined,
+          requestId,
+        },
+        'Character detail processed successfully',
+      );
 
       return {
         characterDetail: normalizationResult.characterDetail,
@@ -275,11 +305,14 @@ export class ArmoriesService {
         cacheHit: false,
       };
     } catch (error) {
-      logger.error({
-        characterName,
-        error: error instanceof Error ? error.message : String(error),
-        requestId,
-      }, 'Failed to process character detail');
+      logger.error(
+        {
+          characterName,
+          error: error instanceof Error ? error.message : String(error),
+          requestId,
+        },
+        'Failed to process character detail',
+      );
       throw error;
     }
   }
@@ -303,10 +336,13 @@ export class ArmoriesService {
    * 캐릭터 상세 정보 강제 갱신
    */
   async refreshCharacterDetail(characterName: string): Promise<NormalizedCharacterDetail> {
-    logger.info({
-      characterName,
-      requestId: this.generateRequestId(),
-    }, 'Force refreshing character detail');
+    logger.info(
+      {
+        characterName,
+        requestId: this.generateRequestId(),
+      },
+      'Force refreshing character detail',
+    );
 
     // 캐시에서 기존 정보 삭제
     await cacheManager.deleteCharacterDetail(characterName);
@@ -338,9 +374,7 @@ export class ArmoriesService {
 
     if (cachedDetail) {
       // 2a. fetchedSections 집합 (old entry → FULL_SECTIONS fallback)
-      const fetchedSet = new Set<string>(
-        cachedDetail.metadata.fetchedSections ?? FULL_SECTIONS,
-      );
+      const fetchedSet = new Set<string>(cachedDetail.metadata.fetchedSections ?? FULL_SECTIONS);
 
       // 2b. 미조회 section 목록
       const missSections = validSections.filter((s) => !fetchedSet.has(s));
@@ -356,10 +390,7 @@ export class ArmoriesService {
         // fall through to cache-miss path below
       } else {
         // 2e. missSections 만 추가 fetch → merge → 재저장
-        const partialRaw = await armoriesClient.getCharacterPartial(
-          characterName,
-          missSections,
-        );
+        const partialRaw = await armoriesClient.getCharacterPartial(characterName, missSections);
         const mergedDetail = mergeIntoCache(cachedDetail, partialRaw, missSections);
         await cacheManager.setCharacterDetail(characterName, mergedDetail);
         return pickSections(mergedDetail, validSections);
@@ -695,9 +726,7 @@ export class ArmoriesService {
  * formatter 들이 서버/길드/직업/레벨 같은 헤더 표시에 의존하므로
  * sections 선택과 무관하게 채워준다.
  */
-function pickCoreFields(
-  detail: NormalizedCharacterDetail,
-): Partial<NormalizedCharacterDetail> {
+function pickCoreFields(detail: NormalizedCharacterDetail): Partial<NormalizedCharacterDetail> {
   return {
     characterName: detail.characterName,
     serverName: detail.serverName,

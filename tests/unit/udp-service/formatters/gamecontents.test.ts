@@ -10,10 +10,7 @@
 import assert from 'node:assert';
 import { test } from 'node:test';
 
-import {
-  formatEvents,
-  formatProcyon,
-} from '@lostark/udp-gateway/formatters/gamecontents.js';
+import { formatEvents, formatProcyon } from '@lostark/udp-gateway/formatters/gamecontents.js';
 
 // === formatProcyon ===
 
@@ -102,4 +99,3 @@ test('formatEvents — returns fallback when all events expired', () => {
   const out = formatEvents(result, now);
   assert.strictEqual(out, '진행 중인 이벤트가 없습니다.');
 });
-

@@ -9,10 +9,14 @@ import { test } from 'node:test';
 import { ArmoriesNormalizer } from '@lostark/data-service';
 
 // private 메서드 접근을 위해 prototype 캐스팅.
-const proto = (ArmoriesNormalizer.prototype as unknown) as {
+const proto = ArmoriesNormalizer.prototype as unknown as {
   normalizeCards(data: unknown): {
     cards: Array<{ slot: number; name: string }>;
-    effects: Array<{ index: number; cardSlots: number[]; items: Array<{ name: string; description: string }> }>;
+    effects: Array<{
+      index: number;
+      cardSlots: number[];
+      items: Array<{ name: string; description: string }>;
+    }>;
   };
 };
 

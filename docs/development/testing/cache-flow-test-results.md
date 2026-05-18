@@ -393,20 +393,20 @@ API 호출 → Memory Cache 저장 → Redis 복사 → MySQL 영구 저장
 
 ### Windows 경로 버그 수정 (3건)
 
-`simple-cache-flow-test.mjs` 는 Linux 환경 경로 가정으로 Windows 에서 실패하는 pre-existing 버그가 있었다.
-세션 20260516-040536 에서 다음 3건을 수정하여 통과:
+`simple-cache-flow-test.mjs` 는 Linux 환경 경로 가정으로 Windows 에서 실패하는
+pre-existing 버그가 있었다. 세션 20260516-040536 에서 다음 3건을 수정하여 통과:
 
-| 수정 위치 | 변경 내용 |
-|-----------|-----------|
-| `import` path | `import.meta.url` → `pathToFileURL` 래핑으로 Windows 백슬래시 경로 처리 |
-| `projectRoot` 계산 | `\` 구분자 대응 (`path.dirname` 정규화) |
-| `import.meta` guard | ESM 모듈 감지 조건 수정 (`import.meta.main` → 파일 비교 방식) |
+| 수정 위치           | 변경 내용                                                               |
+| ------------------- | ----------------------------------------------------------------------- |
+| `import` path       | `import.meta.url` → `pathToFileURL` 래핑으로 Windows 백슬래시 경로 처리 |
+| `projectRoot` 계산  | `\` 구분자 대응 (`path.dirname` 정규화)                                 |
+| `import.meta` guard | ESM 모듈 감지 조건 수정 (`import.meta.main` → 파일 비교 방식)           |
 
 ### 2026-05-16 실행 결과
 
-| API | 결과 | 응답 크기 | 캐시 플로우 |
-|-----|------|-----------|-------------|
-| ARMORIES (대표) | PASS | 354KB | 3-tier (Memory → Redis → MySQL) 정상 이동 |
+| API             | 결과 | 응답 크기 | 캐시 플로우                               |
+| --------------- | ---- | --------- | ----------------------------------------- |
+| ARMORIES (대표) | PASS | 354KB     | 3-tier (Memory → Redis → MySQL) 정상 이동 |
 
 - **전체 판정**: PASS
 - **환경**: Windows 11 Pro, Node.js v22.18.0, kord-postgres + Redis Docker

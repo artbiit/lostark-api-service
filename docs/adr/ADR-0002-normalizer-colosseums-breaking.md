@@ -1,6 +1,8 @@
 ---
 id: ADR-0002
-title: armories-normalizer — normalizeColosseums breaking 변경 및 normalizeCards Effects 정정
+title:
+  armories-normalizer — normalizeColosseums breaking 변경 및 normalizeCards
+  Effects 정정
 status: accepted
 date: 2026-05-16
 deciders: [design-advisor, user]
@@ -28,11 +30,11 @@ Accepted
 **결함 2 — normalizeColosseums: deathmatch 키 매핑 오류**
 
 `normalizeColosseums` 가 `deathmatch` 필드를 반환했으나, V9 API 응답에 해당 키가
-존재하지 않아 항상 `undefined` 였다. 실제 API 가 반환하는 모드는
-`CoOpBattle`, `OneDeathmatch`, `OneDeathmatchRank` 였다.
+존재하지 않아 항상 `undefined` 였다. 실제 API 가 반환하는 모드는 `CoOpBattle`,
+`OneDeathmatch`, `OneDeathmatchRank` 였다.
 
-두 결함 모두 `!카드`, `!전장` 신규 명령 구현(세션 20260515-231420)을 위해
-수정이 필요했다.
+두 결함 모두 `!카드`, `!전장` 신규 명령 구현(세션 20260515-231420)을 위해 수정이
+필요했다.
 
 ## Decision
 
@@ -58,7 +60,7 @@ private normalizeCards(cardData: any): {
 
 ```typescript
 // 변경 전 — deathmatch 항상 undefined
-Array<{ seasonName, competitive, teamDeathmatch, deathmatch, teamElimination }>
+Array<{ seasonName; competitive; teamDeathmatch; deathmatch; teamElimination }>;
 
 // 변경 후 — V9 실제 응답 키 반영
 Array<{
@@ -66,10 +68,10 @@ Array<{
   competitive?: ColosseumRank;
   teamDeathmatch?: ColosseumRank;
   teamElimination?: ColosseumRank;
-  coOpBattle?: ColosseumRank;        // 신규
-  oneDeathmatch?: ColosseumRank;     // 신규 (deathmatch 대체)
+  coOpBattle?: ColosseumRank; // 신규
+  oneDeathmatch?: ColosseumRank; // 신규 (deathmatch 대체)
   oneDeathmatchRank?: ColosseumRank; // 신규
-}>
+}>;
 ```
 
 모든 모드를 optional 로 선언해 API 가 해당 모드를 반환하지 않는 경우 키 자체
@@ -107,6 +109,9 @@ Array<{
 
 ## References
 
-- 세션 work-log: [2026-05-16-udp-service-kakao-bot-promotion](../work-log/2026-05-16-udp-service-kakao-bot-promotion/index.md)
-- 변경 이력: [changes/2026-05-16-udp-service-kakao-bot-promotion](../changes/2026-05-16-udp-service-kakao-bot-promotion.md)
-- 설계 상세: `.claude/work-session/20260515-231420/design.md` §데이터 모델 (normalizer 정정)
+- 세션 work-log:
+  [2026-05-16-udp-service-kakao-bot-promotion](../work-log/2026-05-16-udp-service-kakao-bot-promotion/index.md)
+- 변경 이력:
+  [changes/2026-05-16-udp-service-kakao-bot-promotion](../changes/2026-05-16-udp-service-kakao-bot-promotion.md)
+- 설계 상세: `.claude/work-session/20260515-231420/design.md` §데이터 모델
+  (normalizer 정정)
