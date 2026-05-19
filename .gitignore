@@ -159,3 +159,9 @@ dist
 # Cache (런타임/테스트 산출물 디렉토리만 — 도메인 src/cache 모듈은 추적)
 /cache/
 .cache/
+
+# ---> macOS Cloudflare WARP / Zero Trust MITM CA (개발 머신 한정)
+# 컨테이너 안에서 외부 HTTPS 호출 시 호스트 WARP 가 트래픽을 가로채고 자체 CA 로
+# 재서명하므로, 호스트 keychain 의 CA 를 컨테이너에 mount 한다. 머신마다 다르므로
+# 추적하지 않음. 추출 절차는 docs/maintenance/macos-warp-tls-mitigation.md
+.local-ca/

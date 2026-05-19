@@ -7,6 +7,9 @@
 - [deployment](./deployment.md) — 배포 가이드 (Docker, 환경변수, 헬스체크)
 - [host-node-run](./host-node-run.md) — macOS 호스트에서 Node 로 직접 실행 시
   절차 (CA prefix 필수) + 장애 원인 분리 가이드
+- [macos-warp-tls-mitigation](./macos-warp-tls-mitigation.md) — macOS Cloudflare
+  WARP 환경에서 컨테이너 외부 HTTPS 가 `certificate verify failed` 로 깨질 때
+  Gateway CA mount 우회 절차
 
 ## 관련
 

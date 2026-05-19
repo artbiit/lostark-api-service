@@ -1,0 +1,39 @@
+# macOS Cloudflare WARP / Zero Trust 환경 한정 TLS 우회.
+#
+# 호스트 macOS 의 Cloudflare WARP 가 외부 HTTPS 트래픽을 가로채고 자체 Gateway
+# CA 로 재서명한다. 호스트 keychain 에는 그 CA 가 신뢰돼 있지만 lostark-rest
+# 컨테이너(Alpine) 의 ca-certificates 에는 없으므로 외부 LostArk API (developer-
+# lostark.game.onstove.com) 호출이 `certificate verify failed` 로 실패한다.
+#
+# 본 compose 파일은 호스트 keychain 에서 추출한 Gateway CA PEM 을 컨테이너에
+# mount 하고 NODE_EXTRA_CA_CERTS 로 Node fetch 가 그 CA 를 추가 신뢰하도록 한다.
+# WARP 가 없는 머신·운영 서버에서는 이 파일을 명시적으로 추가 로드하지 않는 한
+# 영향 없다 (자동 로드되는 docker-compose.override.yml 과 분리한 이유).
+#
+# 사용법:
+#   1) 추출 — 호스트 macOS 에서:
+#      mkdir -p .local-ca
+#      security find-certificate -a -c 'Gateway CA - Cloudflare' -p \
+#        /Library/Keychains/System.keychain > .local-ca/cloudflare-gateway.pem
+#   2) 명시 로드:
+#      docker compose \
+#        -f docker-compose.yml \
+#        -f docker-compose.override.yml \
+#        -f docker-compose.dev-tls.yml \
+#        up -d
+#      또는 .env 의 COMPOSE_FILE 변수에 세 파일을 콜론(:) 으로 연결해 단축.
+#
+# 절차 상세는 docs/maintenance/macos-warp-tls-mitigation.md 참조.
+
+services:
+  lostark-rest:
+    volumes:
+      - ./.local-ca/cloudflare-gateway.pem:/etc/ssl/certs/cloudflare-gateway-ca.pem:ro
+    environment:
+      NODE_EXTRA_CA_CERTS: /etc/ssl/certs/cloudflare-gateway-ca.pem
+
+  lostark-udp:
+    volumes:
+      - ./.local-ca/cloudflare-gateway.pem:/etc/ssl/certs/cloudflare-gateway-ca.pem:ro
+    environment:
+      NODE_EXTRA_CA_CERTS: /etc/ssl/certs/cloudflare-gateway-ca.pem
