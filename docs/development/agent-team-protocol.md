@@ -355,20 +355,40 @@ user_signals:
   - 다음 세션이 실행할 정확한 명령 (예: `/graphify packages/shared/src ...`)
   - 메타 갱신 대상(`docs/graph/index.md` frontmatter + Scopes 표)
 
-(B) 는 CLAUDE.md §9-4 의무에 대한 **명시적 deviation** 이다. 사용자 승인 없는
-자동 이월은 금지. AskUserQuestion 으로 (A)/(B) 결정을 받고 그 답을 보고서에
-인용한다.
+(B) 는 CLAUDE.md §9-4 의무에 대한 **명시적 deviation** 이다. 원칙적으로 사용자
+승인 없는 자동 이월은 금지하며 AskUserQuestion 으로 (A)/(B) 결정을 받고 그 답을
+보고서에 인용한다. **단 다음 면제 조건이 모두 충족되면** orchestrator 는
+AskUserQuestion 없이 (B) 로 자동 이월할 수 있다 (보고서에는 면제 근거 명시):
+
+- **AskUserQuestion 면제 조건** (전부 충족 시):
+  1. 본 세션 변경이 **code-only** (TypeScript/JavaScript, docs/md 미포함)
+  2. stale 근거가 본 세션 변경이 아니라 **이전 세션 누적 부채**
+  3. graphify-out 비용이 ≥5분 LLM semantic 영역에 들어가지 않음
+- 한 조건이라도 불충족 → 기존 AskUserQuestion 절차 적용.
 
 **변경 유형별 처리 분기**:
 
 - **code-only 변경** (TypeScript/JavaScript 등, docs/md 미포함): deviation(B) 로
-  이월 허용. 보고서 `Open Items` 에 다음 세션 실행 명령을 정확히 기록:
+  이월 허용. 보고서 `Open Items` 에 다음 세션 실행 명령을 **AUTO-EXECUTE 태그**
+  와 함께 기록:
   ```
-  /graphify <scope> --update   # AST-only, LLM 불필요, ~1~2분
+  - **[AUTO-EXECUTE ON NEXT SESSION START]** /graphify <scope> --update
+    # AST-only, LLM 불필요, ~1~2분
   ```
-  다음 세션 §2.2(SKILL.md) 에서 세션 시작과 동시에 자동 실행.
+  다음 세션의 orchestrator 는 사용자 요청 처리 **전에** 태그 항목을 먼저
+  실행한다 (§2.2 SKILL.md 와 연동).
 - **docs/md/image 포함 변경**: (A) 즉시 재생성 권장. semantic 재추출(LLM) 이
-  필요하므로 이월하면 다음 세션에도 부담이 남는다.
+  필요하므로 이월하면 다음 세션에도 부담이 남는다. 다만 사용자가 "무거우면
+  background + 새 세션" 정책을 명시한 환경에서는 background bash 로 분리하거나
+  AUTO-EXECUTE 태그와 예상 소요 시간(예: ~5분+) 을 한 줄 고지 후 (B) 이월 가능.
+
+**Open Items AUTO-EXECUTE 태그 규약**:
+
+- 태그 형식: `[AUTO-EXECUTE ON NEXT SESSION START]`
+- 다음 세션 orchestrator 는 report.md handoff 또는 직전 세션 Open Items 에서 이
+  태그를 인지하면 사용자 요청 처리 전에 우선 실행한다.
+- LLM semantic 포함 시 사용자에게 예상 소요를 한 줄 고지 후 진행. 진행 자체를
+  묻지 않는다.
 
 이 처리 전략의 프로젝트별 근거는
 `docs/development/graphify-background-execution.md` 에 기록한다.
