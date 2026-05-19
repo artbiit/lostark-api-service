@@ -35,7 +35,7 @@
     "validate:full": "yarn validate:monorepo && yarn test && yarn build && yarn lint",
     "verify": "yarn validate:full",
     "precommit": "yarn format && yarn validate:monorepo && yarn test:unit && yarn lint",
-    "prepush": "yarn format && yarn validate:monorepo && yarn test && yarn build",
+    "prepush": "yarn format && yarn validate:monorepo && yarn test:unit && yarn build",
     "prepare": "husky"
   },
   "repository": {
