@@ -150,6 +150,15 @@ server error 로 끊긴 사실을 orchestrator 가 사용자에게 즉시 보고
    대조한다. 비교형 옵션("현재 → 변경 후") 의 "현재" 부분이 stale 일 때 사용자가
    옵션 비교 모드 대신 정정 지시 모드로 전환되어 라운드가 추가됨 (MEMORY:
    feedback-ask-user-question-citation-freshness-check).
+6. **인접 구현체 인용 완결성 확인**: 옵션이 캐시/스토리지/서비스/레이어를
+   언급한다면, 코드베이스에 동류 구현체가 이미 존재하는지 grep/Read 로 확인.
+   존재한다면 옵션 본문에 "기존 X 패턴을 확장" vs "신규 Y 도입" 을 명시하거나,
+   계층 일부만 라벨에 들어간 경우 전체 스택을 한 줄로 인용 ("(in-memory +
+   Redis + PG 3-tier 적용)"). 자가 점검: "이 옵션 텍스트만 읽은 사람이
+   코드베이스에 이미 있는 관련 구현체를 알 수 있는가?" — NO 이면 보완 후 제시.
+   5번(freshness) 은 인용된 사실의 정확성을, 6번은 인용 자체의 누락을 잡으므로
+   두 점검은 상호 보완 (MEMORY:
+   feedback-ask-user-question-option-self-completeness).
 
 ### 4.2 clarify 요청 응대 분기
 
