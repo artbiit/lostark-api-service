@@ -1,0 +1,10 @@
+# graphify 산출물 본체는 graph 에 포함하지 않는다 (자기참조 회피).
+# 커밋 대상: index.md, .gitignore, .graphifyignore (이 파일)
+GRAPH_REPORT.md
+graph.html
+graph.json
+graph.svg
+graph.graphml
+manifest.json
+cost.json
+cache/
