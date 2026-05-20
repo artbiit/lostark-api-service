@@ -60,6 +60,22 @@ export const envSchema = z.object({
   CACHE_REDIS_TTL_SECONDS: z.coerce.number().min(1).default(1800), // 30분
   CACHE_DB_MAX_AGE_SECONDS: z.coerce.number().min(1).default(60), // DB 캐시 신선도 상한 (1분)
 
+  // === 도메인 캐시 (news / gamecontents) 3-tier TTL 정책 ===
+  // L1 = in-memory, L2 = Redis, L3 soft = PG fresh, L3 hard = PG stale 절대 만료.
+  // design.md §"도메인별 캐시 정책" 표 참조.
+  CACHE_GAMECONTENTS_L1_SECONDS: z.coerce.number().min(1).default(300), // 5분
+  CACHE_GAMECONTENTS_L2_SECONDS: z.coerce.number().min(1).default(1800), // 30분
+  CACHE_GAMECONTENTS_L3_SOFT_SECONDS: z.coerce.number().min(1).default(21600), // 6시간
+  CACHE_GAMECONTENTS_L3_HARD_SECONDS: z.coerce.number().min(1).default(1209600), // 14일
+  CACHE_NEWS_NOTICES_L1_SECONDS: z.coerce.number().min(1).default(300), // 5분
+  CACHE_NEWS_NOTICES_L2_SECONDS: z.coerce.number().min(1).default(1800), // 30분
+  CACHE_NEWS_NOTICES_L3_SOFT_SECONDS: z.coerce.number().min(1).default(21600), // 6시간
+  CACHE_NEWS_NOTICES_L3_HARD_SECONDS: z.coerce.number().min(1).default(1209600), // 14일
+  CACHE_NEWS_EVENTS_L1_SECONDS: z.coerce.number().min(1).default(600), // 10분
+  CACHE_NEWS_EVENTS_L2_SECONDS: z.coerce.number().min(1).default(3600), // 1시간
+  CACHE_NEWS_EVENTS_L3_SOFT_SECONDS: z.coerce.number().min(1).default(43200), // 12시간
+  CACHE_NEWS_EVENTS_L3_HARD_SECONDS: z.coerce.number().min(1).default(2592000), // 30일
+
   // === 로깅 설정 ===
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
   LOG_PRETTY_PRINT: z.coerce.boolean().default(false),
@@ -167,6 +183,18 @@ export const defaultConfig: EnvConfig = {
   CACHE_MEMORY_TTL_SECONDS: 300,
   CACHE_REDIS_TTL_SECONDS: 1800,
   CACHE_DB_MAX_AGE_SECONDS: 60,
+  CACHE_GAMECONTENTS_L1_SECONDS: 300,
+  CACHE_GAMECONTENTS_L2_SECONDS: 1800,
+  CACHE_GAMECONTENTS_L3_SOFT_SECONDS: 21600,
+  CACHE_GAMECONTENTS_L3_HARD_SECONDS: 1209600,
+  CACHE_NEWS_NOTICES_L1_SECONDS: 300,
+  CACHE_NEWS_NOTICES_L2_SECONDS: 1800,
+  CACHE_NEWS_NOTICES_L3_SOFT_SECONDS: 21600,
+  CACHE_NEWS_NOTICES_L3_HARD_SECONDS: 1209600,
+  CACHE_NEWS_EVENTS_L1_SECONDS: 600,
+  CACHE_NEWS_EVENTS_L2_SECONDS: 3600,
+  CACHE_NEWS_EVENTS_L3_SOFT_SECONDS: 43200,
+  CACHE_NEWS_EVENTS_L3_HARD_SECONDS: 2592000,
   LOG_LEVEL: 'info',
   LOG_PRETTY_PRINT: false,
   DB_HOST: 'localhost',

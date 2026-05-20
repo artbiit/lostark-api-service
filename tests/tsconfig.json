@@ -16,6 +16,6 @@
       "@tests/*": ["./*"]
     }
   },
-  "include": ["**/*.ts", "**/*.mjs"],
+  "include": ["**/*.ts", "**/*.mjs", "../packages/**/*.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }

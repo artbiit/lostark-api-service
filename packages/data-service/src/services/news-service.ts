@@ -1,14 +1,19 @@
 /**
- * @cursor-change: 2025-01-27, v1.0.0, NEWS API 서비스 구현
+ * @cursor-change: 2026-05-20, v2.0.0, NEWS API 서비스 - 3-tier 캐시 매니저 위임
  *
  * Lost Ark API V9.0.0 NEWS API 서비스
- * - 공지사항 목록 조회
- * - 이벤트 목록 조회
+ * - 공지사항 / 이벤트 목록을 3-tier 캐시 + SWR fallback 으로 제공
+ * - searchParams 별 키 분리 (FR-2-4)
+ *
+ * design.md §"파일 영향 맵" / Phase E 참조. 기존 NewsCache (싱글톤 in-memory only)
+ * 는 본 commit 에서 NewsCacheManager 로 완전 대체됨 (D-1).
  */
 
 import type { NoticeSearchParams } from '@lostark/shared/types/V9/news';
-import { NewsCache } from '../cache/news-cache.js';
+
+import { NewsCacheManager, newsCacheManager } from '../cache/news-cache-manager.js';
 import { NewsClient } from '../clients/news-client.js';
+import type { CacheLookupResult } from '../cache/domain-cache-manager.js';
 import type {
   NormalizedEventsResult,
   NormalizedNoticesResult,
@@ -20,53 +25,49 @@ import { NewsNormalizer } from '../normalizers/news-normalizer.js';
  */
 export class NewsService {
   private client: NewsClient;
-  private cache: NewsCache;
+  private cacheManager: NewsCacheManager;
 
-  constructor() {
+  constructor(cacheManager: NewsCacheManager = newsCacheManager) {
     this.client = new NewsClient();
-    this.cache = NewsCache.getInstance();
+    this.cacheManager = cacheManager;
   }
 
   /**
-   * 공지사항 목록 조회 (캐시 우선)
+   * 공지사항 목록 조회 — 캐시 매니저에 위임. cache 메타까지 반환.
+   */
+  async getNoticesWithCache(
+    params?: NoticeSearchParams,
+  ): Promise<CacheLookupResult<NormalizedNoticesResult>> {
+    return this.cacheManager.getNotices(async () => {
+      const data = await this.client.getNotices(params);
+      return NewsNormalizer.normalizeNotices(data);
+    }, params);
+  }
+
+  /**
+   * 이벤트 목록 조회 — 캐시 매니저에 위임. cache 메타까지 반환.
+   */
+  async getEventsWithCache(): Promise<CacheLookupResult<NormalizedEventsResult>> {
+    return this.cacheManager.getEvents(async () => {
+      const data = await this.client.getEvents();
+      return NewsNormalizer.normalizeEvents(data);
+    });
+  }
+
+  /**
+   * 하위호환: data 만 반환. 새 코드는 *WithCache 변형 권장.
    */
   async getNotices(params?: NoticeSearchParams): Promise<NormalizedNoticesResult> {
-    const searchParams = params ? new URLSearchParams(params as any).toString() : undefined;
-
-    // 캐시에서 먼저 조회
-    const cached = await this.cache.getNotices(searchParams);
-    if (cached) {
-      return cached;
-    }
-
-    // API 호출
-    const data = await this.client.getNotices(params);
-    const normalized = NewsNormalizer.normalizeNotices(data);
-
-    // 캐시에 저장
-    await this.cache.setNotices(data, normalized, searchParams);
-
-    return normalized;
+    const result = await this.getNoticesWithCache(params);
+    return result.data;
   }
 
   /**
-   * 이벤트 목록 조회 (캐시 우선)
+   * 하위호환: data 만 반환. 새 코드는 *WithCache 변형 권장.
    */
   async getEvents(): Promise<NormalizedEventsResult> {
-    // 캐시에서 먼저 조회
-    const cached = await this.cache.getEvents();
-    if (cached) {
-      return cached;
-    }
-
-    // API 호출
-    const data = await this.client.getEvents();
-    const normalized = NewsNormalizer.normalizeEvents(data);
-
-    // 캐시에 저장
-    await this.cache.setEvents(data, normalized);
-
-    return normalized;
+    const result = await this.getEventsWithCache();
+    return result.data;
   }
 
   /**
@@ -80,7 +81,7 @@ export class NewsService {
    * 공지사항 조회 (타입별)
    */
   async getNoticesByType(type: string): Promise<NormalizedNoticesResult> {
-    return this.getNotices({ type: type as any });
+    return this.getNotices({ type: type as never });
   }
 
   /**
@@ -135,23 +136,12 @@ export class NewsService {
   }
 
   /**
-   * 캐시 통계 조회
+   * 캐시 무효화 — 운영 핸들러용. (FR-8 라우트는 본 phase 미포함, DP-3)
    */
-  getCacheStats(): { noticesCacheSize: number; eventsCacheSize: number } {
-    return this.cache.getStats();
-  }
-
-  /**
-   * 캐시 정리
-   */
-  cleanupCache(): void {
-    this.cache.cleanup();
-  }
-
-  /**
-   * 캐시 초기화
-   */
-  clearCache(): void {
-    this.cache.clear();
+  async invalidateCache(params?: NoticeSearchParams): Promise<void> {
+    await Promise.all([
+      this.cacheManager.invalidateNotices(params),
+      this.cacheManager.invalidateEvents(),
+    ]);
   }
 }

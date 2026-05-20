@@ -121,6 +121,63 @@ const MIGRATIONS: Migration[] = [
     `,
     createdAt: new Date('2026-05-16'),
   },
+  {
+    version: '2026-05-20-005',
+    name: "Extend cache_type_enum with 'news' / 'gamecontents'",
+    // ALTER TYPE ADD VALUE 는 PostgreSQL 12+ 에서 트랜잭션 블록 안에서도 동작하지만,
+    // 일부 환경에서 'cannot add new value to existing enum inside transaction block'
+    // 경고가 발생할 수 있어 enum 확장만 단독 마이그레이션으로 분리. (D-4)
+    up: `
+      DO $$ BEGIN
+        ALTER TYPE cache_type_enum ADD VALUE IF NOT EXISTS 'news';
+      EXCEPTION WHEN duplicate_object THEN NULL;
+      END $$;
+      DO $$ BEGIN
+        ALTER TYPE cache_type_enum ADD VALUE IF NOT EXISTS 'gamecontents';
+      EXCEPTION WHEN duplicate_object THEN NULL;
+      END $$;
+    `,
+    // PostgreSQL 은 ALTER TYPE DROP VALUE 를 지원하지 않는다. 따라서 down 은 no-op.
+    // enum 값이 잔존해도 사용처가 없으면 무해 (cache_metadata 의 기존 행 영향 없음).
+    down: `
+      -- PostgreSQL does not support ALTER TYPE DROP VALUE. Leaving 'news'/'gamecontents'
+      -- in the enum is safe because no row references them after rolling back
+      -- 2026-05-20-006 (which drops domain_cache).
+      SELECT 1;
+    `,
+    createdAt: new Date('2026-05-20'),
+  },
+  {
+    version: '2026-05-20-006',
+    name: 'Create domain_cache table for news / gamecontents 3-tier cache',
+    up: `
+      CREATE TABLE IF NOT EXISTS domain_cache (
+        id BIGSERIAL PRIMARY KEY,
+        cache_type        cache_type_enum NOT NULL,
+        cache_key         VARCHAR(255)    NOT NULL,
+        payload           JSONB           NOT NULL,
+        payload_size      BIGINT          NOT NULL,
+        created_at        TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+        updated_at        TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+        soft_expires_at   TIMESTAMPTZ     NOT NULL,
+        hard_expires_at   TIMESTAMPTZ     NOT NULL,
+        source_fetched_at TIMESTAMPTZ     NOT NULL,
+        UNIQUE (cache_type, cache_key)
+      );
+      CREATE INDEX IF NOT EXISTS idx_domain_cache_type_soft
+        ON domain_cache (cache_type, soft_expires_at);
+      CREATE INDEX IF NOT EXISTS idx_domain_cache_hard
+        ON domain_cache (hard_expires_at);
+      CREATE OR REPLACE TRIGGER trg_domain_cache_updated_at
+        BEFORE UPDATE ON domain_cache
+        FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+    `,
+    down: `
+      DROP TRIGGER IF EXISTS trg_domain_cache_updated_at ON domain_cache;
+      DROP TABLE IF EXISTS domain_cache;
+    `,
+    createdAt: new Date('2026-05-20'),
+  },
 ];
 
 export class MigrationManager {

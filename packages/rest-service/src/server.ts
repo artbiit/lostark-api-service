@@ -31,8 +31,10 @@ import {
   GameContentsService,
   initializePostgres,
   initializeRedis,
+  MaintenanceUnavailableError,
   MarketsService,
   NewsService,
+  warmupDomainCaches,
 } from '@lostark/data-service';
 import { logger } from '@lostark/shared';
 logger.info('✅ rate-limit 모듈 로딩 완료');
@@ -65,6 +67,49 @@ function getErrorMessage(error: unknown): string {
   }
   return String(error);
 }
+
+/**
+ * news / gamecontents 응답 envelope 의 `cache` 필드 빌더.
+ * design.md §"외부 계약" 의 cache 메타 형태를 단일 함수로 캡슐화.
+ */
+interface CacheLookupLike {
+  source: 'memory' | 'redis' | 'database' | 'database-stale' | 'api';
+  stale: boolean;
+  staleAgeSeconds?: number;
+}
+function buildCacheMeta(result: CacheLookupLike): {
+  hit: boolean;
+  source: string;
+  stale: boolean;
+  staleAgeSeconds?: number;
+} {
+  const meta: { hit: boolean; source: string; stale: boolean; staleAgeSeconds?: number } = {
+    hit: result.source !== 'api',
+    source: result.source,
+    stale: result.stale,
+  };
+  if (typeof result.staleAgeSeconds === 'number') {
+    meta.staleAgeSeconds = result.staleAgeSeconds;
+  }
+  return meta;
+}
+
+/**
+ * news / gamecontents 응답 swagger schema. 두 라우트가 공유한다.
+ */
+const cacheMetaSchema = {
+  type: 'object',
+  properties: {
+    hit: { type: 'boolean' },
+    source: {
+      type: 'string',
+      enum: ['memory', 'redis', 'database', 'database-stale', 'api'],
+    },
+    stale: { type: 'boolean' },
+    staleAgeSeconds: { type: 'number' },
+  },
+  required: ['hit', 'source', 'stale'],
+} as const;
 
 // === 서버 설정 ===
 
@@ -314,13 +359,79 @@ export class RestServer {
     this.fastify.get('/api/v1/auctions/search', this.searchAuctions.bind(this));
     this.fastify.post('/api/v1/auctions/search', this.searchAuctionsRefresh.bind(this));
 
-    // NEWS API
-    this.fastify.get('/api/v1/news', this.getNews.bind(this));
-    this.fastify.get('/api/v1/news/refresh', this.refreshNews.bind(this));
+    // NEWS API — 3-tier 캐시 + SWR. cache 메타가 응답 body 에 포함된다.
+    const newsResponseSchema = {
+      200: {
+        type: 'object',
+        properties: {
+          success: { type: 'boolean' },
+          data: {},
+          cache: cacheMetaSchema,
+          timestamp: { type: 'string' },
+          responseTime: { type: 'number' },
+        },
+        required: ['success', 'data', 'cache', 'timestamp'],
+      },
+      503: {
+        type: 'object',
+        properties: {
+          success: { type: 'boolean' },
+          error: { type: 'string' },
+          message: { type: 'string' },
+          retryAfter: { type: 'number' },
+          timestamp: { type: 'string' },
+          responseTime: { type: 'number' },
+        },
+        required: ['success', 'error'],
+      },
+    } as const;
 
-    // GAMECONTENTS API
-    this.fastify.get('/api/v1/gamecontents', this.getGameContents.bind(this));
-    this.fastify.get('/api/v1/gamecontents/refresh', this.refreshGameContents.bind(this));
+    this.fastify.get(
+      '/api/v1/news',
+      {
+        schema: {
+          tags: ['news'],
+          summary: '공지/이벤트 조회 (3-tier 캐시 + stale-while-revalidate)',
+          response: newsResponseSchema,
+        },
+      },
+      this.getNews.bind(this),
+    );
+    this.fastify.get(
+      '/api/v1/news/refresh',
+      {
+        schema: {
+          tags: ['news'],
+          summary: '공지/이벤트 캐시 무효화 후 강제 재조회',
+          response: newsResponseSchema,
+        },
+      },
+      this.refreshNews.bind(this),
+    );
+
+    // GAMECONTENTS API — 동일 envelope.
+    this.fastify.get(
+      '/api/v1/gamecontents',
+      {
+        schema: {
+          tags: ['gamecontents'],
+          summary: '주간 콘텐츠 달력 (3-tier 캐시 + stale-while-revalidate)',
+          response: newsResponseSchema,
+        },
+      },
+      this.getGameContents.bind(this),
+    );
+    this.fastify.get(
+      '/api/v1/gamecontents/refresh',
+      {
+        schema: {
+          tags: ['gamecontents'],
+          summary: '주간 콘텐츠 캐시 무효화 후 강제 재조회',
+          response: newsResponseSchema,
+        },
+      },
+      this.refreshGameContents.bind(this),
+    );
 
     // MARKETS API
     this.fastify.get('/api/v1/markets', this.getMarkets.bind(this));
@@ -401,6 +512,17 @@ export class RestServer {
           }
         });
       }
+
+      // 도메인 3-tier 캐시 warm-up — PG hydrate + miss 시 1회 API fallback.
+      // setImmediate 로 비동기 실행하여 server ready 지연을 막는다 (FR-5-1).
+      setImmediate(async () => {
+        try {
+          const reports = await warmupDomainCaches();
+          logger.info({ reports }, 'Domain cache warmup completed');
+        } catch (error: unknown) {
+          logger.warn({ error: getErrorMessage(error) }, 'Domain cache warmup failed');
+        }
+      });
 
       logger.info('Cache system initialization completed');
     } catch (error) {
@@ -1176,7 +1298,7 @@ export class RestServer {
   // === NEWS API ===
 
   /**
-   * 공지사항 조회
+   * 공지사항 조회 — 3-tier 캐시 + SWR fallback. cache 메타를 응답 body 에 포함.
    */
   async getNews(
     request: FastifyRequest<{
@@ -1190,23 +1312,38 @@ export class RestServer {
     try {
       logger.info({ type, pageNo, refresh: refresh === 'true' }, 'News request');
 
-      const newsResult =
+      const cacheResult =
         type === 'events'
-          ? await this.newsService.getEvents()
-          : await this.newsService.getNotices();
+          ? await this.newsService.getEventsWithCache()
+          : await this.newsService.getNoticesWithCache();
 
       const responseTime = Date.now() - startTime;
 
       reply.header('X-Response-Time', `${responseTime}ms`);
+      reply.header('X-Cache-Source', cacheResult.source);
+      if (cacheResult.stale) reply.header('X-Cache-Stale', 'true');
 
       reply.send({
         success: true,
-        data: newsResult,
+        data: cacheResult.data,
+        cache: buildCacheMeta(cacheResult),
         timestamp: new Date().toISOString(),
         responseTime,
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
+
+      if (error instanceof MaintenanceUnavailableError) {
+        reply.status(503).header('Retry-After', '60').send({
+          success: false,
+          error: 'ServiceUnavailable',
+          message: 'Upstream API in maintenance and no cached data available',
+          retryAfter: 60,
+          timestamp: new Date().toISOString(),
+          responseTime,
+        });
+        return;
+      }
 
       logger.error(
         {
@@ -1227,7 +1364,7 @@ export class RestServer {
   }
 
   /**
-   * 공지사항 강제 새로고침
+   * 공지사항 강제 새로고침. 캐시 무효화 후 1회 fetcher 실행 → 모든 tier 재기록.
    */
   async refreshNews(
     request: FastifyRequest<{
@@ -1241,10 +1378,12 @@ export class RestServer {
     try {
       logger.info({ type, pageNo }, 'News refresh request');
 
-      const newsResult =
+      // 캐시 무효화 후 다시 조회 — 자연스럽게 API 분기.
+      await this.newsService.invalidateCache();
+      const cacheResult =
         type === 'events'
-          ? await this.newsService.getEvents()
-          : await this.newsService.getNotices();
+          ? await this.newsService.getEventsWithCache()
+          : await this.newsService.getNoticesWithCache();
 
       const responseTime = Date.now() - startTime;
 
@@ -1253,16 +1392,25 @@ export class RestServer {
 
       reply.send({
         success: true,
-        data: newsResult,
-        cache: {
-          hit: false,
-          source: 'api',
-        },
+        data: cacheResult.data,
+        cache: buildCacheMeta(cacheResult),
         timestamp: new Date().toISOString(),
         responseTime,
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
+
+      if (error instanceof MaintenanceUnavailableError) {
+        reply.status(503).header('Retry-After', '60').send({
+          success: false,
+          error: 'ServiceUnavailable',
+          message: 'Upstream API in maintenance and no cached data available',
+          retryAfter: 60,
+          timestamp: new Date().toISOString(),
+          responseTime,
+        });
+        return;
+      }
 
       logger.error(
         {
@@ -1285,7 +1433,7 @@ export class RestServer {
   // === GAMECONTENTS API ===
 
   /**
-   * 게임 콘텐츠 정보 조회
+   * 게임 콘텐츠 정보 조회 — 3-tier 캐시 + SWR fallback.
    */
   async getGameContents(
     request: FastifyRequest<{
@@ -1299,20 +1447,35 @@ export class RestServer {
     try {
       logger.info({ refresh: refresh === 'true' }, 'Game contents request');
 
-      const gameContentsResult = await this.gameContentsService.getCalendar();
+      const cacheResult = await this.gameContentsService.getCalendarWithCache();
 
       const responseTime = Date.now() - startTime;
 
       reply.header('X-Response-Time', `${responseTime}ms`);
+      reply.header('X-Cache-Source', cacheResult.source);
+      if (cacheResult.stale) reply.header('X-Cache-Stale', 'true');
 
       reply.send({
         success: true,
-        data: gameContentsResult,
+        data: cacheResult.data,
+        cache: buildCacheMeta(cacheResult),
         timestamp: new Date().toISOString(),
         responseTime,
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
+
+      if (error instanceof MaintenanceUnavailableError) {
+        reply.status(503).header('Retry-After', '60').send({
+          success: false,
+          error: 'ServiceUnavailable',
+          message: 'Upstream API in maintenance and no cached data available',
+          retryAfter: 60,
+          timestamp: new Date().toISOString(),
+          responseTime,
+        });
+        return;
+      }
 
       logger.error(
         {
@@ -1331,7 +1494,7 @@ export class RestServer {
   }
 
   /**
-   * 게임 콘텐츠 정보 강제 새로고침
+   * 게임 콘텐츠 정보 강제 새로고침 — 캐시 무효화 후 재조회.
    */
   async refreshGameContents(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const startTime = Date.now();
@@ -1339,7 +1502,8 @@ export class RestServer {
     try {
       logger.info('Game contents refresh request');
 
-      const gameContentsResult = await this.gameContentsService.getCalendar();
+      await this.gameContentsService.invalidateCache();
+      const cacheResult = await this.gameContentsService.getCalendarWithCache();
 
       const responseTime = Date.now() - startTime;
 
@@ -1348,16 +1512,25 @@ export class RestServer {
 
       reply.send({
         success: true,
-        data: gameContentsResult,
-        cache: {
-          hit: false,
-          source: 'api',
-        },
+        data: cacheResult.data,
+        cache: buildCacheMeta(cacheResult),
         timestamp: new Date().toISOString(),
         responseTime,
       });
     } catch (error) {
       const responseTime = Date.now() - startTime;
+
+      if (error instanceof MaintenanceUnavailableError) {
+        reply.status(503).header('Retry-After', '60').send({
+          success: false,
+          error: 'ServiceUnavailable',
+          message: 'Upstream API in maintenance and no cached data available',
+          retryAfter: 60,
+          timestamp: new Date().toISOString(),
+          responseTime,
+        });
+        return;
+      }
 
       logger.error(
         {

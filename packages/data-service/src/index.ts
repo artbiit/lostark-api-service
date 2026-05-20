@@ -57,14 +57,38 @@ export { AuctionsNormalizer } from './normalizers/auctions-normalizer.js';
 export { AuctionsService } from './services/auctions-service.js';
 
 // === NEWS API ===
-export { NewsCache } from './cache/news-cache.js';
 export { NewsClient } from './clients/news-client.js';
 export { NewsNormalizer } from './normalizers/news-normalizer.js';
 export { NewsService } from './services/news-service.js';
+export {
+  NewsCacheManager,
+  newsCacheManager,
+  NEWS_NOTICES_DEFAULT_CACHE_KEY,
+  NEWS_EVENTS_CACHE_KEY,
+  buildNoticesCacheKey,
+} from './cache/news-cache-manager.js';
 
 // === GAMECONTENTS API ===
 export { GameContentsClient } from './clients/gamecontents-client.js';
 export { GameContentsService } from './services/gamecontents-service.js';
+export {
+  GameContentsCacheManager,
+  gameContentsCacheManager,
+  GAMECONTENTS_CALENDAR_CACHE_KEY,
+} from './cache/gamecontents-cache-manager.js';
+
+// === 도메인 3-tier 캐시 인프라 ===
+export { DomainCacheManager, MaintenanceUnavailableError } from './cache/domain-cache-manager.js';
+export type { CacheLookupResult, CacheTierTtl } from './cache/domain-cache-manager.js';
+export {
+  DatabaseDomainCache,
+  databaseDomainCache,
+  startDomainCacheCleanupScheduler,
+} from './cache/database-domain-cache.js';
+export type { DomainCacheType, DomainCacheRow } from './cache/database-domain-cache.js';
+export { RedisDomainCache, redisDomainCache } from './cache/redis-domain-cache.js';
+export { warmupDomainCaches } from './cache/warmup.js';
+export type { WarmupReport, WarmupOptions } from './cache/warmup.js';
 
 // === MARKETS API ===
 export { MarketsClient } from './clients/markets-client.js';
