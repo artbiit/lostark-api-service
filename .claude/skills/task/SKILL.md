@@ -73,25 +73,19 @@ mkdir -p .claude/work-session/<sid>/{research,implementation,artifacts}
   checked_at: <iso>
 ```
 
-### 2.2 Graphify Deviation 이월 처리 (세션 시작 시)
+### 2.2 Graphify Hook 점검 (세션 시작 시)
 
-**디렉토리 생성 직후, report.md 초기화 전에** 이전 세션 deviation 이월 여부를
-확인한다.
+이월(deviation) 정책은 폐기됐다 (2026-05-20, agent-team-protocol §9.1). 다음
+세션이 받아야 할 graph 작업은 없다. 대신 다음을 1회 점검:
 
-가장 최근 `.claude/work-session/<이전-sid>/report.md` 를 탐색해
-`graph_refresh.decision: deviation` 항목이 있으면:
+1. `.husky/post-commit` 가 graphify hook (`graphify-hook-start` 마커 포함) 을
+   갖고 있는지 확인.
+2. 부재 시: `graphify hook install` 후 `.git/hooks/post-commit` 과
+   `.git/hooks/post-checkout` 을 `.husky/` 로 mv + `chmod +x`. (husky 가
+   `core.hooksPath=.husky/_` 로 override 하므로 `.git/hooks/` 에 두면 무시됨.)
 
-이월된 scope 와 명령을 Open Item 에서 읽어 **세션 시작과 동시에
-`/graphify <scope> --update` 를 즉시 실행**한다. code-only 변경이면 AST 만
-실행되므로 약 1~2 분이면 완료된다. graphify-lookup-advisor 호출 전에 완료 여부를
-확인한다.
-
-deviation 이월 없음 → 이 단계 스킵.
-
-> **이 프로젝트 한정**: 변경이 TypeScript code-only 이면 graphify `--update` 가
-> LLM 없이 AST 만으로 실행된다 (약 1~2분, 토큰 비용 0). 이 때문에 세션 시작과
-> 동시에 업데이트를 실행해도 사용자 대기 부담이 최소화된다. 상세:
-> `docs/development/graphify-background-execution.md`
+graphify-lookup-advisor 호출 전 hook 정상 여부만 확인하고 graphify 자체 실행은
+하지 않는다. 이전 세션이 미처리한 graph 작업이 있을 수 없다 — 이월이 금지이므로.
 
 ### 3. report.md 초기화
 
@@ -203,19 +197,24 @@ Advisor/Worker 가 직접 수행 금지.
    실제 운영 환경에서 `dump:openapi` 산출물을 LoA-Bot 의 `openapi-typescript`
    재생성으로 흡수). 없으면 "(없음)".
 4. **`graph-refresh-checker` 호출 + 판정 기반 처리** — 코드 변경이 1줄이라도
-   있으면 예외 없이 실행. 판정별 필수 후속:
-   - `fresh` → 후속 없음. 보고서 "graph_refresh" 섹션에 `fresh` 기록.
-   - `partial-stale` →
-     - **code-only 변경**: deviation(B) 로 이월 허용. 보고서에 다음 세션 실행
-       명령(`/graphify <scope> --update`) 기록. 다음 세션 §2.2 에서 세션 시작과
-       동시에 실행한다 (AST-only, LLM 불필요, ~1~2분).
-     - **docs/md 변경 포함**: 세션 내에서 `/graphify <대상경로>` 즉시 재생성.
-       `docs/graph/index.md` frontmatter + Scopes 표 갱신.
-   - `fully-stale` → 영향 scope 전체 `/graphify` 재생성. 메타 갱신.
-   - `no-graph` → 코드베이스가 비어있지 않다면 **세션 내에서 최초 생성**.
-     `/graphify <주요 경로>` 실행 + 메타 작성. 판정 결과와 수행한 처리는 보고서
-     "graph_refresh" 섹션에 한 줄 기록 (예:
-     `partial-stale → packages/data-service/src 재생성 완료`).
+   있으면 예외 없이 실행. **이월 금지** (agent-team-protocol §9.1). 처리 경로:
+   - `fresh` → 후속 없음. 보고서 `graph_refresh: fresh` 기록.
+   - `partial-stale` / `fully-stale` →
+     - **code-only 변경**: post-commit hook 이 자동 처리. 보고서
+       `graph_refresh.handled_by: post-commit-hook`. 세션 종료 직전
+       `graphify-out/.last_rebuild.log` tail 로 hook 실행 결과 확인 (실패 있으면
+       사용자 보고).
+     - **docs/md 변경 ≤ 5 파일**: 본 세션에서 `/graphify <대상경로>` 즉시 실행.
+       index.md frontmatter + Scopes 표 갱신.
+     - **docs/md 변경 > 5 파일 또는 풀 scope**: `general-purpose` subagent 를
+       `run_in_background: true` 로 호출해 graphify 분리. 본 세션은 사용자 응답
+       후 종료. 사용자에게 한 줄 고지.
+   - `no-graph` → background subagent 로 최초 생성 (~5분+, LLM 포함). 한 줄
+     고지. 판정·처리 결과 보고서 `graph_refresh` 섹션에 기록.
+
+   **금지**: Open Items 의 `[AUTO-EXECUTE ON NEXT SESSION START]` 태그,
+   `consecutive_defers` 카운터, AskUserQuestion 으로 (A)/(B) 결정 위임.
+
 5. **`git status` 확인** — 미커밋 잔여(tracked 변경·untracked 파일) 가 있으면
    (1) 이번 작업 단위에 속하면 stz/loa auto-commit 정책에 따라 커밋/push, (2)
    속하지 않으면 `report.md` 의 `open_items` 에 파일 경로·상태를 명시. 커밋되지

@@ -358,86 +358,97 @@ user_signals:
 | scope ≥ 3 재생성이 정례화                                            | `scope-regen` worker                                                                                                        | graphify-update-advisor tier 3 승격                                                       |
 | 세션 ≥ 10 누적 후 장기 패턴 분석 요구                                | `retro-aggregator` advisor 또는 worker                                                                                      | 별도 ADR 고려                                                                             |
 
-### 9.1 graph-refresh deviation 절차
+### 9.1 graph-refresh 처리 (이월 금지 정책)
 
-`graph-refresh-checker` 가 `fully-stale` 또는 `partial-stale` 판정을 내렸을 때,
-판정의 근거가 **본 세션의 변경**이 아니라 **누적 부채(이전 세션들에서 쌓인
-미반영 구조 변동)** 인 경우가 있다. 즉:
+**핵심 원칙: graph 갱신을 다음 세션으로 미루지 않는다.** 사용자가 4회 연속
+이월을 관찰하고 명시적으로 정정한 결과, deviation(이월) 옵션 자체를 제거한다
+(2026-05-20).
 
-- 본 세션의 변경 자체는 호출 그래프 토폴로지·타입 시그니처·모듈 경계에 영향 없음
-- 그러나 graph source_commit 이후 누적된 다른 커밋들이 영향을 미쳐 stale 판정
+`graph-refresh-checker` 가 `fully-stale` / `partial-stale` / `no-graph` 판정 시
+다음 두 경로 중 하나로 **반드시 본 세션 또는 commit 시점**에 처리한다.
 
-이때 두 경로가 정합적이다:
+#### (A) 자동 처리 — code-only 변경 (post-commit hook)
 
-- **(A) 즉시 재생성**: `/graphify <scope>` 를 본 세션 안에서 실행. 정합성 즉시
-  회복.
-- **(B) deviation 처리**: 사용자 명시 승인을 받아 다음 세션 첫 작업으로 이월.
-  반드시 `report.md` 의 `Open Items` 와 `graph_refresh` 섹션에 다음을 기록:
-  - 판정 결과(`fully-stale` 등)와 누적 commit 수
-  - 본 세션 변경이 그래프에 무영향임을 명시
-  - 다음 세션이 실행할 정확한 명령 (예: `/graphify packages/shared/src ...`)
-  - 메타 갱신 대상(`docs/graph/index.md` frontmatter + Scopes 표)
+`packages/*/src/`, `tests/`, `legacy/` 의 TypeScript/JavaScript 변경은
+`.husky/post-commit` 의 graphify hook 이 git commit 직후 background 로 AST 만
+재생성한다. orchestrator 가 별도 행동을 할 필요 없다.
 
-(B) 는 CLAUDE.md §9-4 의무에 대한 **명시적 deviation** 이다. 원칙적으로 사용자
-승인 없는 자동 이월은 금지하며 AskUserQuestion 으로 (A)/(B) 결정을 받고 그 답을
-보고서에 인용한다. **단 다음 면제 조건이 모두 충족되면** orchestrator 는
-AskUserQuestion 없이 (B) 로 자동 이월할 수 있다 (보고서에는 면제 근거 명시):
+- 트리거: 모든 `git commit`
+- 비용: free (LLM 불필요), background 실행으로 commit 자체 차단 안 함
+- 산출물: 각 scope 의 `graph.json` / `GRAPH_REPORT.md` 자동 갱신
+- 로그: `graphify-out/.last_rebuild.log` (실패 시 사용자에게 보고 의무)
 
-- **AskUserQuestion 면제 조건** (전부 충족 시):
-  1. 본 세션 변경이 **code-only** (TypeScript/JavaScript, docs/md 미포함)
-  2. stale 근거가 본 세션 변경이 아니라 **이전 세션 누적 부채**
-  3. graphify-out 비용이 ≥5분 LLM semantic 영역에 들어가지 않음
-- 한 조건이라도 불충족 → 기존 AskUserQuestion 절차 적용.
+세션 종료 시 `graph-refresh-checker` 결과가 `fresh` 가 아니라도 본 세션의 변경이
+code-only 였다면 hook 이 처리할 것이므로 추가 행동 없음. report.md 의
+`graph_refresh` 섹션에 `handled_by: post-commit-hook` 기록.
 
-**변경 유형별 처리 분기**:
+#### (B) 즉시 또는 background 분리 — docs/md/image 포함 변경
 
-- **code-only 변경** (TypeScript/JavaScript 등, docs/md 미포함): deviation(B) 로
-  이월 허용. 보고서 `Open Items` 에 다음 세션 실행 명령을 **AUTO-EXECUTE 태그**
-  와 함께 기록:
+`docs/`, `*.md`, image 파일 변경은 LLM semantic 추출이 필요해 hook 이 처리할 수
+없다. 다음 두 경로 중 하나로 처리한다 — **이월(다음 세션) 금지**.
+
+- **(B-1) 인스턴스 내 즉시 처리**: 변경 규모가 작거나(파일 ≤ 5개) 사용자 대기가
+  수용 가능하면 본 세션에서 `/graphify <scope>` 호출.
+- **(B-2) Background subagent 분리**: 변경 규모가 크거나(파일 > 5개) docs scope
+  전체 풀 빌드 같은 경우, `general-purpose` subagent 를
+  `run_in_background: true` 로 호출해 graphify 실행을 별도 컨텍스트로 분리. 본
+  세션은 사용자 응답 후 종료 가능.
+
   ```
-  - **[AUTO-EXECUTE ON NEXT SESSION START]** /graphify <scope> --update
-    # AST-only, LLM 불필요, ~1~2분
+  Agent({
+    description: "graphify docs background",
+    subagent_type: "general-purpose",
+    model: "haiku",
+    run_in_background: true,
+    prompt: "Run /graphify docs in this isolated session. Build 4 scope as needed. ..."
+  })
   ```
-  다음 세션의 orchestrator 는 사용자 요청 처리 **전에** 태그 항목을 먼저
-  실행한다 (§2.2 SKILL.md 와 연동).
-- **docs/md/image 포함 변경**: (A) 즉시 재생성 권장. semantic 재추출(LLM) 이
-  필요하므로 이월하면 다음 세션에도 부담이 남는다. 다만 사용자가 "무거우면
-  background + 새 세션" 정책을 명시한 환경에서는 background bash 로 분리하거나
-  AUTO-EXECUTE 태그와 예상 소요 시간(예: ~5분+) 을 한 줄 고지 후 (B) 이월 가능.
 
-**Open Items AUTO-EXECUTE 태그 규약**:
+  사용자에게 "background 에서 docs graph 갱신 진행 중. 완료 알림은 별도." 한 줄
+  고지. 사용자 동의 별도 묻지 않는다 (이월 금지 정책 + autonomous mode).
 
-- 태그 형식: `[AUTO-EXECUTE ON NEXT SESSION START]`
-- 다음 세션 orchestrator 는 report.md handoff 또는 직전 세션 Open Items 에서 이
-  태그를 인지하면 사용자 요청 처리 전에 우선 실행한다.
-- LLM semantic 포함 시 사용자에게 예상 소요를 한 줄 고지 후 진행. 진행 자체를
-  묻지 않는다.
+#### 의사결정 표
 
-**연속 이월 한도 (강제 실행 격상)**:
+| 변경 유형                 | 처리 경로 | 사용자 인터럽트 |
+| ------------------------- | --------- | --------------- |
+| code-only (.ts/.js)       | (A) hook  | 없음 (자동)     |
+| docs/md ≤ 5 파일          | (B-1)     | 한 줄 고지      |
+| docs/md > 5 또는 풀 scope | (B-2)     | 한 줄 고지      |
+| code + docs 혼합          | (A) + (B) | 한 줄 고지      |
+| `no-graph` (최초 생성)    | (B-2)     | 한 줄 고지      |
 
-AUTO-EXECUTE 태그가 적용됐음에도 매 세션 implementation 우선 등 명목으로 이월이
-반복되면 강제력이 약화된다. 다음 한도를 적용한다.
+#### 금지 항목
 
-- (B) deviation 처리 시 `report.md` 의 `graph_refresh` 섹션에 카운터 기록:
-  ```yaml
-  graph_refresh:
-    decision: deviation
-    consecutive_defers: 3 # 직전 세션의 N + 1
-    threshold: 3 # 강제 실행 한도
-  ```
-- 한도별 default:
-  - code-only + AST-only (~1~2분): 한도 없음 (AUTO-EXECUTE 만으로 충분).
-  - docs scope 포함 LLM semantic (~5분+): 한도 3회.
-  - 풀 재빌드 (~10분+): 한도 2회.
-- `consecutive_defers ≥ threshold` 시 다음 세션 orchestrator 가 "graph
-  마이그레이션 N회 연속 이월. 이번 세션에서 강제 실행합니다 (~예상 시간)" 한 줄
-  고지 후 즉시 실행. 사용자 별도 승인 불필요.
-- 강제 실행 완료 시 카운터 0 reset.
+- ❌ Open Items 에 `[AUTO-EXECUTE ON NEXT SESSION START]` 태그로 이월 (구 규약,
+  폐기됨)
+- ❌ deviation(B) 옵션 (구 규약, 폐기됨)
+- ❌ `consecutive_defers` 카운터 (구 규약, 폐기됨)
+- ❌ AskUserQuestion 으로 (A)/(B) 결정 위임 (이월 자체가 없으므로 묻지 않는다)
 
-상세: MEMORY `feedback_graphify_consecutive_defer_hard_limit`.
+#### 보고서 기록
 
-이 처리 전략의 프로젝트별 근거는
-`docs/development/graphify-background-execution.md` 에 기록한다.
+`report.md` 의 `graph_refresh` 섹션:
+
+```yaml
+graph_refresh:
+  decision:
+    handled_inline | handled_background | handled_by_hook | fresh | no-op
+  judgment: fresh | partial-stale | fully-stale | no-graph
+  scopes_processed: [packages, docs, tests, legacy] # 처리한 scope
+  background_subagent_id: <id> # (B-2) 의 경우만
+  reason: <한 줄>
+```
+
+#### Hook 점검
+
+- `.husky/post-commit` 이 graphify hook 을 갖고 있는지 세션 첫 commit 직전에
+  확인. 부재 시 `graphify hook install` + `.git/hooks/post-commit` →
+  `.husky/post-commit` 이전.
+- Hook 실행 결과는 `graphify-out/.last_rebuild.log` 에 기록 (graphify CLI 기본).
+  세션 종료 직전 1회 tail 로 실패 여부 확인.
+
+상세: MEMORY `feedback_graphify_no_defer_policy`. 프로젝트별 근거는
+`docs/development/graphify-background-execution.md`.
 
 ## 10. MCP / 외부 도구 통합 규칙
 
