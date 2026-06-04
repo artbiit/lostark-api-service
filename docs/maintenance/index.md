@@ -4,12 +4,13 @@
 
 ## 목록
 
-- [deployment](./deployment.md) — 배포 가이드 (Docker, 환경변수, 헬스체크)
+- [deployment](./deployment.md) — loa-platform 오케스트레이션, build+push 배포
+  명령, 이미지 드리프트 경고, macOS arm64 플랫폼 주의, 운영 게이트
 - [host-node-run](./host-node-run.md) — macOS 호스트에서 Node 로 직접 실행 시
   절차 (CA prefix 필수) + 장애 원인 분리 가이드
 - [macos-warp-tls-mitigation](./macos-warp-tls-mitigation.md) — macOS Cloudflare
-  WARP 환경에서 컨테이너 외부 HTTPS 가 `certificate verify failed` 로 깨질 때
-  Gateway CA mount 우회 절차
+  WARP 환경에서 컨테이너(lostark-rest, watchtower, loa-bot) HTTPS `x509` 실패 시
+  Gateway CA 번들 마운트 절차
 
 ## 관련
 
