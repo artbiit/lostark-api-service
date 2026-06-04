@@ -79,9 +79,51 @@ curl -s "http://localhost:3000/api/v1/news?type=notices" | head -200
   사용자가 명시적으로 활성화해야 동작한다.
 - 운영 서버는 WARP 가 없으므로 본 가이드의 어느 단계도 수행하지 않는다.
 
+## loa-platform 컨테이너 (watchtower, loa-bot)
+
+loa-platform compose 로 기동하는 `watchtower` 와 `loa-bot` 도 동일 WARP 영향을
+받는다. 이 서비스들은 Discord API / Docker Hub 에 HTTPS 로 접근하기 때문이다.
+
+### CA 번들 생성 (최초 1회)
+
+```bash
+cd /path/to/loa-platform
+mkdir -p certs
+# macOS 기본 CA + Cloudflare Gateway CA 합본
+cp /etc/ssl/cert.pem certs/ca-certificates.crt
+security find-certificate -a -c 'Cloudflare' -p >> certs/ca-certificates.crt
+```
+
+`loa-platform/certs/` 는 `.gitignore` 에 등록 (머신마다 CA 번들이 다름).
+
+### docker-compose.yml 설정 (이미 적용됨)
+
+```yaml
+# watchtower 서비스
+volumes:
+  - ./certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+
+# loa-bot 서비스
+environment:
+  NODE_EXTRA_CA_CERTS: /etc/ssl/certs/host-ca.pem
+volumes:
+  - ./certs/ca-certificates.crt:/etc/ssl/certs/host-ca.pem:ro
+```
+
+### 검증
+
+```bash
+# watchtower 로그에서 x509 에러 없는지 확인
+docker logs loa-platform-watchtower-1 2>&1 | grep -E "x509|notification|discord"
+
+# loa-bot 로그인 성공 여부
+docker logs loa-platform-loa-bot-1 2>&1 | grep "logged in"
+```
+
 ## 관련
 
-- `docker-compose.dev-tls.yml` — 본 우회의 compose override
+- `docker-compose.dev-tls.yml` — lostark-api-service 자체 compose override
 - `.gitignore` — `.local-ca/` 추적 차단 명시
 - 호스트에서 Node 로 직접 실행할 때의 CA prefix 절차는
   [host-node-run](./host-node-run.md) 참조 (다른 결함, 동일 환경 패턴)
+- loa-platform 배포 전반은 [deployment](./deployment.md) 참조

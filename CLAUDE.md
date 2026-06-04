@@ -24,3 +24,9 @@
   금지.
 - 파괴적 조작(DB 마이그레이션 적용, OpenAPI dump 외부 게시, 파일 ≥5 삭제 등)은
   [agent-team-protocol §6](./docs/development/agent-team-protocol.md) 게이트.
+
+## 메모리 시스템 비활성화
+
+이 프로젝트에서 `~/.claude/projects/.../memory/` auto-memory 시스템을 사용하지
+않는다. 환경·운영 정보는 `docs/maintenance/` 에 관리한다. 대화 중 새로운 사실을
+발견해도 memory 파일을 생성하거나 MEMORY.md 를 갱신하지 않는다.
