@@ -98,4 +98,5 @@ partial-stale + code-only → deviation(B) 로 이월 허용. Open Items 에 명
 ## 관련 문서
 
 - [agent-team-protocol.md §9.1](./agent-team-protocol.md)
-- [SKILL.md §2.2, §9 종료조건 #4](../../.claude/skills/task/SKILL.md)
+- task 스킬은 `atp` 플러그인(`atp:task`)으로 이관 — 로컬 `.claude/skills/task/`
+  제거 (2026-06-12)

@@ -8,6 +8,7 @@ graphify-out/
 
 # ---> Claude Code 에이전트 팀 세션 산출물 (per-session, LoA-Bot 정책과 동일)
 .claude/work-session/
+.atp/work-session/
 .claude/settings.local.json
 
 # ---> 메신저봇R 클라이언트 로컬 사본 (내부 LAN IP/포트 포함, public 레포 보호)
