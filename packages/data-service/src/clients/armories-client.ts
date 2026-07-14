@@ -10,6 +10,7 @@
 import { logger } from '@lostark/shared';
 import {
   ARMORIES_ENDPOINTS,
+  ArkPassiveV9,
   ArmoryAvatarsV9,
   ArmoryCardsV9,
   ArmoryCharacterV9,
@@ -68,6 +69,35 @@ export class ArmoriesClient {
     );
 
     return await this.apiClient.get<ArmoryProfileV9>(endpoint);
+  }
+
+  /**
+   * 캐릭터 아크 패시브 정보 조회.
+   *
+   * V9 에서 ArkPassive 는 profiles 응답에서 분리되어 전용 /arkpassive 엔드포인트로
+   * 이동했다 (upstream changelog). 저티어/미개방 캐릭터는 null 을 반환할 수 있고,
+   * 엔드포인트 자체가 실패해도 profile 조회를 막지 않도록 에러를 흡수해 null 로 강등한다.
+   */
+  async getArkPassive(characterName: string): Promise<ArkPassiveV9 | null> {
+    const endpoint = ARMORIES_ENDPOINTS.ARK_PASSIVE(characterName);
+
+    logger.debug(
+      {
+        characterName,
+        endpoint,
+      },
+      'Fetching character ark passive',
+    );
+
+    try {
+      return await this.apiClient.get<ArkPassiveV9 | null>(endpoint);
+    } catch (err) {
+      logger.warn(
+        { characterName, endpoint, err: String(err) },
+        'ark passive fetch failed — degrading to null',
+      );
+      return null;
+    }
   }
 
   /**
@@ -257,6 +287,13 @@ export class ArmoriesClient {
           promises.push(
             this.getProfile(characterName).then((data) => {
               result.ArmoryProfile = data;
+            }),
+          );
+          // ArkPassive 는 profiles 에서 분리돼 전용 엔드포인트로 이동(V9). equipment 가
+          // abilityStone 을 동반하듯, profile 조회 시 ArkPassive 를 함께 채운다.
+          promises.push(
+            this.getArkPassive(characterName).then((data) => {
+              result.ArkPassive = data;
             }),
           );
           break;

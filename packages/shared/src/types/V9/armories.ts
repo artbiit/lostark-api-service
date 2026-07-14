@@ -358,6 +358,7 @@ export interface ArmoryCharacterV9 extends ApiVersion {
 export const ARMORIES_ENDPOINTS = {
   CHARACTER: (characterName: string) => `/armories/characters/${characterName}`,
   PROFILES: (characterName: string) => `/armories/characters/${characterName}/profiles`,
+  ARK_PASSIVE: (characterName: string) => `/armories/characters/${characterName}/arkpassive`,
   EQUIPMENT: (characterName: string) => `/armories/characters/${characterName}/equipment`,
   AVATARS: (characterName: string) => `/armories/characters/${characterName}/avatars`,
   COMBAT_SKILLS: (characterName: string) => `/armories/characters/${characterName}/combat-skills`,
