@@ -62,10 +62,10 @@ test('골든: formatProfile — 이다', () => {
   assert.match(out, /pvp\t초단/);
   // 공격력/체력
   assert.match(out, /공격력\/체력\t195116\/392922/);
-  // 엘/초/상 (equipment 있을 때)
-  assert.match(out, /엘\/초\/상\t50\/126\/240/);
-  // 진/깨/도
-  assert.match(out, /진\/깨\/도\t120\/101\/70/);
+  // 엘/초/상 라인 폐기 — 미출력 검증
+  assert.doesNotMatch(out, /엘\/초\/상/);
+  // 진/깨/도 — 아크패시브 랭크 (fixture Description "6랭크 30레벨" → 6/6/6)
+  assert.match(out, /진\/깨\/도\t6\/6\/6/);
   // 각인 3줄 폐기 — 미출력 검증
   assert.doesNotMatch(out, /아 원 돌 결 예/);
   assert.doesNotMatch(out, /돌 오우너/);
@@ -89,8 +89,10 @@ test('골든: formatEquipment — 이다', () => {
   assert.match(out, /하의/);
   assert.match(out, /장갑/);
   assert.match(out, /어깨/);
-  // 엘릭서 섹션
-  assert.match(out, /<엘릭서 정보>/);
+  // 엘릭서 섹션·초월 합계 폐기, 상재 합계는 유지
+  assert.doesNotMatch(out, /<엘릭서 정보>/);
+  assert.doesNotMatch(out, /초월.*합계/);
+  assert.match(out, /상재.*합계/);
   // 갱신 시간 (fixture normalizedAt 이 존재하므로)
   assert.match(out, /갱신된 시간 /);
 });

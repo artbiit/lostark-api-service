@@ -64,6 +64,8 @@ export interface NormalizedArkPassive {
   title: string;
   /** Points 3종 — 없으면 0 */
   points: { evolution: number; realization: number; leap: number };
+  /** Points[].Description 의 'N랭크 M레벨' 에서 뽑은 랭크. 파싱 실패 시 0 */
+  ranks: { evolution: number; realization: number; leap: number };
   /** Effects[0].Description 의 '>{name} Lv.{n}<' 첫 매치. 추출 실패 시 null */
   realizationName: string | null;
   /** ArmoryEngraving.ArkPassiveEffects 기반 (활성 시), 비활성 시 빈 배열 */
@@ -589,12 +591,24 @@ export class ArmoriesNormalizer {
     if (!arkPassiveData) return null;
 
     const points = { evolution: 0, realization: 0, leap: 0 };
+    const ranks = { evolution: 0, realization: 0, leap: 0 };
     if (Array.isArray(arkPassiveData.Points)) {
       for (const p of arkPassiveData.Points) {
         const v = typeof p?.Value === 'number' ? p.Value : 0;
-        if (p?.Name === '진화') points.evolution = v;
-        else if (p?.Name === '깨달음') points.realization = v;
-        else if (p?.Name === '도약') points.leap = v;
+        // Description 예: "6랭크 30레벨" → 랭크 6
+        const rankMatch =
+          typeof p?.Description === 'string' ? p.Description.match(/(\d+)\s*랭크/) : null;
+        const r = rankMatch ? Number(rankMatch[1]) : 0;
+        if (p?.Name === '진화') {
+          points.evolution = v;
+          ranks.evolution = r;
+        } else if (p?.Name === '깨달음') {
+          points.realization = v;
+          ranks.realization = r;
+        } else if (p?.Name === '도약') {
+          points.leap = v;
+          ranks.leap = r;
+        }
       }
     }
 
@@ -610,6 +624,7 @@ export class ArmoriesNormalizer {
       isArkPassive: !!arkPassiveData.IsArkPassive,
       title: typeof arkPassiveData.Title === 'string' ? arkPassiveData.Title : '',
       points,
+      ranks,
       realizationName,
       engravingEffects: [],
     };

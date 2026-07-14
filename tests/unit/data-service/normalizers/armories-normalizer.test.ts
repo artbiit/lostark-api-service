@@ -51,6 +51,12 @@ test('normalizeCharacterDetail — ArkPassive 활성', async (t) => {
       realization: 101,
       leap: 70,
     });
+    // ranks: Points[].Description "6랭크 30레벨" → 6/6/6
+    assert.deepStrictEqual(characterDetail.arkPassive!.ranks, {
+      evolution: 6,
+      realization: 6,
+      leap: 6,
+    });
     assert.strictEqual(characterDetail.arkPassive!.realizationName, '수라의 길');
     assert.strictEqual(characterDetail.arkPassive!.isArkPassive, true);
     assert.strictEqual(characterDetail.arkPassive!.title, '수라의 길');
@@ -135,6 +141,8 @@ test('normalizeArkPassive — fallback paths', async (t) => {
     });
     assert.strictEqual(result.realizationName, null);
     assert.deepStrictEqual(result.points, { evolution: 10, realization: 20, leap: 30 });
+    // Description 부재 → ranks 전부 0
+    assert.deepStrictEqual(result.ranks, { evolution: 0, realization: 0, leap: 0 });
   });
 
   await t.test('arkPassiveData === null 이면 결과 === null', () => {

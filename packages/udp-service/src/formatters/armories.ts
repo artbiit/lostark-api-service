@@ -103,16 +103,10 @@ export function formatProfile(name: string, detail: AnyDetail): string {
     lines.push(`공격력/체력\t${attack.value}/${hp.value}`);
   }
 
-  // 9. 엘/초/상 (equipment 가 partial 응답에 포함됐을 때만 의미 있음)
-  const equipment = Array.isArray(detail.equipment) ? detail.equipment : [];
-  if (equipment.length > 0) {
-    const eq = summarizeEquipmentForProfile(equipment);
-    lines.push(`엘/초/상\t${eq.elixirTotal}/${eq.transcendenceTotal}/${eq.advancedReforgeTotal}`);
-  }
-
-  // 10. 진/깨/도 (ArkPassive 활성 시)
+  // 9. 진/깨/도 — 아크패시브 진화/깨달음/도약 랭크 (ArkPassive 활성 시)
   if (ark) {
-    lines.push(`진/깨/도\t${ark.points.evolution}/${ark.points.realization}/${ark.points.leap}`);
+    const ranks = ark.ranks ?? { evolution: 0, realization: 0, leap: 0 };
+    lines.push(`진/깨/도\t${ranks.evolution}/${ranks.realization}/${ranks.leap}`);
   }
 
   // 11. 성향
@@ -134,29 +128,6 @@ export function formatProfile(name: string, detail: AnyDetail): string {
   return joinLines(...lines);
 }
 
-/**
- * 6장비(무기/투구/상의/하의/어깨/장갑) 의 엘릭서/초월/상재 합계.
- * formatEquipment 와 동일하게 parseEquipmentTooltip 을 재사용.
- */
-function summarizeEquipmentForProfile(equipment: any[]): {
-  elixirTotal: number;
-  transcendenceTotal: number;
-  advancedReforgeTotal: number;
-} {
-  const slots = new Set(['무기', '투구', '상의', '하의', '어깨', '장갑']);
-  let elixirTotal = 0;
-  let transcendenceTotal = 0;
-  let advancedReforgeTotal = 0;
-  for (const eq of equipment) {
-    if (!slots.has(eq?.type)) continue;
-    const parsed = parseEquipmentTooltip(eq);
-    elixirTotal += parsed.elixirs.reduce((s, e) => s + e.level, 0);
-    transcendenceTotal += parsed.transcendenceCount;
-    advancedReforgeTotal += parsed.advancedReforge;
-  }
-  return { elixirTotal, transcendenceTotal, advancedReforgeTotal };
-}
-
 // === 장비 ===
 
 export function formatEquipment(name: string, detail: AnyDetail): string {
@@ -171,38 +142,19 @@ export function formatEquipment(name: string, detail: AnyDetail): string {
   const lines: string[] = [sectionHeader(`${name}의 장비`)];
 
   let qualitySum = 0;
-  let elixirSum = 0;
-  let transcendenceSum = 0;
   let advancedReforgeSum = 0;
 
-  const parsed: Array<{
-    slot: string;
-    upgrade: number;
-    quality: number;
-    evolution: number;
-    itemLevel: number;
-    transcendenceLevel: number;
-    transcendenceCount: number;
-    advancedReforge: number;
-    elixirs: Array<{ slot: string; name: string; level: number }>;
-  }> = [];
-
+  // 엘릭서/초월은 게임 내 폐지 → 표시 제거. 상급 재련(상재)만 잔존.
   for (const eq of items) {
     const parsedItem = parseEquipmentTooltip(eq);
-    parsed.push(parsedItem);
 
     let str = `+${parsedItem.upgrade}(${padQuality(parsedItem.quality)}) ${parsedItem.slot}(${parsedItem.evolution}) ${padItemLevel(parsedItem.itemLevel)}`;
-    if (parsedItem.transcendenceCount > 0) {
-      str += ` ${EMOJI.TRANSCENDENCE}${padTwoDigit(parsedItem.transcendenceCount)}`;
-    }
     if (parsedItem.advancedReforge > 0) {
       str += ` ${EMOJI.ADVANCED_REFORGE}${padTwoDigit(parsedItem.advancedReforge)}`;
     }
     lines.push(str);
 
     qualitySum += parsedItem.quality;
-    transcendenceSum += parsedItem.transcendenceCount;
-    elixirSum += parsedItem.elixirs.reduce((s, e) => s + e.level, 0);
     advancedReforgeSum += parsedItem.advancedReforge;
   }
 
@@ -214,31 +166,9 @@ export function formatEquipment(name: string, detail: AnyDetail): string {
     0,
     `아이템 레벨 : ${detail.itemLevel ?? 0}`,
     `평균 품질 : ${avgQuality}`,
-    `초월${EMOJI.TRANSCENDENCE}합계 : ${transcendenceSum}`,
     `상재${EMOJI.ADVANCED_REFORGE}합계 : ${advancedReforgeSum}`,
     '',
   );
-
-  if (elixirSum > 0) {
-    lines.push('');
-    lines.push(sectionHeader('엘릭서 정보'));
-    for (const item of parsed) {
-      if (item.elixirs.length === 0) continue;
-      const parts: string[] = [];
-      for (const el of item.elixirs) {
-        let n = el.name;
-        if (n.includes('(')) {
-          n = n.split(' ')[0] ?? n;
-        } else if (n.length > 5 && n.includes(' ')) {
-          const tk = n.split(' ');
-          n = `${tk[0]?.[0] ?? ''}${tk[1]?.[0] ?? ''}`;
-        }
-        parts.push(`${n} Lv.${el.level}`);
-      }
-      lines.push(`- ${item.slot}) ${parts.join(' ')}`);
-    }
-    lines.splice(4, 0, `엘릭서 합계 : ${elixirSum}`);
-  }
 
   if (detail.metadata?.normalizedAt) {
     lines.push('');

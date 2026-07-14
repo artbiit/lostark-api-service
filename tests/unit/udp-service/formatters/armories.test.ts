@@ -106,8 +106,8 @@ test('formatProfile', async (t) => {
     assert.doesNotMatch(out, /^4 4 4 4 4$/m);
   });
 
-  // F-2: 진/깨/도
-  await t.test('F-2: renders 진/깨/도 line from arkPassive.points', () => {
+  // F-2: 진/깨/도 — 아크패시브 진화/깨달음/도약 랭크
+  await t.test('F-2: renders 진/깨/도 line from arkPassive.ranks', () => {
     const detail = {
       className: '브레이커',
       arkPassive: {
@@ -115,15 +115,16 @@ test('formatProfile', async (t) => {
         title: '수라의 길',
         realizationName: '수라의 길',
         points: { evolution: 120, realization: 101, leap: 70 },
+        ranks: { evolution: 6, realization: 6, leap: 6 },
         engravingEffects: [],
       },
     };
     const out = formatProfile('아트네', detail);
-    assert.match(out, /진\/깨\/도\t120\/101\/70/);
+    assert.match(out, /진\/깨\/도\t6\/6\/6/);
   });
 
-  // F-3: 엘/초/상 — 빈 tooltip 이라도 라인은 출력
-  await t.test('F-3: renders 엘/초/상 line when equipment present', () => {
+  // F-3: 엘/초/상 라인 폐기 (엘릭서/초월 게임 삭제 + 상급재련 정보 미표시)
+  await t.test('F-3: does NOT render 엘/초/상 line', () => {
     const detail = {
       itemLevel: 1700,
       equipment: [
@@ -132,7 +133,7 @@ test('formatProfile', async (t) => {
       ],
     };
     const out = formatProfile('아트네', detail);
-    assert.match(out, /엘\/초\/상\t0\/0\/0/);
+    assert.doesNotMatch(out, /엘\/초\/상/);
   });
 
   // F-4: 길드 등급 표기
