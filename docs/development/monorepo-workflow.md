@@ -64,6 +64,23 @@
 등) 이 패키지명을 직접 참조하므로 변경 비용이 크다. ADR 로 명시 정착 처리 권장
 (현 단계에선 양쪽 명칭을 모두 인지하는 것으로 감내).
 
+## 신규 export·타입 추가 시 build 선행 (project references)
+
+패키지들은 TypeScript project references 로 연결돼 있어, 하위 패키지의
+`typecheck` 는 상위 패키지의 **빌드된 `.d.ts`** 를 참조한다(소스 직접이 아님).
+따라서 `@lostark/shared` 또는 `@lostark/data-service` 에 **신규 export·타입을
+추가**한 뒤 곧바로 하위 패키지(`data-service`/`rest-service`/`udp-service`)를
+`typecheck` 하면, 새 심볼을 인식하지 못하고 `TS2305 has no exported member` /
+`TS2339 property does not exist` 로 실패한다.
+
+- 절차: 신규 export·타입 추가 → 해당 패키지 먼저 `build`
+  (`yarn workspace @lostark/shared build`, 이어서 의존 순서상
+  `@lostark/data-service`) → 그 뒤 하위 패키지 `typecheck`/`yarn verify`.
+- 의존 순서: `shared` → `data-service` → (`rest-service`/`udp-service`).
+- 근거 사례: ADR-0004 구현 시 env 신규 6키 + `CacheRefreshOutcome` 타입 +
+  `startCalendarRefreshScheduler` export 를 추가한 직후 `yarn typecheck` 가 하위
+  패키지에서 실패 → shared·data-service 순 재빌드 후 통과.
+
 ## 관련
 
 - [yarn-berry-pnp](./yarn-berry-pnp.md) — PnP 운용.

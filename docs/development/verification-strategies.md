@@ -40,6 +40,15 @@
 포함한다. revert 시 테스트가 실패하고, 수정 후엔 통과해야 한다. 기존
 `tests/unit/**` 또는 `tests/integration/**` 의 적절한 위치에 추가.
 
+**grep-count AC 의 범위 한정**: acceptance criterion 을
+`grep -c '<PATTERN>' <file>` 형태의 전수 카운트로 명세할 때는, 동일 심볼이 한
+파일에 **의도적으로 여러 번 등장**하는 구조를 고려해야 한다. 대표 사례: `env.ts`
+의 신규 env 필드는 `envSchema` 와 `defaultConfig`(`EnvConfig` 타입 제약) 양쪽에
+등록되어 파일 전체 grep 은 예상의 2배가 나온다(ADR-0004 세션의 AC-9: 명세 6 vs
+실측 12). count AC 는 파일 전체가 아니라 **대상 블록**(예: `z.coerce` 를 포함한
+스키마 라인)으로 패턴/범위를 좁혀 명세한다. 자세한 배경은
+[configuration.md](./configuration.md) 의 "신규 env 필드 추가 절차" 참조.
+
 ### cache-write 경로 fix 의 시나리오 의무
 
 cache 에 entry 를 쓰는 코드(`set/upsert/write` 또는 normalize 결과 캐싱) 를

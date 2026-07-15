@@ -34,6 +34,23 @@ REST_API_PORT=3000
 UDP_GATEWAY_PORT=5022
 ```
 
+### 신규 env 필드 추가 절차 (envSchema ↔ defaultConfig 동기 의무)
+
+`packages/shared/src/config/env.ts` 에 새 환경변수를 추가할 때는 **두 곳을
+함께** 갱신해야 한다. `defaultConfig` 가
+`EnvConfig`(=`z.infer<typeof envSchema>`) 로 타입 제약되므로, `envSchema` 에
+필드를 추가하면 `defaultConfig` 도 같은 키를 채워야 `yarn typecheck` 를
+통과한다(`.default()` 를 붙여도 `z.infer` 출력 타입은 필수 키가 되어
+`defaultConfig` 에 존재해야 함).
+
+- 절차: (1) `envSchema` 에 zod 필드 추가(`.default()` 로 하위호환) → (2)
+  `defaultConfig` 에 동일 키·기본값 추가 → (3) `.env.example` 동기.
+- 결과적으로 env 필드 1개는 `env.ts` 소스에 **2회** 등장한다.
+- 검증 함의: env 키를 `grep -c '<PREFIX>' env.ts` 로 세는 acceptance criterion
+  은 이 이중 등록 탓에 예상의 2배가 나온다. count AC 는 대상 블록(예: envSchema
+  z.object 내부)으로 범위를 한정해 명세해야 한다
+  ([verification-strategies](./verification-strategies.md) 참조).
+
 ### 선택적 환경변수
 
 #### 1. Fetch Layer 설정
