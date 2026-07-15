@@ -79,7 +79,11 @@ export {
 
 // === 도메인 3-tier 캐시 인프라 ===
 export { DomainCacheManager, MaintenanceUnavailableError } from './cache/domain-cache-manager.js';
-export type { CacheLookupResult, CacheTierTtl } from './cache/domain-cache-manager.js';
+export type {
+  CacheLookupResult,
+  CacheTierTtl,
+  CacheRefreshOutcome,
+} from './cache/domain-cache-manager.js';
 export {
   DatabaseDomainCache,
   databaseDomainCache,
@@ -89,6 +93,11 @@ export type { DomainCacheType, DomainCacheRow } from './cache/database-domain-ca
 export { RedisDomainCache, redisDomainCache } from './cache/redis-domain-cache.js';
 export { warmupDomainCaches } from './cache/warmup.js';
 export type { WarmupReport, WarmupOptions } from './cache/warmup.js';
+export {
+  startCalendarRefreshScheduler,
+  computeMsUntilNextReset,
+} from './cache/calendar-refresh-scheduler.js';
+export type { CalendarRefreshSchedulerHandle } from './cache/calendar-refresh-scheduler.js';
 
 // === MARKETS API ===
 export { MarketsClient } from './clients/markets-client.js';

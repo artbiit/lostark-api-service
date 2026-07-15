@@ -49,6 +49,21 @@ export interface CacheLookupResult<T> {
 }
 
 /**
+ * `forceRefresh` 결과. 스케줄러(calendar-refresh-scheduler.ts)가 재시도 루프의
+ * 조기 종료/지속 판단에 사용한다.
+ *
+ * - `refreshed`         : fetcher 성공 → L1/L2/L3 전체 교체됨 (staleAge 0 리셋). 창 조기 종료.
+ * - `maintenance-skip`  : 점검(isMaintenanceError) 매칭 → **기존 캐시 무변경**. 재시도 지속.
+ * - `error`             : 그 외 에러 → **기존 캐시 무변경**. 로그 후 재시도 지속.
+ * - `skipped-in-flight` : 스케줄러 inFlight 가드가 재진입을 막음 (base forceRefresh 는 반환 안 함).
+ */
+export interface CacheRefreshOutcome {
+  outcome: 'refreshed' | 'maintenance-skip' | 'error' | 'skipped-in-flight';
+  /** outcome==='error' 일 때만 채움 — 로그/테스트 assertion 용. */
+  error?: string;
+}
+
+/**
  * 점검 + stale fallback 도 실패한 상태. server.ts 가 503 + `Retry-After: 60` 으로 변환.
  */
 export class MaintenanceUnavailableError extends Error {
@@ -191,6 +206,50 @@ export abstract class DomainCacheManager<T> {
 
       // 그 외 (4xx 등) — 점검 아님. 즉시 전파.
       throw err;
+    }
+  }
+
+  /**
+   * TTL 무시하고 즉시 강제 refetch. **성공했을 때만** L1/L2/L3 를 교체하고,
+   * 실패(점검 포함)하면 기존 캐시(및 SWR stale fallback 경로)를 절대 건드리지
+   * 않는다 — `fetchWithFallback`(사용자 요청 경로)과는 별개의 스케줄러 전용
+   * 진입점 (ADR-0004 결정2: `invalidate()+refetch` 의 self-inflicted outage 회피).
+   *
+   * 3분기:
+   * - 성공 → `setAllTiers`(L1/L2/L3 전체 교체, sourceFetchedAt=now 로 staleAge 0 리셋) → `refreshed`
+   * - 점검(`isMaintenanceError`) → 아무 것도 건드리지 않고 `maintenance-skip`
+   * - 그 외 에러 → 아무 것도 건드리지 않고 `error`(메시지 첨부)
+   */
+  async forceRefresh(
+    cacheKey: string,
+    fetcher: () => Promise<T>,
+  ): Promise<CacheRefreshOutcome> {
+    try {
+      const fresh = await fetcher();
+      await this.setAllTiers(cacheKey, fresh);
+      logger.info(
+        { cacheType: this.cacheType, cacheKey },
+        'DomainCacheManager: forceRefresh succeeded, all tiers replaced',
+      );
+      return { outcome: 'refreshed' };
+    } catch (err) {
+      if (this.isMaintenanceError(err)) {
+        logger.warn(
+          {
+            cacheType: this.cacheType,
+            cacheKey,
+            err: err instanceof Error ? err.message : String(err),
+          },
+          'DomainCacheManager: forceRefresh skipped (maintenance) — existing cache untouched',
+        );
+        return { outcome: 'maintenance-skip' };
+      }
+      const message = err instanceof Error ? err.message : String(err);
+      logger.error(
+        { cacheType: this.cacheType, cacheKey, err: message },
+        'DomainCacheManager: forceRefresh failed (non-maintenance) — existing cache untouched',
+      );
+      return { outcome: 'error', error: message };
     }
   }
 

@@ -15,6 +15,7 @@ import { parseEnv } from '@lostark/shared/config/env';
 import { databaseDomainCache } from './database-domain-cache.js';
 import {
   CacheLookupResult,
+  CacheRefreshOutcome,
   CacheTierTtl,
   DomainCacheManager,
 } from './domain-cache-manager.js';
@@ -53,6 +54,17 @@ export class GameContentsCacheManager extends DomainCacheManager<GameContentsCal
    */
   async invalidateCalendar(): Promise<void> {
     await this.invalidate(GAMECONTENTS_CALENDAR_CACHE_KEY);
+  }
+
+  /**
+   * 스케줄러 전용 (ADR-0004, Track B) — 고정 키 `gamecontents:calendar:v1` 에 대해
+   * 비파괴적 `forceRefresh` 를 위임한다. 성공 시에만 캐시 교체, 실패(점검 포함) 시
+   * 기존 SWR stale fallback 을 절대 파괴하지 않는다.
+   */
+  async refreshCalendarNow(
+    fetcher: () => Promise<GameContentsCalendarResponseV9>,
+  ): Promise<CacheRefreshOutcome> {
+    return this.forceRefresh(GAMECONTENTS_CALENDAR_CACHE_KEY, fetcher);
   }
 }
 

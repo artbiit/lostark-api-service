@@ -17,6 +17,10 @@ _기존 프로젝트(v1 → v2.0.0 전환) 시기의 결정은 명시적 ADR 문
 - [ADR-0003](./ADR-0003-abyss-guardian-removal.md) — udp-service:
   abyss(도비스)/guardian(도가토) 명령 완전 제거. calendar API 실측(2026-05-16)
   결과 CategoryName 미출현 + 공식 엔드포인트 deprecated 확인 (2026-05-16)
+- [ADR-0004](./ADR-0004-calendar-cache-reset-aligned-refresh.md) — 캘린더 캐시
+  능동 갱신: 리셋정렬 단독 트랙(수요일 10:10 KST) + 비파괴적 `forceRefresh()`
+  채택, 고정 인터벌 트랙과 `invalidate()+refetch` 는 기각. **설계 확정, 구현
+  미착수 — 후속 세션** (2026-07-15)
 
 ## 템플릿
 

@@ -240,6 +240,11 @@ const normalizedProfile = ProfileMigrator.normalizeProfile(rawData);
 - **Redis**: 중간 TTL (10-30분)
 - **Stale-while-revalidate**: 허용
 - **강제 리프레시**: 쿼리 파라미터 또는 헤더로 제공
+- **능동 캐시 refetch 는 비파괴 `forceRefresh` 사용, `invalidate()+refetch`
+  금지**: invalidate 가 L1/L2/L3 를 먼저 삭제하므로 점검 중 refetch 실패 시 SWR
+  stale fallback 을 스스로 파괴하는 self-inflicted outage 가 된다. 능동 갱신은
+  성공 시에만 캐시를 교체하는 `forceRefresh` 로만 수행한다
+  ([ADR-0004](../adr/ADR-0004-calendar-cache-reset-aligned-refresh.md)).
 
 ## 🛡️ 안정성
 

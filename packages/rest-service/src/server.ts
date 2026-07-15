@@ -34,8 +34,10 @@ import {
   MaintenanceUnavailableError,
   MarketsService,
   NewsService,
+  startCalendarRefreshScheduler,
   warmupDomainCaches,
 } from '@lostark/data-service';
+import type { CalendarRefreshSchedulerHandle } from '@lostark/data-service';
 import { logger } from '@lostark/shared';
 logger.info('✅ rate-limit 모듈 로딩 완료');
 
@@ -144,6 +146,7 @@ export class RestServer {
   private newsService: NewsService;
   private gameContentsService: GameContentsService;
   private marketsService: MarketsService;
+  private calendarRefreshScheduler?: CalendarRefreshSchedulerHandle;
 
   constructor(config: Partial<ServerConfig> = {}) {
     logger.info('🔧 RestServer 생성자 시작');
@@ -524,6 +527,18 @@ export class RestServer {
         }
       });
 
+      // 캘린더 리셋정렬 능동 갱신 스케줄러 시작 (ADR-0004, Track B).
+      // 스케줄러 시작 실패가 서버 부팅을 막지 않도록 try/catch (기존 관례).
+      try {
+        this.calendarRefreshScheduler = startCalendarRefreshScheduler();
+        logger.info('Calendar refresh scheduler started');
+      } catch (error: unknown) {
+        logger.warn(
+          { error: getErrorMessage(error) },
+          'Calendar refresh scheduler failed to start',
+        );
+      }
+
       logger.info('Cache system initialization completed');
     } catch (error) {
       logger.error(
@@ -554,6 +569,7 @@ export class RestServer {
    * 외부에서 Fastify 인스턴스를 닫을 수 있도록 공개. 테스트/스크립트 한정.
    */
   async close(): Promise<void> {
+    this.calendarRefreshScheduler?.stop();
     await this.fastify.close();
   }
 

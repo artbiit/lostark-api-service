@@ -259,3 +259,58 @@ test('invalidate — clears all tiers', async () => {
   assert.equal(await redis.get('news:x:v1'), null);
   assert.equal(await db.getRow('news', 'news:x:v1'), null);
 });
+
+// === forceRefresh (ADR-0004) — 성공/점검/기타에러 3분기 ===
+
+test('forceRefresh — success replaces all tiers (staleAge reset)', async () => {
+  const { manager, redis, db } = buildManager();
+  // 오래된 기존 값을 미리 적재 (교체 대상).
+  await manager.setAllTiers('news:x:v1', { kind: 'old', n: 1 }, new Date(Date.now() - 3600 * 1000));
+
+  let calls = 0;
+  const outcome = await manager.forceRefresh('news:x:v1', async () => {
+    calls++;
+    return { kind: 'new', n: 2 };
+  });
+
+  assert.equal(outcome.outcome, 'refreshed');
+  assert.equal(calls, 1);
+  // L1/L2/L3 전부 신규 값으로 교체됨.
+  const redisVal = (await redis.get<{ kind: string; n: number }>('news:x:v1'))!;
+  assert.equal(redisVal.n, 2);
+  const dbRow = (await db.getRow<{ kind: string; n: number }>('news', 'news:x:v1'))!;
+  assert.equal(dbRow.payload.n, 2);
+  // staleAge 0 리셋 — sourceFetchedAt 가 방금 시각이라 soft window 안(fresh).
+  assert.equal(dbRow.softExpiresAt.getTime() > Date.now(), true);
+});
+
+test('forceRefresh — maintenance leaves all tiers untouched', async () => {
+  const { manager, redis, db } = buildManager();
+  await manager.setAllTiers('news:x:v1', { kind: 'orig', n: 1 });
+  const memBefore = manager.getMemorySize();
+
+  const outcome = await manager.forceRefresh('news:x:v1', async () => {
+    throw new Error('HTTP 503: maintenance body');
+  });
+
+  assert.equal(outcome.outcome, 'maintenance-skip');
+  // 기존 L1/L2/L3 snapshot 불변.
+  assert.equal(manager.getMemorySize(), memBefore);
+  assert.equal((await redis.get<{ kind: string; n: number }>('news:x:v1'))!.n, 1);
+  assert.equal((await db.getRow<{ kind: string; n: number }>('news', 'news:x:v1'))!.payload.n, 1);
+});
+
+test('forceRefresh — non-maintenance error leaves tiers untouched and reports message', async () => {
+  const { manager, redis, db } = buildManager();
+  await manager.setAllTiers('news:x:v1', { kind: 'orig', n: 1 });
+
+  const outcome = await manager.forceRefresh('news:x:v1', async () => {
+    throw new Error('HTTP 401: unauthorized');
+  });
+
+  assert.equal(outcome.outcome, 'error');
+  assert.equal(/HTTP 401/.test(outcome.error ?? ''), true);
+  // 기존 L1/L2/L3 snapshot 불변.
+  assert.equal((await redis.get<{ kind: string; n: number }>('news:x:v1'))!.n, 1);
+  assert.equal((await db.getRow<{ kind: string; n: number }>('news', 'news:x:v1'))!.payload.n, 1);
+});

@@ -67,6 +67,14 @@ export const envSchema = z.object({
   CACHE_GAMECONTENTS_L2_SECONDS: z.coerce.number().min(1).default(1800), // 30분
   CACHE_GAMECONTENTS_L3_SOFT_SECONDS: z.coerce.number().min(1).default(21600), // 6시간
   CACHE_GAMECONTENTS_L3_HARD_SECONDS: z.coerce.number().min(1).default(1209600), // 14일
+  // === gamecontents.calendar 리셋정렬 능동 갱신 (ADR-0004, Track B) ===
+  // 주간 리셋(수요일 10:10 KST) 종료 직후 창 내 재시도로 신규 주차 데이터 self-heal.
+  CACHE_GAMECONTENTS_CALENDAR_REFRESH_ENABLED: z.coerce.boolean().default(true), // Track B 스케줄러 토글 (false=lazy-SWR-only 롤백)
+  CACHE_GAMECONTENTS_CALENDAR_RESET_DAY: z.coerce.number().min(0).max(6).default(3), // 주간 리셋 요일 (0=일 ... 3=수요일)
+  CACHE_GAMECONTENTS_CALENDAR_RESET_HOUR_KST: z.coerce.number().min(0).max(23).default(10), // 리셋 목표 KST 시
+  CACHE_GAMECONTENTS_CALENDAR_RESET_MINUTE_KST: z.coerce.number().min(0).max(59).default(10), // 리셋 목표 KST 분
+  CACHE_GAMECONTENTS_CALENDAR_RESET_WINDOW_MINUTES: z.coerce.number().min(1).default(90), // 재시도 지속 창 길이(분)
+  CACHE_GAMECONTENTS_CALENDAR_RESET_RETRY_INTERVAL_SECONDS: z.coerce.number().min(1).default(300), // 창 내 재시도 간격(초, 5분)
   CACHE_NEWS_NOTICES_L1_SECONDS: z.coerce.number().min(1).default(300), // 5분
   CACHE_NEWS_NOTICES_L2_SECONDS: z.coerce.number().min(1).default(1800), // 30분
   CACHE_NEWS_NOTICES_L3_SOFT_SECONDS: z.coerce.number().min(1).default(21600), // 6시간
@@ -187,6 +195,12 @@ export const defaultConfig: EnvConfig = {
   CACHE_GAMECONTENTS_L2_SECONDS: 1800,
   CACHE_GAMECONTENTS_L3_SOFT_SECONDS: 21600,
   CACHE_GAMECONTENTS_L3_HARD_SECONDS: 1209600,
+  CACHE_GAMECONTENTS_CALENDAR_REFRESH_ENABLED: true,
+  CACHE_GAMECONTENTS_CALENDAR_RESET_DAY: 3,
+  CACHE_GAMECONTENTS_CALENDAR_RESET_HOUR_KST: 10,
+  CACHE_GAMECONTENTS_CALENDAR_RESET_MINUTE_KST: 10,
+  CACHE_GAMECONTENTS_CALENDAR_RESET_WINDOW_MINUTES: 90,
+  CACHE_GAMECONTENTS_CALENDAR_RESET_RETRY_INTERVAL_SECONDS: 300,
   CACHE_NEWS_NOTICES_L1_SECONDS: 300,
   CACHE_NEWS_NOTICES_L2_SECONDS: 1800,
   CACHE_NEWS_NOTICES_L3_SOFT_SECONDS: 21600,
