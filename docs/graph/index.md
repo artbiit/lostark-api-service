@@ -1,7 +1,7 @@
 ---
 kind: graphify-meta
-last_generated_at: 2026-07-15T17:20:00+09:00
-source_commit: 971c02f
+last_generated_at: 2026-07-22T11:25:00+09:00
+source_commit: 7ea7967
 scopes:
   - packages
   - docs
@@ -60,10 +60,10 @@ docs/graph/
 
 | scope    | 마지막 생성 | 소스 커밋 | 대상 경로                                             | 요약                                                                                                                                                                                                                            |
 | -------- | ----------- | --------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| packages | 2026-07-15  | `971c02f` | `packages/`                                           | 849 nodes · 1,529 edges · 48 communities. AST-only (96 code files). ADR-0004 반영: calendar-refresh-scheduler.ts 신규 모듈(startCalendarRefreshScheduler·computeMsUntilNextReset), DomainCacheManager.forceRefresh + CacheRefreshOutcome, GameContentsCacheManager.refreshCalendarNow, data-service index export 4건, env 6키, server→scheduler 호출 엣지. ⚠️ 카운트 불연속: 직전 커밋 메타(594·17c @26a49b1)는 이전 graphify 버전의 ghost-dedup 산출; 현재 설치 버전(3.14 env)은 동일 코드에서 849·48c 를 안정 산출(fresh-cache 재현). 버전/방법론 드리프트이며 코드 회귀 아님. |
-| docs     | 2026-05-20  | `0826ea5` | `docs/` (자기 자신 graph 산출물 제외)                 | 157 nodes · 190 edges · 16 communities. 74 docs + 1 code (client-sample). 4 chunk × haiku semantic. 핵심 커뮤니티: V9.0.0 API Contracts / 3-Tier Cache Rationale / Workflows / ADRs / Maintenance. 직전: 4,246 nodes (`11dfbaa`, 처리 차원 차이로 비교 무의미). |
-| tests    | 2026-05-20  | `0826ea5` | `tests/`                                              | 545 nodes · 747 edges · 42 communities. AST-only (53 code) + minimal doc nodes (4 README/MIGRATION-REPORT). 3-tier integration test (news / gamecontents) + unit 3개 추가 반영. 직전: 598 nodes · 787 edges · 39 communities (`11dfbaa`). |
-| legacy   | 2026-05-20  | `0826ea5` | `legacy/`                                             | 194 nodes · 261 edges · 13 communities. 18 code + 2 doc (README + MySQL schema). AST-only (semantic 스킵, 변경 없음). 직전: 239 nodes · 348 edges · 15 communities (`7d5fed0`).                                                  |
+| packages | 2026-07-22  | `7ea7967` | `packages/`                                           | 854 nodes · 1,543 edges · 48 communities. AST-only (96 code files). ADR-0005 반영: PgClient 연결 재시도/자동회복(connectWithRetry·ensureConnected·startHealthCheck·stopHealthCheck·constructor(pool?)·모듈 sleep), env 5키(DB_CONNECT_RETRY_*/DB_HEALTH_CHECK_*), data-service initializePostgres/disconnectPostgres 배선 엣지. 직전 849·1,529·48c (`971c02f`, ADR-0004). |
+| docs     | 2026-07-22  | `7ea7967` | `docs/` (자기 자신 graph 산출물 제외)                 | 146 nodes · 274 edges · 8 communities. 75 docs + 1 code (client-sample). 4 chunk semantic(opus). ADR-0005 postgres self-heal + ADR-0004 반영, verification-strategies typecheck build 선행 note. 직전: 157·190·16c (`0826ea5`). |
+| tests    | 2026-07-22  | `7ea7967` | `tests/`                                              | 619 nodes · 830 edges · 45 communities. AST (57 code) + doc semantic (4 README/MIGRATION, 1 chunk). 신규 postgres-retry.test.ts(부팅래치 회복·lazy single-flight) + ADR-0004 잔여 테스트 반영. 직전: 545·747·42c (`0826ea5`). |
+| legacy   | 2026-05-20  | `0826ea5` | `legacy/`                                             | 194 nodes · 261 edges · 13 communities. 18 code + 2 doc (README + MySQL schema). AST-only (semantic 스킵, 변경 없음). 직전: 239 nodes · 348 edges · 15 communities (`7d5fed0`). ⚠️ frontmatter source_commit(7ea7967)과 별개 — legacy 는 미변경 fresh 로 재생성 안 함. |
 
 ## 갱신 시 체크리스트
 
