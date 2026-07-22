@@ -4,8 +4,9 @@
 
 ## 목록
 
-- [deployment](./deployment.md) — loa-platform 오케스트레이션, build+push 배포
-  명령, 이미지 드리프트 경고, macOS arm64 플랫폼 주의, 운영 게이트
+- [deployment](./deployment.md) — loa-platform 오케스트레이션, image push →
+  watchtower 자동 배포(REST·UDP 동일 이미지 공유), 배포 후 확인, 이미지 드리프트
+  경고, macOS arm64 플랫폼 주의, 운영 게이트
 - [host-node-run](./host-node-run.md) — macOS 호스트에서 Node 로 직접 실행 시
   절차 (CA prefix 필수) + 장애 원인 분리 가이드
 - [macos-warp-tls-mitigation](./macos-warp-tls-mitigation.md) — macOS Cloudflare
