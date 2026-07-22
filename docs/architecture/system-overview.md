@@ -252,6 +252,16 @@ const normalizedProfile = ProfileMigrator.normalizeProfile(rawData);
 - **Circuit Breaker**: 외부 API 호출 실패 시 자동 차단
 - **Rate Limiting**: REST와 Data Service 분리 관리
 - **Error Handling**: 명확한 에러 코드와 메시지
+- **PostgreSQL 연결 self-heal**:
+  `PgClient`(`packages/shared/src/db/postgres.ts`) 는 부팅 시 지수백오프
+  재시도(`connectWithRetry`), 백그라운드 헬스체크
+  재연결(`startHealthCheck`/`stopHealthCheck`), `query`/`execute`/`transaction`/
+  `getConnection` lazy 재연결 single-flight(`ensureConnected`) 3계층을 갖는다.
+  redis 는 node-redis 자체 자동재연결을 이미 보유하나 pg 는 이 3계층 도입 전까지
+  재시도/회복 로직이 없어 부팅 시점 연결 레이스 시 영구 degraded로 굳는 결함이
+  있었다 ([ADR-0005](../adr/ADR-0005-postgres-connection-retry-self-heal.md),
+  변경 이력:
+  [changes/2026-07-22](../changes/2026-07-22-postgres-connection-retry-self-heal.md)).
 
 ## 📝 TODO
 

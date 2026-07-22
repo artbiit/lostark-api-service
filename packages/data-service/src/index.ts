@@ -160,7 +160,7 @@ export async function disconnectRedis(): Promise<void> {
  */
 export async function initializePostgres(): Promise<void> {
   try {
-    await pgClient.connect();
+    await pgClient.connectWithRetry();
     logger.info('PostgreSQL connection initialized successfully');
     await migrationManager.migrate();
   } catch (error) {
@@ -171,6 +171,8 @@ export async function initializePostgres(): Promise<void> {
       'Failed to initialize PostgreSQL connection',
     );
     // PostgreSQL 연결 실패 시에도 서비스는 계속 동작 (Memory/Redis Cache만 사용)
+  } finally {
+    pgClient.startHealthCheck();
   }
 }
 
@@ -179,6 +181,7 @@ export async function initializePostgres(): Promise<void> {
  */
 export async function disconnectPostgres(): Promise<void> {
   try {
+    pgClient.stopHealthCheck();
     await pgClient.disconnect();
     logger.info('PostgreSQL connection disconnected successfully');
   } catch (error) {

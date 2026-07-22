@@ -21,6 +21,11 @@ _기존 프로젝트(v1 → v2.0.0 전환) 시기의 결정은 명시적 ADR 문
   능동 갱신: 리셋정렬 단독 트랙(수요일 10:10 KST) + 비파괴적 `forceRefresh()`
   채택, 고정 인터벌 트랙과 `invalidate()+refetch` 는 기각. **설계 확정, 구현
   미착수 — 후속 세션** (2026-07-15)
+- [ADR-0005](./ADR-0005-postgres-connection-retry-self-heal.md) — PostgreSQL
+  연결 생명주기: 부팅 지수백오프 재시도(`connectWithRetry`) + 백그라운드
+  self-heal(`startHealthCheck`) + lazy 재연결 single-flight(`ensureConnected`)
+  채택. 인시던트(연결 확립 실패 시 영구 degraded) 근본 결함 수정, env 5종
+  하위호환 default, 롤백은 env 토글로 즉시 가능 (2026-07-22)
 
 ## 템플릿
 

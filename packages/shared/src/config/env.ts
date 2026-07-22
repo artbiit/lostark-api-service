@@ -95,6 +95,11 @@ export const envSchema = z.object({
   DB_PASSWORD: z.string().default(''),
   DB_DATABASE: z.string().default('lostark_cache'),
   DB_CONNECTION_LIMIT: z.coerce.number().min(1).default(10),
+  DB_CONNECT_RETRY_MAX_ATTEMPTS: z.coerce.number().min(1).default(5), // connectWithRetry() 최대 시도 횟수 (1=재시도 비활성화·구 동작 복원)
+  DB_CONNECT_RETRY_INITIAL_DELAY_MS: z.coerce.number().min(1).default(500), // 최초 재시도 대기(ms), 이후 시도마다 2배
+  DB_CONNECT_RETRY_MAX_DELAY_MS: z.coerce.number().min(1).default(10000), // 지수백오프 지연 상한(ms)
+  DB_HEALTH_CHECK_ENABLED: z.coerce.boolean().default(true), // 주기적 self-heal 헬스체크 토글 (false=롤백, 재시도 전무했던 기존 동작 복원)
+  DB_HEALTH_CHECK_INTERVAL_MS: z.coerce.number().min(1000).default(30000), // 헬스체크 재연결 시도 간격(ms, 기본 30초)
 });
 
 // === 환경변수 로딩 ===
@@ -217,6 +222,11 @@ export const defaultConfig: EnvConfig = {
   DB_PASSWORD: '',
   DB_DATABASE: 'lostark_cache',
   DB_CONNECTION_LIMIT: 10,
+  DB_CONNECT_RETRY_MAX_ATTEMPTS: 5,
+  DB_CONNECT_RETRY_INITIAL_DELAY_MS: 500,
+  DB_CONNECT_RETRY_MAX_DELAY_MS: 10000,
+  DB_HEALTH_CHECK_ENABLED: true,
+  DB_HEALTH_CHECK_INTERVAL_MS: 30000,
 };
 
 // === 환경별 설정 헬퍼 ===

@@ -119,6 +119,13 @@ strategies:
     scope: all
     timeout_s: 240
     failure_severity: blocker
+    note:
+      '패키지 간 신규 export·타입·메서드를 추가한 변경에서는 `yarn typecheck`
+      단독 실행 금지 — composite project references 구조상 하위 패키지는 상위
+      패키지의 빌드된 `.d.ts` 를 참조하므로 build 미선행 시 stale 선언으로
+      TS2305/TS2339 오탐이 난다. 이 경우 `build` 선행(또는 `monorepo-deps` 전략
+      = `yarn validate:monorepo` 로 대체) 후 판정한다. 상세:
+      docs/development/monorepo-workflow.md §67 (ADR-0004·ADR-0005 재발 선례).'
 
   - id: monorepo-deps
     cmd: yarn validate:monorepo

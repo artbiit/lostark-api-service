@@ -2,6 +2,17 @@
 
 실제 동작이 바뀐 구현 변경을 시점 기록. 단순 리팩터/오타는 제외.
 
+## 2026-07
+
+- fix(shared,data-service):
+  [PostgreSQL 연결 재시도·자동 회복 결함 수정](./2026-07-22-postgres-connection-retry-self-heal.md)
+  — `connectWithRetry()` 부팅 지수백오프 + `startHealthCheck`/`stopHealthCheck`
+  백그라운드 self-heal + `ensureConnected()` lazy 재연결 single-flight, env 5종
+  신규(하위호환 default), 회귀 테스트 2건. 인시던트 근본 결함(부팅 시점 연결
+  레이스 시 영구 degraded) 수정. 정책 결정은
+  [ADR-0005](../adr/ADR-0005-postgres-connection-retry-self-heal.md). (session
+  20260722-095232)
+
 ## 2026-05
 
 - feat(udp-service):
